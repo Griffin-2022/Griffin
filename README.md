@@ -276,3 +276,104 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Shadow gap:              cc
 ==61101==ABORTING
 ```
+
+# MariaDB
+## MariaDB-UAF.sql
+
+```
+=================================================================
+==12446==ERROR: AddressSanitizer: heap-use-after-free on address 0x6250000862e8 at pc 0x000000b9e5a4 bp 0x7f17b124ce90 sp 0x7f17b124ce88
+WRITE of size 8 at 0x6250000862e8 thread T15
+    #0 0xb9e5a3 in lex_end_nops(LEX*) /root/mariadb/sql/sql_lex.cc:1372:14
+    #1 0xb9e5a3 in lex_end(LEX*) /root/mariadb/sql/sql_lex.cc:1340:3
+    #2 0xb03989 in THD::end_statement() /root/mariadb/sql/sql_class.cc:3908:3
+    #3 0xc4a897 in mysql_parse(THD*, char*, unsigned int, Parser_state*) /root/mariadb/sql/sql_parse.cc:8049:10
+    #4 0xc41ba9 in dispatch_command(enum_server_command, THD*, char*, unsigned int, bool) /root/mariadb/sql/sql_parse.cc:1894:7
+    #5 0xc4b74b in do_command(THD*, bool) /root/mariadb/sql/sql_parse.cc:1402:17
+    #6 0x111f9f2 in do_handle_one_connection(CONNECT*, bool) /root/mariadb/sql/sql_connect.cc:1418:11
+    #7 0x111f248 in handle_one_connection /root/mariadb/sql/sql_connect.cc:1312:5
+    #8 0x1f3f9dd in pfs_spawn_thread /root/mariadb/storage/perfschema/pfs.cc:2201:3
+    #9 0x7f17d6fdc608 in start_thread /build/glibc-sMfBJT/glibc-2.31/nptl/pthread_create.c:477:8
+    #10 0x7f17d6cf2162 in clone /build/glibc-sMfBJT/glibc-2.31/misc/../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+
+0x6250000862e8 is located 6632 bytes inside of 8208-byte region [0x625000084900,0x625000086910)
+freed by thread T15 here:
+    #0 0x80f732 in free (/usr/local/mysql/bin/mariadbd+0x80f732)
+    #1 0x2a598bf in root_free /root/mariadb/mysys/my_alloc.c:78:5
+    #2 0x2a598bf in free_root /root/mariadb/mysys/my_alloc.c:501:7
+    #3 0x9a1258 in sp_head::destroy(sp_head*) /root/mariadb/sql/sp_head.cc:521:5
+    #4 0xb9e41e in lex_end_nops(LEX*) /root/mariadb/sql/sql_lex.cc:1371:3
+    #5 0xb9e41e in lex_end(LEX*) /root/mariadb/sql/sql_lex.cc:1340:3
+    #6 0xb03989 in THD::end_statement() /root/mariadb/sql/sql_class.cc:3908:3
+    #7 0xc4a897 in mysql_parse(THD*, char*, unsigned int, Parser_state*) /root/mariadb/sql/sql_parse.cc:8049:10
+    #8 0xc41ba9 in dispatch_command(enum_server_command, THD*, char*, unsigned int, bool) /root/mariadb/sql/sql_parse.cc:1894:7
+    #9 0xc4b74b in do_command(THD*, bool) /root/mariadb/sql/sql_parse.cc:1402:17
+    #10 0x111f9f2 in do_handle_one_connection(CONNECT*, bool) /root/mariadb/sql/sql_connect.cc:1418:11
+    #11 0x111f248 in handle_one_connection /root/mariadb/sql/sql_connect.cc:1312:5
+    #12 0x1f3f9dd in pfs_spawn_thread /root/mariadb/storage/perfschema/pfs.cc:2201:3
+    #13 0x7f17d6fdc608 in start_thread /build/glibc-sMfBJT/glibc-2.31/nptl/pthread_create.c:477:8
+
+previously allocated by thread T15 here:
+    #0 0x80f99d in malloc (/usr/local/mysql/bin/mariadbd+0x80f99d)
+    #1 0x2a76878 in my_malloc /root/mariadb/mysys/my_malloc.c:90:29
+    #2 0x2a5887f in root_alloc /root/mariadb/mysys/my_alloc.c:66:10
+    #3 0x2a5887f in alloc_root /root/mariadb/mysys/my_alloc.c:332:29
+    #4 0x9b45f6 in Sql_alloc::operator new(unsigned long, st_mem_root*) /root/mariadb/sql/sql_alloc.h:37:12
+    #5 0x9b45f6 in sp_head::reset_lex(THD*) /root/mariadb/sql/sp_head.cc:2619:25
+    #6 0x1424874 in MYSQLparse(THD*) /root/mariadb/sql/sql_yacc.yy:3675:26
+    #7 0xc808a0 in parse_sql(THD*, Parser_state*, Object_creation_ctx*, bool) /root/mariadb/sql/sql_parse.cc:10379:46
+    #8 0xc4a263 in mysql_parse(THD*, char*, unsigned int, Parser_state*) /root/mariadb/sql/sql_parse.cc:7979:15
+    #9 0xc41ba9 in dispatch_command(enum_server_command, THD*, char*, unsigned int, bool) /root/mariadb/sql/sql_parse.cc:1894:7
+    #10 0xc4b74b in do_command(THD*, bool) /root/mariadb/sql/sql_parse.cc:1402:17
+    #11 0x111f9f2 in do_handle_one_connection(CONNECT*, bool) /root/mariadb/sql/sql_connect.cc:1418:11
+    #12 0x111f248 in handle_one_connection /root/mariadb/sql/sql_connect.cc:1312:5
+    #13 0x1f3f9dd in pfs_spawn_thread /root/mariadb/storage/perfschema/pfs.cc:2201:3
+    #14 0x7f17d6fdc608 in start_thread /build/glibc-sMfBJT/glibc-2.31/nptl/pthread_create.c:477:8
+
+Thread T15 created by T0 here:
+    #0 0x7f9cfc in pthread_create (/usr/local/mysql/bin/mariadbd+0x7f9cfc)
+    #1 0x1f3fd39 in my_thread_create(unsigned long*, pthread_attr_t const*, void* (*)(void*), void*) /root/mariadb/storage/perfschema/my_thread.h:52:10
+    #2 0x1f3fd39 in pfs_spawn_thread_v1 /root/mariadb/storage/perfschema/pfs.cc:2252:15
+    #3 0x85cef4 in inline_mysql_thread_create(unsigned int, unsigned long*, pthread_attr_t const*, void* (*)(void*), void*) /root/mariadb/include/mysql/psi/mysql_thread.h:1139:11
+    #4 0x85cef4 in create_thread_to_handle_connection(CONNECT*) /root/mariadb/sql/mysqld.cc:5975:19
+    #5 0x85e72a in create_new_thread(CONNECT*) /root/mariadb/sql/mysqld.cc:6034:3
+    #6 0x85e72a in handle_accepted_socket(st_mysql_socket, st_mysql_socket) /root/mariadb/sql/mysqld.cc:6096:5
+    #7 0x85a34c in handle_connections_sockets() /root/mariadb/sql/mysqld.cc:6220:9
+    #8 0x84e9ef in mysqld_main(int, char**) /root/mariadb/sql/mysqld.cc:5870:3
+    #9 0x7f17d6bf70b2 in __libc_start_main /build/glibc-sMfBJT/glibc-2.31/csu/../csu/libc-start.c:308:16
+
+SUMMARY: AddressSanitizer: heap-use-after-free /root/mariadb/sql/sql_lex.cc:1372:14 in lex_end_nops(LEX*)
+Shadow bytes around the buggy address:
+  0x0c4a80008c00: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c10: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c20: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c30: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c40: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x0c4a80008c50: fd fd fd fd fd fd fd fd fd fd fd fd fd[fd]fd fd
+  0x0c4a80008c60: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c70: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c80: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008c90: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c4a80008ca0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==12446==ABORTING
+```
