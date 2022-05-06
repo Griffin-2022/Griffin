@@ -4,7 +4,7 @@ Griffin is a grammar-free DBMS fuzzer.
 Unlike other DBMS relying on the grammar of DBMS's input (such as SQL) to build AST for generation or parsers for mutation,
 Griffin summarizes the DBMS’s state into metadata graph, a lightweight data structure which improves mutation correctness in fuzzing.
 
-Griffin found 55 bugs totally in SQLite, DuckDB, MariaDB, PostgreSQL.
+Griffin found 55 bugs totally in SQLite, DuckDB, MariaDB, PostgreSQL. including 4 undefined behaviors, 15 assertion failures, 3 NULL pointer dereferences, 21 segmentation violations, 1 buffer-overflow, and 6 heap-use-after-free.
 
 |     |Bug Identifier|
 |-----|-----|
