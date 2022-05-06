@@ -8,10 +8,8 @@ Griffin found 55 bugs totally in SQLite, DuckDB, MariaDB, PostgreSQL.
 
 |     |Bug Identifier|
 |-----|-----|
-|SQLite|CVE-2021-46100,12c0121,1d3760a,
-3b36ed7,3c9f5c9,4df301c,5232c97,5
-62805c,58de3c2,5e0ed49,fdf9ed6,
-eb07219,e199a85,73c2b50,c76a4c0,ae464a1|
+|SQLite|CVE-2021-46100,12c0121,1d3760a,3b36ed7,<br>3c9f5c9,4df301c,5232c97,562805c,<br>58de3c2,5e0ed49,fdf9ed6,
+eb07219,<br>e199a85,73c2b50,c76a4c0,ae464a1|
 |DuckDB||
 |MariaDB||
 |PostgreSQL||
