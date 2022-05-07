@@ -13,9 +13,9 @@ Griffin found 55 bugs totally in SQLite, DuckDB, MariaDB, PostgreSQL, including 
 |MariaDB(24)|CVE-2022-27444, CVE-2022-27445, CVE-2022-27446, CVE-2022-27447, CVE-2022-27448, <br> CVE-2022-27449, CVE-2022-27451, CVE-2022-27452, CVE-2022-27455, <br> CVE-2022-27456, CVE-2022-27457, CVE-2022-27458,<br> MDEV-28083, MDEV-28084, MDEV-28085, MDEV-28086, MDEV-28087, MDEV-28088, MDEV-28092,<br> MDEV-28096, MDEV-28129, MDEV-28130, MDEV-28136, MDEV-28138|
 |PostgreSQL(3)|bug#17151, #17316, #17317|
 
-# Tested DBMS and Initial Seeds
+# Tested DBMS and Their Built-in Test Cases
 
-|DBMS| Initial seed ref|
+|DBMS| Built-in test cases ref|
 |-----|-----|
 |SQLite|https://github.com/sqlite/sqlite/tree/master/test|
 |DuckDB|https://github.com/duckdb/duckdb/tree/master/test|
