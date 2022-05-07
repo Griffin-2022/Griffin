@@ -19,7 +19,7 @@ The versions of tested DBMSs are shown as submodules in the root directory of th
 
 |DBMS| Built-in test cases ref|
 |-----|-----|
-|SQLite|https://github.com/sqlite/sqlite/tree/master/test|
+|SQLite|https://github.com/sqlite/sqlite/tree/315e3122c37b2dbe0fb7b3a4c3b9b6961e3bda96/test|
 |DuckDB|https://github.com/duckdb/duckdb/tree/master/test|
 |MariaDB|https://github.com/MariaDB/server/tree/10.9/mysql-test/suite|
 |PostgreSQL|https://github.com/postgres/postgres/tree/master/src/test/regress/sql|
