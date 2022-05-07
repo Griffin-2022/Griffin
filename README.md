@@ -15,12 +15,16 @@ Griffin found 55 bugs totally in SQLite, DuckDB, MariaDB, PostgreSQL, including 
 
 # Tested DBMS and Initial Seeds
 
-|||
+|DBMS| Initial seed ref|
 |-----|-----|
 |SQLite|https://github.com/sqlite/sqlite/tree/master/test|
 |DuckDB|https://github.com/duckdb/duckdb/tree/master/test|
 |MariaDB|https://github.com/MariaDB/server/tree/10.9/mysql-test/suite|
 |PostgreSQL|https://github.com/postgres/postgres/tree/master/src/test/regress/sql|
+
+# Communication Log
+
+
 
 # SQLite
 ## sqlite-SEGV.sql
