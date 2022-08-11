@@ -1,0 +1,159 @@
+# name: test/sql/update/test_update_from.test
+# description: Test updates that use a from clause
+# group: [update]
+
+# create a table
+;
+CREATE TABLE test (a INTEGER);
+
+;
+INSERT INTO test VALUES (3)
+
+;
+CREATE  TABLE src (a INTEGER);
+
+;
+INSERT INTO src VALUES (2)
+
+;
+SELECT * FROM test
+;
+3
+
+;
+SELECT * FROM src
+;
+2
+
+# test simple update
+;
+UPDATE test SET a=test.a+s.a FROM src s
+
+;
+SELECT * FROM test
+;
+5
+
+# test self join via alias
+;
+UPDATE test SET a=test.a+t.a FROM test t
+
+;
+SELECT * FROM test
+;
+10
+
+# test multiple tables
+;
+UPDATE test SET a=t.a+s.a FROM test t, src s
+
+;
+SELECT * FROM test
+;
+12
+
+# test subquery
+;
+UPDATE test SET a=s.q FROM (SELECT a+1 as q FROM src) s
+
+;
+SELECT * FROM test
+;
+3
+
+# test view
+;
+CREATE VIEW vt AS (SELECT 17 as v)
+
+;
+UPDATE test SET a=v FROM vt
+
+;
+SELECT * FROM test
+;
+17
+
+# with a where clause on the from table
+;
+UPDATE test SET a=s.a FROM src s WHERE s.a = 2
+
+;
+SELECT * FROM test
+;
+2
+
+# with a where clause that involves both tables
+;
+UPDATE test t SET a=1 FROM src s WHERE s.a = t.a
+
+;
+SELECT * FROM test
+;
+1
+
+# with a where clause that evaluates to false
+;
+UPDATE test t SET a=9 FROM src s WHERE s.a=t.a
+
+;
+SELECT * FROM test
+;
+1
+
+# test with multiple updates per row (which is undefined),
+# but in this case the last value in the table will win
+# FIXME:
+mode skip
+
+;
+INSERT INTO src VALUES (7)
+
+;
+UPDATE test SET a=s.a FROM src s
+
+;
+SELECT * FROM test
+;
+7
+
+mode unskip
+
+# test described in issue 1035
+
+;
+CREATE TABLE terms(docid INTEGER, term INTEGER);
+
+;
+CREATE TABLE docs(id INTEGER, len INTEGER);
+
+;
+insert into docs values (1, 0), (2, 0);
+
+;
+insert into terms values (1, 1);
+
+;
+insert into terms values (2, 1);
+
+;
+insert into terms values (2, 2);
+
+;
+insert into terms values (2, 3);
+
+;
+UPDATE docs
+SET len = sq.len
+FROM (
+    SELECT docid AS id, count(term) AS len
+    FROM terms
+    GROUP BY docid
+    ORDER BY docid
+) AS sq
+WHERE docs.id = sq.id;
+
+;
+select * from docs;
+;
+1	1
+2	3

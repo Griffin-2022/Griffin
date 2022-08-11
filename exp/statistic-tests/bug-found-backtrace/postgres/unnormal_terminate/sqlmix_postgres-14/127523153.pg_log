@@ -1,0 +1,111 @@
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('sandwich')
+	   execute procedure test_event_trigger();
+2022-08-02 05:58:08.622 UTC [70729] ERROR:  relation "t" does not exist
+2022-08-02 05:58:08.622 UTC [70729] STATEMENT:  
+	comment on table t is 'here is bank_account comment';
+2022-08-02 05:58:08.623 UTC [70729] ERROR:  permission denied: "pg_description" is a system catalog
+2022-08-02 05:58:08.623 UTC [70729] STATEMENT:  
+	
+	-- truncate of system table
+	TRUNCATE pg_description;
+2022-08-02 05:58:08.623 UTC [70729] ERROR:  language "plpythonu" does not exist
+2022-08-02 05:58:08.623 UTC [70729] STATEMENT:  
+	
+	
+	-- returning MODIFY from DELETE trigger
+	
+	CREATE FUNCTION stupid2() RETURNS trigger
+	AS $$
+	    return "MODIFY"
+	$$ LANGUAGE plpythonu;
+2022-08-02 05:58:08.623 UTC [70729] ERROR:  trigger "stupid_trigger2" for table "test1" does not exist
+2022-08-02 05:58:08.623 UTC [70729] STATEMENT:  
+	
+	DROP TRIGGER stupid_trigger2 ON test1;
+2022-08-02 05:58:08.623 UTC [70729] ERROR:  trigger "stupid_trigger5" for table "test1" does not exist
+2022-08-02 05:58:08.623 UTC [70729] STATEMENT:  
+	
+	DROP TRIGGER stupid_trigger5 ON test1;
+2022-08-02 05:58:08.623 UTC [70729] ERROR:  language "plpythonu" does not exist
+2022-08-02 05:58:08.623 UTC [70729] STATEMENT:  
+	
+	
+	-- TD keys not corresponding to row columns
+	
+	CREATE FUNCTION stupid7() RETURNS trigger
+	AS $$
+	    TD["new"] = {'v': 'foo', 'a': 'bar'}
+	    return "MODIFY";
+	$$ LANGUAGE plpythonu;
+2022-08-02 05:58:08.625 UTC [70729] ERROR:  schema "evttrig" does not exist
+2022-08-02 05:58:08.625 UTC [70729] STATEMENT:  
+	ALTER TABLE evttrig.test1 ALTER COLUMN sqlsim17 SET DATA TYPE bigint;
+2022-08-02 05:58:08.627 UTC [70729] ERROR:  event trigger "regress_event_trigger_report_dropped" does not exist
+2022-08-02 05:58:08.627 UTC [70729] STATEMENT:  
+	
+	DROP EVENT TRIGGER regress_event_trigger_report_dropped;
+2022-08-02 05:58:08.628 UTC [70729] ERROR:  language "plpythonu" does not exist
+2022-08-02 05:58:08.628 UTC [70729] STATEMENT:  
+	
+	CREATE FUNCTION composite_trigger_f() RETURNS trigger AS $$
+	    TD['new']['f1'] = (3, False)
+	    TD['new']['f2'] = {'k': 7, 'l': 'yes', 'ignored': 10}
+	    return 'MODIFY'
+	$$ LANGUAGE plpythonu;
+2022-08-02 05:58:08.628 UTC [70729] ERROR:  function composite_trigger_f() does not exist
+2022-08-02 05:58:08.628 UTC [70729] STATEMENT:  
+	
+	CREATE TRIGGER composite_trigger BEFORE INSERT ON test1
+	  FOR EACH ROW EXECUTE PROCEDURE composite_trigger_f();
+2022-08-02 05:58:08.629 UTC [70729] ERROR:  function composite_trigger_noop_f() does not exist
+2022-08-02 05:58:08.629 UTC [70729] STATEMENT:  
+	
+	CREATE TRIGGER composite_trigger_noop BEFORE INSERT ON test1
+	  FOR EACH ROW EXECUTE PROCEDURE composite_trigger_noop_f();
+2022-08-02 05:58:08.629 UTC [70729] WARNING:  there is no transaction in progress
+2022-08-02 05:58:08.629 UTC [70729] ERROR:  permission denied: "pg_description" is a system catalog
+2022-08-02 05:58:08.629 UTC [70729] STATEMENT:  
+	ALTER TABLE pg_description ALTER COLUMN description SET NOT NULL;
+2022-08-02 05:58:08.630 UTC [70729] ERROR:  function trig1234() does not exist
+2022-08-02 05:58:08.630 UTC [70729] STATEMENT:   -- different type conversion
+	
+	CREATE TRIGGER a_t BEFORE INSERT ON t1 FOR EACH ROW EXECUTE PROCEDURE trig1234();
+2022-08-02 05:58:08.630 UTC [70729] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 05:58:08.630 UTC [70729] STATEMENT:  COPY pg_description FROM STDIN NULL 'null';
+2022-08-02 05:58:08.630 UTC [70729] ERROR:  column "description" does not exist
+2022-08-02 05:58:08.630 UTC [70729] STATEMENT:  create index »Á‰∆…± on t1(description desc);
+2022-08-02 05:58:08.632 UTC [70729] ERROR:  statistics object "ctlt1_expr_stat" does not exist
+2022-08-02 05:58:08.632 UTC [70729] STATEMENT:  COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats';
+2022-08-02 05:58:08.635 UTC [70729] ERROR:  relation "sqlsim5" does not exist
+2022-08-02 05:58:08.635 UTC [70729] STATEMENT:  COMMENT ON COLUMN sqlsim5.sqlsim6 IS 'sqlsim6';
+2022-08-02 05:58:08.637 UTC [70729] ERROR:  column reference "b" is ambiguous at character 65
+2022-08-02 05:58:08.637 UTC [70729] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(test1_a_idx,b,b order by b using ~<~)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(test1_a_idx,b,b);
+2022-08-02 05:58:08.638 UTC [70729] ERROR:  relation "tenk1" does not exist at character 290
+2022-08-02 05:58:08.638 UTC [70729] STATEMENT:  create view aggordview1 as
+	select ten,
+	       percentile_disc(0.5) within group (order by thousand) as p50,
+	       percentile_disc(0.5) within group (order by thousand) filter (where hundred=1) as px,
+	       rank(5,'AZZZZ',50) within group (order by hundred, string4 desc, hundred)
+	  from tenk1
+	 group by ten order by ten;
+2022-08-02 05:58:08.638 UTC [70729] WARNING:  there is no transaction in progress
+2022-08-02 05:58:08.654 UTC [70729] ERROR:  schema "sch1" does not exist
+2022-08-02 05:58:08.654 UTC [70729] STATEMENT:  CREATE TABLE public.tab1_child2 PARTITION OF sch1.tab1_parent FOR VALUES IN (4, 5, 6)
+	;
+2022-08-02 05:58:08.674 UTC [70729] PANIC:  could not write to file "pg_wal/xlogtemp.70729": No space left on device
+2022-08-02 05:58:08.674 UTC [70729] STATEMENT:  CREATE TABLE b (test1_a_idx VARCHAR)
+		WITH (toast.autovacuum_vacuum_cost_delay = 23);
+2022-08-02 05:58:08.728 UTC [70619] LOG:  server process (PID 70729) was terminated by signal 6: Aborted
+2022-08-02 05:58:08.728 UTC [70619] LOG:  terminating any other active server processes
+2022-08-02 05:58:08.733 UTC [70619] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:58:08.745 UTC [71500] LOG:  database system was interrupted; last known up at 2022-08-02 05:58:01 UTC
+2022-08-02 05:58:08.746 UTC [71501] FATAL:  the database system is in recovery mode
+2022-08-02 05:58:08.748 UTC [71504] FATAL:  the database system is in recovery mode
+2022-08-02 05:58:08.750 UTC [71505] FATAL:  the database system is in recovery mode
+2022-08-02 05:58:08.757 UTC [70619] LOG:  received smart shutdown request
+2022-08-02 05:58:08.768 UTC [71500] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:58:08.769 UTC [71500] LOG:  redo starts at 0/31023680
+2022-08-02 05:58:08.773 UTC [70619] LOG:  abnormal database system shutdown

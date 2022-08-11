@@ -1,0 +1,88 @@
+# name: test/sql/storage/wal/wal_store_rename_view.test
+# description: Test storage of alter view
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/test_rename_view.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
+
+;
+CREATE VIEW vtest AS SELECT * FROM test
+
+;
+BEGIN TRANSACTION
+
+;
+SELECT a FROM vtest ORDER BY a
+;
+11
+12
+13
+
+;
+ALTER VIEW vtest RENAME TO new_name
+
+;
+SELECT a FROM new_name ORDER BY 1
+;
+11
+12
+13
+
+;
+ROLLBACK
+
+# restart the database
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+BEGIN TRANSACTION
+
+# verify that the table is still there in the original form
+;
+SELECT a FROM vtest ORDER BY a
+;
+11
+12
+13
+
+# now repeat the process, but this time commit
+;
+ALTER VIEW vtest RENAME TO new_name
+
+;
+SELECT a FROM new_name ORDER BY 1
+;
+11
+12
+13
+
+;
+COMMIT
+
+restart
+
+# after a restart, the renamed table is still here
+;
+SELECT a FROM new_name ORDER BY 1
+;
+11
+12
+13

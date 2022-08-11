@@ -1,0 +1,51 @@
+# name: test/sql/storage/wal/wal_store_add_column.test
+# description: Test storage of alter table add column
+# group: [wal]
+
+load __TEST_DIR__/test_store_add_column.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a table and add a column to it
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
+
+;
+ALTER TABLE test ADD COLUMN k INTEGER DEFAULT 2
+
+;
+SELECT k FROM test ORDER BY k
+;
+2
+2
+2
+
+restart
+
+# reload and verify the column is still there
+
+;
+SELECT k FROM test ORDER BY k
+;
+2
+2
+2
+
+# verify the default is still correct
+;
+INSERT INTO test(a, b) VALUES (1, 1)
+
+;
+SELECT k FROM test ORDER BY k
+;
+2
+2
+2
+2

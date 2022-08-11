@@ -1,0 +1,85 @@
+# name: test/sql/types/struct/nested_structs.test
+# description: Test storing nested structs in tables
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(c ROW(i ROW(a INTEGER), j INTEGER));
+
+;
+INSERT INTO a VALUES ({
+	'i': {
+		'a': 3
+	},
+	'j': 4
+})
+
+;
+SELECT * FROM a
+;
+{'i': {'a': 3}, 'j': 4}
+
+;
+SELECT ((c).i).a FROM a
+;
+3
+
+;
+INSERT INTO a VALUES (NULL)
+
+;
+SELECT * FROM a
+;
+{'i': {'a': 3}, 'j': 4}
+NULL
+
+;
+SELECT ((c).i).a FROM a
+;
+3
+NULL
+
+# nulls at different levels
+;
+INSERT INTO a VALUES (ROW(ROW(NULL), 1))
+
+;
+INSERT INTO a VALUES (ROW(ROW(1), NULL))
+
+;
+INSERT INTO a VALUES (ROW(NULL, 1))
+
+;
+SELECT * FROM a
+;
+{'i': {'a': 3}, 'j': 4}
+NULL
+{'i': {'a': NULL}, 'j': 1}
+{'i': {'a': 1}, 'j': NULL}
+{'i': NULL, 'j': 1}
+
+# create table as
+;
+CREATE TABLE b AS SELECT {
+	'a': {
+		'a': 1,
+		'b': 'hello'
+	}
+} c;
+
+;
+SELECT (c).a FROM b
+;
+{'a': 1, 'b': hello}
+
+# nested struct mismatch on insertion
+;
+INSERT INTO a VALUES (1)
+
+;
+INSERT INTO a VALUES (ROW(1, 2))
+
+;
+INSERT INTO a VALUES (ROW(ROW(1, 2, 3), 1))

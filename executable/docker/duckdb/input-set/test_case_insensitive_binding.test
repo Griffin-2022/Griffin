@@ -1,0 +1,137 @@
+# name: test/sql/binder/test_case_insensitive_binding.test
+# description: Test case insensitive binding of columns
+# group: [binder]
+
+;
+PRAGMA enable_verification
+
+# we can bind case insensitive column names
+
+;
+CREATE TABLE test ("HeLlO" INTEGER)
+
+;
+INSERT INTO test VALUES (1)
+
+# lowercase names are aliased
+;
+SELECT HeLlO FROM test
+
+;
+SELECT hello FROM test
+
+;
+SELECT "HeLlO" FROM test
+
+;
+SELECT "HELLO" FROM test
+
+;
+SELECT "HELLo" FROM test
+
+# verify that the column name of the original column is returned
+;
+SELECT alias(HeLlO) FROM test
+;
+HeLlO
+
+;
+SELECT alias(hello) FROM test
+;
+HeLlO
+
+# verify that an alias here still works
+;
+SELECT alias(x) FROM (SELECT HeLlO as x FROM test) tbl;
+;
+x
+
+# verify that it also works when we specify the table-name explicitly
+;
+SELECT test.HeLlO FROM test
+
+;
+SELECT test.hello FROM test
+
+;
+SELECT test."HeLlO" FROM test
+
+;
+SELECT test."HELLO" FROM test
+
+;
+SELECT test."HELLo" FROM test
+
+;
+UPDATE test SET hello=3
+
+;
+UPDATE test SET HeLlO=3
+
+;
+DROP TABLE test
+
+# this counts as a duplicate column error
+;
+CREATE TABLE test("HeLlO" INTEGER, "HELLO" INTEGER)
+
+# conflicts can come from different sources!
+;
+CREATE TABLE test1("HeLlO" INTEGER)
+
+;
+CREATE TABLE test2("HELLO" INTEGER)
+
+;
+SELECT HeLlO FROM test1, test2
+
+;
+SELECT hello FROM test1, test2
+
+;
+SELECT "HeLlO" FROM test1, test2
+
+;
+SELECT "HELLO" FROM test1, test2
+
+;
+SELECT "HELLo" FROM test1, test2
+
+# in this case we can eliminate the conflict by specifically selecting the source
+;
+SELECT test1.HeLlO FROM test1, test2
+
+;
+SELECT test1.hello FROM test1, test2
+
+;
+SELECT test1."HeLlO" FROM test1, test2
+
+;
+SELECT test1."HELLO" FROM test1, test2
+
+;
+SELECT test1."HELLo" FROM test1, test2
+
+;
+SELECT test2.HeLlO FROM test1, test2
+
+;
+SELECT test2.hello FROM test1, test2
+
+;
+SELECT test2."HeLlO" FROM test1, test2
+
+;
+SELECT test2."HELLO" FROM test1, test2
+
+;
+SELECT test2."HELLo" FROM test1, test2
+
+;
+SELECT * FROM test1 JOIN test2 USING (hello)
+
+;
+SELECT hello FROM (SELECT 42) tbl("HeLlO")
+;
+42

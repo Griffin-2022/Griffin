@@ -1,0 +1,177 @@
+# name: test/sql/storage/types/struct/nested_struct_storage.test
+# description: Test structs with persistent storage
+# group: [struct]
+
+# load the DB from disk
+load __TEST_DIR__/struct_storage_test.db
+
+
+foreach compression <compression>
+
+;
+PRAGMA force_compression='${compression}'
+
+;
+CREATE TABLE a AS SELECT {
+	'r1': {
+		'a': 'hello',
+		'b': 3
+	},
+	'r2': {
+		'a': 'world',
+		'b': 17,
+		'c': NULL
+	}
+} c
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': hello, 'b': 3}, 'r2': {'a': world, 'b': 17, 'c': NULL}}
+
+;
+SELECT c['r1']['a'] from a
+;
+hello
+
+restart
+
+;
+PRAGMA force_compression='${compression}'
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': hello, 'b': 3}, 'r2': {'a': world, 'b': 17, 'c': NULL}}
+
+;
+SELECT c['r1']['a'] from a
+;
+hello
+
+# update
+;
+UPDATE a SET c={
+	'r1': {
+		'a': 'blabla',
+		'b': 3
+	},
+	'r2': {
+		'a': 'world',
+		'b': 18,
+		'c': NULL
+	}
+}
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+
+;
+SELECT c['r1']['a'] from a
+;
+blabla
+
+restart
+
+;
+PRAGMA force_compression='${compression}'
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+
+;
+SELECT c['r1']['a'] from a
+;
+blabla
+
+# nulls at different levels
+;
+INSERT INTO a VALUES (
+{
+	'r1': {
+		'a': NULL,
+		'b': 3
+	},
+	'r2': {
+		'a': NULL,
+		'b': 17,
+		'c': NULL
+	}
+})
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+{'r1': {'a': NULL, 'b': 3}, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+
+;
+INSERT INTO a VALUES ({
+	'r1': NULL,
+	'r2': {
+		'a': NULL,
+		'b': 17,
+		'c': NULL
+	}
+})
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+{'r1': {'a': NULL, 'b': 3}, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+
+;
+INSERT INTO a VALUES ({
+	'r1': NULL,
+	'r2': NULL
+})
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+{'r1': {'a': NULL, 'b': 3}, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': NULL}
+
+;
+INSERT INTO a VALUES(NULL)
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+{'r1': {'a': NULL, 'b': 3}, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': NULL}
+NULL
+
+restart
+
+;
+PRAGMA force_compression='${compression}'
+
+;
+SELECT * FROM a
+;
+{'r1': {'a': blabla, 'b': 3}, 'r2': {'a': world, 'b': 18, 'c': NULL}}
+{'r1': {'a': NULL, 'b': 3}, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': {'a': NULL, 'b': 17, 'c': NULL}}
+{'r1': NULL, 'r2': NULL}
+NULL
+
+# verify that no null values have crept their way into the stats
+;
+select column_path, stats from pragma_storage_info('a') where  stats LIKE '%[Min: -2147483648, Max: -2147483648]%'
+;
+
+;
+DROP TABLE a
+
+endloop

@@ -1,0 +1,111 @@
+2022-08-01 20:10:02.841 UTC [100409] ERROR:  cannot cluster a partitioned table
+2022-08-01 20:10:02.841 UTC [100409] STATEMENT:  
+	
+	-- and after clustering on t
+	CLUSTER sqlsim4 USING t;
+2022-08-01 20:10:02.841 UTC [100409] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 20:10:02.841 UTC [100409] WARNING:  there is no transaction in progress
+2022-08-01 20:10:02.865 UTC [100409] ERROR:  relation "t" does not exist
+2022-08-01 20:10:02.865 UTC [100409] STATEMENT:  
+	CREATE INDEX a ON t (id,bank_account);
+2022-08-01 20:10:02.866 UTC [100409] ERROR:  relation "t" does not exist at character 15
+2022-08-01 20:10:02.866 UTC [100409] STATEMENT:  
+	
+	INSERT INTO t (id) VALUES (0);
+2022-08-01 20:10:02.866 UTC [100409] ERROR:  relation "t" does not exist at character 14
+2022-08-01 20:10:02.866 UTC [100409] STATEMENT:  
+	INSERT INTO t (id) SELECT id FROM t;
+2022-08-01 20:10:02.866 UTC [100409] ERROR:  relation "t" does not exist at character 15
+2022-08-01 20:10:02.866 UTC [100409] STATEMENT:  
+	
+	INSERT INTO t (id, bank_account) VALUES (11, 'once');
+2022-08-01 20:10:02.866 UTC [100409] ERROR:  relation "t" does not exist at character 14
+2022-08-01 20:10:02.866 UTC [100409] STATEMENT:  
+	INSERT INTO t (id, bank_account) VALUES (10, 'diez');
+2022-08-01 20:10:02.866 UTC [100409] ERROR:  relation "t" does not exist at character 14
+2022-08-01 20:10:02.866 UTC [100409] STATEMENT:  
+	INSERT INTO t (id, bank_account) VALUES (22, 'veintidos');
+2022-08-01 20:10:02.868 UTC [100409] ERROR:  relation "t" does not exist at character 14
+2022-08-01 20:10:02.868 UTC [100409] STATEMENT:  
+	INSERT INTO t (id, bank_account) VALUES (23, 'veintitres');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  no partition of relation "bank_account_pkey" found for row
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	INSERT INTO bank_account_pkey (d4_primary_pkey, d4_primary) VALUES (25, 'veinticinco');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  circular inheritance not allowed
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	  alter table bank_account_pkey attach partition bank_account_pkey default;
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  relation "t" does not exist at character 14
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	INSERT INTO t (id, bank_account) VALUES (30, 'treinta');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  circular inheritance not allowed
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	  alter table bank_account_pkey attach partition bank_account_pkey for values from(0) to (100);
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  no partition of relation "bank_account_pkey" found for row
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	INSERT INTO bank_account_pkey (d4_primary_pkey, d4_primary) VALUES (19, 'diecinueve');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  no partition of relation "bank_account_pkey" found for row
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	INSERT INTO bank_account_pkey (d4_primary_pkey, d4_primary) VALUES (7, 'siete');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  no partition of relation "bank_account_pkey" found for row
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	INSERT INTO bank_account_pkey (d4_primary_pkey, d4_primary) VALUES (8, 'ocho');
+2022-08-01 20:10:02.869 UTC [100409] ERROR:  cannot cluster a partitioned table
+2022-08-01 20:10:02.869 UTC [100409] STATEMENT:  
+	
+	CLUSTER a ON bank_account_pkey;
+2022-08-01 20:10:02.872 UTC [100409] ERROR:  role "regress_clstr_user" already exists
+2022-08-01 20:10:02.872 UTC [100409] STATEMENT:  
+	
+	-- Verify that clustering all tables does in fact cluster the right ones
+	CREATE USER regress_clstr_user;
+2022-08-01 20:10:02.874 UTC [100409] ERROR:  cannot cluster a partitioned table
+2022-08-01 20:10:02.874 UTC [100409] STATEMENT:  
+	CLUSTER bank_account_pkey USING a;
+2022-08-01 20:10:02.874 UTC [100409] ERROR:  no partition of relation "bank_account_pkey" found for row
+2022-08-01 20:10:02.874 UTC [100409] STATEMENT:  
+	INSERT INTO bank_account_pkey VALUES (2);
+2022-08-01 20:10:02.875 UTC [100409] ERROR:  relation "d4_primary2" does not exist
+2022-08-01 20:10:02.875 UTC [100409] STATEMENT:  
+	CLUSTER d4_primary2 USING a;
+2022-08-01 20:10:02.876 UTC [100409] ERROR:  relation "balance" does not exist
+2022-08-01 20:10:02.876 UTC [100409] STATEMENT:  
+	CREATE INDEX pid ON balance (d4_primary_pkey);
+2022-08-01 20:10:02.877 UTC [100409] ERROR:  cannot drop column "d4_pid" because it is part of the partition key of relation "d4_primary2_pkey"
+2022-08-01 20:10:02.877 UTC [100409] STATEMENT:  
+	  alter table d4_primary2_pkey drop d4_pid;
+2022-08-01 20:10:02.877 UTC [100409] ERROR:  table "d4_primary1" is not partitioned
+2022-08-01 20:10:02.877 UTC [100409] STATEMENT:  
+	  alter table d4_primary1 attach partition d4_primary1 default;
+2022-08-01 20:10:02.877 UTC [100409] ERROR:  relation "t" does not exist
+2022-08-01 20:10:02.877 UTC [100409] STATEMENT:  
+	CLUSTER t USING pid;
+2022-08-01 20:10:02.877 UTC [100409] ERROR:  relation "clstr_4" does not exist
+2022-08-01 20:10:02.877 UTC [100409] STATEMENT:  
+	cluster clstr_4 using cluster_sort;
+2022-08-01 20:10:02.878 UTC [100409] ERROR:  relation "balance" does not exist
+2022-08-01 20:10:02.878 UTC [100409] STATEMENT:  
+	CREATE INDEX sqlsim1 ON balance ((upper(bank_account_pkey)));
+2022-08-01 20:10:02.878 UTC [100409] ERROR:  relation "balance" does not exist at character 36
+2022-08-01 20:10:02.878 UTC [100409] STATEMENT:  
+	EXPLAIN (COSTS OFF) SELECT * FROM balance WHERE upper(bank_account_pkey) = 'PREFIX3';
+2022-08-01 20:10:02.878 UTC [100409] ERROR:  cannot cluster a partitioned table
+2022-08-01 20:10:02.878 UTC [100409] STATEMENT:  
+	
+	-- and after clustering on t
+	CLUSTER sqlsim4 USING t;
+2022-08-01 20:10:02.878 UTC [100409] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 20:10:02.878 UTC [100409] WARNING:  there is no transaction in progress
+2022-08-01 20:10:02.904 UTC [100409] PANIC:  could not write to file "pg_wal/xlogtemp.100409": No space left on device
+2022-08-01 20:10:02.904 UTC [100409] STATEMENT:  
+	  create table bank_account_pkey(d4_primary_pkey int, d4_primary text) partition by range(d4_primary_pkey);
+2022-08-01 20:10:02.945 UTC [91037] LOG:  server process (PID 100409) was terminated by signal 6: Aborted
+2022-08-01 20:10:02.945 UTC [91037] LOG:  terminating any other active server processes
+2022-08-01 20:10:02.952 UTC [111113] FATAL:  the database system is in recovery mode
+2022-08-01 20:10:02.957 UTC [91037] LOG:  all server processes terminated; reinitializing
+2022-08-01 20:10:02.985 UTC [111116] LOG:  database system was interrupted; last known up at 2022-08-01 20:09:43 UTC
+2022-08-01 20:10:02.987 UTC [111117] FATAL:  the database system is in recovery mode
+2022-08-01 20:10:02.989 UTC [111118] FATAL:  the database system is in recovery mode
+2022-08-01 20:10:02.996 UTC [91037] LOG:  received smart shutdown request
+2022-08-01 20:10:03.048 UTC [111116] LOG:  recovered replication state of node 1 to 0/0
+2022-08-01 20:10:03.048 UTC [111116] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 20:10:03.051 UTC [111116] LOG:  redo starts at 0/3C97F828

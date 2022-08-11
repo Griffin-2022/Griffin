@@ -1,0 +1,87 @@
+# name: test/sql/copy/csv/test_compression_flag.test
+# description: Test compression flag for read_csv and copy
+# group: [csv]
+
+;
+CREATE TABLE lineitem(a INT NOT NULL,
+                      b INT NOT NULL,
+                      c INT NOT NULL);
+
+
+;
+COPY lineitem FROM 'test/sql/copy/csv/data/test/test_comp.csv.gzz' (COMPRESSION 'gzip', AUTO_DETECT 1);
+
+;
+SELECT COUNT(*) FROM lineitem
+;
+2
+
+;
+SELECT a, b, c FROM lineitem ORDER BY a
+;
+1	2	3
+2	3	4
+
+;
+DROP TABLE lineitem
+
+;
+CREATE TABLE lineitem(a INT NOT NULL,
+                      b INT NOT NULL,
+                      c INT NOT NULL);
+
+
+;
+COPY lineitem FROM 'test/sql/copy/csv/data/test/test_comp.csv.gz' (COMPRESSION 'infer', AUTO_DETECT 1);
+
+;
+SELECT COUNT(*) FROM lineitem
+;
+2
+
+;
+SELECT a, b, c FROM lineitem ORDER BY a
+;
+1	2	3
+2	3	4
+
+;
+DROP TABLE lineitem
+
+;
+COPY lineitem FROM 'test/sql/copy/csv/data/test/test_comp.csv.gz' COMPRESSION 'none';
+
+
+;
+CREATE TABLE lineitem AS SELECT * FROM read_csv_auto('test/sql/copy/csv/data/test/test_comp.csv.gzz', compression='gzip');
+
+;
+SELECT COUNT(*) FROM lineitem
+;
+2
+
+;
+SELECT a, b, c FROM lineitem ORDER BY a
+;
+1	2	3
+2	3	4
+
+;
+DROP TABLE lineitem
+
+;
+CREATE TABLE lineitem AS SELECT * FROM read_csv('test/sql/copy/csv/data/test/test_comp.csv.gzz', compression='gzip', AUTO_DETECT=TRUE);
+
+;
+SELECT COUNT(*) FROM lineitem
+;
+2
+
+;
+SELECT a, b, c FROM lineitem ORDER BY a
+;
+1	2	3
+2	3	4
+
+;
+DROP TABLE lineitem

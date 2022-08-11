@@ -1,0 +1,42 @@
+# name: test/sql/prepared/prepared_update.test
+# description: Test order of unmarked prepared statements
+# group: [prepared]
+
+;
+CREATE TABLE integers(i INTEGER, j VARCHAR)
+
+;
+INSERT INTO integers VALUES (1, 'hello')
+
+;
+PREPARE s1 AS UPDATE integers SET i=?, j=?;
+
+;
+EXECUTE s1(2, 'world')
+
+;
+SELECT * FROM integers
+;
+2	world
+
+;
+PREPARE s2 AS UPDATE integers SET j=? WHERE i=?;
+
+;
+EXECUTE s2('test', 2)
+
+;
+SELECT * FROM integers
+;
+2	test
+
+;
+PREPARE s3 AS UPDATE integers SET j=? WHERE i=? AND j=?;
+
+;
+EXECUTE s3('test2', 2, 'test')
+
+;
+SELECT * FROM integers
+;
+2	test2

@@ -1,0 +1,129 @@
+PRAGMA auto_vacuum = incremental 
+;CREATE TABLE t1(a, b, PRIMARY KEY(a, b));
+;INSERT INTO t1 VALUES(randstr(1000,1000), randstr(1000,1000));
+;BEGIN;
+;DELETE FROM t1;
+;SAVEPOINT one;
+;PRAGMA incremental_vacuum;
+;ROLLBACK TO one;
+;COMMIT;
+;
+;PRAGMA integrity_check 
+;PRAGMA incremental_vacuum;
+;CREATE TABLE t5(x, y);
+;INSERT INTO t5 VALUES(1, randstr(1000,1000));
+;INSERT INTO t5 VALUES(2, randstr(1000,1000));
+;INSERT INTO t5 VALUES(3, randstr(1000,1000));
+;BEGIN;
+;INSERT INTO t5 VALUES(4, randstr(1000,1000));
+;INSERT INTO t5 VALUES(5, randstr(1000,1000));
+;DELETE FROM t5 WHERE x=1 OR x=2;
+;SAVEPOINT one;
+;PRAGMA incremental_vacuum;
+;SAVEPOINT two;
+;INSERT INTO t5 VALUES(1, randstr(1000,1000));
+;INSERT INTO t5 VALUES(2, randstr(1000,1000));
+;ROLLBACK TO two;
+;ROLLBACK TO one;
+;COMMIT;
+;PRAGMA integrity_check;
+;
+;DROP TABLE t5;
+;
+;SAVEPOINT "save1" 
+;RELEASE save1 
+;SAVEPOINT "Including whitespace " 
+;RELEASE "including Whitespace " 
+;SAVEPOINT sp1 
+;ROLLBACK TO sp1 
+;RELEASE sp1 
+;ROLLBACK
+;SAVEPOINT one;
+;ATTACH 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;DETACH aux;
+;
+;RELEASE one;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;
+;SAVEPOINT one;
+;DETACH aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;
+;RELEASE one;
+;
+;PRAGMA lock_status
+;ATTACH 'test2.db' AS aux1;
+;SELECT*FROM"aux1".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux1".sqlite_master ORDER BY rowid
+;ATTACH 'test3.db' AS aux2;
+;SELECT*FROM"aux2".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux2".sqlite_master ORDER BY rowid
+;DROP TABLE t1;
+;CREATE TABLE main.t1(x, y);
+;CREATE TABLE aux1.t2(x, y);
+;SELECT*FROM"aux1".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux1".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE aux2.t3(x, y);
+;SELECT*FROM"aux2".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux2".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT name FROM sqlite_master;
+;SELECT name FROM aux1.sqlite_master;
+;SELECT name FROM aux2.sqlite_master;
+;
+;PRAGMA lock_status 
+;SAVEPOINT one;
+;INSERT INTO t1 VALUES(1, 2);
+;PRAGMA lock_status;
+;
+;INSERT INTO t3 VALUES(3, 4);
+;
+;SAVEPOINT two;
+;INSERT INTO t2 VALUES(5, 6);
+;
+;SELECT * FROM t2 
+;ROLLBACK TO two 
+;PRAGMA lock_status 
+;SELECT 'a', * FROM t1 ;
+;SELECT 'b', * FROM t3 
+;INSERT INTO t2 VALUES(5, 6);
+;RELEASE one;
+;
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;SELECT * FROM t3;
+;
+;PRAGMA lock_status 
+;SAVEPOINT one;
+;INSERT INTO t1 VALUES('a', 'b');
+;SAVEPOINT two;
+;INSERT INTO t2 VALUES('c', 'd');
+;SAVEPOINT three;
+;INSERT INTO t3 VALUES('e', 'f');
+;
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;SELECT * FROM t3;
+;
+;ROLLBACK TO two 
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;SELECT * FROM t3;
+;
+;INSERT INTO t3 VALUES('g', 'h');
+;ROLLBACK TO two;
+;
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;SELECT * FROM t3;
+;
+;ROLLBACK 
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;SELECT * FROM t3;
+;
+;PRAGMA lock_status 
+;

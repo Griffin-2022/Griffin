@@ -1,0 +1,111 @@
+	 * TRANSLATIONS view
+	 */
+	
+	-- feature not supported
+	
+	
+	/*
+	 * 5.67
+	 * TRIGGERED_UPDATE_COLUMNS view
+	 */
+	
+	CREATE VIEW triggered_update_columns AS
+	    SELECT CAST(current_database() AS sql_identifier) AS trigger_catalog,
+	           CAST(n.nspname AS sql_identifier) AS trigger_schema,
+	           CAST(t.tgname AS sql_identifier) AS trigger_name,
+	           CAST(current_database() AS sql_identifier) AS event_object_catalog,
+	           CAST(n.nspname AS sql_identifier) AS event_object_schema,
+	           CAST(c.relname AS sql_identifier) AS event_object_table,
+	           CAST(a.attname AS sql_identifier) AS event_object_column
+	
+	    FROM pg_namespace n, pg_class c, pg_trigger t,
+	         (SELECT tgoid, (ta0.tgat).x AS tgattnum, (ta0.tgat).n AS tgattpos
+	          FROM (SELECT oid AS tgoid, information_schema._pg_expandarray(tgattr) AS tgat FROM pg_trigger) AS ta0) AS ta,
+	         pg_attribute a
+	
+	    WHERE n.oid = c.relnamespace
+	          AND c.oid = t.tgrelid
+	          AND t.oid = ta.tgoid
+	          AND (a.attrelid, a.attnum) = (t.tgrelid, ta.tgattnum)
+	          AND NOT t.tgisinternal
+	          AND (NOT pg_is_other_temp_schema(n.oid))
+	          AND (pg_has_role(c.relowner, 'USAGE')
+	               -- SELECT privilege omitted, per SQL standard
+	               OR has_column_privilege(c.oid, a.attnum, 'INSERT, UPDATE, REFERENCES') );
+2022-08-02 01:33:09.699 UTC [52146] WARNING:  there is no transaction in progress
+2022-08-02 01:33:09.707 UTC [52146] ERROR:  table "tab_int" is not partitioned
+2022-08-02 01:33:09.707 UTC [52146] STATEMENT:  ALTER TABLE tab_int ATTACH PARTITION int8alias1cmp FOR VALUES FROM (1) TO (100);
+2022-08-02 01:33:09.707 UTC [52146] ERROR:  relation "ucchild" already exists
+2022-08-02 01:33:09.707 UTC [52146] STATEMENT:  CREATE TABLE ucchild(ucview int);
+2022-08-02 01:33:09.707 UTC [52146] ERROR:  malformed array literal: "4"
+2022-08-02 01:33:09.707 UTC [52146] STATEMENT:  
+	
+	do $$ declare a int[];
+	begin a[1:2] := 4; raise notice 'a = %', a; end$$;
+=================================================================
+==52146==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc083caf90 sp 0x7ffc083caf88
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f55608f4082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==52146==ABORTING
+2022-08-02 01:33:09.752 UTC [51663] LOG:  server process (PID 52146) was terminated by signal 6: Aborted
+2022-08-02 01:33:09.752 UTC [51663] LOG:  terminating any other active server processes
+2022-08-02 01:33:09.759 UTC [51663] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:33:09.773 UTC [54028] LOG:  database system was interrupted; last known up at 2022-08-02 01:33:09 UTC
+2022-08-02 01:33:09.774 UTC [54029] FATAL:  the database system is in recovery mode
+2022-08-02 01:33:09.777 UTC [54032] FATAL:  the database system is in recovery mode
+2022-08-02 01:33:09.779 UTC [54033] FATAL:  the database system is in recovery mode
+2022-08-02 01:33:09.784 UTC [51663] LOG:  received smart shutdown request
+2022-08-02 01:33:09.788 UTC [54028] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:33:09.789 UTC [54028] LOG:  redo starts at 0/3157A80
+2022-08-02 01:33:09.794 UTC [51663] LOG:  abnormal database system shutdown

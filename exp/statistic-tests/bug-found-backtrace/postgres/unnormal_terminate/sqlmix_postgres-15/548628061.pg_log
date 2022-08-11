@@ -1,0 +1,122 @@
+	-- first insert
+	INSERT INTO nummultirange_test VALUES ('main-txn');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	-- now perform operation in subxact that creates and logs xid, but isn't decoded
+	SELECT 1 FROM nummultirange_test FOR UPDATE LIMIT 1;
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', '(1 <-> a) <-> 2');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', '1 <-> (a <-> 2)');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', '1 <-> (2 <-> a)');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	-- and now show those changes
+	SELECT data FROM pg_logical_slot_get_changes('regression_slot', NULL, NULL, 'include-xids', '0', 'skip-empty-xacts', '1');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	
+	DROP TABLE nummultirange_test;
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', 's <-> (2 <-> (a <-> 1))');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', '2 <-> (s <-> (1 <-> a))');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	
+	SELECT pg_drop_replication_slot('regression_slot');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', '((foo <-> a) <-> the) <-> bar');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	SELECT to_tsquery('english', 'foo <-> a <-> the <-> bar');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	
+	SELECT ts_headline('english', '
+	Day after day, day after day,
+	  We stuck, nor breath nor motion,
+	As idle as a painted Ship
+	  Upon a painted Ocean.
+	Water, water, every where
+	  And all the boards did shrink;
+	Water, water, every where,
+	  Nor any drop to drink.
+	S. T. Coleridge (1772-1834)
+	', phraseto_tsquery('english', 'painted Ocean'));
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	
+	SELECT ts_headline('english', '
+	Day after day, day after day,
+	  We stuck, nor breath nor motion,
+	As idle as a painted Ship
+	  Upon a painted Ocean.
+	Water, water, every where
+	  And all the boards did shrink;
+	Water, water, every where,
+	  Nor any drop to drink.
+	S. T. Coleridge (1772-1834)
+	', phraseto_tsquery('english', 'idle as a painted Ship'));
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	
+	SELECT ts_headline('english',
+	'Lorem ipsum urna.  Nullam nullam ullamcorper urna.',
+	to_tsquery('english','Lorem') && phraseto_tsquery('english','ullamcorper urna'),
+	'MaxWords=100, MinWords=1');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	select websearch_to_tsquery('simple', 'orange:**AABBCCDD');
+2022-08-02 01:35:56.769 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.769 UTC [63864] STATEMENT:  
+	select websearch_to_tsquery('simple', 'abc:def');
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  
+	select websearch_to_tsquery('simple', 'abc (pg or class)');
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  
+	select websearch_to_tsquery('simple', 'fat or(rat');
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  
+	select websearch_to_tsquery('\abc');
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  DISCARD ALL;
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 01:35:56.770 UTC [63864] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:35:56.770 UTC [63864] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 01:36:00.944 UTC [69774] PANIC:  could not open critical system index 2662
+2022-08-02 01:36:00.946 UTC [63029] LOG:  server process (PID 69774) was terminated by signal 6: Aborted
+2022-08-02 01:36:00.946 UTC [63029] LOG:  terminating any other active server processes
+2022-08-02 01:36:00.975 UTC [63029] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:36:00.986 UTC [69781] LOG:  database system was interrupted; last known up at 2022-08-02 01:35:40 UTC
+2022-08-02 01:36:00.998 UTC [69781] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 01:36:00.999 UTC [69781] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:36:00.999 UTC [69781] LOG:  redo starts at 0/A0002C08
+2022-08-02 01:36:01.022 UTC [69781] LOG:  invalid record length at 0/A010A7D8: wanted 24, got 0
+2022-08-02 01:36:01.022 UTC [69781] LOG:  redo done at 0/A010A7B0 system usage: CPU: user: 0.00 s, system: 0.01 s, elapsed: 0.02 s
+2022-08-02 01:36:01.055 UTC [63029] LOG:  database system is ready to accept connections
+2022-08-02 01:36:01.634 UTC [69809] PANIC:  could not open critical system index 2662
+2022-08-02 01:36:01.637 UTC [63029] LOG:  server process (PID 69809) was terminated by signal 6: Aborted
+2022-08-02 01:36:01.637 UTC [63029] LOG:  terminating any other active server processes
+2022-08-02 01:36:01.641 UTC [69813] FATAL:  the database system is in recovery mode
+2022-08-02 01:36:01.645 UTC [63029] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:36:01.658 UTC [63029] LOG:  received smart shutdown request
+2022-08-02 01:36:01.658 UTC [69819] LOG:  database system was interrupted; last known up at 2022-08-02 01:36:01 UTC
+2022-08-02 01:36:01.672 UTC [69819] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 01:36:01.672 UTC [69819] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:36:01.672 UTC [69819] LOG:  invalid record length at 0/A010A850: wanted 24, got 0
+2022-08-02 01:36:01.672 UTC [69819] LOG:  redo is not required
+2022-08-02 01:36:01.678 UTC [63029] LOG:  abnormal database system shutdown

@@ -1,0 +1,83 @@
+# name: test/sql/copy/parquet/parquet_blob_string.test
+# description: Test binary_as_string BLOB Function
+# group: [parquet]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+;
+SELECT typeof(#1) FROM parquet_scan('data/parquet-testing/binary_string.parquet',binary_as_string=False) limit 1
+;
+BLOB
+
+;
+SELECT * FROM parquet_scan('data/parquet-testing/binary_string.parquet',binary_as_string=False)
+;
+foo
+bar
+baz
+
+;
+SELECT typeof(#1) FROM parquet_scan('data/parquet-testing/binary_string.parquet',binary_as_string=True) limit 1
+;
+VARCHAR
+
+
+;
+SELECT * FROM parquet_scan('data/parquet-testing/binary_string.parquet',binary_as_string=True)
+;
+foo
+bar
+baz
+
+;
+SET binary_as_sting=true
+
+;
+SET binary_as_string=true
+
+;
+SELECT typeof(#1) FROM parquet_scan('data/parquet-testing/binary_string.parquet') limit 1
+;
+VARCHAR
+
+;
+SELECT * FROM parquet_scan('data/parquet-testing/binary_string.parquet')
+;
+foo
+bar
+baz
+
+;
+SET binary_as_string=false
+
+;
+SELECT typeof(#1) FROM parquet_scan('data/parquet-testing/binary_string.parquet') limit 1
+;
+BLOB
+
+;
+SELECT * FROM parquet_scan('data/parquet-testing/binary_string.parquet')
+;
+foo
+bar
+baz
+
+# Preference goes to variable set in scan
+;
+PRAGMA binary_as_string=1
+
+;
+SELECT typeof(#1) FROM parquet_scan('data/parquet-testing/binary_string.parquet' ,binary_as_string=False) limit 1
+;
+BLOB
+
+
+;
+SELECT * FROM parquet_scan('data/parquet-testing/binary_string.parquet')
+;
+foo
+bar
+baz

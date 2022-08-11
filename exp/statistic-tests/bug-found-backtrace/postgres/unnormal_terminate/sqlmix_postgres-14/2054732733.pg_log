@@ -1,0 +1,111 @@
+2022-08-02 01:18:46.611 UTC [130192] STATEMENT:  select jsonb_path_query('"aaaa"', '$.datetime("HH24")');
+2022-08-02 01:18:46.612 UTC [130192] ERROR:  trailing characters remain in input string after datetime format
+2022-08-02 01:18:46.612 UTC [130192] STATEMENT:  select jsonb_path_query('"10-03-2017 12:34"', '$.datetime("dd-mm-yyyy")');
+2022-08-02 01:18:46.612 UTC [130192] ERROR:  unmatched format character "T"
+2022-08-02 01:18:46.612 UTC [130192] STATEMENT:  select jsonb_path_query('"10-03-2017 12:34:56"', '$.datetime("dd-mm-yyyy\"T\"HH24:MI:SS")');
+2022-08-02 01:18:46.612 UTC [130192] ERROR:  input string is too short for datetime format
+2022-08-02 01:18:46.612 UTC [130192] STATEMENT:  select jsonb_path_query('"12:34"', '$.datetime("HH24:MI TZH")');
+2022-08-02 01:18:46.613 UTC [130192] ERROR:  cannot convert value from date to timestamptz without time zone usage
+2022-08-02 01:18:46.613 UTC [130192] STATEMENT:  select jsonb_path_query(
+		'["2017-03-10", "2017-03-11", "2017-03-09", "12:34:56", "01:02:03+04", "2017-03-10 00:00:00", "2017-03-10 12:34:56", "2017-03-10 01:02:03+04", "2017-03-10 03:00:00+03"]',
+		'$[*].datetime() ? (@ >= "10.03.2017".datetime("dd.mm.yyyy"))');
+2022-08-02 01:18:46.614 UTC [130192] ERROR:  cannot convert value from date to timestamptz without time zone usage
+2022-08-02 01:18:46.614 UTC [130192] STATEMENT:  select jsonb_path_query(
+		'["2017-03-10", "2017-03-11", "2017-03-09", "12:34:56", "01:02:03+04", "2017-03-10 00:00:00", "2017-03-10 12:34:56", "2017-03-10 01:02:03+04", "2017-03-10 03:00:00+03"]',
+		'$[*].datetime() ? (@ <  "10.03.2017".datetime("dd.mm.yyyy"))');
+2022-08-02 01:18:46.614 UTC [130192] ERROR:  cannot convert value from time to timetz without time zone usage
+2022-08-02 01:18:46.614 UTC [130192] STATEMENT:  select jsonb_path_query(
+		'["12:34:00", "12:35:00", "12:36:00", "12:35:00+00", "12:35:00+01", "13:35:00+01", "2017-03-10", "2017-03-10 12:35:00", "2017-03-10 12:35:00+01"]',
+		'$[*].datetime() ? (@ <  "12:35".datetime("HH24:MI"))');
+2022-08-02 01:18:46.614 UTC [130192] ERROR:  cannot convert value from time to timetz without time zone usage
+2022-08-02 01:18:46.614 UTC [130192] STATEMENT:  select jsonb_path_query(
+		'["12:34:00+01", "12:35:00+01", "12:36:00+01", "12:35:00+02", "12:35:00-02", "10:35:00", "11:35:00", "12:35:00", "2017-03-10", "2017-03-10 12:35:00", "2017-03-10 12:35:00 +1"]',
+		'$[*].datetime() ? (@ <  "12:35 +1".datetime("HH24:MI TZH"))');
+2022-08-02 01:18:46.619 UTC [130192] WARNING:  there is no transaction in progress
+2022-08-02 01:18:46.623 UTC [130192] WARNING:  there is already a transaction in progress
+2022-08-02 01:18:46.623 UTC [130192] ERROR:  SET TRANSACTION ISOLATION LEVEL must be called before any query
+2022-08-02 01:18:46.623 UTC [130192] STATEMENT:  BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+2022-08-02 01:18:46.623 UTC [130192] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 01:18:46.623 UTC [130192] STATEMENT:  SELECT '{1}'::int4[]::int8[];
+2022-08-02 01:18:46.623 UTC [130192] ERROR:  table "b" does not exist
+2022-08-02 01:18:46.623 UTC [130192] STATEMENT:  DROP TABLE b;
+2022-08-02 01:18:46.625 UTC [130192] WARNING:  there is no transaction in progress
+2022-08-02 01:18:46.625 UTC [130192] ERROR:  cursor "foo" does not exist
+2022-08-02 01:18:46.625 UTC [130192] STATEMENT:  FETCH 1 FROM foo;
+2022-08-02 01:18:46.625 UTC [130192] ERROR:  invalid input syntax for type integer: "Feb 10 17:32:01 1997" at character 27
+2022-08-02 01:18:46.625 UTC [130192] STATEMENT:  INSERT INTO test1 VALUES ('Feb 10 17:32:01 1997');
+2022-08-02 01:18:46.625 UTC [130192] ERROR:  invalid input syntax for type integer: "Feb 13 17:32:01 1997" at character 27
+2022-08-02 01:18:46.625 UTC [130192] STATEMENT:  INSERT INTO test1 VALUES ('Feb 13 17:32:01 1997');
+2022-08-02 01:18:46.625 UTC [130192] ERROR:  invalid input syntax for type integer: "Dec 31 17:32:01 1997" at character 27
+2022-08-02 01:18:46.625 UTC [130192] STATEMENT:  INSERT INTO test1 VALUES ('Dec 31 17:32:01 1997');
+2022-08-02 01:18:46.625 UTC [130192] ERROR:  timestamps cannot be binned into intervals containing months or years
+2022-08-02 01:18:46.625 UTC [130192] STATEMENT:  SELECT date_bin('5 months'::interval, timestamp '2020-02-01 01:01:01', timestamp '2001-01-01');
+2022-08-02 01:18:46.625 UTC [130192] WARNING:  there is no transaction in progress
+2022-08-02 01:18:46.629 UTC [130192] WARNING:  there is no transaction in progress
+=================================================================
+==130192==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffe96147e70 sp 0x7ffe96147e68
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f79ba230082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==130192==ABORTING
+2022-08-02 01:18:46.666 UTC [129563] LOG:  server process (PID 130192) was terminated by signal 6: Aborted
+2022-08-02 01:18:46.666 UTC [129563] LOG:  terminating any other active server processes
+2022-08-02 01:18:46.671 UTC [129563] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:18:46.683 UTC [1965] LOG:  database system was interrupted; last known up at 2022-08-02 01:18:45 UTC
+2022-08-02 01:18:46.683 UTC [1966] FATAL:  the database system is in recovery mode
+2022-08-02 01:18:46.686 UTC [1969] FATAL:  the database system is in recovery mode
+2022-08-02 01:18:46.688 UTC [1970] FATAL:  the database system is in recovery mode
+2022-08-02 01:18:46.693 UTC [129563] LOG:  received smart shutdown request
+2022-08-02 01:18:46.698 UTC [1965] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:18:46.699 UTC [1965] LOG:  redo starts at 0/42C5290
+2022-08-02 01:18:46.703 UTC [129563] LOG:  abnormal database system shutdown

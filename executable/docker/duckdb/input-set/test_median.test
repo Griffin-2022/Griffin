@@ -1,0 +1,81 @@
+# name: test/sql/aggregate/aggregates/test_median.test
+# description: Test MEDIAN aggregate
+# group: [aggregates]
+
+;
+PRAGMA enable_verification
+
+# scalar quantiles
+;
+SELECT median(NULL), median(1)
+;
+NULL	1
+
+;
+SELECT median(NULL), median(1) FROM range(2000)
+;
+NULL	1
+
+;
+create table quantile as select range r, random() from range(10000) union all values (NULL, 0.1), (NULL, 0.5), (NULL, 0.9) order by 2;
+
+;
+SELECT median(r) FROM quantile
+;
+4999
+
+;
+SELECT median(r) FROM quantile
+;
+4999
+
+;
+SELECT median(r::float) FROM quantile
+;
+4999
+
+;
+SELECT median(r::double) FROM quantile
+;
+4999
+
+;
+SELECT median(r::tinyint) FROM quantile where r < 100
+;
+49.500000
+
+;
+SELECT median(r::smallint) FROM quantile
+;
+4999
+
+;
+SELECT median(r::integer) FROM quantile
+;
+4999
+
+;
+SELECT median(r::bigint) FROM quantile
+;
+4999
+
+;
+SELECT median(r::hugeint) FROM quantile
+;
+4999
+
+;
+SELECT median(r::decimal(10,2)) FROM quantile
+;
+4999
+
+;
+SELECT median(NULL) FROM quantile
+;
+NULL
+
+;
+SELECT median(42) FROM quantile
+;
+42
+

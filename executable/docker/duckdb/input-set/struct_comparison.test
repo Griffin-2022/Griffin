@@ -1,0 +1,1032 @@
+# name: test/sql/types/struct/struct_comparison.test
+# description: Test STRUCT comparisons
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+# Constant single integer column comparisons
+;
+SELECT {'x': 1} < {'x': 2}
+;
+true
+
+;
+SELECT {'x': 1} < {'x': 1}
+;
+false
+
+;
+SELECT NULL < {'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} < NULL
+;
+NULL
+
+;
+SELECT {'x': 1} <= {'x': 2}
+;
+true
+
+;
+SELECT {'x': 1} <= {'x': 1}
+;
+true
+
+;
+SELECT NULL <= {'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} <= NULL
+;
+NULL
+
+;
+SELECT {'x': 1} = {'x': 2}
+;
+false
+
+;
+SELECT {'x': 1} = {'x': 1}
+;
+true
+
+;
+SELECT NULL = {'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} = NULL
+;
+NULL
+
+;
+SELECT {'x': 1} <> {'x': 2}
+;
+true
+
+;
+SELECT {'x': 1} <> {'x': 1}
+;
+false
+
+;
+SELECT {'x': 1} <> NULL
+;
+NULL
+
+;
+SELECT NULL <>{'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} >= {'x': 2}
+;
+false
+
+;
+SELECT {'x': 1} >= {'x': 1}
+;
+true
+
+;
+SELECT NULL >= {'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} >= NULL
+;
+NULL
+
+;
+SELECT {'x': 1} > {'x': 2}
+;
+false
+
+;
+SELECT {'x': 1} > {'x': 1}
+;
+false
+
+;
+SELECT NULL > {'x': 1}
+;
+NULL
+
+;
+SELECT {'x': 1} > NULL
+;
+NULL
+
+;
+CREATE VIEW struct_int AS SELECT * FROM (VALUES
+	({'x': 1}, {'x': 1}),
+	({'x': 1}, {'x': 2}),
+	({'x': 2}, {'x': 1}),
+	(NULL, {'x': 1}),
+	({'x': 2}, NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM struct_int
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM struct_int
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM struct_int
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM struct_int
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM struct_int
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM struct_int
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Constant single string column comparisons
+;
+SELECT {'x': 'duck'} < {'x': 'goose'}
+;
+true
+
+;
+SELECT {'x': 'duck'} < {'x': 'duck'}
+;
+false
+
+;
+SELECT NULL < {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} < NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck'} <= {'x': 'goose'}
+;
+true
+
+;
+SELECT {'x': 'duck'} <= {'x': 'duck'}
+;
+true
+
+;
+SELECT NULL <= {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} <= NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck'} = {'x': 'goose'}
+;
+false
+
+;
+SELECT {'x': 'duck'} = {'x': 'duck'}
+;
+true
+
+;
+SELECT NULL = {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} = NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck'} <> {'x': 'goose'}
+;
+true
+
+;
+SELECT {'x': 'duck'} <> {'x': 'duck'}
+;
+false
+
+;
+SELECT NULL <> {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} <> NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck'} >= {'x': 'goose'}
+;
+false
+
+;
+SELECT {'x': 'duck'} >= {'x': 'duck'}
+;
+true
+
+;
+SELECT NULL >= {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} >= NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck'} > {'x': 'goose'}
+;
+false
+
+;
+SELECT {'x': 'duck'} > {'x': 'duck'}
+;
+false
+
+;
+SELECT NULL > {'x': 'duck'}
+;
+NULL
+
+;
+SELECT {'x': 'duck'} > NULL
+;
+NULL
+
+;
+CREATE VIEW struct_str AS SELECT * FROM (VALUES
+	({'x': 'duck'}, {'x': 'duck'}),
+	({'x': 'duck'}, {'x': 'goose'}),
+	({'x': 'goose'}, {'x': 'duck'}),
+	(NULL, {'x': 'duck'}),
+	({'x': 'goose'}, NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM struct_str
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM struct_str
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM struct_str
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM struct_str
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM struct_str
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM struct_str
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Constant string, integer column comparisons
+;
+SELECT {'x': 'duck', 'y': 1} < {'x': 'goose', 'y': 2}
+;
+true
+
+;
+SELECT {'x': 'duck', 'y': 1} < {'x': 'duck', 'y': 1}
+;
+false
+
+;
+SELECT {'x': 'duck', 'y': 1} < {'x': 'duck', 'y': 2}
+;
+true
+
+;
+SELECT NULL < {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} < NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} <= {'x': 'goose', 'y': 2}
+;
+true
+
+;
+SELECT {'x': 'duck', 'y': 1} <= {'x': 'duck', 'y': 1}
+;
+true
+
+;
+SELECT {'x': 'duck', 'y': 1} <= {'x': 'duck', 'y': 2}
+;
+true
+
+;
+SELECT NULL <= {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} <= NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} = {'x': 'goose', 'y': 2}
+;
+false
+
+;
+SELECT {'x': 'duck', 'y': 1} = {'x': 'duck', 'y': 1}
+;
+true
+
+;
+SELECT NULL = {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} = NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} <> {'x': 'goose', 'y': 2}
+;
+true
+
+;
+SELECT {'x': 'duck', 'y': 1} <> {'x': 'duck', 'y': 1}
+;
+false
+
+;
+SELECT NULL <> {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} <> NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} >= {'x': 'goose', 'y': 2}
+;
+false
+
+;
+SELECT {'x': 'duck', 'y': 1} >= {'x': 'duck', 'y': 1}
+;
+true
+
+;
+SELECT NULL >= {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} >= NULL
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} > {'x': 'goose', 'y': 2}
+;
+false
+
+;
+SELECT {'x': 'duck', 'y': 1} > {'x': 'duck', 'y': 1}
+;
+false
+
+;
+SELECT {'x': 'duck', 'y': 2} > {'x': 'duck', 'y': 1}
+;
+true
+
+;
+SELECT NULL > {'x': 'duck', 'y': 1}
+;
+NULL
+
+;
+SELECT {'x': 'duck', 'y': 1} > NULL
+;
+NULL
+
+;
+CREATE VIEW struct_str_int AS SELECT * FROM (VALUES
+	({'x': 'duck', 'y': 1}, {'x': 'duck', 'y': 1}),
+	({'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}),
+	({'x': 'goose', 'y': 2}, {'x': 'duck', 'y': 1}),
+	(NULL, {'x': 'duck', 'y': 1}),
+	({'x': 'goose', 'y': 2}, NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM struct_str_int
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM struct_str_int
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM struct_str_int
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM struct_str_int
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM struct_str_int
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM struct_str_int
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Nested structs
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} < {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+true
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} < {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+false
+
+;
+SELECT NULL < {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} < NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <= {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+true
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <= {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+true
+
+;
+SELECT NULL <= {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <= NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} = {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+false
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} = {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+true
+
+;
+SELECT NULL = {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} = NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <> {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+true
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <> {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+false
+
+;
+SELECT NULL <> {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} <> NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} >= {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+false
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} >= {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+true
+
+;
+SELECT NULL >= {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} >= NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} > {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}
+;
+false
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} > {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+false
+
+;
+SELECT NULL > {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': {'a': 'duck', 'b': 1.5}} > NULL
+;
+NULL
+
+;
+CREATE VIEW struct_nested AS SELECT * FROM (VALUES
+	({'x': 1, 'y': {'a': 'duck', 'b': 1.5}}, {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}),
+	({'x': 1, 'y': {'a': 'duck', 'b': 1.5}}, {'x': 2, 'y': {'a': 'goose', 'b': 2.5}}),
+	({'x': 2, 'y': {'a': 'goose', 'b': 2.5}}, {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}),
+	(NULL, {'x': 1, 'y': {'a': 'duck', 'b': 1.5}}),
+	({'x': 2, 'y': {'a': 'goose', 'b': 2.5}}, NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+
+;
+SELECT l < r FROM struct_nested
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM struct_nested
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM struct_nested
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM struct_nested
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM struct_nested
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM struct_nested
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# List nested inside struct
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} < {'x': 2, 'y': ['goose']}
+;
+true
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} < {'x': 1, 'y': ['duck', 'somateria']}
+;
+false
+
+;
+SELECT NULL < {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} < NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <= {'x': 2, 'y': ['goose']}
+;
+true
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <= {'x': 1, 'y': ['duck', 'somateria']}
+;
+true
+
+;
+SELECT NULL <= {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <= NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} = {'x': 2, 'y': ['goose']}
+;
+false
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} = {'x': 1, 'y': ['duck', 'somateria']}
+;
+true
+
+;
+SELECT NULL = {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} = NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <> {'x': 2, 'y': ['goose']}
+;
+true
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <> {'x': 1, 'y': ['duck', 'somateria']}
+;
+false
+
+;
+SELECT NULL <> {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} <> NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} >= {'x': 2, 'y': ['goose']}
+;
+false
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} >= {'x': 1, 'y': ['duck', 'somateria']}
+;
+true
+
+;
+SELECT NULL >= {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} >= NULL
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} > {'x': 2, 'y': ['goose']}
+;
+false
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} > {'x': 1, 'y': ['duck', 'somateria']}
+;
+false
+
+;
+SELECT NULL > {'x': 1, 'y': ['duck', 'somateria']}
+;
+NULL
+
+;
+SELECT {'x': 1, 'y': ['duck', 'somateria']} > NULL
+;
+NULL
+
+;
+CREATE VIEW list_in_struct AS SELECT * FROM (VALUES
+	({'x': 1, 'y': ['duck', 'somateria']}, {'x': 1, 'y': ['duck', 'somateria']}),
+	({'x': 1, 'y': ['duck', 'somateria']}, {'x': 2, 'y': ['goose']}),
+	({'x': 2, 'y': ['goose']}, {'x': 1, 'y': ['duck', 'somateria']}),
+	(NULL, {'x': 1, 'y': ['duck', 'somateria']}),
+	({'x': 2, 'y': ['goose']}, NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_in_struct
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_in_struct
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_in_struct
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_in_struct
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_in_struct
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_in_struct
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Filter by constant
+;
+select {'x': a, 'y': a+1, 'z': a+2}<{'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+true
+false
+false
+false
+false
+
+;
+select {'x': a, 'y': a+1, 'z': a+2}<={'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+true
+true
+false
+false
+false
+
+;
+select {'x': a, 'y': a+1, 'z': a+2}={'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+false
+true
+false
+false
+false
+
+;
+select {'x': a, 'y': a+1, 'z': a+2}<>{'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+true
+false
+true
+true
+true
+
+;
+select {'x': a, 'y': a+1, 'z': a+2}>={'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+false
+true
+true
+true
+true
+
+;
+select {'x': a, 'y': a+1, 'z': a+2}>{'x': 1, 'y': 2, 'z': 3} from range(5) tbl(a);
+;
+false
+false
+true
+true
+true

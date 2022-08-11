@@ -1,0 +1,53 @@
+# name: test/sql/aggregate/aggregates/test_last_noninlined.test
+# description: Test LAST with non-inlined strings
+# group: [aggregates]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE tbl(a INTEGER, b VARCHAR)
+
+;
+INSERT INTO tbl VALUES (1, NULL), (2, 'thisisalongstring'), (3, 'thisisalsoalongstring')
+
+# non-grouped aggregate
+;
+SELECT LAST(b) FROM tbl WHERE a=2
+;
+thisisalongstring
+
+;
+SELECT LAST(b) FROM tbl WHERE a=1
+;
+NULL
+
+;
+SELECT LAST(b) FROM tbl WHERE a=1 GROUP BY a
+;
+NULL
+
+;
+SELECT LAST(b) FROM tbl WHERE a=0
+;
+NULL
+
+;
+SELECT LAST(b) FROM tbl WHERE a=0 GROUP BY b
+;
+
+# grouped aggregate
+;
+SELECT a, LAST(b) FROM tbl GROUP BY a ORDER BY a
+;
+1
+NULL
+2
+thisisalongstring
+3
+thisisalsoalongstring
+
+;
+SELECT LAST(i) FROM (VALUES (NULL::INT32)) tbl(i)
+;
+NULL

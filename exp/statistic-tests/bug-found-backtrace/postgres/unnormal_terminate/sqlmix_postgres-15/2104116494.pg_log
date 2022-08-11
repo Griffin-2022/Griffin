@@ -1,0 +1,121 @@
+2022-08-02 02:51:13.270 UTC [92852] STATEMENT:  select null::int >= any ('{}');
+2022-08-02 02:51:13.270 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:51:13.270 UTC [92852] STATEMENT:  select 33 = all (null::int[]);
+2022-08-02 02:51:13.270 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 02:51:13.270 UTC [92852] STATEMENT:  create temp table nummultirange_test (nmr int[] unique);
+2022-08-02 02:51:13.270 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 02:51:13.270 UTC [92852] STATEMENT:  insert into nummultirange_test values ('{1,2}');
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select * from nummultirange_test where nmr > '{1,2,3}' and nmr <= '{1,5,3}';
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  create temp table nummultirange_test_btree (test_multirange_gist int4 primary key, mr int[]);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select 'nummultirange_test_btree' ilike any (array['%A', '%O']);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select '[0:1]={1.1,2.2}'::float8[];
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  CREATE TEMP TABLE test_mulrirange_gist_idx ( reservations INT[], room_id TEXT[][], booked_during FLOAT[]);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 72
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  SELECT max(nmr), min(nmr), max(nmr), min(nmr), max(nmr), min(nmr) FROM nummultirange_test;
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  create type nummultirange_test2 as (f1 int, f2 text);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  create or replace function nummultirange_test2_hash_idx(anyarray)
+	returns setof anyelement as $$
+	select $1[s1][s2] from generate_subscripts($1,1) g1(s1),
+	                   generate_subscripts($1,2) g2(s2);
+	$$ language sql immutable;
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select * from nummultirange_test2_hash_idx(array[[1,2,3],[4,5,6]]);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 25
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select array_fill(null::integer, array[3,3],array[2,2]);
+2022-08-02 02:51:13.271 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.271 UTC [92852] STATEMENT:  select array_fill(7, array[3,3]);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select array_fill('juhu'::text, array[3,3],array[2,2]);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 59
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select a, a = '{}' as is_eq, array_dims(a)
+	  from (select array_fill(42, '{}', '{}') as a) ss;
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select array_fill(1, null, array[2,2]);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select array_fill(1, array[1,2,null]);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select array_fill(1, array[[1,2],[3,4]]);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select string_to_array('1|2|3', '|');
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select v, v is null as "is null" from string_to_table('', '|') g(v);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select v, v is null as "is null" from string_to_table('1|2|3', NULL) g(v);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select v, v is null as "is null" from string_to_table(NULL, '|') g(v);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select v, v is null as "is null" from string_to_table('abc', '', 'abc') g(v);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select v, v is null as "is null" from string_to_table('abc', ',') g(v);
+2022-08-02 02:51:13.272 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:51:13.272 UTC [92852] STATEMENT:  select array_to_string(string_to_array('1|2|3', '|'), '|');
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 26
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select cardinality('{}'::int[]);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select cardinality(array[1,2,3]);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 43
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select cardinality('{{1,2},{3,4},{5,6}}'::int[]);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 51
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select array_agg(array[i+1.2, i+1.3, i+1.4]) from generate_series(1,3) g(i);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 52
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select array_agg(array[i, nullif(i, 3), i+1]) from generate_series(1,4) g(i);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select unnest(array[1,2,3]);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select unnest(array[1,2,3,null,4,null,null,5,6]);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 12
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select abs(unnest(array[1,2,null,-3]));
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select array_remove(array['A','CC','D','C','RR'], 'RR');
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select array_replace(array[1,2,NULL,4,NULL],NULL,5);
+2022-08-02 02:51:13.273 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.273 UTC [92852] STATEMENT:  select array_replace(array['AB',NULL,'CDE'],NULL,'12');
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  select array(select array[i,i/2] from generate_series(1,5) i);
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  create temp table t1 (f1 int8_tbl[]);
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  truncate table test_mulrirange_gist_idx;
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  SELECT width_bucket(5, ARRAY[3, 4, NULL]);
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 02:51:13.274 UTC [92852] WARNING:  there is no transaction in progress
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  DISCARD ALL;
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 02:51:13.274 UTC [92852] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:51:13.274 UTC [92852] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 02:51:15.157 UTC [95863] PANIC:  could not open critical system index 2662
+2022-08-02 02:51:15.159 UTC [91776] LOG:  server process (PID 95863) was terminated by signal 6: Aborted
+2022-08-02 02:51:15.159 UTC [91776] LOG:  terminating any other active server processes
+2022-08-02 02:51:15.185 UTC [91776] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:51:15.200 UTC [95868] LOG:  database system was interrupted; last known up at 2022-08-02 02:50:40 UTC
+2022-08-02 02:51:15.214 UTC [95868] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:51:15.214 UTC [95868] LOG:  redo starts at 0/2D06710
+2022-08-02 02:51:15.608 UTC [95868] LOG:  invalid record length at 0/3DFF7F8: wanted 24, got 0
+2022-08-02 02:51:15.608 UTC [95868] LOG:  redo done at 0/3DFF7D0 system usage: CPU: user: 0.35 s, system: 0.03 s, elapsed: 0.39 s
+2022-08-02 02:51:15.623 UTC [91776] LOG:  database system is ready to accept connections
+2022-08-02 02:51:17.021 UTC [95918] PANIC:  could not open critical system index 2662
+2022-08-02 02:51:17.023 UTC [91776] LOG:  server process (PID 95918) was terminated by signal 6: Aborted
+2022-08-02 02:51:17.023 UTC [91776] LOG:  terminating any other active server processes
+2022-08-02 02:51:17.027 UTC [95922] FATAL:  the database system is in recovery mode
+2022-08-02 02:51:17.031 UTC [91776] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:51:17.044 UTC [91776] LOG:  received smart shutdown request
+2022-08-02 02:51:17.044 UTC [95928] LOG:  database system was interrupted; last known up at 2022-08-02 02:51:15 UTC
+2022-08-02 02:51:17.054 UTC [95928] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:51:17.055 UTC [95928] LOG:  invalid record length at 0/3DFF870: wanted 24, got 0
+2022-08-02 02:51:17.055 UTC [95928] LOG:  redo is not required
+2022-08-02 02:51:17.060 UTC [91776] LOG:  abnormal database system shutdown
+2022-08-02 02:51:17.062 UTC [91776] LOG:  database system is shut down

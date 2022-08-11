@@ -1,0 +1,115 @@
+# name: test/sql/join/mark/test_mark_join_types.test
+# description: Test mark join with different types
+# group: [mark]
+
+;
+PRAGMA enable_verification
+
+foreach type <numeric> decimal(4,1) decimal(8,1) decimal(12,1) decimal(18,1)
+
+# numeric types
+;
+begin transaction
+
+;
+create table a as select i::${type} AS i from range(1, 101, 1) t1(i) order by random()
+
+# range joins
+;
+select count(*) from a WHERE i > ANY((SELECT 1::${type}))
+;
+99
+
+;
+select count(*) from a WHERE i >= ANY((SELECT 1::${type}))
+;
+100
+
+;
+select count(*) from a WHERE i < ANY((SELECT 100::${type}))
+;
+99
+
+;
+select count(*) from a WHERE i <= ANY((SELECT 100::${type}))
+;
+100
+
+;
+select count(*) from a WHERE i = ANY((SELECT 1::${type}))
+;
+1
+
+;
+select count(*) from a WHERE i <> ANY((SELECT 1::${type}))
+;
+99
+
+# now with a filter
+;
+select count(*) from (select * from a where i % 2 = 0) a WHERE i > ANY((SELECT 2::${type}))
+;
+49
+
+;
+select count(*) from (select * from a where i % 2 = 0) a WHERE i >= ANY((SELECT 2::${type}))
+;
+50
+
+;
+select count(*) from (select * from a where i % 2 = 0) a WHERE i < ANY((SELECT 100::${type}))
+;
+49
+
+;
+select count(*) from (select * from a where i % 2 = 0) a WHERE i <= ANY((SELECT 100::${type}))
+;
+50
+
+;
+select * from (select * from a where i % 2 = 0) a WHERE i = ANY((SELECT 2::${type}))
+;
+2
+
+;
+select count(*) from (select * from a where i % 2 = 0) a WHERE i <> ANY((SELECT 2::${type}))
+;
+49
+
+# now select the actual values, instead of only the count
+;
+select * from (select * from a where i % 2 = 0) a WHERE i <= ANY((SELECT 10::${type})) ORDER BY 1
+;
+2
+4
+6
+8
+10
+
+;
+select * from (select * from a where i % 2 = 0) a WHERE i >= ANY((SELECT 90::${type})) ORDER BY 1
+;
+90
+92
+94
+96
+98
+100
+
+;
+select * from (select * from a where i > 90) a WHERE i <> ANY((SELECT 96::${type})) ORDER BY 1
+;
+91
+92
+93
+94
+95
+97
+98
+99
+100
+
+;
+rollback
+
+endloop

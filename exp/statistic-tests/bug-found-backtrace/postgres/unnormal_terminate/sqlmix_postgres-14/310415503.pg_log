@@ -1,0 +1,111 @@
+2022-08-02 05:07:16.909 UTC [111082] STATEMENT:  
+	create table objsubid partition of objsubid for values in (2);
+2022-08-02 05:07:16.909 UTC [111082] ERROR:  prepared statement "pstmt_def_insert" does not exist
+2022-08-02 05:07:16.909 UTC [111082] STATEMENT:  
+	execute pstmt_def_insert(2);
+2022-08-02 05:07:16.909 UTC [111082] ERROR:  parallel option requires a value between 0 and 1024 at character 9
+2022-08-02 05:07:16.909 UTC [111082] STATEMENT:  VACUUM (PARALLEL) t1;
+2022-08-02 05:07:16.909 UTC [111082] ERROR:  relation "foo" does not exist
+2022-08-02 05:07:16.909 UTC [111082] STATEMENT:  VACUUM (PARALLEL 0, FULL TRUE) foo;
+2022-08-02 05:07:16.910 UTC [111082] ERROR:  relation "t2" does not exist
+2022-08-02 05:07:16.910 UTC [111082] STATEMENT:  VACUUM (INDEX_CLEANUP TRUE, FULL TRUE) t2;
+2022-08-02 05:07:16.910 UTC [111082] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 05:07:16.910 UTC [111082] ERROR:  prepared statement "pstmt_def_insert" does not exist
+2022-08-02 05:07:16.910 UTC [111082] STATEMENT:  
+	-- should be ok
+	execute pstmt_def_insert(1);
+2022-08-02 05:07:16.910 UTC [111082] ERROR:  relation "test1" already exists
+2022-08-02 05:07:16.910 UTC [111082] STATEMENT:  
+	
+	-- Test plan_cache_mode
+	
+	create table test1 (b int);
+2022-08-02 05:07:16.912 UTC [111082] ERROR:  prepared statement "test_mode_pp" does not exist
+2022-08-02 05:07:16.912 UTC [111082] STATEMENT:  
+	execute test_mode_pp(1);
+2022-08-02 05:07:16.913 UTC [111082] ERROR:  relation "objsubid" does not exist
+2022-08-02 05:07:16.913 UTC [111082] STATEMENT:  VACUUM (TRUNCATE FALSE, FULL TRUE) objsubid;
+2022-08-02 05:07:16.914 UTC [111082] ERROR:  invalid configuration parameter name "special.weird name"
+2022-08-02 05:07:16.914 UTC [111082] STATEMENT:  SET special."weird name" = 'foo';
+2022-08-02 05:07:16.914 UTC [111082] ERROR:  table "objsubid" does not exist
+2022-08-02 05:07:16.914 UTC [111082] STATEMENT:  DROP TABLE objsubid;
+2022-08-02 05:07:16.914 UTC [111082] ERROR:  relation "foo" does not exist
+2022-08-02 05:07:16.914 UTC [111082] STATEMENT:  VACUUM ANALYZE foo, objsubid (objoid);
+2022-08-02 05:07:16.914 UTC [111082] ERROR:  relation "combocidtest" does not exist
+2022-08-02 05:07:16.914 UTC [111082] STATEMENT:  ANALYZE combocidtest, classoid;
+2022-08-02 05:07:16.915 UTC [111082] ERROR:  relation "ìÞÙ¸æñÕèindex2" does not exist
+2022-08-02 05:07:16.915 UTC [111082] STATEMENT:  ANALYZE ìÞÙ¸æñÕèindex2, does_not_exist, classoid;
+2022-08-02 05:07:16.915 UTC [111082] WARNING:  there is no transaction in progress
+2022-08-02 05:07:16.928 UTC [111082] ERROR:  invalid size: ".."
+2022-08-02 05:07:16.928 UTC [111082] STATEMENT:  SELECT pg_size_bytes('..');
+2022-08-02 05:07:16.930 UTC [111082] ERROR:  column "foo" does not exist at character 56
+2022-08-02 05:07:16.930 UTC [111082] STATEMENT:  
+	
+	EXPLAIN (COSTS OFF) SELECT count(*) FROM test1 WHERE foo = 7;
+=================================================================
+==111082==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffe78b35bd0 sp 0x7ffe78b35bc8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fb76d2f1082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==111082==ABORTING
+2022-08-02 05:07:16.942 UTC [95454] LOG:  server process (PID 111082) was terminated by signal 6: Aborted
+2022-08-02 05:07:16.942 UTC [95454] LOG:  terminating any other active server processes
+2022-08-02 05:07:16.950 UTC [111092] FATAL:  the database system is in recovery mode
+2022-08-02 05:07:16.952 UTC [111095] FATAL:  the database system is in recovery mode
+2022-08-02 05:07:16.955 UTC [111096] FATAL:  the database system is in recovery mode
+2022-08-02 05:07:16.959 UTC [95454] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:07:16.981 UTC [95454] LOG:  received smart shutdown request
+2022-08-02 05:07:16.981 UTC [111102] LOG:  database system was interrupted; last known up at 2022-08-02 05:07:16 UTC
+2022-08-02 05:07:17.014 UTC [111102] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:07:17.016 UTC [111102] LOG:  redo starts at 0/1F837920
+2022-08-02 05:07:17.094 UTC [95454] LOG:  abnormal database system shutdown

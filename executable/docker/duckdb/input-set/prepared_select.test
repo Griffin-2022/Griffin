@@ -1,0 +1,62 @@
+# name: test/sql/prepared/prepared_select.test
+# description: Test order of unmarked prepared statements in select
+# group: [prepared]
+
+# select - from - where with subquery
+;
+PREPARE s1 AS SELECT ?::VARCHAR FROM (SELECT ?::INTEGER) tbl(i) WHERE i > ?::INTEGER
+
+;
+EXECUTE s1('hello', 2, 1)
+;
+hello
+
+# select - from - where - groupby - having
+;
+PREPARE s2 AS
+SELECT FIRST(?::VARCHAR)
+FROM (VALUES (?::INTEGER)) tbl(i)
+WHERE i > ?::INTEGER
+GROUP BY i % ?::INTEGER
+HAVING SUM(i)::VARCHAR <> ?::VARCHAR
+
+;
+EXECUTE s2('hello', 2, 1, 2, 'blabla')
+;
+hello
+
+;
+EXECUTE s2('hello', 2, 1, 2, '2')
+;
+
+# union
+;
+PREPARE s3 AS
+SELECT LENGTH(?::VARCHAR)
+UNION ALL
+SELECT ?::INTEGER
+ORDER BY 1
+
+;
+EXECUTE s3('hello', 3)
+;
+3
+5
+
+# IN clause
+;
+PREPARE s4 AS SELECT ?::INTEGER IN (?::INTEGER, ?::INTEGER, ?::INTEGER)
+
+;
+EXECUTE s4(1, 2, 3, 1)
+;
+1
+
+# IN clause with subquery
+;
+PREPARE s5 AS SELECT ?::INTEGER IN (SELECT i FROM (VALUES (?::INTEGER), (?::INTEGER), (?::INTEGER)) tbl(i))
+
+;
+EXECUTE s5(1, 2, 3, 1)
+;
+1

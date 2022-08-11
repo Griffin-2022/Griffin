@@ -1,0 +1,111 @@
+	FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+	WHERE c.oid = i.inhrelid AND i.inhparent = '27743'
+	ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  SELECT n.nspname as "Schema",
+	  c.relname as "Name",
+	  CASE c.relkind WHEN 'r' THEN 'table' WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' WHEN 'i' THEN 'index' WHEN 'S' THEN 'sequence' WHEN 't' THEN 'TOAST table' WHEN 'f' THEN 'foreign table' WHEN 'p' THEN 'partitioned table' WHEN 'I' THEN 'partitioned index' END as "Type",
+	  pg_catalog.pg_get_userbyid(c.relowner) as "Owner",
+	  CASE c.relpersistence WHEN 'p' THEN 'permanent' WHEN 't' THEN 'temporary' WHEN 'u' THEN 'unlogged' END as "Persistence",
+	  am.amname as "Access method",
+	  pg_catalog.pg_size_pretty(pg_catalog.pg_table_size(c.oid)) as "Size",
+	  pg_catalog.obj_description(c.oid, 'pg_class') as "Description"
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	     LEFT JOIN pg_catalog.pg_am am ON am.oid = c.relam
+	WHERE c.relkind IN ('r','p','v','m','S','f','')
+	      AND n.nspname <> 'pg_catalog'
+	      AND n.nspname !~ '^pg_toast'
+	      AND n.nspname <> 'information_schema'
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY 1,2;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  prepare q as
+	  select 'some|text' as "a|title", '        ' as "empty ", n as int
+	  from generate_series(1,2) as n;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  execute q;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  execute q;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  deallocate q;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  select '\.' as data;
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, '', c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+	FROM pg_catalog.pg_class c
+	 LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+	LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+	WHERE c.oid = '27710';
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, '', c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+	FROM pg_catalog.pg_class c
+	 LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+	LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+	WHERE c.oid = '27710';
+2022-08-02 07:43:01.551 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.551 UTC [83705] STATEMENT:  SELECT pg_catalog.quote_ident(nspname) || '.' ||
+	   pg_catalog.quote_ident(relname) || '.' ||
+	   pg_catalog.quote_ident(attname),
+	   d.deptype
+	FROM pg_catalog.pg_class c
+	INNER JOIN pg_catalog.pg_depend d ON c.oid=d.refobjid
+	INNER JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	INNER JOIN pg_catalog.pg_attribute a ON (
+	 a.attrelid=c.oid AND
+	 a.attnum=d.refobjsubid)
+	WHERE d.classid='pg_catalog.pg_class'::pg_catalog.regclass
+	 AND d.refclassid='pg_catalog.pg_class'::pg_catalog.regclass
+	 AND d.objid='27710'
+	 AND d.deptype IN ('a', 'i')
+	;
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  SELECT c.oid,
+	  n.nspname,
+	  c.relname
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relname OPERATOR(pg_catalog.~) '^(psql_serial_tab_id_seq)$' COLLATE pg_catalog.default
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY 2, 3;
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  SELECT pg_catalog.format_type(seqtypid, NULL) AS "Type",
+	       seqstart AS "Start",
+	       seqmin AS "Minimum",
+	       seqmax AS "Maximum",
+	       seqincrement AS "Increment",
+	       CASE WHEN seqcycle THEN 'yes' ELSE 'no' END AS "Cycles?",
+	       seqcache AS "Cache"
+	FROM pg_catalog.pg_sequence
+	WHERE seqrelid = '27710';
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  execute q;
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  execute q;
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  SELECT pg_catalog.quote_ident(nspname) || '.' ||
+	   pg_catalog.quote_ident(relname) || '.' ||
+	   pg_catalog.quote_ident(attname),
+	   d.deptype
+	FROM pg_catalog.pg_class c
+	INNER JOIN pg_catalog.pg_depend d ON c.oid=d.refobjid
+	INNER JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	INNER JOIN pg_catalog.pg_attribute a ON (
+	 a.attrelid=c.oid AND
+	 a.attnum=d.refobjsubid)
+	WHERE d.classid='pg_catalog.pg_class'::pg_catalog.regclass
+	 AND d.refclassid='pg_catalog.pg_class'::pg_catalog.regclass
+	 AND d.objid='27710'
+	 AND d.deptype IN ('a', 'i')
+	;
+2022-08-02 07:43:01.552 UTC [83289] LOG:  server process (PID 90909) was terminated by signal 6: Aborted
+2022-08-02 07:43:01.552 UTC [83705] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:43:01.552 UTC [83705] STATEMENT:  execute q;
+2022-08-02 07:43:01.552 UTC [83289] LOG:  terminating any other active server processes
+2022-08-02 07:43:01.590 UTC [83289] LOG:  all server processes terminated; reinitializing
+2022-08-02 07:43:01.601 UTC [90914] LOG:  database system was interrupted; last known up at 2022-08-02 07:42:24 UTC
+2022-08-02 07:43:01.602 UTC [90915] FATAL:  the database system is in recovery mode
+2022-08-02 07:43:01.603 UTC [90918] FATAL:  the database system is in recovery mode
+2022-08-02 07:43:01.605 UTC [90919] FATAL:  the database system is in recovery mode
+2022-08-02 07:43:01.609 UTC [83289] LOG:  received smart shutdown request
+2022-08-02 07:43:01.611 UTC [90914] LOG:  database system was not properly shut down; automatic recovery in progress

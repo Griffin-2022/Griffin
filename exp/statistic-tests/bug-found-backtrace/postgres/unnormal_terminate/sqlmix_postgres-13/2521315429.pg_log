@@ -1,0 +1,111 @@
+	SELECT * FROM t2 JOIN a USING (b) ORDER BY b;
+2022-08-01 23:52:14.845 UTC [91167] ERROR:  "a" is not a table or foreign table
+2022-08-01 23:52:14.845 UTC [91167] STATEMENT:  ALTER TABLE a ADD UNIQUE (b);
+2022-08-01 23:52:14.845 UTC [91167] ERROR:  there is no unique or exclusion constraint matching the ON CONFLICT specification
+2022-08-01 23:52:14.845 UTC [91167] STATEMENT:  WITH aa AS (SELECT 1 a, 2 testtable_apple)
+	INSERT INTO testtable_apple VALUES(1, 'insert')
+	ON CONFLICT (logdate) DO UPDATE SET testtable_orange = ' update' WHERE testtable_apple.logdate = (SELECT a FROM aa);
+2022-08-01 23:52:14.846 UTC [91167] ERROR:  there is no unique or exclusion constraint matching the ON CONFLICT specification
+2022-08-01 23:52:14.846 UTC [91167] STATEMENT:  WITH simpletup AS (
+	  SELECT 2 logdate, 'Green' testtable_orange),
+	upsert_cte AS (
+	  INSERT INTO testtable_apple VALUES(2, 'Blue') ON CONFLICT (logdate) DO
+	    UPDATE SET (logdate, testtable_orange) = (SELECT logdate, testtable_orange FROM simpletup WHERE simpletup.logdate = testtable_apple.logdate)
+	    RETURNING logdate, testtable_orange)
+	INSERT INTO testtable_apple VALUES(2, 'Red') ON CONFLICT (logdate) DO
+	UPDATE SET (logdate, testtable_orange) = (SELECT logdate, testtable_orange FROM upsert_cte WHERE upsert_cte.logdate = testtable_apple.logdate)
+	RETURNING logdate, testtable_orange;
+2022-08-01 23:52:14.846 UTC [91167] ERROR:  relation "gin_test_tbl" does not exist
+2022-08-01 23:52:14.846 UTC [91167] STATEMENT:  TRUNCATE TABLE gin_test_tbl;
+2022-08-01 23:52:14.847 UTC [91167] ERROR:  relation "gin_test_tbl" does not exist
+2022-08-01 23:52:14.847 UTC [91167] STATEMENT:  CREATE TRIGGER cmpart2 AFTER INSERT ON gin_test_tbl FOR EACH STATEMENT
+	    EXECUTE PROCEDURE y_trigger();
+2022-08-01 23:52:14.847 UTC [91167] ERROR:  function y_trigger() does not exist
+2022-08-01 23:52:14.847 UTC [91167] STATEMENT:  DROP FUNCTION y_trigger();
+2022-08-01 23:52:14.849 UTC [91167] ERROR:  invalid input syntax for type integer: "c11" at character 43
+2022-08-01 23:52:14.849 UTC [91167] STATEMENT:  INSERT INTO gexec_test_b_idx VALUES ( 11, 'c11' ),( 12, 'c12' );
+2022-08-01 23:52:14.849 UTC [91167] ERROR:  rule "y_rule" for relation "gexec_test_b_idx" does not exist
+2022-08-01 23:52:14.849 UTC [91167] STATEMENT:  DROP RULE y_rule ON gexec_test_b_idx;
+2022-08-01 23:52:14.850 UTC [91167] ERROR:  cannot drop table c because other objects depend on it
+2022-08-01 23:52:14.850 UTC [91167] STATEMENT:  drop table c;
+2022-08-01 23:52:14.850 UTC [91167] WARNING:  there is no transaction in progress
+2022-08-01 23:52:14.868 UTC [91167] ERROR:  column "d" does not exist
+2022-08-01 23:52:14.868 UTC [91167] STATEMENT:  CREATE INDEX id ON gexec_test USING hash (d);
+2022-08-01 23:52:14.868 UTC [91167] ERROR:  relation "logdate" does not exist
+2022-08-01 23:52:14.868 UTC [91167] STATEMENT:  ALTER TABLE logdate REPLICA IDENTITY USING INDEX psql_serial_tab;
+2022-08-01 23:52:14.873 UTC [91167] ERROR:  relation "b" does not exist
+2022-08-01 23:52:14.873 UTC [91167] STATEMENT:  CREATE TABLE child_30_40 PARTITION OF b FOR VALUES FROM (10) TO (20);
+2022-08-01 23:52:14.873 UTC [91167] ERROR:  INSERT has more expressions than target columns at character 39
+2022-08-01 23:52:14.873 UTC [91167] STATEMENT:  INSERT INTO gexec_test SELECT i % 30, i % 20 FROM generate_series(0, 299, 2) i;
+2022-08-01 23:52:14.876 UTC [91167] ERROR:  column "parent_tab" does not exist
+2022-08-01 23:52:14.876 UTC [91167] STATEMENT:  CREATE UNIQUE INDEX id2 ON gexec_test (parent_tab);
+2022-08-01 23:52:14.878 UTC [91167] ERROR:  table "b" does not exist
+2022-08-01 23:52:14.878 UTC [91167] STATEMENT:  DROP TABLE b;
+2022-08-01 23:52:14.879 UTC [91167] WARNING:  there is no transaction in progress
+=================================================================
+==91167==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc3463d310 sp 0x7ffc3463d308
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f07a7783082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==91167==ABORTING
+2022-08-01 23:52:14.933 UTC [90394] LOG:  server process (PID 91167) was terminated by signal 6: Aborted
+2022-08-01 23:52:14.933 UTC [90394] LOG:  terminating any other active server processes
+2022-08-01 23:52:14.979 UTC [90394] LOG:  all server processes terminated; reinitializing
+2022-08-01 23:52:14.993 UTC [94386] LOG:  database system was interrupted; last known up at 2022-08-01 23:52:02 UTC
+2022-08-01 23:52:14.994 UTC [94387] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:14.997 UTC [94390] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:14.999 UTC [94391] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:15.006 UTC [90394] LOG:  received smart shutdown request
+2022-08-01 23:52:15.011 UTC [94386] LOG:  recovered replication state of node 2 to 0/1
+2022-08-01 23:52:15.011 UTC [94386] LOG:  recovered replication state of node 1 to 0/0
+2022-08-01 23:52:15.011 UTC [94386] LOG:  database system was not properly shut down; automatic recovery in progress

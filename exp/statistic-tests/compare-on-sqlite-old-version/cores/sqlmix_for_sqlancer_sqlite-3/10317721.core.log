@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000214,sig:11,src:020105+021112,time:3828153,execs:688182,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fffcd6a1fd0, p=0xf34880) at sqlite3.c:146356
+146356	      pSublist = exprListAppendList(pParse, pSublist, pWin->pOwner->x.pList);
+(gdb) #0  0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fffcd6a1fd0, p=0xf34880) at sqlite3.c:146356
+#1  0x00000000002fc6de in sqlite3Select (pParse=0x7fffcd6a1fd0, p=0xf34880, pDest=0x7fffcd6a09e0) at sqlite3.c:130281
+#2  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7fffcd6a1fd0, pExpr=0xf38a20, iTab=2) at sqlite3.c:99650
+#3  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7fffcd6a1fd0, pX=0xf38a20, inFlags=4, prRhsHasNull=0x0, aiMap=0xf35ff0, piTab=0x7fffcd6a0c14) at sqlite3.c:99448
+#4  0x00000000003795bd in codeEqualityTerm (pParse=0x7fffcd6a1fd0, pTerm=0xf271f0, pLevel=0xf27478, iEq=0, bRev=0, iTarget=1) at sqlite3.c:136693
+#5  0x0000000000374503 in sqlite3WhereCodeOneLoopStart (pParse=0x7fffcd6a1fd0, v=0xf424d0, pWInfo=0xf270e0, iLevel=0, pLevel=0xf27478, notReady=18446744073709551615) at sqlite3.c:137510
+#6  0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7fffcd6a1fd0, pTabList=0xf2e160, pWhere=0xf2cea0, pOrderBy=0x0, pResultSet=0xf2f420, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#7  0x00000000002fdcea in sqlite3Select (pParse=0x7fffcd6a1fd0, p=0xf2d350, pDest=0x7fffcd6a13c0) at sqlite3.c:130695
+#8  0x00000000002ecaa8 in yy_reduce (yypParser=0x7fffcd6a15f0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fffcd6a1fd0) at sqlite3.c:151581
+#9  0x00000000002e92f8 in sqlite3Parser (yyp=0x7fffcd6a15f0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#10 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fffcd6a1fd0, zSql=0xf39d47 ";;INSERT INTO a VALUES(3, 4, 4);;\n;SELECT xyz, sum(xyz) OVER win1 FROM a \n  WINDOW win1 AS (ORDER BY collate4i1)\n\n;", 
+    pzErrMsg=0x7fffcd6a21b0) at sqlite3.c:154013
+#11 0x00000000002a1683 in sqlite3Prepare (db=0xf24240, 
+    zSql=0xf25063 ";\n;SELECT * FROM a WHERE \n      (0, a.collate4i1) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM a);;INSERT INTO a VALUES(3, 4, 4);;\n;SELECT xyz, sum(xyz) OVER win1 FROM a \n  WINDOW win1 AS (ORDER"..., nBytes=218, prepFlags=128, pReprepare=0x0, ppStmt=0x7fffcd6a22e8, pzTail=0x7fffcd6a22d0) at sqlite3.c:124303
+#12 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xf24240, 
+    zSql=0xf25063 ";\n;SELECT * FROM a WHERE \n      (0, a.collate4i1) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM a);;INSERT INTO a VALUES(3, 4, 4);;\n;SELECT xyz, sum(xyz) OVER win1 FROM a \n  WINDOW win1 AS (ORDER"..., nBytes=218, prepFlags=128, pOld=0x0, ppStmt=0x7fffcd6a22e8, pzTail=0x7fffcd6a22d0) at sqlite3.c:124403
+#13 0x000000000029247f in sqlite3_prepare_v2 (db=0xf24240, 
+    zSql=0xf25063 ";\n;SELECT * FROM a WHERE \n      (0, a.collate4i1) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM a);;INSERT INTO a VALUES(3, 4, 4);;\n;SELECT xyz, sum(xyz) OVER win1 FROM a \n  WINDOW win1 AS (ORDER"..., nBytes=218, ppStmt=0x7fffcd6a22e8, pzTail=0x7fffcd6a22d0) at sqlite3.c:124487
+#14 0x0000000000256bd0 in main (argc=1, argv=0x7fffcd6a2498) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 58940] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

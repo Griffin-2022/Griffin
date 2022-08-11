@@ -1,0 +1,36 @@
+DROP TABLE IF EXISTS t1;
+;CREATE TABLE t1(a INTEGER PRIMARY KEY, b CHAR(1), c CHAR(2), d ANY);
+;INSERT INTO t1 VALUES
+    (1, 'A', 'aa', 2.5),
+    (2, 'B', 'bb', 3.75),
+    (3, 'C', 'cc', 1.0),
+    (4, 'D', 'cc', 8.25),
+    (5, 'E', 'bb', 6.5),
+    (6, 'F', 'aa', 6.5),
+    (7, 'G', 'aa', 6.0),
+    (8, 'H', 'bb', 9.0),
+    (9, 'I', 'aa', 3.75),
+    (10,'J', 'cc', NULL),
+    (11,'K', 'cc', 'xyz'),
+    (12,'L', 'cc', 'xyZ'),
+    (13,'M', 'cc', NULL);
+;
+;SELECT a, b, c, quote(d), group_concat(b,'') OVER w1, '|' FROM t1
+    WINDOW w1 AS
+    (PARTITION BY c ORDER BY d DESC
+     RANGE BETWEEN 7.0 PRECEDING AND 2.5 PRECEDING)
+    ORDER BY c, d, a;
+;
+;DROP TABLE IF EXISTS t1;
+;CREATE TABLE t1(a, b, c);
+;INSERT INTO t1 VALUES('BB','aa',399);
+;SELECT
+    count () OVER win1 NOT BETWEEN 'a' AND 'mmm',
+    count () OVER win3
+  FROM t1
+  WINDOW win1 AS (ORDER BY a GROUPS BETWEEN 4 PRECEDING AND 1 FOLLOWING
+                  EXCLUDE CURRENT ROW),
+         win2 AS (PARTITION BY b ORDER BY a),
+         win3 AS (win2 RANGE BETWEEN 5.2 PRECEDING AND true PRECEDING );
+;
+;

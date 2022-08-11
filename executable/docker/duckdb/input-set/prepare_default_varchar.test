@@ -1,0 +1,271 @@
+# name: test/sql/prepared/prepare_default_varchar.test
+# description: Prepared parameters default to VARCHAR if the type could not be deduced
+# group: [prepared]
+
+;
+PRAGMA enable_verification
+
+# single unbound parameter
+;
+PREPARE v1 AS SELECT ?
+
+;
+EXECUTE v1(27)
+;
+27
+
+;
+EXECUTE v1('hello world')
+;
+hello world
+
+;
+EXECUTE v1([1, 2, 3])
+;
+[1, 2, 3]
+
+# comparison between two parameters
+;
+PREPARE v2 AS SELECT ?=?
+
+;
+EXECUTE v2(27, 27)
+;
+true
+
+;
+EXECUTE v2('hello world', 'hello mars')
+;
+false
+
+;
+EXECUTE v2([1, 2, 3], '[1, 2, 3]')
+;
+true
+
+# unbound parameter in scalar subquery
+;
+PREPARE v3 AS SELECT (SELECT ?)
+
+;
+EXECUTE v3(27)
+;
+27
+
+;
+EXECUTE v3('hello world')
+;
+hello world
+
+;
+EXECUTE v3([1, 2, 3])
+;
+[1, 2, 3]
+
+# unbound parameter with IS NULL
+;
+PREPARE v4 AS SELECT ? IS NULL
+
+;
+EXECUTE v4(27)
+;
+false
+
+;
+EXECUTE v4('hello world')
+;
+false
+
+;
+EXECUTE v4(NULL)
+;
+true
+
+# unbound parameter with IN list
+;
+PREPARE v5 AS SELECT ? IN (?, ?)
+
+;
+EXECUTE v5(27, 27, 28)
+;
+true
+
+;
+EXECUTE v5('hello world', 'hello', 'world')
+;
+false
+
+;
+EXECUTE v5(NULL, 27, 28)
+;
+NULL
+
+# unbound parameter with COUNT
+;
+PREPARE v6 AS SELECT COUNT(?)
+
+;
+EXECUTE v6(27)
+;
+1
+
+;
+EXECUTE v6('hello world')
+;
+1
+
+;
+EXECUTE v6(NULL)
+;
+0
+
+# unbound parameter with printf
+;
+PREPARE v7 AS SELECT printf('%s: %s', ?, ?)
+
+;
+EXECUTE v7('time', 27)
+;
+time: 27
+
+;
+EXECUTE v7('hello world', [1, 2, 3])
+;
+hello world: [1, 2, 3]
+
+# unbound parameter with lists
+;
+PREPARE v8 AS SELECT [?]
+
+;
+EXECUTE v8(27)
+;
+[27]
+
+;
+EXECUTE v8('hello world')
+;
+[hello world]
+
+;
+EXECUTE v8(NULL)
+;
+[NULL]
+
+# unbound parameter with lists and NULL
+;
+PREPARE v9 AS SELECT [?, NULL]
+
+;
+EXECUTE v9(27)
+;
+[27, NULL]
+
+;
+EXECUTE v9('hello world')
+;
+[hello world, NULL]
+
+;
+EXECUTE v9(NULL)
+;
+[NULL, NULL]
+
+# unbound parameter with structs
+;
+PREPARE v10 AS SELECT {'x': ?}
+
+;
+EXECUTE v10(27)
+;
+{'x': 27}
+
+;
+EXECUTE v10('hello world')
+;
+{'x': hello world}
+
+;
+EXECUTE v10(NULL)
+;
+{'x': NULL}
+
+# unbound parameter with structs and NULL
+;
+PREPARE v11 AS SELECT {'x': ?, 'y': NULL}
+
+;
+EXECUTE v11(27)
+;
+{'x': 27, 'y': NULL}
+
+;
+EXECUTE v11('hello world')
+;
+{'x': hello world, 'y': NULL}
+
+;
+EXECUTE v11(NULL)
+;
+{'x': NULL, 'y': NULL}
+
+# values list
+;
+PREPARE v12 AS SELECT * FROM (VALUES (?, ?), (?, ?)) tbl(i, j)
+
+;
+EXECUTE v12(27, 28, 29, 30)
+;
+27	28
+29	30
+
+;
+EXECUTE v12('hello', 'world', 'a', NULL)
+;
+hello	world
+a	NULL
+
+# case
+;
+PREPARE v13 AS SELECT CASE WHEN ? THEN ? ELSE ? END
+
+;
+EXECUTE v13(1=1, 1, 2)
+;
+1
+
+;
+EXECUTE v13(1=0, 'hello', 'world')
+;
+world
+
+# parameter and null
+;
+PREPARE v14 AS SELECT ?+NULL
+
+;
+EXECUTE v14(1)
+;
+NULL
+
+;
+PREPARE v15 AS SELECT ?=NULL
+
+;
+EXECUTE v15(1)
+;
+NULL
+
+# issue #2125
+;
+PREPARE v16 AS SELECT CASE WHEN (? = 1) AND (? = 2) AND (? = 3) AND ((? IS NULL)) THEN 1.5 ELSE 2.5 END AS a
+
+;
+EXECUTE v16(1, 2, 3, NULL)
+;
+1.5
+
+;
+EXECUTE v16(1, 2, 4, NULL)
+;
+2.5

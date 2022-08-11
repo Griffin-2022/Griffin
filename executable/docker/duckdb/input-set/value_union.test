@@ -1,0 +1,67 @@
+# name: test/sql/setops/value_union.test
+# description: Test union of VALUES
+# group: [setops]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE VIEW vals AS SELECT * FROM (VALUES (1, 10), (2, 5), (3, 4)) tbl(i, j);
+
+;
+SELECT * FROM vals
+;
+1	10
+2	5
+3	4
+
+;
+CREATE VIEW vunion AS
+SELECT * FROM vals
+UNION ALL
+SELECT * FROM vals;
+
+;
+SELECT * FROM vunion ORDER BY i
+;
+1	10
+1	10
+2	5
+2	5
+3	4
+3	4
+
+;
+SELECT * FROM vunion ORDER BY i LIMIT 1
+;
+1	10
+
+;
+SELECT * FROM (SELECT * FROM vunion ORDER BY i LIMIT 4) tbl ORDER BY j LIMIT 2
+;
+2	5
+2	5
+
+;
+SELECT * FROM vunion WHERE i=1
+;
+1	10
+1	10
+
+;
+SELECT DISTINCT * FROM (SELECT * FROM vunion UNION ALL SELECT * FROM vunion) tbl ORDER BY 1
+;
+1	10
+2	5
+3	4
+
+;
+SELECT * FROM (SELECT * FROM vunion INTERSECT SELECT * FROM vunion) tbl ORDER BY 1;
+;
+1	10
+2	5
+3	4
+
+;
+SELECT * FROM (SELECT * FROM vunion EXCEPT SELECT * FROM vunion) tbl
+;

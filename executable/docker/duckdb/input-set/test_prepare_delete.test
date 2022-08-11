@@ -1,0 +1,36 @@
+# name: test/sql/prepared/test_prepare_delete.test
+# description: PREPARE for DELETE
+# group: [prepared]
+
+;
+CREATE TABLE b (i TINYINT)
+
+;
+INSERT INTO b VALUES (1), (2), (3), (4), (5)
+
+;
+PREPARE s1 AS DELETE FROM b WHERE i=$1
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+3
+4
+5
+
+;
+EXECUTE s1(3)
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+4
+5
+
+;
+DROP TABLE b CASCADE
+

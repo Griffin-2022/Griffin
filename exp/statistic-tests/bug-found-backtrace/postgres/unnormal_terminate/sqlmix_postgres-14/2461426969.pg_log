@@ -1,0 +1,111 @@
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  
+	DROP TABLE sqlsim18;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:   -- error
+	REINDEX INDEX CONCURRENTLY sqlsim21;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats';
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  COMMENT ON CONSTRAINT ctlt1_a_check ON a IS 't1_a_check';
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  SELECT pol.polname, pol.polpermissive,
+	  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+	  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+	  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+	  CASE pol.polcmd
+	    WHEN 'r' THEN 'SELECT'
+	    WHEN 'a' THEN 'INSERT'
+	    WHEN 'w' THEN 'UPDATE'
+	    WHEN 'd' THEN 'DELETE'
+	    END AS cmd
+	FROM pg_catalog.pg_policy pol
+	WHERE pol.polrelid = '27448' ORDER BY 1;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  SELECT c.oid::pg_catalog.regclass
+	FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+	WHERE c.oid = i.inhparent AND i.inhrelid = '27453'
+	  AND c.relkind != 'p' AND c.relkind != 'I'
+	ORDER BY inhseqno;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:   -- error
+	-- Partitioned with no leaves
+	REINDEX INDEX sqlsim47;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  
+	REINDEX TABLE test1;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  
+	
+	-- Cleanup of partition tree used for REINDEX test.
+	DROP TABLE sqlsim47;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  
+	REINDEX TABLE CONCURRENTLY pg_class;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+	FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+	WHERE c.oid = i.inhrelid AND i.inhparent = '27476'
+	ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  
+	
+	-- Temporary tables and on-commit actions, where CONCURRENTLY is ignored.
+	-- ON COMMIT PRESERVE ROWS, the default.
+	CREATE TEMP TABLE test1_a_idx (foo int, t1 text)
+	  ON COMMIT PRESERVE ROWS;
+2022-08-02 07:42:32.705 UTC [11238] ERROR:  could not find pg_class tuple for index 2662 at character 45
+2022-08-02 07:42:32.705 UTC [11238] STATEMENT:  SELECT c.oid,
+	  n.nspname,
+	  c.relname
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relname OPERATOR(pg_catalog.~) '^(a)$' COLLATE pg_catalog.default
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY 2, 3;
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662 at character 439
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+	, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+	FROM pg_catalog.pg_class c
+	 LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+	LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+	WHERE c.oid = '27501';
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  
+	REINDEX TABLE CONCURRENTLY sqlsim34;
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  DROP TABLE test1_a_idx, test1_a_idx, sqlsim13, test1_a_idx, test1_a_idx, test1_a_idx, test1_a_idx, test1_a_idx, test1_a_idx, sqlsim13, test1_a_idx, test1_a_idx CASCADE;
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  
+	-- Fails when running in a transaction
+	REINDEX INDEX CONCURRENTLY sqlsim0;
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:   -- failure, schema does not exist
+	CREATE SCHEMA schema_to_reindex;
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  
+	CREATE TABLE test1_a_idx(foo SERIAL PRIMARY KEY, t1 TEXT NOT NULL);
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  
+	REINDEX SCHEMA schema_to_reindex;
+2022-08-02 07:42:32.706 UTC [11238] WARNING:  there is no transaction in progress
+2022-08-02 07:42:32.706 UTC [11238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 07:42:32.706 UTC [11238] STATEMENT:  DISCARD ALL;
+2022-08-02 07:42:32.707 UTC [11238] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 07:42:32.707 UTC [11238] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 07:42:32.707 UTC [11238] ERROR:  schema "public" already exists
+2022-08-02 07:42:32.707 UTC [11238] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 07:42:33.907 UTC [13035] PANIC:  could not open critical system index 2662
+2022-08-02 07:42:33.909 UTC [4869] LOG:  server process (PID 13035) was terminated by signal 6: Aborted
+2022-08-02 07:42:33.909 UTC [4869] LOG:  terminating any other active server processes
+2022-08-02 07:42:33.936 UTC [4869] LOG:  all server processes terminated; reinitializing
+2022-08-02 07:42:33.951 UTC [13037] LOG:  database system was interrupted; last known up at 2022-08-02 07:42:32 UTC
+2022-08-02 07:42:33.968 UTC [13037] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 07:42:33.968 UTC [13037] LOG:  redo starts at 0/C259B90
+2022-08-02 07:42:33.969 UTC [13037] LOG:  invalid record length at 0/C259C40: wanted 24, got 0
+2022-08-02 07:42:33.969 UTC [13037] LOG:  redo done at 0/C259BC8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 07:42:33.980 UTC [4869] LOG:  database system is ready to accept connections
+2022-08-02 07:42:34.905 UTC [13060] WARNING:  there is no transaction in progress
+2022-08-02 07:42:34.907 UTC [13060] ERROR:  syntax error at or near "CURRENT_SCHEMA" at character 23

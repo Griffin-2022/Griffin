@@ -1,0 +1,42 @@
+# name: test/sql/copy/parquet/parquet_list.test
+# description: Test list syntax for reading multiple files
+# group: [parquet]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+# standard list syntax
+;
+select count(*) from parquet_scan(['data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t2.parquet']);
+;
+2
+
+# glob inside a list
+;
+select count(*) from parquet_scan(['data/parquet-testing/glob/*.parquet', 'data/parquet-testing/glob/t2.parquet']);
+;
+3
+
+# read the same file multiple times
+;
+select count(*) from parquet_scan(['data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t1.parquet']);
+;
+5
+
+# file does not exist
+;
+select count(*) from parquet_scan(['data/parquet-testing/glob/t1.parquet', 'data/parquet-testing/glob/t2.parquet', 'this/file/doesnot/exist/hopefully.parquet']);
+
+# empty list
+;
+select count(*) from parquet_scan([]);
+
+# null inside a list
+;
+select count(*) from parquet_scan([NULL]);
+
+# null list
+;
+select count(*) from parquet_scan(NULL::VARCHAR[]);

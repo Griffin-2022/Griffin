@@ -1,0 +1,111 @@
+	 return new;
+	end;
+	$$ language plpgsql;
+	;create trigger parted_conflict_update
+	    after update on parted_conflict
+	    referencing new table as inserted
+	    for each statement
+	    execute procedure parted_conflict_update_func();
+	;truncate parted_conflict;
+	;insert into parted_conflict values (0, 'cero', 1);
+	;insert into parted_conflict values(0, 'cero', 1)
+	  on conflict (a,b) do update set c = parted_conflict.c + 1;
+	;drop table parted_conflict;
+	;drop function parted_conflict_update_func();
+	;
+2022-08-01 17:08:45.795 UTC [53854] WARNING:  there is no transaction in progress
+2022-08-01 17:08:45.797 UTC [53854] ERROR:  invalid input syntax for type pg_snapshot: "31:12:" at character 117
+2022-08-01 17:08:45.797 UTC [53854] STATEMENT:  select '12:13:'::txid_snapshot;
+	;select '12:18:14,16'::txid_snapshot;
+	;select '12:16:14,14'::txid_snapshot;
+	;select '31:12:'::txid_snapshot;
+	;select '0:1:'::txid_snapshot;
+	;select '12:13:0'::txid_snapshot;
+	;select '12:16:14,13'::txid_snapshot;
+	;create temp table snapshot_test (
+		nr	integer,
+		snap	txid_snapshot
+	);
+	;insert into snapshot_test values (1, '12:13:');
+	;insert into snapshot_test values (2, '12:20:13,15,18');
+	;insert into snapshot_test values (3, '100001:100009:100005,100007,100008');
+	;insert into snapshot_test values (4, '100:150:101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131');
+	;select snap from snapshot_test order by nr;
+	;select  txid_snapshot_xmin(snap),
+		txid_snapshot_xmax(snap),
+		txid_snapshot_xip(snap)
+	from snapshot_test order by nr;
+	;select id, txid_visible_in_snapshot(id, snap)
+	from snapshot_test, generate_series(11, 21) id
+	where nr = 2;
+	;select id, txid_visible_in_snapshot(id, snap)
+	from snapshot_test, generate_series(90, 160) id
+	where nr = 4;
+	;select txid_current() >= txid_snapshot_xmin(txid_current_snapshot());
+	;select txid_visible_in_snapshot(txid_current(), txid_current_snapshot());
+	;select txid_snapshot '1000100010001000:1000100010001100:1000100010001012,1000100010001013';
+	;select txid_visible_in_snapshot('1000100010001012', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
+	;select txid_visible_in_snapshot('1000100010001015', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
+	;SELECT txid_snapshot '1:9223372036854775807:3';
+	;SELECT txid_snapshot '1:9223372036854775808:3';
+	;BEGIN;
+	;SELECT txid_current_if_assigned() IS NULL;
+	;SELECT txid_current() 
+	;SELECT txid_current_if_assigned() IS NOT DISTINCT FROM BIGINT '1000';
+	;COMMIT;
+	;BEGIN;
+	;SELECT txid_current() AS committed 
+	;COMMIT;
+	;BEGIN;
+	;SELECT txid_current() AS rolledback 
+	;ROLLBACK;
+	;BEGIN;
+	;SELECT txid_current() AS inprogress 
+	;SELECT txid_status(1004) AS committed;
+	;SELECT txid_status(1006) AS rolledback;
+	;SELECT txid_status(1009) AS inprogress;
+	;SELECT txid_status(1);
+	;SELECT txid_status(2);
+	;SELECT txid_status(3);
+	;COMMIT;
+	;BEGIN;
+	;CREATE FUNCTION test_future_xid_status(bigint)
+	RETURNS void
+	LANGUAGE plpgsql
+	AS
+	$$
+	BEGIN
+	  PERFORM txid_status($1);
+	  RAISE EXCEPTION 'didn''t ERROR at xid in the future as expected';
+	EXCEPTION
+	  WHEN invalid_parameter_value THEN
+	    RAISE NOTICE 'Got expected error for xid in the future';
+	END;
+	$$;
+	;SELECT test_future_xid_status(1009 + 10000);
+	;ROLLBACK;
+	;
+2022-08-01 17:08:45.798 UTC [53854] WARNING:  there is no transaction in progress
+2022-08-01 17:08:45.799 UTC [53854] ERROR:  relation "tab_2" does not exist at character 13
+2022-08-01 17:08:45.799 UTC [53854] STATEMENT:  INSERT INTO tab_2 SELECT generate_series(1,10)
+	;
+2022-08-01 17:08:45.799 UTC [53854] WARNING:  there is no transaction in progress
+2022-08-01 17:08:45.800 UTC [53854] ERROR:  relation "test_tab" does not exist at character 22
+2022-08-01 17:08:45.800 UTC [53854] STATEMENT:  SELECT count(*) FROM test_tab;
+	;
+2022-08-01 17:08:45.800 UTC [53854] WARNING:  there is no transaction in progress
+2022-08-01 17:08:45.802 UTC [53854] ERROR:  relation "tab1" does not exist at character 38
+2022-08-01 17:08:45.802 UTC [53854] STATEMENT:  SELECT count(*), min(a), max(a) FROM tab1
+	;
+2022-08-01 17:08:45.802 UTC [53854] WARNING:  there is no transaction in progress
+2022-08-01 17:08:45.832 UTC [52461] LOG:  server process (PID 53854) was terminated by signal 11: Segmentation fault
+2022-08-01 17:08:45.832 UTC [52461] LOG:  terminating any other active server processes
+2022-08-01 17:08:45.839 UTC [52461] LOG:  all server processes terminated; reinitializing
+2022-08-01 17:08:45.854 UTC [53995] LOG:  database system was interrupted; last known up at 2022-08-01 17:08:45 UTC
+2022-08-01 17:08:45.855 UTC [53996] FATAL:  the database system is in recovery mode
+2022-08-01 17:08:45.857 UTC [53999] FATAL:  the database system is in recovery mode
+2022-08-01 17:08:45.859 UTC [54000] FATAL:  the database system is in recovery mode
+2022-08-01 17:08:45.865 UTC [52461] LOG:  received smart shutdown request
+2022-08-01 17:08:45.866 UTC [53995] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 17:08:45.867 UTC [53995] LOG:  redo starts at 0/8003368
+2022-08-01 17:08:45.871 UTC [52461] LOG:  abnormal database system shutdown

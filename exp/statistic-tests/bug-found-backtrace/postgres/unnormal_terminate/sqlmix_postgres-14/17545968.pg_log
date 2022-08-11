@@ -1,0 +1,111 @@
+	DROP TABLE sqlsim4 CASCADE;
+2022-08-01 21:50:34.727 UTC [91508] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-01 21:50:34.727 UTC [91508] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct a,b,c)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c),
+	         generate_series(1,3) i;
+2022-08-01 21:50:34.727 UTC [91508] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-01 21:50:34.727 UTC [91508] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct a,b,c order by b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c),
+	         generate_series(1,3) i;
+2022-08-01 21:50:34.728 UTC [91508] ERROR:  relation "sqlsim12" does not exist at character 80
+2022-08-01 21:50:34.728 UTC [91508] STATEMENT:  
+	
+	CREATE FUNCTION voidtest4(a int) RETURNS VOID LANGUAGE SQL AS
+	$$ INSERT INTO sqlsim12 VALUES(a - 1) RETURNING sqlsim13 $$;
+2022-08-01 21:50:34.728 UTC [91508] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-01 21:50:34.728 UTC [91508] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,b,c order by c using ~<~)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-01 21:50:34.728 UTC [91508] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-01 21:50:34.728 UTC [91508] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct a,b,c order by a,c using ~<~,b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c),
+	         generate_series(1,2) i;
+2022-08-01 21:50:34.728 UTC [91508] ERROR:  view "agg_view1" does not exist
+2022-08-01 21:50:34.728 UTC [91508] STATEMENT:  drop view agg_view1;
+2022-08-01 21:50:34.728 UTC [91508] ERROR:  role "regress_unpriv_user" does not exist
+2022-08-01 21:50:34.728 UTC [91508] STATEMENT:  
+	DROP USER regress_unpriv_user;
+2022-08-01 21:50:34.735 UTC [91508] ERROR:  column "d4_primary2" does not exist at character 32
+2022-08-01 21:50:34.735 UTC [91508] STATEMENT:  create table sqlsim2 as
+	select d4_primary2%10000 as sqlsim4, sum(d4_primary2::numeric) as sqlsim3, count(*) as sqlsim5
+	  from d4_primary1_pkey group by d4_primary2%10000;
+2022-08-01 21:50:34.738 UTC [91508] ERROR:  relation "d4_primary2_pkey" does not exist at character 16
+2022-08-01 21:50:34.738 UTC [91508] STATEMENT:  (select * from d4_primary2_pkey except select * from d4_primary2_pkey)
+	  union all
+	(select * from d4_primary2_pkey except select * from d4_primary2_pkey);
+2022-08-01 21:50:34.740 UTC [91508] WARNING:  there is no transaction in progress
+2022-08-01 21:50:34.751 UTC [91508] ERROR:  invalid name syntax
+2022-08-01 21:50:34.751 UTC [91508] STATEMENT:  SELECT to_regrole('foo.bar');
+2022-08-01 21:50:34.751 UTC [91508] ERROR:  invalid name syntax
+2022-08-01 21:50:34.751 UTC [91508] STATEMENT:  SELECT to_regrole('foo.bar');
+2022-08-01 21:50:34.751 UTC [91508] WARNING:  there is no transaction in progress
+=================================================================
+==91508==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd5799b9b0 sp 0x7ffd5799b9a8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fcbc1746082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==91508==ABORTING
+2022-08-01 21:50:34.794 UTC [89793] LOG:  server process (PID 91508) was terminated by signal 6: Aborted
+2022-08-01 21:50:34.794 UTC [89793] LOG:  terminating any other active server processes
+2022-08-01 21:50:34.799 UTC [89793] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:50:34.813 UTC [91822] LOG:  database system was interrupted; last known up at 2022-08-01 21:50:09 UTC
+2022-08-01 21:50:34.814 UTC [91823] FATAL:  the database system is in recovery mode
+2022-08-01 21:50:34.816 UTC [91826] FATAL:  the database system is in recovery mode
+2022-08-01 21:50:34.818 UTC [91827] FATAL:  the database system is in recovery mode
+2022-08-01 21:50:34.823 UTC [89793] LOG:  received smart shutdown request
+2022-08-01 21:50:34.830 UTC [91822] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 21:50:34.831 UTC [91822] LOG:  redo starts at 0/209A9F0
+2022-08-01 21:50:34.835 UTC [89793] LOG:  abnormal database system shutdown

@@ -1,0 +1,2689 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000020,sig:06,src:016629+016471,time:6870268,execs:1087173,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [INSERT INTO t1 VALUES(1, NULL);]
+VDBE Trace:
+   0 Init             0    8    0               00 Start at 8
+   8 Transaction      0    1    1 0             01 usesStmtJournal=0
+   9 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; t1
+   2 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   3 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+   4 Null             0    3    0               00 r[3]=NULL
+REG[3] =  NULL
+   5 MakeRecord       2    2    4               00 r[4]=mkrec(r[2..3])
+REG[4] =  s3[030900...]
+   6 Insert           0    4    1 t1            39 intkey=r[1] data=r[4]
+REG[4] =  s3[030900...]
+REG[1] =  i:1
+   7 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    1 0             01 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+REG[2] =   t2[t1](8)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t7[trigger](8)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[t1](8)
+REG[1] =   s2[t1](8)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[table](8)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t7[trigger](8)
+REG[1] =   s5[table](8)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s2[t1](8)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:2
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s21[CREATE TABLE t1](8)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s2[t1](8)
+REG[5] =  i:2
+REG[6] =   s21[CREATE TABLE t1](8)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+SQL: [;
+ATTACH DATABASE 't.d' AS db5;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 String8          0    1    0 t.d           00 r[1]='t.d'
+REG[1] =   t3[t.d](8)
+   2 String8          0    2    0 db5           00 r[2]='db5'
+REG[2] =   t3[db5](8)
+   3 Null             0    3    0               00 r[3]=NULL
+REG[3] =  NULL
+   4 Function0        0    1    4 sqlite_attach(3) 03 r[4]=func(r[1..3])
+REG[1] =   t3[t.d](8)
+REG[2] =   t3[db5](8)
+REG[3] =  NULL
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      2    0    1 0             00 usesStmtJournal=0
+  12 TableLock        2    1    0 sqlite_master 00 iDb=2 root=1 write=0
+  13 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    2 5             00 root=1 iDb=2; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s12[sqlite_stat1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s39[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s12[sqlite_stat1](8)
+REG[2] =  i:2
+REG[3] =   s39[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   10    0               00 Start at 10
+  10 Transaction      2    0    1 0             00 usesStmtJournal=0
+  11 TableLock        2    2    0 sqlite_stat1  00 iDb=2 root=2 write=0
+  12 Goto             0    1    0               00 
+   1 OpenRead         0    2    2 3             00 root=2 iDb=2; sqlite_stat1
+   2 Explain          2    0    0 SCAN TABLE sqlite_stat1 00 
+   3 Rewind           0    9    0               00 
+   9 Halt             0    0    0               00 
+REG[4] =  NULL
+   5 Expire           1    0    0               00 
+   6 Halt             0    0    0               00 
+SQL: [SELECT typeof(CAST(123.456 AS numeric));]
+VDBE Trace:
+   0 Init             0    5    0               00 Start at 5
+   5 Real             0    3    0 123.456       00 r[3]=123.456
+REG[3] =  r:123.456
+   6 Cast             3   67    0               00 affinity(r[3])
+REG[3] =  r:123.456
+   7 Function0        1    3    2 typeof(1)     01 r[2]=func(r[3])
+REG[3] =  r:123.456
+REG[2] =   t4[real](8)
+   8 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             2    1    0               00 r[1]=r[2]
+REG[1] =   t4[real](8)
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t4[real](8)
+   4 Halt             0    0    0               00 
+SQL: [;;
+SELECT name, rootpage, sql FROM 'temp'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      1    0    0 0             01 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+REG[2] =   t2[t1](8)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t7[trigger](8)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+  14 Halt             0    0    0               00 
+SQL: [CREATE INDEX x ON t1(b);]
+VDBE Trace:
+   0 Init             0   33    0               00 Start at 33
+  33 Transaction      0    1    1 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Noop             0   32    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+REG[1] =  i:3
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+REG[2] =  i:2
+   5 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t5[index](8)
+   6 String8          0    4    0 x             00 r[4]='x'
+REG[4] =   t1[x](8)
+   7 String8          0    5    0 t1            00 r[5]='t1'
+REG[5] =   t2[t1](8)
+   8 Copy             1    6    0               00 r[6]=r[1]
+REG[6] =  i:3
+   9 String8          0    7    0 CREATE INDEX x ON t1(b) 00 r[7]='CREATE INDEX x ON t1(b)'
+REG[7] =   t23[CREATE INDEX x ](8)
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+REG[8] =  s38[06170F11013B696E6465787874310343.....;indexxt1.C]
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+REG[8] =  s38[06170F11013B696E6465787874310343.....;indexxt1.C]
+REG[2] =  i:2
+  12 SorterOpen       3    0    1 k(2,,)        00 
+  13 OpenRead         1    2    0 2             00 root=2 iDb=0; t1
+  14 Rewind           1   20    0               00 
+  15 Column           1    1   10               00 r[10]=t1.b
+REG[10] =  NULL
+  16 Rowid            1   11    0               00 r[11]=rowid
+REG[11] =  i:1
+  17 MakeRecord      10    2    9               00 r[9]=mkrec(r[10..11])
+REG[9] =  s3[030009...]
+  18 SorterInsert     3    9    0               00 key=r[9]
+REG[9] =  s3[030009...]
+  19 Next             1   15    0               00 
+  20 OpenWrite        2    1    0 k(2,,)        11 root=1 iDb=0
+  21 SorterSort       3   26    0               00 
+  22 SorterData       3    9    2               00 r[9]=data
+  23 SeekEnd          2    0    0               00 
+  24 IdxInsert        2    9    0               10 key=r[9]
+REG[9] =  s3[030009...]
+  25 SorterNext       3   22    0               00 
+  26 Close            1    0    0               00 
+  27 Close            2    0    0               00 
+  28 Close            3    0    0               00 
+  29 SetCookie        0    1    2               00 
+  30 ParseSchema      0    0    0 name='x' AND type='index' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    2 0             00 usesStmtJournal=0
+  16 String8          0    2    0 x             00 r[2]='x'
+REG[2] =   t1[x](8)
+  17 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t5[index](8)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t1[x](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[x](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t1[x](8)
+REG[1] =   s1[x](8)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[index](8)
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+REG[3] =   t5[index](8)
+REG[1] =   s5[index](8)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s1[x](8)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:3
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s23[CREATE INDEX x ](8)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s1[x](8)
+REG[5] =  i:3
+REG[6] =   s23[CREATE INDEX x ](8)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  31 Expire           0    1    0               00 
+  32 Halt             0    0    0               00 
+SQL: [;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    2 0             01 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+REG[2] =   t2[t1](8)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t7[trigger](8)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[t1](8)
+REG[1] =   s2[t1](8)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[table](8)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t7[trigger](8)
+REG[1] =   s5[table](8)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s2[t1](8)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:2
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s21[CREATE TABLE t1](8)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s2[t1](8)
+REG[5] =  i:2
+REG[6] =   s21[CREATE TABLE t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[t1](8)
+REG[1] =   s2[t1](8)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[index](8)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t7[trigger](8)
+REG[1] =   s5[index](8)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s1[x](8)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:3
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s23[CREATE INDEX x ](8)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s1[x](8)
+REG[5] =  i:3
+REG[6] =   s23[CREATE INDEX x ](8)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+SQL: [CREATE INDEX t0st ON t1(b,b,b,b,b,b,b,b);]
+VDBE Trace:
+   0 Init             0   40    0               00 Start at 40
+  40 Transaction      0    1    2 0             01 usesStmtJournal=0
+  41 Goto             0    1    0               00 
+   1 Noop             0   39    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+REG[1] =  i:4
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+REG[2] =  i:3
+   5 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t5[index](8)
+   6 String8          0    4    0 t0st          00 r[4]='t0st'
+REG[4] =   t4[t0st](8)
+   7 String8          0    5    0 t1            00 r[5]='t1'
+REG[5] =   t2[t1](8)
+   8 Copy             1    6    0               00 r[6]=r[1]
+REG[6] =  i:4
+   9 String8          0    7    0 CREATE INDEX t0st ON t1(b,b,b,b,b,b,b,b) 00 r[7]='CREATE INDEX t0st ON t1(b,b,b,b,b,b,b,b)'
+REG[7] =   t40[CREATE INDEX t0](8)
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+REG[8] =  s58[06171511015D696E6465787430737474.....]indext0stt]
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+REG[8] =  s58[06171511015D696E6465787430737474.....]indext0stt]
+REG[2] =  i:3
+  12 SorterOpen       3    0    8 k(9,,,,,,,,,) 00 
+  13 OpenRead         1    2    0 2             00 root=2 iDb=0; t1
+  14 Rewind           1   27    0               00 
+  15 Column           1    1   10               00 r[10]=t1.b
+REG[10] =  NULL
+  16 Column           1    1   11               00 r[11]=t1.b
+REG[11] =  NULL
+  17 Column           1    1   12               00 r[12]=t1.b
+REG[12] =  NULL
+  18 Column           1    1   13               00 r[13]=t1.b
+REG[13] =  NULL
+  19 Column           1    1   14               00 r[14]=t1.b
+REG[14] =  NULL
+  20 Column           1    1   15               00 r[15]=t1.b
+REG[15] =  NULL
+  21 Column           1    1   16               00 r[16]=t1.b
+REG[16] =  NULL
+  22 Column           1    1   17               00 r[17]=t1.b
+REG[17] =  NULL
+  23 Rowid            1   18    0               00 r[18]=rowid
+REG[18] =  i:1
+  24 MakeRecord      10    9    9               00 r[9]=mkrec(r[10..18])
+REG[9] =  s10[0A000000000000000009..........]
+  25 SorterInsert     3    9    0               00 key=r[9]
+REG[9] =  s10[0A000000000000000009..........]
+  26 Next             1   15    0               00 
+  27 OpenWrite        2    1    0 k(9,,,,,,,,,) 11 root=1 iDb=0
+  28 SorterSort       3   33    0               00 
+  29 SorterData       3    9    2               00 r[9]=data
+  30 SeekEnd          2    0    0               00 
+  31 IdxInsert        2    9    0               10 key=r[9]
+REG[9] =  s10[0A000000000000000009..........]
+  32 SorterNext       3   29    0               00 
+  33 Close            1    0    0               00 
+  34 Close            2    0    0               00 
+  35 Close            3    0    0               00 
+  36 SetCookie        0    1    3               00 
+  37 ParseSchema      0    0    0 name='t0st' AND type='index' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    3 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t0st          00 r[2]='t0st'
+REG[2] =   t4[t0st](8)
+  17 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t5[index](8)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t0st](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[x](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t0st](8)
+REG[1] =   s1[x](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s4[t0st](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t0st](8)
+REG[1] =   s4[t0st](8)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[index](8)
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+REG[3] =   t5[index](8)
+REG[1] =   s5[index](8)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s4[t0st](8)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:4
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s40[CREATE INDEX t0](8)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s4[t0st](8)
+REG[5] =  i:4
+REG[6] =   s40[CREATE INDEX t0](8)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  38 Expire           0    1    0               00 
+  39 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      0    0    3 0             01 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[x](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s23[CREATE INDEX x ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[x](8)
+REG[2] =  i:3
+REG[3] =   s23[CREATE INDEX x ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s4[t0st](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE INDEX t0](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s4[t0st](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE INDEX t0](8)
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+SQL: [;
+INSERT INTO t1 SELECT b+1, b||b FROM t1;]
+VDBE Trace:
+   0 Init             0   48    0               00 Start at 48
+  48 Transaction      0    1    3 0             01 usesStmtJournal=0
+  49 Integer          1    6    0               00 r[6]=1
+REG[6] =  i:1
+  50 Goto             0    1    0               00 
+   1 InitCoroutine    4   13    2               00 
+  13 OpenEphemeral    2    2    0               00 nColumn=2
+  14 Yield            4   19    0               00 
+REG[4] =  i:1
+REG[4] =  i:14
+   2 OpenRead         1    3    0 k(2,,)        00 root=3 iDb=0; x
+   3 Explain          3    0    0 SCAN TABLE t1 USING COVERING INDEX x 00 
+   4 Rewind           1   12    5 0             00 
+   5 Column           1    0    5               00 r[5]=t1.b
+REG[5] =  NULL
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:1
+REG[5] =  NULL
+REG[2] =  NULL
+   7 Column           1    0    5               00 r[5]=t1.b
+REG[5] =  NULL
+   8 Column           1    0    7               00 r[7]=t1.b
+REG[7] =  NULL
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  NULL
+REG[5] =  NULL
+REG[3] =  NULL
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s3[030000...]
+  16 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  17 Insert           2    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s3[030000...]
+REG[9] =  i:1
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             1    5    0               01 
+  12 EndCoroutine     4    0    0               00 
+REG[4] =  i:14
+  19 OpenWrite        3    2    0 2             00 root=2 iDb=0; t1
+  20 OpenWrite        4    4    0 k(9,,,,,,,,,) 00 root=4 iDb=0; t0st
+  21 OpenWrite        5    3    0 k(2,,)        00 root=3 iDb=0; x
+  22 Rewind           2   46    0               00 
+  23 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:2
+  24 Column           2    0    2               00 r[2]=
+REG[2] =  NULL
+  25 Column           2    1    3               00 r[3]=
+REG[3] =  NULL
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =  NULL
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =  NULL
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =  NULL
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =  NULL
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =  NULL
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  NULL
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  NULL
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  NULL
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:2
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s11[0A00000000000000000102...........]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  NULL
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:2
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s4[03000102....]
+  41 IdxInsert        4   10   11 9             10 key=r[10]
+REG[10] =  s11[0A00000000000000000102...........]
+  42 IdxInsert        5   20   21 2             10 key=r[20]
+REG[20] =  s4[03000102....]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s3[030000...]
+  44 Insert           3    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s3[030000...]
+REG[1] =  i:2
+  45 Next             2   23    0               00 
+  46 Close            2    0    0               00 
+  47 Halt             0    0    0               00 
+SQL: [WITH rows(i, j) AS (
+        SELECT 1, 1 UNION ALL SELECT i+1, j+i FROM rows WHERE i<10
+    )
+    INSERT INTO t1 SELECT * FROM rows
+  ;]
+VDBE Trace:
+   0 Init             0   68    0               00 Start at 68
+  68 Transaction      0    1    3 0             01 usesStmtJournal=0
+  69 Integer         10   13    0               00 r[13]=10
+REG[13] =  i:10
+  70 Integer          1   14    0               00 r[14]=1
+REG[14] =  i:1
+  71 Goto             0    1    0               00 
+   1 InitCoroutine    4   42    2               00 
+  42 OpenWrite        3    2    0 2             00 root=2 iDb=0; t1
+  43 OpenWrite        4    4    0 k(9,,,,,,,,,) 00 root=4 iDb=0; t0st
+  44 OpenWrite        5    3    0 k(2,,)        00 root=3 iDb=0; x
+  45 Yield            4   67    0               00 
+REG[4] =  i:1
+REG[4] =  i:45
+   2 InitCoroutine    5   34    3               00 rows
+  34 Explain         34    0    0 SCAN SUBQUERY 2 00 
+  35 InitCoroutine    5    0    3               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:2
+REG[5] =  i:36
+   3 Explain          3    0    0 CO-ROUTINE 2  00 
+   4 OpenPseudo       1    6    2               00 2 columns in r[6]
+   5 OpenEphemeral    2    2    0               00 nColumn=2; Queue table
+   6 Explain          6    3    0 SETUP         00 
+   7 Explain          7    6    0 SCAN CONSTANT ROW 00 
+   8 Integer          1    7    0               00 r[7]=1
+REG[7] =  i:1
+   9 Integer          1    8    0               00 r[8]=1
+REG[8] =  i:1
+  10 MakeRecord       7    2    9               00 r[9]=mkrec(r[7..8])
+REG[9] =  s3[030909...]
+  11 NewRowid         2   10    0               00 r[10]=rowid
+REG[10] =  i:1
+  12 Insert           2    9   10               08 intkey=r[10] data=r[9]
+REG[9] =  s3[030909...]
+REG[10] =  i:1
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s3[030909...]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:1
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:1
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:1
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:1
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:3
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:1
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:1
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:1
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:1
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:1
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:1
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:1
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:1
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:3
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s11[0A09090909090909090103...........]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:1
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:3
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s4[03090103....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s11[0A09090909090909090103...........]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s4[03090103....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s3[030909...]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s3[030909...]
+REG[1] =  i:3
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:1
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:1
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:1
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:1
+REG[7] =  i:2
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:1
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:1
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:1
+REG[9] =  i:1
+REG[8] =  i:2
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010202.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010202.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010202.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:2
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:2
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:2
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:2
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:4
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:2
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:2
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:2
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:2
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:2
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:2
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:2
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:2
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:4
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101020202020202................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:2
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:4
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301010204.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101020202020202................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301010204.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010202.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010202.....]
+REG[1] =  i:4
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:2
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:2
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:2
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:2
+REG[7] =  i:3
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:2
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:2
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:2
+REG[9] =  i:2
+REG[8] =  i:4
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010304.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010304.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010304.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:3
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:4
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:3
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:4
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:5
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:4
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:4
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:4
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:4
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:4
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:4
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:4
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:4
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:5
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101040404040404................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:4
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:5
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301010405.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101040404040404................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301010405.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010304.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010304.....]
+REG[1] =  i:5
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:3
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:3
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:3
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:3
+REG[7] =  i:4
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:4
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:3
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:3
+REG[9] =  i:4
+REG[8] =  i:7
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010407.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010407.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010407.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:4
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:7
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:4
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:7
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:6
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:7
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:7
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:7
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:7
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:7
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:7
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:7
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:7
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:6
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101070707070707................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:7
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:6
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301010706.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101070707070707................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301010706.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010407.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010407.....]
+REG[1] =  i:6
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:4
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:4
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:4
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:4
+REG[7] =  i:5
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:7
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:4
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:4
+REG[9] =  i:7
+REG[8] =  i:11
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[030101050B.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[030101050B.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[030101050B.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:5
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:11
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:5
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:11
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:7
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:11
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:11
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:11
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:11
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:11
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:11
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:11
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:11
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:7
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A0101010101010101010B0B0B0B0B0B................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:11
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:7
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301010B07.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A0101010101010101010B0B0B0B0B0B................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301010B07.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[030101050B.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[030101050B.....]
+REG[1] =  i:7
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:5
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:5
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:5
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:5
+REG[7] =  i:6
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:11
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:5
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:5
+REG[9] =  i:11
+REG[8] =  i:16
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010610.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010610.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010610.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:6
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:16
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:6
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:16
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:8
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:16
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:16
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:16
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:16
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:16
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:16
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:16
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:16
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:8
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101101010101010................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:16
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:8
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301011008.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101101010101010................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301011008.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010610.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010610.....]
+REG[1] =  i:8
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:6
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:6
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:6
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:6
+REG[7] =  i:7
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:16
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:6
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:6
+REG[9] =  i:16
+REG[8] =  i:22
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010716.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010716.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010716.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:7
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:22
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:7
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:22
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:9
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:22
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:22
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:22
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:22
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:22
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:22
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:22
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:22
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:9
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101161616161616................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:22
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:9
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301011609.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101161616161616................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301011609.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010716.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010716.....]
+REG[1] =  i:9
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:7
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:7
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:7
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:7
+REG[7] =  i:8
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:22
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:7
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:7
+REG[9] =  i:22
+REG[8] =  i:29
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[030101081D.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[030101081D.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[030101081D.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:8
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:29
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:8
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:29
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:10
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:29
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:29
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:29
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:29
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:29
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:29
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:29
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:29
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:10
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A0101010101010101011D1D1D1D1D1D................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:29
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:10
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301011D0A.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A0101010101010101011D1D1D1D1D1D................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301011D0A.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[030101081D.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[030101081D.....]
+REG[1] =  i:10
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:8
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:8
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:8
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:8
+REG[7] =  i:9
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:29
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:8
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:8
+REG[9] =  i:29
+REG[8] =  i:37
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010925....%]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010925....%]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010925....%]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:9
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:37
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:9
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:37
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:11
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:37
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:37
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:37
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:37
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:37
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:37
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:37
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:37
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:11
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A010101010101010101252525252525..........%%%%%%]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:37
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:11
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[030101250B...%.]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A010101010101010101252525252525..........%%%%%%]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[030101250B...%.]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010925....%]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010925....%]
+REG[1] =  i:11
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:9
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:9
+  24 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:9
+  25 Add             14    9    7               00 r[7]=r[14]+r[9]
+REG[14] =  i:1
+REG[9] =  i:9
+REG[7] =  i:10
+  26 Column           1    1    9               00 r[9]=rows.j
+REG[9] =  i:37
+  27 Column           1    0   10               00 r[10]=rows.i
+REG[10] =  i:9
+  28 Add             10    9    8               00 r[8]=r[10]+r[9]
+REG[10] =  i:9
+REG[9] =  i:37
+REG[8] =  i:46
+  29 MakeRecord       7    2   10               00 r[10]=mkrec(r[7..8])
+REG[10] =  s5[0301010A2E.....]
+  30 NewRowid         2    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  31 Insert           2   10    9               08 intkey=r[9] data=r[10]
+REG[10] =  s5[0301010A2E.....]
+REG[9] =  i:1
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  14 NullRow          1    0    0               00 
+  15 RowData          2    6    0               00 r[6]=data
+REG[6] =  s5[0301010A2E.....]
+  16 Delete           2    0    0               00 
+  17 Column           1    0   11               00 r[11]=
+REG[11] =  i:10
+  18 Column           1    1   12               00 r[12]=
+REG[12] =  i:46
+  19 Yield            5    0    0               00 
+REG[5] =  i:36
+REG[5] =  i:19
+  37 Copy            11    2    0               00 r[2]=r[11]; rows.i
+REG[2] =  i:10
+  38 Copy            12    3    0               00 r[3]=r[12]; rows.j
+REG[3] =  i:46
+  39 Yield            4    0    0               00 
+REG[4] =  i:45
+REG[4] =  i:39
+  46 NewRowid         3    1    0               00 r[1]=rowid
+REG[1] =  i:12
+  47 Noop             0    0    0               00 uniqueness check for t0st
+  48 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  i:46
+  49 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  i:46
+  50 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  i:46
+  51 SCopy            3   19    0               00 r[19]=r[3]; b
+REG[19] =  i:46
+  52 SCopy            3   20    0               00 r[20]=r[3]; b
+REG[20] =  i:46
+  53 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  i:46
+  54 SCopy            3   22    0               00 r[22]=r[3]; b
+REG[22] =  i:46
+  55 SCopy            3   23    0               00 r[23]=r[3]; b
+REG[23] =  i:46
+  56 IntCopy          1   24    0               00 r[24]=r[1]; rowid
+REG[24] =  i:12
+  57 MakeRecord      16    9   15               00 r[15]=mkrec(r[16..24]); for t0st
+REG[15] =  s19[0A0101010101010101012E2E2E2E2E2E................]
+  58 Noop             0    0    0               00 uniqueness check for x
+  59 SCopy            3   26    0               00 r[26]=r[3]; b
+REG[26] =  i:46
+  60 IntCopy          1   27    0               00 r[27]=r[1]; rowid
+REG[27] =  i:12
+  61 MakeRecord      26    2   25               00 r[25]=mkrec(r[26..27]); for x
+REG[25] =  s5[0301012E0C.....]
+  62 IdxInsert        4   15   16 9             10 key=r[15]
+REG[15] =  s19[0A0101010101010101012E2E2E2E2E2E................]
+  63 IdxInsert        5   25   26 2             10 key=r[25]
+REG[25] =  s5[0301012E0C.....]
+  64 MakeRecord       2    2   28               00 r[28]=mkrec(r[2..3])
+REG[28] =  s5[0301010A2E.....]
+  65 Insert           3   28    1 t1            39 intkey=r[1] data=r[28]
+REG[28] =  s5[0301010A2E.....]
+REG[1] =  i:12
+  66 Goto             0   45    0               00 
+  45 Yield            4   67    0               00 
+REG[4] =  i:39
+REG[4] =  i:45
+  40 Goto             0   36    0               00 
+  36 Yield            5   41    0               00 next row of rows
+REG[5] =  i:19
+REG[5] =  i:36
+  20 Explain         20    3    0 RECURSIVE STEP 00 
+  21 Explain         21   20    0 SCAN TABLE rows 00 
+  22 Column           1    0    9               00 r[9]=rows.i
+REG[9] =  i:10
+  23 Ge              13   32    9 (BINARY)      51 if r[9]>=r[13] goto 32
+REG[13] =  i:10
+REG[9] =  i:10
+  32 Goto             0   13    0               00 
+  13 Rewind           2   33    0               00 
+  33 EndCoroutine     5    0    0               00 
+REG[5] =  i:36
+  41 EndCoroutine     4    0    0               00 
+REG[4] =  i:45
+  67 Halt             0    0    0               00 
+SQL: [UPDATE t1 SET a=a+1 WHERE a<5;]
+VDBE Trace:
+   0 Init             0   17    0               00 Start at 17
+  17 Transaction      0    1    3 0             01 usesStmtJournal=0
+  18 Integer          5    6    0               00 r[6]=5
+REG[6] =  i:5
+  19 Integer          1    7    0               00 r[7]=1
+REG[7] =  i:1
+  20 Goto             0    1    0               00 
+   1 Null             0    1    2               00 r[1..2]=NULL
+REG[1] =  NULL
+   2 OpenWrite        0    2    0 2             00 root=2 iDb=0; t1
+   3 Explain          3    0    0 SCAN TABLE t1 00 
+   4 Rewind           0   16    0               00 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:1
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:1
+   7 Rowid            0    2    0               00 r[2]=rowid
+REG[2] =  i:1
+   8 Once             0    9    0               00 
+   9 IsNull           2   16    0               00 if r[2]==NULL goto 16
+REG[2] =  i:1
+  10 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:1
+  11 Add              7    5    3               00 r[3]=r[7]+r[5]
+REG[7] =  i:1
+REG[5] =  i:1
+REG[3] =  i:2
+  12 Column           0    1    4               00 r[4]=t1.b
+REG[4] =  NULL
+  13 MakeRecord       3    2    5               00 r[5]=mkrec(r[3..4])
+REG[5] =  s4[03010002....]
+  14 Insert           0    5    2 t1            07 intkey=r[2] data=r[5]
+REG[5] =  s4[03010002....]
+REG[2] =  i:1
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  NULL
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  NULL
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:1
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:1
+   7 Rowid            0    2    0               00 r[2]=rowid
+REG[2] =  i:3
+   8 Once             1    9    0               00 
+   9 IsNull           2   16    0               00 if r[2]==NULL goto 16
+REG[2] =  i:3
+  10 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:1
+  11 Add              7    5    3               00 r[3]=r[7]+r[5]
+REG[7] =  i:1
+REG[5] =  i:1
+REG[3] =  i:2
+  12 Column           0    1    4               00 r[4]=t1.b
+REG[4] =  i:1
+  13 MakeRecord       3    2    5               00 r[5]=mkrec(r[3..4])
+REG[5] =  s4[03010902....]
+  14 Insert           0    5    2 t1            07 intkey=r[2] data=r[5]
+REG[5] =  s4[03010902....]
+REG[2] =  i:3
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:2
+   7 Rowid            0    2    0               00 r[2]=rowid
+REG[2] =  i:4
+   8 Once             1    9    0               00 
+   9 IsNull           2   16    0               00 if r[2]==NULL goto 16
+REG[2] =  i:4
+  10 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+  11 Add              7    5    3               00 r[3]=r[7]+r[5]
+REG[7] =  i:1
+REG[5] =  i:2
+REG[3] =  i:3
+  12 Column           0    1    4               00 r[4]=t1.b
+REG[4] =  i:2
+  13 MakeRecord       3    2    5               00 r[5]=mkrec(r[3..4])
+REG[5] =  s5[0301010302.....]
+  14 Insert           0    5    2 t1            07 intkey=r[2] data=r[5]
+REG[5] =  s5[0301010302.....]
+REG[2] =  i:4
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:3
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:3
+   7 Rowid            0    2    0               00 r[2]=rowid
+REG[2] =  i:5
+   8 Once             1    9    0               00 
+   9 IsNull           2   16    0               00 if r[2]==NULL goto 16
+REG[2] =  i:5
+  10 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:3
+  11 Add              7    5    3               00 r[3]=r[7]+r[5]
+REG[7] =  i:1
+REG[5] =  i:3
+REG[3] =  i:4
+  12 Column           0    1    4               00 r[4]=t1.b
+REG[4] =  i:4
+  13 MakeRecord       3    2    5               00 r[5]=mkrec(r[3..4])
+REG[5] =  s5[0301010404.....]
+  14 Insert           0    5    2 t1            07 intkey=r[2] data=r[5]
+REG[5] =  s5[0301010404.....]
+REG[2] =  i:5
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:4
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:4
+   7 Rowid            0    2    0               00 r[2]=rowid
+REG[2] =  i:6
+   8 Once             1    9    0               00 
+   9 IsNull           2   16    0               00 if r[2]==NULL goto 16
+REG[2] =  i:6
+  10 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:4
+  11 Add              7    5    3               00 r[3]=r[7]+r[5]
+REG[7] =  i:1
+REG[5] =  i:4
+REG[3] =  i:5
+  12 Column           0    1    4               00 r[4]=t1.b
+REG[4] =  i:7
+  13 MakeRecord       3    2    5               00 r[5]=mkrec(r[3..4])
+REG[5] =  s5[0301010507.....]
+  14 Insert           0    5    2 t1            07 intkey=r[2] data=r[5]
+REG[5] =  s5[0301010507.....]
+REG[2] =  i:6
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:5
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:5
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:6
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:6
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:7
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:7
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:8
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:8
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:9
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:9
+  15 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:10
+   6 Ge               6   15    5 (BINARY)      51 if r[5]>=r[6] goto 15
+REG[6] =  i:5
+REG[5] =  i:10
+  15 Next             0    5    0               01 
+  16 Halt             0    0    0               00 
+SQL: [;
+INSERT INTO t1 SELECT a+2, a||a FROM t1;]
+VDBE Trace:
+   0 Init             0   48    0               00 Start at 48
+  48 Transaction      0    1    3 0             01 usesStmtJournal=0
+  49 Integer          2    6    0               00 r[6]=2
+REG[6] =  i:2
+  50 Goto             0    1    0               00 
+   1 InitCoroutine    4   13    2               00 
+  13 OpenEphemeral    1    2    0               00 nColumn=2
+  14 Yield            4   19    0               00 
+REG[4] =  i:1
+REG[4] =  i:14
+   2 OpenRead         0    2    0 1             00 root=2 iDb=0; t1
+   3 Explain          3    0    0 SCAN TABLE t1 00 
+   4 Rewind           0   12    0               00 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:2
+REG[2] =  i:4
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:2
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:2
+REG[5] =  i:2
+REG[3] =   s2[22](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111043232....22]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:1
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111043232....22]
+REG[9] =  i:1
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  NULL
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  NULL
+REG[2] =  NULL
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  NULL
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  NULL
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  NULL
+REG[5] =  NULL
+REG[3] =  NULL
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s3[030000...]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:2
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s3[030000...]
+REG[9] =  i:2
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:2
+REG[2] =  i:4
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:2
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:2
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:2
+REG[5] =  i:2
+REG[3] =   s2[22](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111043232....22]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:3
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111043232....22]
+REG[9] =  i:3
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:3
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:3
+REG[2] =  i:5
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:3
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:3
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:3
+REG[5] =  i:3
+REG[3] =   s2[33](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111053333....33]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:4
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111053333....33]
+REG[9] =  i:4
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:4
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:4
+REG[2] =  i:6
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:4
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:4
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:4
+REG[5] =  i:4
+REG[3] =   s2[44](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111063434....44]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:5
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111063434....44]
+REG[9] =  i:5
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:5
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:5
+REG[2] =  i:7
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:5
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:5
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:5
+REG[5] =  i:5
+REG[3] =   s2[55](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111073535....55]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:6
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111073535....55]
+REG[9] =  i:6
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:5
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:5
+REG[2] =  i:7
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:5
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:5
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:5
+REG[5] =  i:5
+REG[3] =   s2[55](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111073535....55]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:7
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111073535....55]
+REG[9] =  i:7
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:6
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:6
+REG[2] =  i:8
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:6
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:6
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:6
+REG[5] =  i:6
+REG[3] =   s2[66](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111083636....66]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:8
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111083636....66]
+REG[9] =  i:8
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:7
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:7
+REG[2] =  i:9
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:7
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:7
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:7
+REG[5] =  i:7
+REG[3] =   s2[77](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[030111093737....77]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:9
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[030111093737....77]
+REG[9] =  i:9
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:8
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:8
+REG[2] =  i:10
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:8
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:8
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:8
+REG[5] =  i:8
+REG[3] =   s2[88](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[0301110A3838....88]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:10
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[0301110A3838....88]
+REG[9] =  i:10
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:9
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:9
+REG[2] =  i:11
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:9
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:9
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:9
+REG[5] =  i:9
+REG[3] =   s2[99](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s6[0301110B3939....99]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:11
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s6[0301110B3939....99]
+REG[9] =  i:11
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+   5 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:10
+   6 Add              6    5    2               00 r[2]=r[6]+r[5]
+REG[6] =  i:2
+REG[5] =  i:10
+REG[2] =  i:12
+   7 Column           0    0    5               00 r[5]=t1.a
+REG[5] =  i:10
+   8 Column           0    0    7               00 r[7]=t1.a
+REG[7] =  i:10
+   9 Concat           7    5    3               00 r[3]=r[5]+r[7]
+REG[7] =  i:10
+REG[5] =  i:10
+REG[3] =   s4[1010](8)
+  10 Yield            4    0    0               00 
+REG[4] =  i:14
+REG[4] =  i:10
+  15 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+REG[8] =  s8[0301150C31303130....1010]
+  16 NewRowid         1    9    0               00 r[9]=rowid
+REG[9] =  i:12
+  17 Insert           1    8    9               00 intkey=r[9] data=r[8]
+REG[8] =  s8[0301150C31303130....1010]
+REG[9] =  i:12
+  18 Goto             0   14    0               00 
+  14 Yield            4   19    0               00 
+REG[4] =  i:10
+REG[4] =  i:14
+  11 Next             0    5    0               01 
+  12 EndCoroutine     4    0    0               00 
+REG[4] =  i:14
+  19 OpenWrite        2    2    0 2             00 root=2 iDb=0; t1
+  20 OpenWrite        3    4    0 k(9,,,,,,,,,) 00 root=4 iDb=0; t0st
+  21 OpenWrite        4    3    0 k(2,,)        00 root=3 iDb=0; x
+  22 Rewind           1   46    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:13
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:4
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[22](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[22](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[22](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[22](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[22](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[22](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[22](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[22](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[22](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:13
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101323232323232..........222222]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[22](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:13
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[03110132320D...22.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101323232323232..........222222]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[03110132320D...22.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111043232....22]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111043232....22]
+REG[1] =  i:13
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:14
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  NULL
+  25 Column           1    1    3               00 r[3]=
+REG[3] =  NULL
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =  NULL
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =  NULL
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =  NULL
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =  NULL
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =  NULL
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =  NULL
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =  NULL
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =  NULL
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:14
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s11[0A0000000000000000010E...........]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =  NULL
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:14
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s4[0300010E....]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s11[0A0000000000000000010E...........]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s4[0300010E....]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s3[030000...]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s3[030000...]
+REG[1] =  i:14
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:15
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:4
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[22](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[22](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[22](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[22](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[22](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[22](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[22](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[22](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[22](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:15
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101323232323232..........222222]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[22](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:15
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[03110132320F...22.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101323232323232..........222222]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[03110132320F...22.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111043232....22]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111043232....22]
+REG[1] =  i:15
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:16
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:5
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[33](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[33](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[33](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[33](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[33](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[33](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[33](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[33](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[33](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:16
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101333333333333..........333333]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[33](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:16
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101333310...33.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101333333333333..........333333]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101333310...33.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111053333....33]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111053333....33]
+REG[1] =  i:16
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:17
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:6
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[44](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[44](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[44](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[44](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[44](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[44](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[44](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[44](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[44](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:17
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101343434343434..........444444]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[44](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:17
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101343411...44.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101343434343434..........444444]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101343411...44.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111063434....44]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111063434....44]
+REG[1] =  i:17
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:18
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:7
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[55](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[55](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[55](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[55](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[55](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[55](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[55](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[55](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[55](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:18
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101353535353535..........555555]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[55](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:18
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101353512...55.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101353535353535..........555555]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101353512...55.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111073535....55]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111073535....55]
+REG[1] =  i:18
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:19
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:7
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[55](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[55](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[55](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[55](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[55](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[55](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[55](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[55](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[55](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:19
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101353535353535..........555555]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[55](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:19
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101353513...55.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101353535353535..........555555]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101353513...55.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111073535....55]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111073535....55]
+REG[1] =  i:19
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:20
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:8
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[66](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[66](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[66](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[66](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[66](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[66](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[66](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[66](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[66](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:20
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101363636363636..........666666]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[66](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:20
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101363614...66.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101363636363636..........666666]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101363614...66.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111083636....66]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111083636....66]
+REG[1] =  i:20
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:21
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:9
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[77](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[77](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[77](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[77](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[77](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[77](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[77](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[77](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[77](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:21
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101373737373737..........777777]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[77](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:21
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101373715...77.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101373737373737..........777777]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101373715...77.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[030111093737....77]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[030111093737....77]
+REG[1] =  i:21
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:22
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:10
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[88](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[88](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[88](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[88](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[88](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[88](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[88](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[88](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[88](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:22
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101383838383838..........888888]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[88](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:22
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101383816...88.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101383838383838..........888888]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101383816...88.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[0301110A3838....88]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[0301110A3838....88]
+REG[1] =  i:22
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:23
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:11
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s2[99](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e2[99](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e2[99](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e2[99](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e2[99](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e2[99](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e2[99](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e2[99](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e2[99](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:23
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s27[0A111111111111111101393939393939..........999999]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e2[99](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:23
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s6[031101393917...99.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s27[0A111111111111111101393939393939..........999999]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s6[031101393917...99.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s6[0301110B3939....99]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s6[0301110B3939....99]
+REG[1] =  i:23
+  45 Next             1   23    0               00 
+  23 NewRowid         2    1    0               00 r[1]=rowid
+REG[1] =  i:24
+  24 Column           1    0    2               00 r[2]=
+REG[2] =  i:12
+  25 Column           1    1    3               00 r[3]=
+REG[3] =   s4[1010](8)
+  26 Noop             0    0    0               00 uniqueness check for t0st
+  27 SCopy            3   11    0               00 r[11]=r[3]; b
+REG[11] =   e4[1010](8)
+  28 SCopy            3   12    0               00 r[12]=r[3]; b
+REG[12] =   e4[1010](8)
+  29 SCopy            3   13    0               00 r[13]=r[3]; b
+REG[13] =   e4[1010](8)
+  30 SCopy            3   14    0               00 r[14]=r[3]; b
+REG[14] =   e4[1010](8)
+  31 SCopy            3   15    0               00 r[15]=r[3]; b
+REG[15] =   e4[1010](8)
+  32 SCopy            3   16    0               00 r[16]=r[3]; b
+REG[16] =   e4[1010](8)
+  33 SCopy            3   17    0               00 r[17]=r[3]; b
+REG[17] =   e4[1010](8)
+  34 SCopy            3   18    0               00 r[18]=r[3]; b
+REG[18] =   e4[1010](8)
+  35 IntCopy          1   19    0               00 r[19]=r[1]; rowid
+REG[19] =  i:24
+  36 MakeRecord      11    9   10               00 r[10]=mkrec(r[11..19]); for t0st
+REG[10] =  s43[0A151515151515151501313031303130..........101010]
+  37 Noop             0    0    0               00 uniqueness check for x
+  38 SCopy            3   21    0               00 r[21]=r[3]; b
+REG[21] =   e4[1010](8)
+  39 IntCopy          1   22    0               00 r[22]=r[1]; rowid
+REG[22] =  i:24
+  40 MakeRecord      21    2   20               00 r[20]=mkrec(r[21..22]); for x
+REG[20] =  s8[0315013130313018...1010.]
+  41 IdxInsert        3   10   11 9             10 key=r[10]
+REG[10] =  s43[0A151515151515151501313031303130..........101010]
+  42 IdxInsert        4   20   21 2             10 key=r[20]
+REG[20] =  s8[0315013130313018...1010.]
+  43 MakeRecord       2    2    9               00 r[9]=mkrec(r[2..3])
+REG[9] =  s8[0301150C31303130....1010]
+  44 Insert           2    9    1 t1            39 intkey=r[1] data=r[9]
+REG[9] =  s8[0301150C31303130....1010]
+REG[1] =  i:24
+  45 Next             1   23    0               00 
+  46 Close            1    0    0               00 
+  47 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      0    0    3 0             01 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[x](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s23[CREATE INDEX x ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[x](8)
+REG[2] =  i:3
+REG[3] =   s23[CREATE INDEX x ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s4[t0st](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE INDEX t0](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s4[t0st](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE INDEX t0](8)
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007ff248ce2859 in __GI_abort () at abort.c:79
+#2  0x00007ff248ce2729 in __assert_fail_base (fmt=0x7ff248e78588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=<optimized out>)
+    at assert.c:92
+#3  0x00007ff248cf3fd6 in __GI___assert_fail (assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=0x223e82 "int sqlite3Select(Parse *, Select *, SelectDest *)") at assert.c:101
+#4  0x00000000002fcfa0 in sqlite3Select (pParse=0x7ffd270334c0, p=0x1c86f30, pDest=0x7ffd27031d58) at sqlite3.c:130468
+#5  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffd270334c0, pExpr=0x1c873e0) at sqlite3.c:99820
+#6  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffd270334c0, pExpr=0x1c873e0, target=7) at sqlite3.c:100770
+#7  0x00000000003790ab in codeEqualityTerm (pParse=0x7ffd270334c0, pTerm=0x1c8f300, pLevel=0x1c8f660, iEq=1, bRev=0, iTarget=7) at sqlite3.c:136648
+#8  0x000000000037a706 in codeAllEqualityTerms (pParse=0x7ffd270334c0, pLevel=0x1c8f660, bRev=0, nExtraReg=0, pzAff=0x7ffd270322d8) at sqlite3.c:136869
+#9  0x0000000000375cb8 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffd270334c0, v=0x1c91340, pWInfo=0x1c8f270, iLevel=1, pLevel=0x1c8f660, notReady=18446744073709551614) at sqlite3.c:137776
+#10 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffd270334c0, pTabList=0x1c98d20, pWhere=0x1c87890, pOrderBy=0x0, pResultSet=0x1c80cc0, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#11 0x00000000002fdcea in sqlite3Select (pParse=0x7ffd270334c0, p=0x1c87d40, pDest=0x7ffd270328b0) at sqlite3.c:130695
+#12 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffd27032ae0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffd270334c0) at sqlite3.c:151581
+#13 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffd27032ae0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#14 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffd270334c0, 
+    zSql=0x1c8096f ";;\nSELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE name='\226\061' AND type='table' ORDER BY rowid;;DROP TABLE IF EXISTS temp.docid;;\nSELECT name, rootpage, sql FROM \"main\".sqlite_master ORDER BY"..., pzErrMsg=0x7ffd270336a0) at sqlite3.c:154013
+#15 0x00000000002a1683 in sqlite3Prepare (db=0x1c79320, 
+    zSql=0x1c79e58 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1188, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffd270337d8, pzTail=0x7ffd270337c0) at sqlite3.c:124303
+#16 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x1c79320, 
+    zSql=0x1c79e58 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1188, prepFlags=128, pOld=0x0, ppStmt=0x7ffd270337d8, pzTail=0x7ffd270337c0) at sqlite3.c:124403
+#17 0x000000000029247f in sqlite3_prepare_v2 (db=0x1c79320, 
+    zSql=0x1c79e58 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1188, ppStmt=0x7ffd270337d8, pzTail=0x7ffd270337c0) at sqlite3.c:124487
+#18 0x0000000000256bd0 in main (argc=1, argv=0x7ffd27033988) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 4577] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

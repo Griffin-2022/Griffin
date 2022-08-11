@@ -1,0 +1,90 @@
+# name: test/sql/function/string/regex_replace.test
+# description: regex replace test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# standard replace
+;
+SELECT regexp_replace('foobarbaz', 'b..', 'X')
+;
+fooXbaz
+
+# global replace
+;
+SELECT regexp_replace('ana ana', 'ana', 'banana', 'g')
+;
+banana banana
+
+;
+SELECT regexp_replace('ANA ana', 'ana', 'banana', 'gi')
+;
+banana banana
+
+# case sensitivity
+;
+SELECT regexp_replace('ana', 'ana', 'banana', 'c')
+;
+banana
+
+;
+SELECT regexp_replace('ANA', 'ana', 'banana', 'i')
+;
+banana
+
+# literal match
+;
+SELECT regexp_replace('as^/$df', '^/$', '', 'l')
+;
+asdf
+
+;
+SELECT regexp_replace('as^/$df', '^/$', '')
+;
+as^/$df
+
+# dot matches newline
+;
+SELECT regexp_replace('hello
+world', '.*', 'x', 'sg')
+;
+x
+
+# the result here is a single row with a newline ('x\nx')
+# this is a bit complicated to check in sqllogictest, so we use a JOIN with a count
+# to verify the correct result
+;
+SELECT COUNT(*) FROM (SELECT 'x
+x') t1(a) JOIN (SELECT regexp_replace('hello
+world', '.*', 'x', 'ng')) t2(a) USING (a)
+;
+1
+
+# this also works with tables
+;
+CREATE TABLE test(v VARCHAR);
+
+;
+INSERT INTO test VALUES ('hello'), ('HELLO');
+
+;
+SELECT regexp_replace(v, 'h.*', 'world', 'i') FROM test ORDER BY v
+;
+world
+world
+
+;
+SELECT regexp_replace(v, 'h.*', 'world', 'c') FROM test ORDER BY v
+;
+HELLO
+world
+
+# we cannot use non-constant options (currently)
+;
+SELECT regexp_replace(v, 'h.*', 'world', v) FROM test ORDER BY v
+
+# throw on invalid options
+;
+SELECT regexp_replace('asdf', '.*SD.*', 'a', 'q')
+

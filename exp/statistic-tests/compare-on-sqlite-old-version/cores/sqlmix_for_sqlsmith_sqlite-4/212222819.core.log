@@ -1,0 +1,203 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000342,sig:06,src:019627+021507,time:10053404,execs:1698722,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;CREATE TABLE v0(v1 INTEGER PRIMARY KEY,v2);]
+VDBE Program Listing:
+   0 Init             0   32    0               00 Start at 32
+   1 ReadCookie       0    3    2               00 
+   2 If               3    5    0               00 
+   3 SetCookie        0    2    4               00 
+   4 SetCookie        0    5    1               00 
+   5 CreateTable      0    2    0               00 r[2]=root iDb=0
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+   8 Blob             6    3    0              00 r[3]= (len=6)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain          0    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 MustBeInt        1   18    0               00 
+  16 NotExists        1   18    1               00 intkey=r[1]; pk
+  17 Rowid            1    5    0               00 r[5]=rowid
+  18 Integer          0   12    0               00 r[12]=0
+  19 IsNull           5   28    0               00 if r[5]==NULL goto 28
+  20 String8          0    6    0 table         00 r[6]='table'
+  21 String8          0    7    0 v0            00 r[7]='v0'
+  22 String8          0    8    0 v0            00 r[8]='v0'
+  23 Copy             2    9    0               00 r[9]=r[2]
+  24 String8          0   10    0 CREATE TABLE v0(v1 INTEGER PRIMARY KEY,v2) 00 r[10]='CREATE TABLE v0(v1 INTEGER PRIMARY KEY,v2)'
+  25 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+  26 Insert           1   11    5               00 intkey=r[5] data=r[11]
+  27 AddImm          12    1    0               00 r[12]=r[12]+1
+  28 Close            1    0    0               00 
+  29 SetCookie        0    1    1               00 
+  30 ParseSchema      0    0    0 tbl_name='v0' AND type!='trigger' 00 
+  31 Halt             0    0    0               00 
+  32 Transaction      0    1    0 1             01 usesStmtJournal=0
+  33 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  34 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   16    0               00 Start at 16
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+  12 ResultRow        5    3    0               00 output=r[5..7]
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  16 Transaction      0    0    1 1             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 v0            00 r[2]='v0'
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+  20 Goto             0    1    0               00 
+SQL: [;INSERT INTO v0(v2) VALUES(1.23456);]
+VDBE Program Listing:
+   0 Init             0   12    0               00 Start at 12
+   1 Integer          0    4    0               00 r[4]=0
+   2 OpenWrite        0    2    0 2             00 root=2 iDb=0; v0
+   3 NewRowid         0    1    0               00 r[1]=rowid
+   4 SoftNull         2    0    0               00 r[2]=NULL
+   5 Real             0    3    0 1.23456       00 r[3]=1.23456
+   6 MakeRecord       2    2    5 D             00 r[5]=mkrec(r[2..3])
+   7 Insert           0    5    1 v0            1B intkey=r[1] data=r[5]
+   8 AddImm           4    1    0               00 r[4]=r[4]+1
+   9 Close            0    0    0               00 
+  10 ResultRow        4    1    0               00 output=r[4]
+  11 Halt             0    0    0               00 
+  12 Transaction      0    1    1 1             01 usesStmtJournal=0
+  13 TableLock        0    2    1 v0            00 iDb=0 root=2 write=1
+  14 Goto             0    1    0               00 
+SQL: [;PRAGMA sql_trace=off;]
+VDBE Program Listing:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT count(*) FROM v0 CROSS JOIN v0 
+
+;]
+VDBE Program Listing:
+   0 Init             0   17    0               00 Start at 17
+   1 Null             0    1    1               00 r[1..1]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; v0
+   3 OpenRead         1    2    0 0             00 root=2 iDb=0; v0
+   4 Explain          0    0    0 SCAN TABLE v0 00 
+   5 Rewind           0   11    0               00 
+   6 Explain          0    1    1 SCAN TABLE v0 00 
+   7 Rewind           1   10    0               00 
+   8 AggStep0         0    0    1 count(0)      00 accum=r[1] step(r[0])
+   9 Next             1    8    0               01 
+  10 Next             0    6    0               01 
+  11 Close            0    0    0               00 
+  12 Close            1    0    0               00 
+  13 AggFinal         1    0    0 count(0)      00 accum=r[1] N=0
+  14 Copy             1    2    0               00 r[2]=r[1]
+  15 ResultRow        2    1    0               00 output=r[2]
+  16 Halt             0    0    0               00 
+  17 Transaction      0    0    1 1             01 usesStmtJournal=0
+  18 TableLock        0    2    0 v0            00 iDb=0 root=2 write=0
+  19 Goto             0    1    0               00 
+SQL: [SELECT count(*) FROM v0 , v0 
+
+;]
+VDBE Program Listing:
+   0 Init             0   17    0               00 Start at 17
+   1 Null             0    1    1               00 r[1..1]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; v0
+   3 OpenRead         1    2    0 0             00 root=2 iDb=0; v0
+   4 Explain          0    0    0 SCAN TABLE v0 00 
+   5 Rewind           0   11    0               00 
+   6 Explain          0    1    1 SCAN TABLE v0 00 
+   7 Rewind           1   10    0               00 
+   8 AggStep0         0    0    1 count(0)      00 accum=r[1] step(r[0])
+   9 Next             1    8    0               01 
+  10 Next             0    6    0               01 
+  11 Close            0    0    0               00 
+  12 Close            1    0    0               00 
+  13 AggFinal         1    0    0 count(0)      00 accum=r[1] N=0
+  14 Copy             1    2    0               00 r[2]=r[1]
+  15 ResultRow        2    1    0               00 output=r[2]
+  16 Halt             0    0    0               00 
+  17 Transaction      0    0    1 1             01 usesStmtJournal=0
+  18 TableLock        0    2    0 v0            00 iDb=0 root=2 write=0
+  19 Goto             0    1    0               00 
+SQL: [SELECT count(*) FROM v0 INNER JOIN v0 
+
+;]
+VDBE Program Listing:
+   0 Init             0   17    0               00 Start at 17
+   1 Null             0    1    1               00 r[1..1]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; v0
+   3 OpenRead         1    2    0 0             00 root=2 iDb=0; v0
+   4 Explain          0    0    0 SCAN TABLE v0 00 
+   5 Rewind           0   11    0               00 
+   6 Explain          0    1    1 SCAN TABLE v0 00 
+   7 Rewind           1   10    0               00 
+   8 AggStep0         0    0    1 count(0)      00 accum=r[1] step(r[0])
+   9 Next             1    8    0               01 
+  10 Next             0    6    0               01 
+  11 Close            0    0    0               00 
+  12 Close            1    0    0               00 
+  13 AggFinal         1    0    0 count(0)      00 accum=r[1] N=0
+  14 Copy             1    2    0               00 r[2]=r[1]
+  15 ResultRow        2    1    0               00 output=r[2]
+  16 Halt             0    0    0               00 
+  17 Transaction      0    0    1 1             01 usesStmtJournal=0
+  18 TableLock        0    2    0 v0            00 iDb=0 root=2 write=0
+  19 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f191ecf9859 in __GI_abort () at abort.c:79
+#2  0x00007f191ecf9729 in __assert_fail_base (fmt=0x7f191ee8f588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x212bb5 "0", file=0x222c23 "sqlite3.c", line=125392, function=<optimized out>) at assert.c:92
+#3  0x00007f191ed0afd6 in __GI___assert_fail (assertion=0x212bb5 "0", file=0x222c23 "sqlite3.c", line=125392, function=0x2266f4 "int termIsEquivalence(Parse *, Expr *)") at assert.c:101
+#4  0x0000000000398c39 in exprAnalyze (pSrc=<optimized out>, pWC=<optimized out>, idxTerm=<optimized out>) at sqlite3.c:125392
+#5  0x000000000038c95f in sqlite3WhereBegin (pParse=<optimized out>, pTabList=<optimized out>, pWhere=<optimized out>, pOrderBy=<optimized out>, pDistinctSet=0xa69c40, wctrlFlags=0, iAuxArg=320) at sqlite3.c:125921
+#6  0x0000000000328d02 in sqlite3Select (pParse=<optimized out>, p=<optimized out>, pDest=<optimized out>) at sqlite3.c:118028
+#7  0x00000000003034ae in yy_reduce (yypParser=0xa7ed20, yyruleno=<optimized out>) at sqlite3.c:133175
+#8  0x00000000002fef8e in sqlite3Parser (yyp=0xa7ed20, yymajor=<optimized out>, yyminor=..., pParse=<optimized out>) at sqlite3.c:134258
+#9  0x00000000002fc544 in sqlite3RunParser (pParse=0xa6a450, 
+    zSql=0xa7eb80 "SELECT * FROM (SELECT v1 COLLATE nocase, v1 FROM v0) INNER JOIN v0 USING (v1) \n;SELECT * FROM v0 , v0 USING (v1,v1)", ' ' <repeats 18 times>, "\n;SELECT * FROM v0 NATURAL LEFT JOIN v0\n;SELECT v2 FROM v0 LEFT JOI"..., pzErrMsg=0x7ffd19d8ecb8) at sqlite3.c:135186
+#10 0x00000000002fac4e in sqlite3Prepare (db=0xa57850, 
+    zSql=0xa58cda "SELECT * FROM (SELECT v1 COLLATE nocase, v1 FROM v0) INNER JOIN v0 USING (v1) \n;SELECT * FROM v0 , v0 USING (v1,v1)", ' ' <repeats 18 times>, "\n;SELECT * FROM v0 NATURAL LEFT JOIN v0\n;SELECT v2 FROM v0 LEFT JOI"..., nBytes=<optimized out>, saveSqlFlag=1, pReprepare=<optimized out>, ppStmt=0x7ffd19d8ede8, pzTail=0x7ffd19d8edd0) at sqlite3.c:112589
+#11 0x00000000002fa0f4 in sqlite3LockAndPrepare (db=0xa57850, 
+    zSql=0xa58cda "SELECT * FROM (SELECT v1 COLLATE nocase, v1 FROM v0) INNER JOIN v0 USING (v1) \n;SELECT * FROM v0 , v0 USING (v1,v1)", ' ' <repeats 18 times>, "\n;SELECT * FROM v0 NATURAL LEFT JOIN v0\n;SELECT v2 FROM v0 LEFT JOI"..., nBytes=396, saveSqlFlag=1, pOld=0x0, ppStmt=<optimized out>, pzTail=0x7ffd19d8edd0) at sqlite3.c:112688
+#12 0x000000000028f38c in sqlite3_prepare_v2 (db=0x2, zSql=0x7ffd19d8e2a0 "", nBytes=0, ppStmt=0x7ffd19d8ede8, pzTail=<optimized out>) at sqlite3.c:112764
+#13 0x000000000024b100 in main (argc=1, argv=0x7ffd19d8ef98) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 36744] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

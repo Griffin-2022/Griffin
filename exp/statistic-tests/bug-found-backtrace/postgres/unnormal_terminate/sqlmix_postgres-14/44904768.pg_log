@@ -1,0 +1,111 @@
+	
+	-- ok to have a partition's own constraints though
+	ALTER TABLE fd_pt2_1 ALTER c3 SET NOT NULL;
+2022-08-02 07:50:57.433 UTC [48389] WARNING:  there is no transaction in progress
+2022-08-02 07:50:57.442 UTC [48389] ERROR:  column "ÄüÆ³Íñó¤" of relation "test1" does not exist at character 19
+2022-08-02 07:50:57.442 UTC [48389] STATEMENT:  INSERT INTO test1(ÄüÆ³Íñó¤) VALUES ('1004.30   ');
+2022-08-02 07:50:57.442 UTC [48389] ERROR:  column "ÄüÆ³Íñó¤" of relation "test1" does not exist at character 19
+2022-08-02 07:50:57.442 UTC [48389] STATEMENT:  INSERT INTO test1(ÄüÆ³Íñó¤) VALUES ('10e70'::float8);
+2022-08-02 07:50:57.499 UTC [48389] ERROR:  column f.ÄüÆ³Íñó¤ does not exist at character 40
+2022-08-02 07:50:57.499 UTC [48389] STATEMENT:  SELECT f.* FROM pg_description f WHERE f.ÄüÆ³Íñó¤ = '1004.3';
+2022-08-02 07:50:57.499 UTC [48389] ERROR:  column f.ÄüÆ³Íñó¤ does not exist at character 8
+2022-08-02 07:50:57.499 UTC [48389] STATEMENT:  SELECT f.ÄüÆ³Íñó¤ / '0.0' from test1_a_idx f;
+2022-08-02 07:50:57.499 UTC [48389] ERROR:  column f.ÄüÆ³Íñó¤ does not exist at character 8
+2022-08-02 07:50:57.499 UTC [48389] STATEMENT:  SELECT f.ÄüÆ³Íñó¤, @f.ÄüÆ³Íñó¤ AS abs_f1 FROM test1_a_idx f;
+2022-08-02 07:50:57.549 UTC [48389] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 07:50:57.549 UTC [48389] STATEMENT:  COPY pg_description FROM stdin;
+2022-08-02 07:50:57.549 UTC [48389] ERROR:  integer out of range
+2022-08-02 07:50:57.549 UTC [48389] STATEMENT:  SELECT '-2147483900'::float4::int4;
+2022-08-02 07:50:57.550 UTC [48389] ERROR:  column "foo" of relation "test1_a_idx" is not an identity column
+2022-08-02 07:50:57.550 UTC [48389] STATEMENT:  ALTER TABLE test1_a_idx ALTER COLUMN foo DROP IDENTITY;
+2022-08-02 07:50:57.550 UTC [48389] ERROR:  "pg_description" is not a view
+2022-08-02 07:50:57.550 UTC [48389] STATEMENT:  DROP VIEW pg_description, pg_description;
+2022-08-02 07:50:57.553 UTC [48389] ERROR:  relation "classoid" does not exist
+2022-08-02 07:50:57.553 UTC [48389] STATEMENT:  ALTER TABLE classoid ADD COLUMN ìÞÙ¸æñÕèindex2 int GENERATED ALWAYS AS IDENTITY;
+2022-08-02 07:50:57.553 UTC [48389] ERROR:  role "regress_identity_user1" already exists
+2022-08-02 07:50:57.553 UTC [48389] STATEMENT:  CREATE USER regress_identity_user1;
+2022-08-02 07:50:57.557 UTC [48389] ERROR:  conflicting NULL/NOT NULL declarations for column "id" of table "itest15" at character 63
+2022-08-02 07:50:57.557 UTC [48389] STATEMENT:  CREATE TABLE itest15 (id integer GENERATED ALWAYS AS IDENTITY NULL);
+2022-08-02 07:50:57.557 UTC [48389] WARNING:  there is no transaction in progress
+2022-08-02 07:50:57.570 UTC [48389] ERROR:  large object 1004 does not exist
+2022-08-02 07:50:57.570 UTC [48389] STATEMENT:  SELECT loread(lo_open(1004, x'40000'::int), 32);
+2022-08-02 07:50:57.571 UTC [48389] ERROR:  large object 1005 does not exist
+2022-08-02 07:50:57.571 UTC [48389] STATEMENT:  GRANT SELECT ON LARGE OBJECT 1005 TO regress_priv_user3;
+2022-08-02 07:50:57.571 UTC [48389] ERROR:  large object 2002 does not exist
+2022-08-02 07:50:57.571 UTC [48389] STATEMENT:  REVOKE ALL ON LARGE OBJECT 2001, 2002 FROM PUBLIC;
+=================================================================
+==48389==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffe63b29484 at pc 0x00000057bc7d bp 0x7ffe63b291b0 sp 0x7ffe63b291a8
+READ of size 1 at 0x7ffe63b29484 thread T0
+    #0 0x57bc7c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c)
+    #1 0x99eb2f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99eb2f)
+    #2 0x99deb6  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99deb6)
+    #3 0x119309b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x119309b)
+    #4 0x118f991  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118f991)
+    #5 0x118e3f3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118e3f3)
+    #6 0x118d660  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118d660)
+    #7 0x118b88d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b88d)
+    #8 0x118a128  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a128)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f0e6b6af082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+Address 0x7ffe63b29484 is located in stack of thread T0 at offset 388 in frame
+    #0 0x99e66f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99e66f)
+
+  This frame has 4 object(s):
+    [32, 248) 'skey' (line 145)
+    [320, 352) 'values' (line 149)
+    [384, 388) 'nulls' (line 150) <== Memory access at offset 388 overflows this variable
+    [400, 404) 'replaces' (line 151)
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c) 
+Shadow bytes around the buggy address:
+  0x10004c75d240: f8 f2 f2 f2 f8 f3 f3 f3 00 00 00 00 00 00 00 00
+  0x10004c75d250: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d260: f1 f1 f1 f1 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f2
+  0x10004c75d280: f2 f2 f2 f2 f2 f2 f2 f2 00 00 00 00 f2 f2 f2 f2
+=>0x10004c75d290:[04]f2 04 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d2a0: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  0x10004c75d2b0: 00 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d2c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d2d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10004c75d2e0: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==48389==ABORTING
+2022-08-02 07:50:57.601 UTC [43933] LOG:  server process (PID 48389) was terminated by signal 6: Aborted
+2022-08-02 07:50:57.601 UTC [43933] LOG:  terminating any other active server processes
+2022-08-02 07:50:57.609 UTC [43933] LOG:  all server processes terminated; reinitializing
+2022-08-02 07:50:57.623 UTC [49181] LOG:  database system was interrupted; last known up at 2022-08-02 07:50:38 UTC
+2022-08-02 07:50:57.624 UTC [49182] FATAL:  the database system is in recovery mode
+2022-08-02 07:50:57.626 UTC [49185] FATAL:  the database system is in recovery mode
+2022-08-02 07:50:57.629 UTC [49186] FATAL:  the database system is in recovery mode
+2022-08-02 07:50:57.633 UTC [43933] LOG:  received smart shutdown request
+2022-08-02 07:50:57.651 UTC [49181] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 07:50:57.652 UTC [49181] LOG:  redo starts at 0/E86DB08
+2022-08-02 07:50:57.656 UTC [43933] LOG:  abnormal database system shutdown

@@ -1,0 +1,100 @@
+    #0 0x279efa7  (/usr/local/mysql/bin/mariadbd+0x279efa7)
+    #1 0x11099e3  (/usr/local/mysql/bin/mariadbd+0x11099e3)
+    #2 0x133bfb0  (/usr/local/mysql/bin/mariadbd+0x133bfb0)
+    #3 0xd2fd43  (/usr/local/mysql/bin/mariadbd+0xd2fd43)
+    #4 0xd1155b  (/usr/local/mysql/bin/mariadbd+0xd1155b)
+    #5 0xd06f4b  (/usr/local/mysql/bin/mariadbd+0xd06f4b)
+    #6 0xd137a9  (/usr/local/mysql/bin/mariadbd+0xd137a9)
+    #7 0x131b0a2  (/usr/local/mysql/bin/mariadbd+0x131b0a2)
+    #8 0x131a830  (/usr/local/mysql/bin/mariadbd+0x131a830)
+    #9 0x23fd89e  (/usr/local/mysql/bin/mariadbd+0x23fd89e)
+    #10 0x7f166ad28608  (/lib/x86_64-linux-gnu/libpthread.so.0+0x8608)
+    #11 0x7f166aa3e132  (/lib/x86_64-linux-gnu/libc.so.6+0x11f132)
+
+0x618000286530 is located 176 bytes inside of 824-byte region [0x618000286480,0x6180002867b8)
+freed by thread T12 here:
+    #0 0x7b98bf  (/usr/local/mysql/bin/mariadbd+0x7b98bf)
+
+previously allocated by thread T12 here:
+    #0 0x7b9b2a  (/usr/local/mysql/bin/mariadbd+0x7b9b2a)
+
+Thread T12 created by T0 here:
+    #0 0x7a424c  (/usr/local/mysql/bin/mariadbd+0x7a424c)
+    #1 0x23fdc79  (/usr/local/mysql/bin/mariadbd+0x23fdc79)
+
+SUMMARY: AddressSanitizer: heap-use-after-free (/usr/local/mysql/bin/mariadbd+0x279efa7) 
+Shadow bytes around the buggy address:
+  0x0c3080048c50: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3080048c60: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3080048c70: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3080048c80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3080048c90: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x0c3080048ca0: fd fd fd fd fd fd[fd]fd fd fd fd fd fd fd fd fd
+  0x0c3080048cb0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080048cc0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080048cd0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080048ce0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080048cf0: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==84551==ABORTING
+| | | | | | | | error: handling fatal signal
+220730  1:26:47 [ERROR] mysqld got signal 6 ;
+This could be because you hit a bug. It is also possible that this binary
+or one of the libraries it was linked against is corrupt, improperly built,
+or misconfigured. This error can also be caused by malfunctioning hardware.
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=1
+max_threads=153
+thread_count=2
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00015e288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7f16462f3a80 thread_stack 0x100000
+2022-07-30  1:26:47 0 [Note] /root/out/my_2000 (initiated by: unknown): Normal shutdown
+??:0(__interceptor_backtrace)[0x77602b]
+mysys/stacktrace.c:212(my_print_stacktrace)[0x3586647]
+sql/signal_handler.cc:0(handle_fatal_signal)[0x187c05b]
+??:0(__restore_rt)[0x7f166ad34420]
+??:0(gsignal)[0x7f166a96200b]
+??:0(abort)[0x7f166a941859]
+:0(__sanitizer::Abort())[0x7d7fc7]
+:0(__sanitizer::Die())[0x7d64f1]
+:0(__asan::ScopedInErrorReport::~ScopedInErrorReport())[0x7bda34]
+:0(__asan::ReportGenericError(unsigned long, unsigned long, unsigned long, unsigned long, bool, unsigned long, unsigned int, bool))[0x7bf5fa]
+??:0(__asan_report_load8)[0x7bfe98]
+handler/handler0alter.cc:11132(ha_innobase::commit_inplace_alter_table(TABLE*, Alter_inplace_info*, bool))[0x279efa8]
+sql/sql_table.cc:7535(mysql_inplace_alter_table(THD*, TABLE_LIST*, TABLE*, TABLE*, Alter_inplace_info*, MDL_request*, st_ddl_log_state*, TRIGGER_RENAME_PARAM*, Alter_table_ctx*))[0x11099e4]
+sql/sql_alter.cc:553(Sql_cmd_alter_table::execute(THD*))[0x133bfb1]

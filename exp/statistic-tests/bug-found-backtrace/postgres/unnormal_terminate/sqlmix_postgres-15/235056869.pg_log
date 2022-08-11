@@ -1,0 +1,121 @@
+	  from (values (1,1),(1,4),(1,5),(3,1),(3,2)) v(a,test_multirange_gist)
+	 group by rollup (a) order by a;
+2022-08-02 06:40:39.315 UTC [79182] WARNING:  there is no transaction in progress
+2022-08-02 06:40:39.315 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:40:39.315 UTC [79182] STATEMENT:  
+	
+	INSERT INTO test_multirange_gist
+		VALUES (NULL),
+			   ('(0,0)(0,100)'),
+			   ('(-3,4.3333333333)(40,1)'),
+			   ('(0,100)(0,infinity)'),
+			   ('(-infinity,0)(0,infinity)'),
+			   ('(-infinity,-infinity)(infinity,infinity)');
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 105
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  select nummultirange_test_btree, nummultirange_test_btree, sum(nummultirange_test_btree), count(*) from nummultirange_test group by grouping sets ((nummultirange_test_btree,nummultirange_test_btree),());
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 47
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  select nmr, nmr, grouping(nmr,nmr,nmr)
+	  from nummultirange_test
+	 group by grouping sets ((nmr,nmr), (nmr,nmr));
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  alter table test_multirange_gist set (autovacuum_enabled = 'false');
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 77
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  
+	
+	--
+	-- Test the SP-GiST index on the larger volume of data
+	--
+	CREATE TABLE booked_during (nummultirange_test2 int, nummultirange_test2_hash_idx box);
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  
+	
+	INSERT INTO booked_during
+	VALUES
+	  (11001, NULL),
+	  (11002, NULL),
+	  (11003, '((-infinity,-infinity),(infinity,infinity))'),
+	  (11004, '((-infinity,100),(-infinity,500))'),
+	  (11005, '((-infinity,-infinity),(700,infinity))');
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  
+	
+	CREATE INDEX mydomain ON booked_during USING spgist(nummultirange_test2_hash_idx);
+2022-08-02 06:40:39.316 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:40:39.316 UTC [79182] STATEMENT:  
+	SELECT count(*) FROM booked_during WHERE nummultirange_test2_hash_idx &>  box '((100,200),(300,500))';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	SELECT count(*) FROM booked_during WHERE nummultirange_test2_hash_idx >>  box '((100,200),(300,500))';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	SELECT count(*) FROM booked_during WHERE nummultirange_test2_hash_idx <<| box '((100,200),(300,500))';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	SELECT count(*) FROM booked_during WHERE nummultirange_test2_hash_idx &<| box '((100,200),(300,500))';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	SELECT count(*) FROM booked_during WHERE nummultirange_test2_hash_idx |&> box '((100,200),(300,500))';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 185
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	
+	EXPLAIN (COSTS OFF)
+	SELECT rank() OVER (ORDER BY nummultirange_test2_hash_idx <-> point '123,456') n, nummultirange_test2_hash_idx <-> point '123,456' dist, nummultirange_test2
+	FROM booked_during;
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 186
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  
+	
+	
+	EXPLAIN (COSTS OFF)
+	SELECT rank() OVER (ORDER BY nummultirange_test2_hash_idx <-> point '123,456') n, nummultirange_test2_hash_idx <-> point '123,456' dist, nummultirange_test2
+	FROM booked_during WHERE nummultirange_test2_hash_idx <@ box '((200,300),(500,600))';
+2022-08-02 06:40:39.317 UTC [79182] WARNING:  there is no transaction in progress
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  DISCARD ALL;
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:40:39.317 UTC [79182] ERROR:  schema "public" already exists
+2022-08-02 06:40:39.317 UTC [79182] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:40:39.318 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 80
+2022-08-02 06:40:39.318 UTC [79182] STATEMENT:  SELECT relname, n_tup_ins, n_tup_upd, n_tup_del, n_live_tup, n_dead_tup
+	  FROM pg_stat_user_tables
+	 WHERE relname like 'trunc_stats_test%' order by relname;
+2022-08-02 06:40:39.318 UTC [79182] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:40:39.318 UTC [79182] STATEMENT:  DROP TABLE prevstats;
+2022-08-02 06:40:39.318 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:40:39.318 UTC [79182] STATEMENT:  CREATE TABLE nummultirange_test (
+	        nmr  integer PRIMARY KEY,
+	        nummultirange_test_btree integer NOT NULL
+	) WITH (autovacuum_enabled = off, fillfactor = 70);
+2022-08-02 06:40:39.319 UTC [79182] WARNING:  there is no transaction in progress
+2022-08-02 06:40:39.319 UTC [79182] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:40:39.319 UTC [79182] STATEMENT:  DISCARD ALL;
+2022-08-02 06:40:39.319 UTC [79182] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:40:39.319 UTC [79182] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:40:39.319 UTC [79182] ERROR:  schema "public" already exists
+2022-08-02 06:40:39.319 UTC [79182] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:40:42.228 UTC [86462] PANIC:  could not open critical system index 2662
+2022-08-02 06:40:42.230 UTC [78938] LOG:  server process (PID 86462) was terminated by signal 6: Aborted
+2022-08-02 06:40:42.230 UTC [78938] LOG:  terminating any other active server processes
+2022-08-02 06:40:42.269 UTC [78938] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:40:42.280 UTC [86464] LOG:  database system was interrupted; last known up at 2022-08-02 06:40:36 UTC
+2022-08-02 06:40:42.288 UTC [86464] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:40:42.289 UTC [86464] LOG:  redo starts at 0/215E660
+2022-08-02 06:40:42.289 UTC [86464] LOG:  invalid record length at 0/215E768: wanted 24, got 0
+2022-08-02 06:40:42.289 UTC [86464] LOG:  redo done at 0/215E740 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 06:40:42.300 UTC [78938] LOG:  database system is ready to accept connections
+2022-08-02 06:40:43.071 UTC [86479] PANIC:  could not open critical system index 2662
+2022-08-02 06:40:43.073 UTC [78938] LOG:  server process (PID 86479) was terminated by signal 6: Aborted
+2022-08-02 06:40:43.073 UTC [78938] LOG:  terminating any other active server processes
+2022-08-02 06:40:43.076 UTC [86483] FATAL:  the database system is in recovery mode
+2022-08-02 06:40:43.080 UTC [78938] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:40:43.089 UTC [78938] LOG:  received smart shutdown request
+2022-08-02 06:40:43.090 UTC [86490] LOG:  database system was interrupted; last known up at 2022-08-02 06:40:42 UTC
+2022-08-02 06:40:43.102 UTC [86490] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:40:43.103 UTC [86490] LOG:  invalid record length at 0/215E7E0: wanted 24, got 0
+2022-08-02 06:40:43.103 UTC [86490] LOG:  redo is not required
+2022-08-02 06:40:43.108 UTC [78938] LOG:  abnormal database system shutdown
+2022-08-02 06:40:43.110 UTC [78938] LOG:  database system is shut down

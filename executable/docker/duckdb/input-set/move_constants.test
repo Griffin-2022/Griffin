@@ -1,0 +1,127 @@
+# name: test/optimizer/move_constants.test
+# description: Test move constants
+# group: [optimizer]
+
+;
+CREATE TABLE test(X INTEGER);
+
+;
+PRAGMA explain_output = OPTIMIZED_ONLY;
+
+# addition
+;
+EXPLAIN SELECT X+1=10 FROM test
+;
+
+;
+EXPLAIN SELECT 1+X=10 FROM test
+;
+
+;
+EXPLAIN SELECT X=9 FROM test
+;
+
+;
+EXPLAIN SELECT 10=X+1 FROM test
+;
+
+;
+EXPLAIN SELECT 10=1+X FROM test
+;
+
+;
+EXPLAIN SELECT 9=X FROM test
+;
+
+# subtraction
+;
+EXPLAIN SELECT X-1=10 FROM test
+;
+
+;
+EXPLAIN SELECT X=11 FROM test
+;
+
+;
+EXPLAIN SELECT 10-X=5 FROM test
+;
+
+;
+EXPLAIN SELECT X=5 FROM test
+;
+
+# non-equality comparisons get flipped get flipped
+;
+EXPLAIN SELECT 10-X<5 FROM test
+;
+
+;
+EXPLAIN SELECT X>5 FROM test
+;
+
+;
+EXPLAIN SELECT 10-X>=5 FROM test
+;
+
+;
+EXPLAIN SELECT X<=5 FROM test
+;
+
+# multiplication
+;
+EXPLAIN SELECT X*3=6 FROM test
+;
+
+;
+EXPLAIN SELECT 3*X=6 FROM test
+;
+
+;
+EXPLAIN SELECT X=2 FROM test
+;
+
+# gt
+;
+EXPLAIN SELECT X*3>3 FROM test
+;
+
+;
+EXPLAIN SELECT X>1 FROM test
+;
+
+# negative values
+;
+EXPLAIN SELECT -1*X=-5 FROM test
+;
+
+;
+EXPLAIN SELECT X=5 FROM test
+;
+
+;
+EXPLAIN SELECT -1*X<-5 FROM test
+;
+
+;
+EXPLAIN SELECT X>5 FROM test
+;
+
+mode skip
+
+# FIXME
+# negation
+;
+EXPLAIN SELECT -X=-5 FROM test
+;
+
+;
+EXPLAIN SELECT X=5 FROM test
+;
+
+;
+EXPLAIN SELECT -X<-5 FROM test
+;
+
+;
+EXPLAIN SELECT X>5 FROM test
+;

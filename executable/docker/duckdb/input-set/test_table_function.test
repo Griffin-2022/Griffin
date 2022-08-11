@@ -1,0 +1,48 @@
+# name: test/sql/table_function/test_table_function.test
+# description: Table functions
+# group: [table_function]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER, j INTEGER);
+
+# SELECT * from table function
+;
+SELECT * FROM pragma_table_info('integers');
+;
+0	i	INTEGER	0	NULL	0
+1	j	INTEGER	0	NULL	0
+
+# project single column
+;
+SELECT name FROM pragma_table_info('integers');
+;
+i
+j
+
+# project column that is not in function return
+;
+SELECT blablabla FROM pragma_table_info('integers');
+
+# join with table function
+;
+CREATE TABLE join_table(name VARCHAR, value INTEGER);
+
+;
+INSERT INTO join_table VALUES ('i', 33), ('j', 44)
+
+;
+SELECT a.name, cid, value FROM pragma_table_info('integers') AS a INNER JOIN join_table ON a.name=join_table.name ORDER BY a.name;
+;
+i	0	33
+j	1	44
+
+# table function in subquery
+;
+SELECT cid, name FROM (SELECT * FROM pragma_table_info('integers')) AS a
+;
+0	i
+1	j
+

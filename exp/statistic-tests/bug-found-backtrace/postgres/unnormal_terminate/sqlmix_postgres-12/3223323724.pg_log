@@ -1,0 +1,111 @@
+2022-08-01 22:29:31.627 UTC [67984] STATEMENT:  INSERT INTO whereami VALUES (0), (5), (10), (15), (20), (25);
+2022-08-01 22:29:31.628 UTC [67984] ERROR:  relation "temptest2" does not exist
+2022-08-01 22:29:31.628 UTC [67984] STATEMENT:  CREATE TABLE temp_parted_oncommit_test2 PARTITION OF temptest2 FOR VALUES FROM (100) TO (200);
+2022-08-01 22:29:31.628 UTC [67984] ERROR:  relation "sqlsim6" does not exist
+2022-08-01 22:29:31.628 UTC [67984] STATEMENT:  CREATE TABLE twophase_type PARTITION OF sqlsim6 FOR VALUES FROM (200) TO (300);
+2022-08-01 22:29:31.628 UTC [67984] ERROR:  INSERT has more expressions than target columns at character 35
+2022-08-01 22:29:31.628 UTC [67984] STATEMENT:  INSERT INTO sqlsim10 VALUES (100, 10), (150, 15), (200, 20), (250, 25);
+2022-08-01 22:29:31.628 UTC [67984] ERROR:  relation "sqlsim6" does not exist
+2022-08-01 22:29:31.628 UTC [67984] STATEMENT:  TRUNCATE TABLE sqlsim6 CASCADE;
+2022-08-01 22:29:31.628 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.646 UTC [67984] ERROR:  integer out of range
+2022-08-01 22:29:31.646 UTC [67984] STATEMENT:  select make_interval(months := 'NaN'::float::int);
+2022-08-01 22:29:31.646 UTC [67984] ERROR:  interval out of range
+2022-08-01 22:29:31.646 UTC [67984] STATEMENT:  select make_interval(secs := 'inf');
+2022-08-01 22:29:31.647 UTC [67984] ERROR:  interval units "fortnight" not recognized
+2022-08-01 22:29:31.647 UTC [67984] STATEMENT:  SELECT EXTRACT(FORTNIGHT FROM INTERVAL '2 days');
+2022-08-01 22:29:31.647 UTC [67984] ERROR:  interval units "timezone" not supported
+2022-08-01 22:29:31.647 UTC [67984] STATEMENT:  SELECT EXTRACT(TIMEZONE FROM INTERVAL '2 days');
+2022-08-01 22:29:31.647 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.942 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.950 UTC [67984] ERROR:  unlogged sequences are not supported
+2022-08-01 22:29:31.950 UTC [67984] STATEMENT:  --
+	-- CREATE SEQUENCE
+	--
+	
+	-- various error cases
+	CREATE UNLOGGED SEQUENCE sequence_testx;
+2022-08-01 22:29:31.950 UTC [67984] ERROR:  invalid OWNED BY option
+2022-08-01 22:29:31.950 UTC [67984] STATEMENT:  
+	
+	-- OWNED BY errors
+	CREATE SEQUENCE sequence_testx OWNED BY nobody;
+2022-08-01 22:29:31.952 UTC [67984] ERROR:  sequence "t1_f1_seq" does not exist
+2022-08-01 22:29:31.952 UTC [67984] STATEMENT:  
+	-- Fails because no longer existent:
+	DROP SEQUENCE t1_f1_seq;
+2022-08-01 22:29:31.952 UTC [67984] ERROR:  sequence "myseq2" does not exist
+2022-08-01 22:29:31.952 UTC [67984] STATEMENT:  
+	-- Now OK:
+	DROP SEQUENCE myseq2;
+2022-08-01 22:29:31.952 UTC [67984] ERROR:  relation "sequence_test2" does not exist
+2022-08-01 22:29:31.952 UTC [67984] STATEMENT:    -- cycled
+	
+	ALTER SEQUENCE sequence_test2 RESTART WITH -24
+	  NO CYCLE;
+2022-08-01 22:29:31.953 UTC [67984] ERROR:  relation "sequence_test2" does not exist at character 26
+2022-08-01 22:29:31.953 UTC [67984] STATEMENT:    -- error
+	SELECT setval('sequence_test2', 100);
+2022-08-01 22:29:31.953 UTC [67984] ERROR:  relation "sequence_test2" does not exist at character 26
+2022-08-01 22:29:31.953 UTC [67984] STATEMENT:    -- error
+	SELECT setval('sequence_test2', 5);
+2022-08-01 22:29:31.953 UTC [67984] ERROR:  relation "seq" does not exist at character 17
+2022-08-01 22:29:31.953 UTC [67984] STATEMENT:  
+	SELECT nextval('seq');
+2022-08-01 22:29:31.954 UTC [67984] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:29:31.954 UTC [67984] STATEMENT:  
+	SET LOCAL SESSION AUTHORIZATION regress_seq_user;
+2022-08-01 22:29:31.954 UTC [67984] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 22:29:31.954 UTC [67984] STATEMENT:  
+	CREATE SEQUENCE seq3;
+2022-08-01 22:29:31.954 UTC [67984] ERROR:  relation "seq3" does not exist
+2022-08-01 22:29:31.954 UTC [67984] STATEMENT:  
+	REVOKE ALL ON seq3 FROM regress_seq_user;
+2022-08-01 22:29:31.954 UTC [67984] ERROR:  relation "seq3" does not exist
+2022-08-01 22:29:31.954 UTC [67984] STATEMENT:  
+	GRANT SELECT ON seq3 TO regress_seq_user;
+2022-08-01 22:29:31.954 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.954 UTC [67984] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 22:29:31.954 UTC [67984] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:29:31.954 UTC [67984] STATEMENT:  
+	SET LOCAL SESSION AUTHORIZATION regress_seq_user;
+2022-08-01 22:29:31.954 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.954 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:31.961 UTC [67984] ERROR:  role "regress_readallstats" does not exist
+2022-08-01 22:29:31.961 UTC [67984] STATEMENT:  SELECT has_table_privilege('regress_readallstats','pg_backend_memory_contexts','SELECT');
+2022-08-01 22:29:32.173 UTC [67984] ERROR:  role "regress_readallstats" does not exist
+2022-08-01 22:29:32.173 UTC [67984] STATEMENT:  SET ROLE regress_readallstats;
+2022-08-01 22:29:32.850 UTC [67984] ERROR:  foreign-data wrapper "foo" does not exist
+2022-08-01 22:29:32.850 UTC [67984] STATEMENT:  ALTER FOREIGN DATA WRAPPER foo OPTIONS (DROP a, SET b '3', ADD c '4');
+2022-08-01 22:29:32.852 UTC [67984] ERROR:  foreign-data wrapper "foo" does not exist
+2022-08-01 22:29:32.852 UTC [67984] STATEMENT:  DROP FOREIGN DATA WRAPPER foo;
+2022-08-01 22:29:32.852 UTC [67984] ERROR:  foreign-data wrapper "foo" does not exist
+2022-08-01 22:29:32.852 UTC [67984] STATEMENT:  REVOKE USAGE ON FOREIGN DATA WRAPPER foo FROM regress_test_role;
+2022-08-01 22:29:32.853 UTC [67984] ERROR:  server "s3" does not exist
+2022-08-01 22:29:32.853 UTC [67984] STATEMENT:  DROP SERVER s3 CASCADE;
+2022-08-01 22:29:32.853 UTC [67984] ERROR:  primary key constraints are not supported on foreign tables at character 67
+2022-08-01 22:29:32.853 UTC [67984] STATEMENT:  CREATE FOREIGN TABLE ft1 (
+		c1 integer OPTIONS ("param 1" 'val1') PRIMARY KEY,
+		c2 text OPTIONS (param2 'val2', param3 'val3'),
+		c3 date
+	) SERVER s0 OPTIONS (delimiter ',', quote '"', "be quoted" 'value');
+2022-08-01 22:29:32.854 UTC [67984] ERROR:  server "s4" does not exist
+2022-08-01 22:29:32.854 UTC [67984] STATEMENT:  DROP SERVER s4;
+2022-08-01 22:29:32.878 UTC [67984] WARNING:  there is no transaction in progress
+2022-08-01 22:29:33.095 UTC [67984] PANIC:  could not write to file "pg_wal/xlogtemp.67984": No space left on device
+2022-08-01 22:29:33.095 UTC [67984] STATEMENT:  
+	
+	INSERT INTO tab_int
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-01 22:29:33.121 UTC [67335] LOG:  server process (PID 67984) was terminated by signal 6: Aborted
+2022-08-01 22:29:33.121 UTC [67335] LOG:  terminating any other active server processes
+2022-08-01 22:29:33.126 UTC [67335] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:29:33.137 UTC [68253] LOG:  database system was interrupted; last known up at 2022-08-01 22:29:20 UTC
+2022-08-01 22:29:33.140 UTC [68256] FATAL:  the database system is in recovery mode
+2022-08-01 22:29:33.142 UTC [68259] FATAL:  the database system is in recovery mode
+2022-08-01 22:29:33.144 UTC [68260] FATAL:  the database system is in recovery mode
+2022-08-01 22:29:33.148 UTC [68253] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:29:33.149 UTC [68253] LOG:  redo starts at 0/167A560
+2022-08-01 22:29:33.150 UTC [67335] LOG:  received smart shutdown request
+2022-08-01 22:29:33.155 UTC [67335] LOG:  abnormal database system shutdown

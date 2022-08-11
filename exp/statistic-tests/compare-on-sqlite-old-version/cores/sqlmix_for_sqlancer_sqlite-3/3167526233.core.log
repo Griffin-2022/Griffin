@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000423,sig:11,src:025054+011044,time:9572628,execs:2138092,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fffe59f7ac0, p=0xd01060) at sqlite3.c:146356
+146356	      pSublist = exprListAppendList(pParse, pSublist, pWin->pOwner->x.pList);
+(gdb) #0  0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fffe59f7ac0, p=0xd01060) at sqlite3.c:146356
+#1  0x00000000002fc6de in sqlite3Select (pParse=0x7fffe59f7ac0, p=0xd01060, pDest=0x7fffe59f6430) at sqlite3.c:130281
+#2  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7fffe59f7ac0, pExpr=0xcf09e0, iTab=3) at sqlite3.c:99650
+#3  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7fffe59f7ac0, pX=0xcf09e0, inFlags=4, prRhsHasNull=0x0, aiMap=0xcf1340, piTab=0x7fffe59f6664) at sqlite3.c:99448
+#4  0x00000000003795bd in codeEqualityTerm (pParse=0x7fffe59f7ac0, pTerm=0xcf4c90, pLevel=0xcf4f18, iEq=0, bRev=0, iTarget=1) at sqlite3.c:136693
+#5  0x000000000037a706 in codeAllEqualityTerms (pParse=0x7fffe59f7ac0, pLevel=0xcf4f18, bRev=0, nExtraReg=0, pzAff=0x7fffe59f68d8) at sqlite3.c:136869
+#6  0x0000000000375cb8 in sqlite3WhereCodeOneLoopStart (pParse=0x7fffe59f7ac0, v=0xcfbc00, pWInfo=0xcf4b80, iLevel=0, pLevel=0xcf4f18, notReady=18446744073709551615) at sqlite3.c:137776
+#7  0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7fffe59f7ac0, pTabList=0xcf83c0, pWhere=0xcf3d70, pOrderBy=0x0, pResultSet=0xcf3410, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#8  0x00000000002fdcea in sqlite3Select (pParse=0x7fffe59f7ac0, p=0xcee910, pDest=0x7fffe59f6eb0) at sqlite3.c:130695
+#9  0x00000000002ecaa8 in yy_reduce (yypParser=0x7fffe59f70e0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fffe59f7ac0) at sqlite3.c:151581
+#10 0x00000000002e92f8 in sqlite3Parser (yyp=0x7fffe59f70e0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#11 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fffe59f7ac0, zSql=0xcf715e ";;\n;DROP TABLE IF EXISTS b;", pzErrMsg=0x7fffe59f7ca0) at sqlite3.c:154013
+#12 0x00000000002a1683 in sqlite3Prepare (db=0xce12b0, zSql=0xce267a ";\n;SELECT * FROM b WHERE \n      (0, b.c) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM b);;\n;DROP TABLE IF EXISTS b;", nBytes=121, 
+    prepFlags=128, pReprepare=0x0, ppStmt=0x7fffe59f7dd8, pzTail=0x7fffe59f7dc0) at sqlite3.c:124303
+#13 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xce12b0, zSql=0xce267a ";\n;SELECT * FROM b WHERE \n      (0, b.c) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM b);;\n;DROP TABLE IF EXISTS b;", nBytes=121, 
+    prepFlags=128, pOld=0x0, ppStmt=0x7fffe59f7dd8, pzTail=0x7fffe59f7dc0) at sqlite3.c:124403
+#14 0x000000000029247f in sqlite3_prepare_v2 (db=0xce12b0, zSql=0xce267a ";\n;SELECT * FROM b WHERE \n      (0, b.c) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM b);;\n;DROP TABLE IF EXISTS b;", nBytes=121, 
+    ppStmt=0x7fffe59f7dd8, pzTail=0x7fffe59f7dc0) at sqlite3.c:124487
+#15 0x0000000000256bd0 in main (argc=1, argv=0x7fffe59f7f88) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 60874] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

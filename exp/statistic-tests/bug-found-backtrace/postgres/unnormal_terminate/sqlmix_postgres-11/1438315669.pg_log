@@ -1,0 +1,121 @@
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  INSERT INTO hash_split_heap (keycol, hash_split_index) VALUES (12, 'doce');
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  create table p(foo_ptbl_ones int);
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  INSERT INTO hash_heap_float4 (t1, a) VALUES (15, 'quince');
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 52
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  SELECT t1,t1,a,substring(a for 30), length(a) from hash_heap_float4;
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  reset enable_memoize;
+2022-08-02 08:12:45.778 UTC [123126] WARNING:  there is no transaction in progress
+2022-08-02 08:12:45.778 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.778 UTC [123126] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:12:45.779 UTC [123126] WARNING:  there is no transaction in progress
+2022-08-02 08:12:45.779 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.779 UTC [123126] STATEMENT:  DISCARD ALL;
+2022-08-02 08:12:45.779 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 08:12:45.779 UTC [123126] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 08:12:45.779 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.779 UTC [123126] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 08:12:45.781 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.781 UTC [123126] STATEMENT:  --
+	-- Tests for external toast datums
+	--
+	
+	-- Other compression algorithms may cause the compressed data to be stored
+	-- inline.  pglz guarantees that the data is externalized, so stick to it.
+	SET default_toast_compression = 'pglz';
+2022-08-02 08:12:45.781 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 08:12:45.781 UTC [123126] STATEMENT:  
+	
+	CREATE TABLE hash_split_heap(x text, keycol int DEFAULT 0, hash_split_index text, hash_temp_heap text);
+2022-08-02 08:12:45.781 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 08:12:45.781 UTC [123126] STATEMENT:  
+	INSERT INTO hash_split_heap(x, x, hash_temp_heap) VALUES('two-toasted', repeat('1234567890',30000), repeat('1234567890',50000));
+2022-08-02 08:12:45.781 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 08:12:45.781 UTC [123126] STATEMENT:  
+	INSERT INTO hash_split_heap(hash_split_index, hash_split_index, hash_split_index) VALUES('one-toasted,one-null', NULL, repeat('1234567890',50000));
+2022-08-02 08:12:45.781 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 52
+2022-08-02 08:12:45.781 UTC [123126] STATEMENT:  
+	
+	-- modification without changing varlenas
+	UPDATE hash_split_heap SET keycol = keycol +1 RETURNING substring(hash_split_heap::text, 1, 200);
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 66
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	-- modification modifying, but effectively not changing
+	UPDATE hash_split_heap SET keycol = keycol +1, hash_split_index = hash_split_index||'' RETURNING substring(hash_split_heap::text, 1, 200);
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 56
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	SELECT substring(hash_split_heap::text, 1, 200) FROM hash_split_heap;
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	-- now create a trigger that forces all Datums to be indirect ones
+	CREATE FUNCTION update_using_indirect()
+	        RETURNS trigger
+	        LANGUAGE plpgsql AS $$
+	BEGIN
+	    NEW := make_tuple_indirect(NEW);
+	    RETURN NEW;
+	END$$;
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 66
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	-- modification modifying, but effectively not changing
+	UPDATE hash_split_heap SET keycol = keycol +1, x = x||'' RETURNING substring(hash_split_heap::text, 1, 200);
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	INSERT INTO hash_split_heap(hash_temp_heap, hash_split_index, x) VALUES('one-toasted,one-null, via indirect', repeat('1234567890',30000), NULL);
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	-- check we didn't screw with main/toast tuple visibility
+	VACUUM FREEZE hash_split_heap;
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 55
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	SELECT substring(hash_split_heap::text, 1, 200) FROM hash_split_heap;
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	DROP FUNCTION update_using_indirect();
+2022-08-02 08:12:45.782 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.782 UTC [123126] STATEMENT:  
+	
+	RESET default_toast_compression;
+2022-08-02 08:12:45.783 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.783 UTC [123126] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:12:45.783 UTC [123126] WARNING:  there is no transaction in progress
+2022-08-02 08:12:45.783 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.783 UTC [123126] STATEMENT:  DISCARD ALL;
+2022-08-02 08:12:45.783 UTC [123126] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 08:12:45.783 UTC [123126] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 08:12:45.783 UTC [123126] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:12:45.783 UTC [123126] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 08:12:47.142 UTC [126994] PANIC:  could not open critical system index 2662
+2022-08-02 08:12:47.144 UTC [122962] LOG:  server process (PID 126994) was terminated by signal 6: Aborted
+2022-08-02 08:12:47.144 UTC [122962] LOG:  terminating any other active server processes
+2022-08-02 08:12:47.177 UTC [122962] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:12:47.201 UTC [126997] LOG:  database system was interrupted; last known up at 2022-08-02 08:12:01 UTC
+2022-08-02 08:12:47.225 UTC [126997] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:12:47.226 UTC [126997] LOG:  redo starts at 0/2BD7248
+2022-08-02 08:12:48.177 UTC [126997] LOG:  invalid record length at 0/5B5E480: wanted 24, got 0
+2022-08-02 08:12:48.177 UTC [126997] LOG:  redo done at 0/5B5E458 system usage: CPU: user: 0.84 s, system: 0.08 s, elapsed: 0.95 s
+2022-08-02 08:12:48.195 UTC [122962] LOG:  database system is ready to accept connections
+2022-08-02 08:12:49.210 UTC [127195] PANIC:  could not open critical system index 2662
+2022-08-02 08:12:49.212 UTC [122962] LOG:  server process (PID 127195) was terminated by signal 6: Aborted
+2022-08-02 08:12:49.212 UTC [122962] LOG:  terminating any other active server processes
+2022-08-02 08:12:49.215 UTC [127199] FATAL:  the database system is in recovery mode
+2022-08-02 08:12:49.219 UTC [122962] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:12:49.229 UTC [122962] LOG:  received smart shutdown request
+2022-08-02 08:12:49.229 UTC [127205] LOG:  database system was interrupted; last known up at 2022-08-02 08:12:48 UTC
+2022-08-02 08:12:49.239 UTC [127205] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:12:49.239 UTC [127205] LOG:  invalid record length at 0/5B5E4F8: wanted 24, got 0
+2022-08-02 08:12:49.239 UTC [127205] LOG:  redo is not required
+2022-08-02 08:12:49.244 UTC [122962] LOG:  abnormal database system shutdown
+2022-08-02 08:12:49.246 UTC [122962] LOG:  database system is shut down

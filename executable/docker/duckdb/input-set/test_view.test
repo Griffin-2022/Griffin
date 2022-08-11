@@ -1,0 +1,67 @@
+# name: test/sql/catalog/view/test_view.test
+# description: Test view creation
+# group: [view]
+
+;
+PRAGMA enable_verification
+
+# create a table
+;
+CREATE TABLE t1(i INTEGER)
+
+;
+INSERT INTO t1 VALUES (41), (42), (43)
+
+;
+CREATE VIEW v1 AS SELECT i AS j FROM t1 WHERE i < 43
+
+;
+CREATE VIEW v1 AS SELECT 'whatever'
+
+;
+SELECT j FROM v1 WHERE j > 41
+;
+42
+
+# name alias in view
+;
+SELECT x FROM v1 t1(x) WHERE x > 41
+;
+42
+
+;
+DROP VIEW v1
+
+;
+SELECT j FROM v1 WHERE j > 41
+
+;
+CREATE VIEW v1 AS SELECT 'whatever'
+
+;
+SELECT * FROM v1
+;
+whatever
+
+;
+CREATE OR REPLACE VIEW v1 AS SELECT 42
+
+;
+SELECT * FROM v1
+;
+42
+
+;
+INSERT INTO v1 VALUES (1)
+
+;
+DROP VIEW v1
+
+;
+DROP VIEW v1
+
+;
+DROP VIEW IF EXISTS v1
+
+;
+CREATE VIEW v1 AS SELECT * FROM dontexist

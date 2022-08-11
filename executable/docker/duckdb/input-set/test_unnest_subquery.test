@@ -1,0 +1,114 @@
+# name: test/sql/subquery/scalar/test_unnest_subquery.test
+# description: Test unnest in subqueries
+# group: [scalar]
+
+;
+PRAGMA enable_verification
+
+# uncorrelated
+;
+SELECT (SELECT UNNEST([1]))
+;
+1
+
+;
+SELECT (SELECT UNNEST([NULL]))
+;
+NULL
+
+;
+SELECT (SELECT UNNEST([]))
+;
+NULL
+
+# correlated
+;
+SELECT (SELECT UNNEST(i)) FROM (VALUES ([1])) tbl(i);
+;
+1
+
+;
+SELECT (SELECT UNNEST(i)) FROM (VALUES ([NULL])) tbl(i);
+;
+NULL
+
+;
+SELECT (SELECT UNNEST(i)) FROM (VALUES ([])) tbl(i);
+;
+NULL
+
+# now with an aggregate
+;
+SELECT (SELECT SUM(k) FROM (SELECT UNNEST(i)) tbl(k)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+6
+
+;
+SELECT (SELECT SUM(k)+SUM(l) FROM (SELECT UNNEST(i), UNNEST(j) FROM (VALUES ([1, 2, 3])) tbl(j)) tbl(k, l)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+12
+
+# ANY
+;
+SELECT 1=ANY(SELECT UNNEST(i)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+true
+
+;
+SELECT 4=ANY(SELECT UNNEST(i)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+false
+
+;
+SELECT NULL=ANY(SELECT UNNEST(i)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+NULL
+
+;
+SELECT 4=ANY(SELECT UNNEST(i)) FROM (VALUES ([1, 2, 3, NULL])) tbl(i);
+;
+NULL
+
+# IN
+;
+SELECT 1 IN (SELECT UNNEST(i)) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+true
+
+# INSIDE a subquery
+;
+SELECT (SELECT 1=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+true
+
+;
+SELECT (SELECT 4=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+false
+
+;
+SELECT (SELECT 4=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3, NULL])) tbl(i);
+;
+NULL
+
+# INSIDE a subquery
+;
+SELECT (SELECT 1=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+true
+
+;
+SELECT (SELECT 4=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+false
+
+;
+SELECT (SELECT 4=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3, NULL])) tbl(i);
+;
+NULL
+
+# double correlated subqueries
+;
+SELECT (SELECT 1+i[1]=ANY(SELECT UNNEST(i))) FROM (VALUES ([1, 2, 3])) tbl(i);
+;
+true

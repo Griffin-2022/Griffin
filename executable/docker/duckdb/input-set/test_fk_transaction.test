@@ -1,0 +1,136 @@
+# name: test/sql/constraints/foreignkey/test_fk_transaction.test
+# description: Test foreign key in same transaction
+# group: [foreignkey]
+
+# insert a tuple in the main table and the referencing table that refers to that tuple
+;
+CREATE TABLE pkt(i INTEGER PRIMARY KEY)
+
+;
+CREATE TABLE fkt(j INTEGER, FOREIGN KEY (j) REFERENCES pkt(i))
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO pkt VALUES (1)
+
+;
+INSERT INTO fkt VALUES (1)
+
+;
+ROLLBACK
+
+;
+INSERT INTO pkt VALUES (1)
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO pkt VALUES (2)
+
+;
+INSERT INTO fkt VALUES (3)
+
+;
+ROLLBACK
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO fkt VALUES (1)
+
+;
+DELETE FROM pkt WHERE i=1
+
+;
+ROLLBACK
+
+# delete a tuple in the referencing table and then delete that tuple in the main table
+;
+BEGIN TRANSACTION
+
+;
+DELETE FROM pkt WHERE i=1
+
+;
+INSERT INTO fkt VALUES (1)
+
+;
+ROLLBACK
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO pkt VALUES (2)
+
+;
+INSERT INTO fkt VALUES (1), (2)
+
+;
+DELETE FROM fkt WHERE j=1
+
+;
+DELETE FROM pkt WHERE i=1
+
+;
+COMMIT
+
+;
+DELETE FROM pkt WHERE i=2
+
+;
+DELETE FROM fkt WHERE j=2
+
+;
+DELETE FROM pkt WHERE i=2
+
+# insert a tuple in the primary key table, delete it, and in the same transaction try to insert that tuple in the foreign key table
+;
+INSERT INTO pkt VALUES (3)
+
+;
+BEGIN TRANSACTION
+
+;
+DELETE FROM pkt WHERE i=3
+
+;
+INSERT INTO fkt VALUES (3)
+
+;
+ROLLBACK
+
+;
+DROP TABLE pkt;
+
+;
+DROP TABLE fkt;
+
+;
+DROP TABLE pkt;
+
+# test with MAX_ROW_ID when delete a tuple
+;
+BEGIN TRANSACTION
+
+;
+CREATE TABLE a(i INTEGER UNIQUE)
+
+;
+CREATE TABLE b(j INTEGER, FOREIGN KEY (j) REFERENCES a(i))
+
+;
+INSERT INTO a VALUES (1), (2)
+
+;
+INSERT INTO b VALUES (1), (2)
+
+;
+DELETE FROM b
+
+;
+DELETE FROM a

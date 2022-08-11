@@ -1,0 +1,100 @@
+commit_inplace_alter_table: mutex: mutex (0x69a4520) locked
+commit_inplace_alter_table: mutex: mutex (0x69a4520) unlocking
+commit_inplace_alter_table: mutex: mutex (0x69533c0) locking
+commit_inplace_alter_table: mutex: mutex (0x69533c0) locked
+commit_inplace_alter_table: mutex: mutex (0x69533c0) unlocking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locked
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) unlocking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locked
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) unlocking
+commit_inplace_alter_table: trx: Commit in memory: 0x7f106609e9d0
+=================================================================
+==69370==ERROR: AddressSanitizer: heap-use-after-free on address 0x61800026c930 at pc 0x00000279efa8 bp 0x7f1056377df0 sp 0x7f1056377de8
+READ of size 8 at 0x61800026c930 thread T13
+    #0 0x279efa7  (/usr/local/mysql/bin/mariadbd+0x279efa7)
+    #1 0x11099e3  (/usr/local/mysql/bin/mariadbd+0x11099e3)
+    #2 0x133bfb0  (/usr/local/mysql/bin/mariadbd+0x133bfb0)
+    #3 0xd2fd43  (/usr/local/mysql/bin/mariadbd+0xd2fd43)
+    #4 0xd1155b  (/usr/local/mysql/bin/mariadbd+0xd1155b)
+    #5 0xd06f4b  (/usr/local/mysql/bin/mariadbd+0xd06f4b)
+    #6 0xd137a9  (/usr/local/mysql/bin/mariadbd+0xd137a9)
+    #7 0x131b0a2  (/usr/local/mysql/bin/mariadbd+0x131b0a2)
+    #8 0x131a830  (/usr/local/mysql/bin/mariadbd+0x131a830)
+    #9 0x23fd89e  (/usr/local/mysql/bin/mariadbd+0x23fd89e)
+    #10 0x7f107b5b6608  (/lib/x86_64-linux-gnu/libpthread.so.0+0x8608)
+    #11 0x7f107b2cc132  (/lib/x86_64-linux-gnu/libc.so.6+0x11f132)
+
+0x61800026c930 is located 176 bytes inside of 824-byte region [0x61800026c880,0x61800026cbb8)
+freed by thread T13 here:
+    #0 0x7b98bf  (/usr/local/mysql/bin/mariadbd+0x7b98bf)
+
+previously allocated by thread T13 here:
+    #0 0x7b9b2a  (/usr/local/mysql/bin/mariadbd+0x7b9b2a)
+
+Thread T13 created by T0 here:
+    #0 0x7a424c  (/usr/local/mysql/bin/mariadbd+0x7a424c)
+    #1 0x23fdc79  (/usr/local/mysql/bin/mariadbd+0x23fdc79)
+
+SUMMARY: AddressSanitizer: heap-use-after-free (/usr/local/mysql/bin/mariadbd+0x279efa7) 
+Shadow bytes around the buggy address:
+  0x0c30800458d0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c30800458e0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c30800458f0: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+  0x0c3080045900: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3080045910: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x0c3080045920: fd fd fd fd fd fd[fd]fd fd fd fd fd fd fd fd fd
+  0x0c3080045930: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080045940: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080045950: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080045960: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3080045970: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==69370==ABORTING
+commit_inplace_alter_table: error: handling fatal signal
+220806  8:39:01 [ERROR] mysqld got signal 6 ;
+This could be because you hit a bug. It is also possible that this binary
+or one of the libraries it was linked against is corrupt, improperly built,
+or misconfigured. This error can also be caused by malfunctioning hardware.
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=1
+max_threads=153
+thread_count=2
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00015e288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7f1056380a80 thread_stack 0x100000

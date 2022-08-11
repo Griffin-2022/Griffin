@@ -1,0 +1,123 @@
+	REFRESH MATERIALIZED VIEW CONCURRENTLY mvtest_tm;
+2022-08-02 08:02:30.605 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.605 UTC [88795] STATEMENT:  
+	REFRESH MATERIALIZED VIEW mvtest_tvm;
+2022-08-02 08:02:30.605 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.605 UTC [88795] STATEMENT:  
+	REFRESH MATERIALIZED VIEW mvtest_tmm;
+2022-08-02 08:02:30.605 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.605 UTC [88795] STATEMENT:  
+	
+	-- test diemv when the mv does not exist
+	DROP MATERIALIZED VIEW IF EXISTS no_such_mv;
+2022-08-02 08:02:30.605 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.605 UTC [88795] STATEMENT:  
+	
+	-- make sure invalid combination of options is prohibited
+	REFRESH MATERIALIZED VIEW CONCURRENTLY mvtest_tvmm WITH NO DATA;
+2022-08-02 08:02:30.605 UTC [88795] WARNING:  there is no transaction in progress
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	
+	-- some additional tests not using base tables
+	CREATE VIEW ÄüÆ³Íñó¤ AS SELECT 1 ÇâÉß;
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	CREATE UNIQUE INDEX ON mvtest_mv(a);
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	REFRESH MATERIALIZED VIEW CONCURRENTLY mvtest_mv;
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662 at character 73
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	
+	-- make sure that types with unusual equality tests work
+	CREATE TABLE test1_a_idx (t1 serial primary key, foo box);
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662 at character 57
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	CREATE MATERIALIZED VIEW mvtest_boxmv AS SELECT * FROM test1_a_idx;
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	CREATE UNIQUE INDEX id ON mvtest_boxmv (id);
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:   -- ok
+	ALTER TABLE ìÞÙ¸æñÕèindex1 RENAME COLUMN alter_op_test_fn TO balance;
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	REFRESH MATERIALIZED VIEW mvtest_mv_v_2;
+2022-08-02 08:02:30.606 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.606 UTC [88795] STATEMENT:  
+	DROP TABLE pg_description CASCADE;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662 at character 104
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	
+	-- make sure that matview rows can be referenced as source rows (bug #9398)
+	CREATE TABLE c AS SELECT generate_series(1,10) AS pg_description;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	CREATE UNIQUE INDEX ON mvtest_mv_foo (i);
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	RESET ROLE;
+2022-08-02 08:02:30.607 UTC [88795] WARNING:  there is no transaction in progress
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  role "regress_matview_user" does not exist
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	ALTER DEFAULT PRIVILEGES FOR ROLE regress_matview_user
+	  REVOKE INSERT ON TABLES FROM regress_matview_user;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	
+	SET SESSION AUTHORIZATION regress_matview_user;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662 at character 71
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	CREATE MATERIALIZED VIEW matview_schema.mv_withdata1 (a) AS
+	  SELECT generate_series(1, 10) WITH DATA;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  role "regress_matview_user" does not exist
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	
+	ALTER DEFAULT PRIVILEGES FOR ROLE regress_matview_user
+	  GRANT INSERT ON TABLES TO regress_matview_user;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:  
+	DROP USER regress_matview_user;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:   -- error
+	CREATE MATERIALIZED VIEW IF NOT EXISTS matview_ine_tab AS
+	  SELECT 1 / 0 WITH NO DATA;
+2022-08-02 08:02:30.607 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.607 UTC [88795] STATEMENT:   -- ok
+	DROP MATERIALIZED VIEW matview_ine_tab;
+2022-08-02 08:02:30.608 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.608 UTC [88795] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:02:30.608 UTC [88795] WARNING:  there is no transaction in progress
+2022-08-02 08:02:30.608 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.608 UTC [88795] STATEMENT:  DISCARD ALL;
+2022-08-02 08:02:30.608 UTC [88795] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 08:02:30.608 UTC [88795] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 08:02:30.608 UTC [88795] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:02:30.608 UTC [88795] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 08:02:30.758 UTC [99164] PANIC:  could not open critical system index 2662
+2022-08-02 08:02:30.760 UTC [88502] LOG:  server process (PID 99164) was terminated by signal 6: Aborted
+2022-08-02 08:02:30.760 UTC [88502] LOG:  terminating any other active server processes
+2022-08-02 08:02:30.806 UTC [88502] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:02:30.820 UTC [99167] LOG:  database system was interrupted; last known up at 2022-08-02 08:01:36 UTC
+2022-08-02 08:02:30.833 UTC [99167] LOG:  recovered replication state of node 2 to 0/1
+2022-08-02 08:02:30.833 UTC [99167] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 08:02:30.833 UTC [99167] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:02:30.834 UTC [99167] LOG:  redo starts at 0/18670250
+2022-08-02 08:02:30.834 UTC [99167] LOG:  invalid record length at 0/18670780: wanted 24, got 0
+2022-08-02 08:02:30.834 UTC [99167] LOG:  redo done at 0/18670758 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 08:02:30.845 UTC [88502] LOG:  database system is ready to accept connections
+2022-08-02 08:02:32.730 UTC [99211] PANIC:  could not open critical system index 2662
+2022-08-02 08:02:32.732 UTC [88502] LOG:  server process (PID 99211) was terminated by signal 6: Aborted
+2022-08-02 08:02:32.732 UTC [88502] LOG:  terminating any other active server processes
+2022-08-02 08:02:32.736 UTC [99216] FATAL:  the database system is in recovery mode
+2022-08-02 08:02:32.740 UTC [88502] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:02:32.750 UTC [88502] LOG:  received smart shutdown request
+2022-08-02 08:02:32.750 UTC [99222] LOG:  database system was interrupted; last known up at 2022-08-02 08:02:30 UTC
+2022-08-02 08:02:32.764 UTC [99222] LOG:  recovered replication state of node 2 to 0/1
+2022-08-02 08:02:32.764 UTC [99222] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 08:02:32.764 UTC [99222] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:02:32.764 UTC [99222] LOG:  invalid record length at 0/186707F8: wanted 24, got 0
+2022-08-02 08:02:32.764 UTC [99222] LOG:  redo is not required

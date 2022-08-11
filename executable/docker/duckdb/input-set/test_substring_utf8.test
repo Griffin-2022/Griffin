@@ -1,0 +1,59 @@
+# name: test/sql/function/string/test_substring_utf8.test
+# description: Substring test with UTF8
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR);
+
+;
+INSERT INTO strings VALUES ('twoñthree₡four🦆end')
+
+;
+SELECT substring(s from 1 for 7) FROM strings
+;
+twoñthr
+
+;
+SELECT substring(s from 10 for 7) FROM strings
+;
+₡four🦆e
+
+;
+SELECT substring(s from 15 for 7) FROM strings
+;
+🦆end
+
+# negative lengths and offsets
+;
+SELECT substr(s, -4, 4) FROM strings
+;
+🦆end
+
+;
+SELECT substr(s, -1, -4) FROM strings
+;
+r🦆en
+
+;
+SELECT substr(s, 0, -4) FROM strings
+;
+(empty)
+
+;
+SELECT substr(s, 0, 5) FROM strings
+;
+twoñ
+
+;
+SELECT substr(s, 5, -5) FROM strings
+;
+twoñ
+
+# length is optional
+;
+SELECT substr(s, 5) FROM strings
+;
+three₡four🦆end

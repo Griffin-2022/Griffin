@@ -1,0 +1,177 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000601,sig:06,src:023178+025480,time:34685281,execs:6098528,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT typeof( CAST('11.1abc' AS NUMERIC) ),  CAST('11.1abc' AS NUMERIC) 
+;]
+VDBE Program Listing:
+   0 Init             0    6    0               00 Start at 6
+   1 Function0        1    3    1 typeof(1)     01 r[1]=func(r[3])
+   2 String8          0    2    0 11.1abc       00 r[2]='11.1abc'
+   3 Cast             2   67    0               00 affinity(r[2])
+   4 ResultRow        1    2    0               00 output=r[1..2]
+   5 Halt             0    0    0               00 
+   6 String8          0    3    0 11.1abc       00 r[3]='11.1abc'
+   7 Cast             3   67    0               00 affinity(r[3])
+   8 Goto             0    1    0               00 
+SQL: [;INSERT INTO v0 VALUES(-23, 'v2', 'v2');]
+VDBE Program Listing:
+   0 Init             0   38    0               00 Start at 38
+   1 OpenWrite        0    2    0 3             00 root=2 iDb=0; v0
+   2 OpenWrite        1    4    0 k(2,,)        00 root=4 iDb=0; sqlite_autoindex_v0_2
+   3 OpenWrite        2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_v0_1
+   4 Integer        -23    1    0               00 r[1]=-23
+   5 NotNull          1    7    0               00 if r[1]!=NULL goto 7
+   6 NewRowid         0    1    0               00 r[1]=rowid
+   7 MustBeInt        1    0    0               00 
+   8 SoftNull         2    0    0               00 r[2]=NULL
+   9 String8          0    3    0 v2            00 r[3]='v2'
+  10 String8          0    4    0 v2            00 r[4]='v2'
+  11 Goto             0   19    0               00 
+  12 NotExists        0   18    1               00 intkey=r[1]
+  13 Column           0    2    7               00 r[7]=v0.v3
+  14 Rowid            0    8    0               00 r[8]=rowid
+  15 IdxDelete        1    7    2               00 key=r[7..8]
+  16 Column           0    1    7               00 r[7]=v0.v2
+  17 IdxDelete        2    7    2               00 key=r[7..8]
+  18 Goto             0   30    0               00 
+  19 Affinity         2    1    0 D             00 affinity(r[2])
+  20 SCopy            4    7    0               00 r[7]=r[4]; v3
+  21 IntCopy          1    8    0               00 r[8]=r[1]; rowid
+  22 MakeRecord       7    2    5               00 r[5]=mkrec(r[7..8]); for sqlite_autoindex_v0_2
+  23 NoConflict       1   25    7 1             00 key=r[7]
+  24 Halt          2067    3    0 v0.v3         02 
+  25 SCopy            3    7    0               00 r[7]=r[3]; v2
+  26 MakeRecord       7    2    6               00 r[6]=mkrec(r[7..8]); for sqlite_autoindex_v0_1
+  27 NoConflict       2   29    7 1             00 key=r[7]
+  28 Goto             0   34    0               00 
+  29 Goto             0   12    0               00 
+  30 IdxInsert        1    5    0               00 key=r[5]
+  31 IdxInsert        2    6    0               00 key=r[6]
+  32 MakeRecord       2    3   11               00 r[11]=mkrec(r[2..4])
+  33 Insert           0   11    1 v0            03 intkey=r[1] data=r[11]
+  34 Close            0    0    0               00 
+  35 Close            1    0    0               00 
+  36 Noop             2    0    0               00 
+  37 Halt             0    0    0               00 
+  38 Transaction      0    1    2 1             01 usesStmtJournal=0
+  39 TableLock        0    2    1 v0            00 iDb=0 root=2 write=1
+  40 Goto             0    1    0               00 
+SQL: [;SELECT * FROM v0;]
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 OpenRead         0    2    0 3             00 root=2 iDb=0; v0
+   2 Explain          0    0    0 SCAN TABLE v0 00 
+   3 Rewind           0    9    0               00 
+   4 Rowid            0    1    0               00 r[1]=rowid
+   5 Column           0    1    2               00 r[2]=v0.v2
+   6 Column           0    2    3               00 r[3]=v0.v3
+   7 ResultRow        1    3    0               00 output=r[1..3]
+   8 Next             0    4    0               01 
+   9 Close            0    0    0               00 
+  10 Halt             0    0    0               00 
+  11 Transaction      0    0    2 1             01 usesStmtJournal=0
+  12 TableLock        0    2    0 v0            00 iDb=0 root=2 write=0
+  13 Goto             0    1    0               00 
+SQL: [;UPDATE v0 SET v1=length(v1);]
+VDBE Program Listing:
+   0 Init             0   60    0               00 Start at 60
+   1 Null             0    3    4               00 r[3..4]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; v0
+   3 Explain          0    0    0 SCAN TABLE v0 00 
+   4 Rewind           0    8    0               00 
+   5 Rowid            0    4    0               00 r[4]=rowid
+   6 RowSetAdd        3    4    0               00 rowset(3)=r[4]
+   7 Next             0    5    0               01 
+   8 Close            0    0    0               00 
+   9 OpenWrite        0    2    0 3             00 root=2 iDb=0; v0
+  10 OpenWrite        1    4    0 k(2,,)        00 root=4 iDb=0; sqlite_autoindex_v0_2
+  11 OpenWrite        2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_v0_1
+  12 RowSetRead       3   56    4               00 r[4]=rowset(3)
+  13 NotExists        0   12    4               00 intkey=r[4]
+  14 Rowid            0    9    0               40 r[9]=rowid
+  15 Function0        0    9    5 length(1)     01 r[5]=func(r[9])
+  16 MustBeInt        5    0    0               00 
+  17 Null             0    6    0               00 r[6]=NULL
+  18 Column           0    1    7               00 r[7]=v0.v2
+  19 Column           0    2    8               00 r[8]=v0.v3
+  20 Eq               5   28    4               90 if r[5]==r[4] goto 28
+  21 Goto             0   29    0               00 
+  22 NotExists        0   28    5               00 intkey=r[5]
+  23 Column           0    2   10               00 r[10]=v0.v3
+  24 Rowid            0   11    0               00 r[11]=rowid
+  25 IdxDelete        1   10    2               00 key=r[10..11]
+  26 Column           0    1   10               00 r[10]=v0.v2
+  27 IdxDelete        2   10    2               00 key=r[10..11]
+  28 Goto             0   44    0               00 
+  29 Affinity         6    1    0 D             00 affinity(r[6])
+  30 SCopy            8   10    0               00 r[10]=r[8]; v3
+  31 IntCopy          5   11    0               00 r[11]=r[5]; rowid
+  32 MakeRecord      10    2    1               00 r[1]=mkrec(r[10..11]); for sqlite_autoindex_v0_2
+  33 NoConflict       1   37   10 1             00 key=r[10]
+  34 IdxRowid         1   12    0               00 r[12]=rowid
+  35 Eq              12   37    4               90 if r[12]==r[4] goto 37
+  36 Halt          2067    3    0 v0.v3         02 
+  37 SCopy            7   10    0               00 r[10]=r[7]; v2
+  38 MakeRecord      10    2    2               00 r[2]=mkrec(r[10..11]); for sqlite_autoindex_v0_1
+  39 NoConflict       2   43   10 1             00 key=r[10]
+  40 IdxRowid         2   13    0               00 r[13]=rowid
+  41 Eq              13   43    4               90 if r[13]==r[4] goto 43
+  42 Goto             0   12    0               00 
+  43 Goto             0   22    0               00 
+  44 NotExists        0   51    4               00 intkey=r[4]
+  45 Column           0    2   10               00 r[10]=v0.v3
+  46 Rowid            0   11    0               00 r[11]=rowid
+  47 IdxDelete        1   10    2               00 key=r[10..11]
+  48 Column           0    1   10               00 r[10]=v0.v2
+  49 IdxDelete        2   10    2               00 key=r[10..11]
+  50 Delete           0    0    0               00 
+  51 IdxInsert        1    1    0               00 key=r[1]
+  52 IdxInsert        2    2    0               00 key=r[2]
+  53 MakeRecord       6    3   14               00 r[14]=mkrec(r[6..8])
+  54 Insert           0   14    5 v0            05 intkey=r[5] data=r[14]
+  55 Goto             0   12    0               00 
+  56 Close            1    0    0               00 
+  57 Close            2    0    0               00 
+  58 Noop             0    0    0               00 
+  59 Halt             0    0    0               00 
+  60 Transaction      0    1    2 1             01 usesStmtJournal=0
+  61 TableLock        0    2    1 v0            00 iDb=0 root=2 write=1
+  62 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f70ce8b4859 in __GI_abort () at abort.c:79
+#2  0x00007f70ce8b4729 in __assert_fail_base (fmt=0x7f70cea4a588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x227b6e "memIsValid(&aMem[pOp->p2])", file=0x222c23 "sqlite3.c", line=77367, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f70ce8c5fd6 in __GI___assert_fail (assertion=0x227b6e "memIsValid(&aMem[pOp->p2])", file=0x222c23 "sqlite3.c", line=77367, function=0x213a19 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003e282b in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:77367
+#5  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#6  0x000000000024b5e9 in main (argc=1, argv=0x7ffe72c3c668) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 38826] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

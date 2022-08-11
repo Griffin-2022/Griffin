@@ -1,0 +1,44 @@
+# name: test/sql/constraints/primarykey/test_pk_string.test
+# description: ART FP String Constraint
+# group: [primarykey]
+
+;
+CREATE TABLE numbers(i varchar PRIMARY KEY, j INTEGER)
+
+# insert two conflicting pairs at the same time
+;
+INSERT INTO numbers VALUES ('1', 4), ('1', 5)
+
+# insert unique values
+;
+INSERT INTO numbers VALUES ('1', 4), ('2', 5)
+
+;
+SELECT * FROM numbers
+;
+1	4
+2	5
+
+# insert a duplicate value as part of a chain of values
+;
+INSERT INTO numbers VALUES ('6', 6), ('1', 4);
+
+# now insert just the first value
+;
+INSERT INTO numbers VALUES ('6', 6);
+
+;
+SELECT * FROM numbers
+;
+1	4
+2	5
+6	6
+
+# insert NULL value in PRIMARY KEY is not allowed
+;
+INSERT INTO numbers VALUES (NULL, 4);
+
+# update NULL is also not allowed
+;
+UPDATE numbers SET i=NULL;
+

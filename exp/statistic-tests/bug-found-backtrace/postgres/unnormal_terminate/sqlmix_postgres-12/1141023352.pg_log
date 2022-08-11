@@ -1,0 +1,111 @@
+2022-08-02 04:11:57.440 UTC [43073] STATEMENT:  
+	
+	CREATE TABLE default_test (LIKE dblink_pkey_results INCLUDING GENERATED);
+2022-08-02 04:11:57.440 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 04:11:57.440 UTC [43073] STATEMENT:  create temp table distinct_hash_1 (distinct_hash_2 numeric(14,0), disttable varchar(30));
+2022-08-02 04:11:57.441 UTC [43073] WARNING:  there is no transaction in progress
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  insert into temp_parted_oncommit values (0, null);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  create temp table dblink_pkey_results (uuid_timestamp_bits text, uuid_version_bits text);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  explain (verbose, costs off)
+	select 'temp_parted_oncommit'::text in (select 'temp_parted_oncommit'::name union all select 'temp_parted_oncommit'::name);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  select 'i_temptest'::text in (select 'temp_parted_oncommit'::name union all select 'temp_parted_oncommit'::name);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  select '1'::text in (select '1'::name union all select '1'::name);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  select * from temp_parted_oncommit_test twophase_type
+	  where (exists(select 1 from temp_parted_oncommit_test t2 where twophase_type.temp_parted_oncommit_test1 = t2.temp_parted_oncommit_test1) or temp_parted_oncommit_test1 < 0);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  explain (verbose, costs off)
+	  select x, x from
+	    (select (select now() where y=y) as x from (values(1),(2)) v(y)) ss;
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  create temp table uuid_reserved_bits (uuid_multicast_bit int not null);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  select val.x
+	  from generate_series(1,10) as s(i),
+	  lateral (
+	    values ((select s.i + 1)), (s.i + 101)
+	  ) as val(x)
+	where s.i < 10 and (select val.x) < 110;
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  insert into temp_parted_oncommit values
+	    (1, 1, 1),
+	    (2, 2, 2),
+	    (3, 3, 3),
+	    (4, 4, 4),
+	    (5, 1, 1),
+	    (6, 2, 2),
+	    (7, 3, 3),
+	    (8, 4, 4);
+2022-08-02 04:11:57.441 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.441 UTC [43073] STATEMENT:  create function explain_sq_limit() returns setof text language plpgsql as
+	$$
+	declare ln text;
+	begin
+	    for ln in
+	        explain (analyze, summary off, timing off, costs off)
+	        select * from (select col,col from temp_parted_oncommit order by col,col) as x limit 3
+	    loop
+	        ln := regexp_replace(ln, 'Memory: \S*',  'Memory: xxx');
+	        return next ln;
+	    end loop;
+	end;
+	$$;
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  drop function explain_sq_limit();
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  begin;
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  DISCARD ALL;
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 04:11:57.442 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.442 UTC [43073] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 04:11:57.449 UTC [44470] PANIC:  could not open critical system index 2662
+2022-08-02 04:11:57.449 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 04:11:57.449 UTC [43073] STATEMENT:  SELECT (timestamp with time zone 'today' = (timestamp with time zone 'yesterday' + interval '1 day')) as "True";
+2022-08-02 04:11:57.449 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.449 UTC [43073] STATEMENT:  
+	
+	CREATE USER regress_alter_generic_user3;
+2022-08-02 04:11:57.449 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:11:57.449 UTC [43073] STATEMENT:  SELECT time '03:30' + interval '1 month 04:01' AS "07:31:00";
+2022-08-02 04:11:57.449 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.449 UTC [43073] STATEMENT:  
+	CREATE SCHEMA alt_nsp2;
+2022-08-02 04:11:57.449 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.449 UTC [43073] STATEMENT:  SET DateStyle TO 'European,SQL';
+2022-08-02 04:11:57.450 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.450 UTC [43073] STATEMENT:  CREATE ROLE regress_nosuch_dbowner IN ROLE pg_database_owner;
+2022-08-02 04:11:57.450 UTC [43073] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:11:57.450 UTC [43073] STATEMENT:  SELECT to_timestamp('2011-12-18   23:38:15', 'YYYY-MM-DD  HH24:MI:SS');
+2022-08-02 04:11:57.450 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.450 UTC [43073] STATEMENT:  
+	CREATE AGGREGATE tab_int (
+	  sfunc1 = int4pl, basetype = int4, stype1 = int4, initcond = 100
+	);
+2022-08-02 04:11:57.450 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.450 UTC [43073] STATEMENT:  	-- failed (not owner)
+	ALTER FUNCTION tab_int(int) RENAME TO a;
+2022-08-02 04:11:57.450 UTC [43073] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:11:57.450 UTC [43073] STATEMENT:        -- failed (not owner)
+	ALTER FUNCTION a(int) SET SCHEMA alt_nsp2;
+2022-08-02 04:11:57.450 UTC [42836] LOG:  server process (PID 44470) was terminated by signal 6: Aborted
+2022-08-02 04:11:57.450 UTC [42836] LOG:  terminating any other active server processes
+2022-08-02 04:11:57.478 UTC [42836] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:11:57.489 UTC [44477] LOG:  database system was interrupted; last known up at 2022-08-02 04:11:43 UTC
+2022-08-02 04:11:57.490 UTC [44478] FATAL:  the database system is in recovery mode
+2022-08-02 04:11:57.492 UTC [44481] FATAL:  the database system is in recovery mode
+2022-08-02 04:11:57.494 UTC [44482] FATAL:  the database system is in recovery mode
+2022-08-02 04:11:57.499 UTC [44477] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:11:57.499 UTC [42836] LOG:  received smart shutdown request
+2022-08-02 04:11:57.500 UTC [44477] LOG:  redo starts at 0/309D920
+2022-08-02 04:11:57.504 UTC [42836] LOG:  abnormal database system shutdown

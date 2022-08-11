@@ -1,0 +1,111 @@
+	SELECT json_build_object(VARIADIC '{{1,4},{2,5},{3,6}}'::int[][]);
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 40
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:   -- ok
+	
+	-- empty objects/arrays
+	SELECT json_build_array();
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:  
+	
+	SELECT json_build_object();
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 46
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:  
+	
+	-- keys must be scalar and not null
+	SELECT json_build_object(null,2);
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 47
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:  
+	
+	SELECT json_object_agg(uctest, uctest) FROM f1;
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 46
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:  
+	
+	--two argument form of json_object
+	
+	select json_object('{a,b,c,"d e f"}','{1,2,3,"a b c"}');
+2022-08-02 09:37:18.817 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 17
+2022-08-02 09:37:18.817 UTC [32438] STATEMENT:  
+	
+	select * from json_to_recordset('[{"a":1,"b":{"d":"tab_int"},"c":true},{"a":2,"c":false,"b":{"d":"bar"}}]')
+	    as x(a int, b json, c boolean);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	
+	select *, c is null as c_is_null
+	from json_to_recordset('[{"a":1, "b":{"c":16, "d":2}, "x":8}]'::json)
+	    as t(a int, b json, c text, x int);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select * from json_to_record('{"ia2": [[[1], [2], [3]]]}') as x(ia2 int4[][]);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select * from json_to_record('{"out": [{"key": 1}]}') as x(out json);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select * from json_to_record('{"out": "{\"key\": 1}"}') as x(out json);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select * from json_to_record('{"out": {"key": 1}}') as x(out jsonb);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"numeric"');
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	
+	select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"all"');
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"boolean"');
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	
+	-- to_tsvector corner cases
+	select to_tsvector('""'::json);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select to_tsvector('[]'::json);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select to_tsvector('null'::json);
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	select json_to_tsvector('[]'::json, '"all"');
+2022-08-02 09:37:18.818 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.818 UTC [32438] STATEMENT:  
+	
+	select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '""');
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  
+	select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '{}');
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  
+	
+	-- corner cases for ts_headline with json
+	select ts_headline('null'::json, tsquery('aaa & bbb'));
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 09:37:18.819 UTC [32438] WARNING:  there is no transaction in progress
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  DISCARD ALL;
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 09:37:18.819 UTC [32438] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:37:18.819 UTC [32438] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 09:37:20.169 UTC [40013] LOG:  logical replication apply worker for subscription "regress_testsub" has started
+2022-08-02 09:37:20.169 UTC [40013] ERROR:  could not connect to the publisher: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+		Is the server running locally and accepting connections on that socket?
+2022-08-02 09:37:20.173 UTC [26565] LOG:  background worker "logical replication worker" (PID 40013) exited with exit code 1
+2022-08-02 09:37:21.326 UTC [40018] PANIC:  could not open critical system index 2662
+2022-08-02 09:37:21.328 UTC [26565] LOG:  server process (PID 40018) was terminated by signal 6: Aborted
+2022-08-02 09:37:21.328 UTC [26565] LOG:  terminating any other active server processes
+2022-08-02 09:37:21.368 UTC [26565] LOG:  all server processes terminated; reinitializing
+2022-08-02 09:37:21.384 UTC [40019] LOG:  database system was interrupted; last known up at 2022-08-02 09:36:25 UTC
+2022-08-02 09:37:21.406 UTC [40019] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 09:37:21.406 UTC [40019] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 09:37:21.406 UTC [40019] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 09:37:21.407 UTC [40019] LOG:  redo starts at 0/151F7610
+2022-08-02 09:37:21.415 UTC [40019] LOG:  invalid record length at 0/1536DFF0: wanted 24, got 0
+2022-08-02 09:37:21.415 UTC [40019] LOG:  redo done at 0/1536DF60 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 09:37:21.428 UTC [26565] LOG:  database system is ready to accept connections

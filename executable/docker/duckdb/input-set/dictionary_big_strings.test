@@ -1,0 +1,42 @@
+# name: test/sql/storage/compression/dictionary/dictionary_big_strings.test
+# description: Test dictionary compression big strings which are currently unsupported
+# group: [dictionary]
+
+# load the DB from disk
+load __TEST_DIR__/test_dictionary.db
+
+# Baseline, non big string, dictionary compression should work
+;
+CREATE TABLE normal_string (a VARCHAR);
+
+;
+INSERT INTO normal_string values (repeat('a', 3900));
+INSERT INTO normal_string values (repeat('b', 3900));
+INSERT INTO normal_string values (repeat('a', 3900));
+INSERT INTO normal_string values (repeat('b', 3900));
+
+;
+checkpoint
+
+;
+SELECT compression FROM pragma_storage_info('normal_string') WHERE segment_type ILIKE 'VARCHAR' LIMIT 1
+;
+Dictionary
+
+# Big string, should disable dictionary compression
+;
+CREATE TABLE big_string (a VARCHAR);
+
+;
+INSERT INTO big_string values (repeat('a', 8000));
+INSERT INTO big_string values (repeat('b', 8000));
+INSERT INTO big_string values (repeat('a', 8000));
+INSERT INTO big_string values (repeat('b', 8000));
+
+;
+checkpoint
+
+;
+SELECT compression FROM pragma_storage_info('big_string') WHERE segment_type ILIKE 'VARCHAR' LIMIT 1
+;
+Uncompressed

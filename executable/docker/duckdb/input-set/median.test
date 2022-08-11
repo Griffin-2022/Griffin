@@ -1,0 +1,44 @@
+# name: test/sql/function/list/aggregates/median.test
+# description: Test the list_median aggregate function
+# group: [aggregates]
+
+# types
+
+foreach type integer float double smallint bigint hugeint decimal(10,2)
+
+;
+CREATE TABLE quantile AS SELECT LIST(r::${type}) AS r FROM range(10000) t1(r);
+
+;
+SELECT list_median(r) FROM quantile
+;
+4999
+
+;
+DROP TABLE quantile
+
+endloop
+
+;
+CREATE TABLE quantile AS SELECT LIST(r::tinyint) AS r FROM range(100) t1(r);
+
+;
+SELECT list_median(r) FROM quantile
+;
+49.500000
+
+# scalar quantiles
+
+;
+CREATE TABLE range AS SELECT LIST(1) AS i FROM range(2000) t1(i)
+
+;
+INSERT INTO range VALUES (NULL), ([]), ([NULL]);
+
+;
+SELECT list_median(i) FROM range
+;
+1
+NULL
+NULL
+NULL

@@ -1,0 +1,103 @@
+# name: test/sql/function/string/test_left.test
+# description: LEFT test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# test LEFT on positive positions
+;
+SELECT LEFT('abcd', 0), LEFT('abc', 1), LEFT('abc', 2), LEFT('abc', 3), LEFT('abc', 4)
+;
+(empty)	a	ab	abc	abc
+
+;
+SELECT LEFT('🦆ab', 0), LEFT('🦆ab', 1), LEFT('🦆ab', 2), LEFT('🦆ab', 3), LEFT('🦆ab', 4)
+;
+(empty)	🦆	🦆a	🦆ab	🦆ab
+
+;
+SELECT LEFT('🦆🤦S̈', 0), LEFT('🦆🤦S̈', 1), LEFT('🦆🤦S̈', 2), LEFT('🦆🤦S̈', 3)
+;
+(empty)	🦆	🦆🤦	🦆🤦S̈
+
+# test LEFT on negative positions
+;
+SELECT LEFT('abcd', 0), LEFT('abc', -1), LEFT('abc', -2), LEFT('abc', -3), LEFT('abc', -4)
+;
+(empty)	ab	a	(empty)	(empty)
+
+;
+SELECT LEFT('🦆ab', 0), LEFT('🦆ab', -1), LEFT('🦆ab', -2), LEFT('🦆ab', -3), LEFT('🦆ab', -4)
+;
+(empty)	🦆a	🦆	(empty)	(empty)
+
+;
+SELECT LEFT('🦆🤦S̈', 0), LEFT('🦆🤦S̈', -1), LEFT('🦆🤦S̈', -2), LEFT('🦆🤦S̈', -3)
+;
+(empty)	🦆🤦	🦆	(empty)
+
+# test LEFT on NULL values
+;
+SELECT LEFT(NULL, 0), LEFT('abc', NULL), LEFT(NULL, NULL)
+;
+NULL	NULL	NULL
+
+;
+SELECT LEFT(NULL, 0), LEFT('🦆ab', NULL), LEFT(NULL, NULL)
+;
+NULL	NULL	NULL
+
+# test on tables
+;
+DROP TABLE IF EXISTS strings
+
+;
+CREATE TABLE strings(a STRING, b BIGINT)
+
+;
+INSERT INTO STRINGS VALUES ('abcd', 0), ('abc', 1), ('abc', 2), ('abc', 3), ('abc', 4)
+
+;
+SELECT LEFT(a, b) FROM strings
+;
+(empty)
+a
+ab
+abc
+abc
+
+;
+DROP TABLE IF EXISTS strings
+
+;
+CREATE TABLE strings(a STRING, b BIGINT)
+
+;
+INSERT INTO STRINGS VALUES ('abcd', 0), ('abc', -1), ('abc', -2), ('abc', -3), ('abc', -4)
+
+;
+SELECT LEFT(a, b) FROM strings
+;
+(empty)
+ab
+a
+(empty)
+(empty)
+
+;
+DROP TABLE IF EXISTS strings
+
+;
+CREATE TABLE strings(a STRING, b BIGINT)
+
+;
+INSERT INTO STRINGS VALUES (NULL, 0), ('abc', NULL), (NULL, NULL)
+
+;
+SELECT LEFT(a, b) FROM strings
+;
+NULL
+NULL
+NULL
+

@@ -1,0 +1,50 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000291,sig:11,src:023706+011044,time:6328626,execs:1333548,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fff46810b20, p=0x1ebb4e0) at sqlite3.c:146356
+146356	      pSublist = exprListAppendList(pParse, pSublist, pWin->pOwner->x.pList);
+(gdb) #0  0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7fff46810b20, p=0x1ebb4e0) at sqlite3.c:146356
+#1  0x00000000002fc6de in sqlite3Select (pParse=0x7fff46810b20, p=0x1ebb4e0, pDest=0x7fff4680f490) at sqlite3.c:130281
+#2  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7fff46810b20, pExpr=0x1ec7e70, iTab=3) at sqlite3.c:99650
+#3  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7fff46810b20, pX=0x1ec7e70, inFlags=4, prRhsHasNull=0x0, aiMap=0x1ebf680, piTab=0x7fff4680f6c4) at sqlite3.c:99448
+#4  0x00000000003795bd in codeEqualityTerm (pParse=0x7fff46810b20, pTerm=0x1ec1d10, pLevel=0x1ec1f98, iEq=0, bRev=0, iTarget=1) at sqlite3.c:136693
+#5  0x000000000037a706 in codeAllEqualityTerms (pParse=0x7fff46810b20, pLevel=0x1ec1f98, bRev=0, nExtraReg=0, pzAff=0x7fff4680f938) at sqlite3.c:136869
+#6  0x0000000000375cb8 in sqlite3WhereCodeOneLoopStart (pParse=0x7fff46810b20, v=0x1ebd100, pWInfo=0x1ec1c00, iLevel=0, pLevel=0x1ec1f98, notReady=18446744073709551615) at sqlite3.c:137776
+#7  0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7fff46810b20, pTabList=0x1ec0940, pWhere=0x1ec79c0, pOrderBy=0x0, pResultSet=0x1ec8320, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#8  0x00000000002fdcea in sqlite3Select (pParse=0x7fff46810b20, p=0x1eb4dc0, pDest=0x7fff4680ff10) at sqlite3.c:130695
+#9  0x00000000002ecaa8 in yy_reduce (yypParser=0x7fff46810140, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff46810b20) at sqlite3.c:151581
+#10 0x00000000002e92f8 in sqlite3Parser (yyp=0x7fff46810140, yymajor=1, yyminor=...) at sqlite3.c:152877
+#11 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fff46810b20, 
+    zSql=0x1eb9dd2 ";;CREATE TABLE t7(t7_idx_00000062 INTEGER, t7_idx_00000061 INTEGER, swarm INTEGER);SELECT t2def, sum(t2def) OVER win1 FROM f \n  WINDOW win1 AS (ORDER BY 1)\n\n;", pzErrMsg=0x7fff46810d00)
+    at sqlite3.c:154013
+#12 0x00000000002a1683 in sqlite3Prepare (db=0x1eab350, 
+    zSql=0x1eac260 ";\n;SELECT * FROM t0 WHERE \n      (0, t0.c0) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t0);;CREATE TABLE t7(t7_idx_00000062 INTEGER, t7_idx_00000061 INTEGER, swarm INTEGER);SELECT t2def, sum(t"..., nBytes=256, prepFlags=128, pReprepare=0x0, ppStmt=0x7fff46810e38, pzTail=0x7fff46810e20) at sqlite3.c:124303
+#13 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x1eab350, 
+    zSql=0x1eac260 ";\n;SELECT * FROM t0 WHERE \n      (0, t0.c0) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t0);;CREATE TABLE t7(t7_idx_00000062 INTEGER, t7_idx_00000061 INTEGER, swarm INTEGER);SELECT t2def, sum(t"..., nBytes=256, prepFlags=128, pOld=0x0, ppStmt=0x7fff46810e38, pzTail=0x7fff46810e20) at sqlite3.c:124403
+#14 0x000000000029247f in sqlite3_prepare_v2 (db=0x1eab350, 
+    zSql=0x1eac260 ";\n;SELECT * FROM t0 WHERE \n      (0, t0.c0) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t0);;CREATE TABLE t7(t7_idx_00000062 INTEGER, t7_idx_00000061 INTEGER, swarm INTEGER);SELECT t2def, sum(t"..., nBytes=256, ppStmt=0x7fff46810e38, pzTail=0x7fff46810e20) at sqlite3.c:124487
+#15 0x0000000000256bd0 in main (argc=1, argv=0x7fff46810fe8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 52885] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

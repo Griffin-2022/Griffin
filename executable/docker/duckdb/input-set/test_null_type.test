@@ -1,0 +1,102 @@
+# name: test/sql/types/test_null_type.test
+# description: Test null type
+# group: [types]
+
+;
+pragma enable_verification
+
+;
+create table null_table (i "null")
+
+;
+insert into null_table values (null)
+
+foreach type <integral> float double varchar
+
+# explicit cast
+;
+select 42::${type}::"null"
+
+# implicit cast
+;
+insert into null_table values (42::${type})
+
+endloop
+
+# list
+;
+create table null_list (i "null"[])
+
+;
+insert into null_list values (null), ([null])
+
+;
+select i from null_list
+;
+NULL
+[NULL]
+
+foreach type <integral> float double varchar
+
+;
+select i::${type}[] from null_list
+;
+NULL
+[NULL]
+
+;
+insert into null_list values ([42::${type}])
+
+endloop
+
+# struct
+;
+create table null_struct (i struct(n "null"))
+
+;
+insert into null_struct values (null), ({n:null})
+
+;
+select i from null_struct
+;
+NULL
+{'n': NULL}
+
+foreach type <integral> float double varchar
+
+;
+select i::struct(n ${type}) from null_struct
+;
+NULL
+{'n': NULL}
+
+;
+insert into null_struct values ({n: 42::${type}})
+
+endloop
+
+# map
+;
+create table null_map (i map("null", "null"))
+
+;
+insert into null_map values (null), (map([null], [null]))
+
+;
+select i from null_map
+;
+NULL
+{NULL=NULL}
+
+foreach type <integral> float double varchar
+
+;
+select i::map(${type}, ${type}) from null_map
+;
+NULL
+{NULL=NULL}
+
+;
+insert into null_map values (map([42::${type}], [7::${type}]))
+
+endloop

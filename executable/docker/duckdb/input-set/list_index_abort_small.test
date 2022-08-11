@@ -1,0 +1,97 @@
+# name: test/sql/types/list/list_index_abort_small.test
+# description: Test abort of list insertion in a primary key index
+# group: [list]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(id INTEGER PRIMARY KEY, c INT[]);
+
+;
+INSERT INTO a VALUES (1, [1, 2, 3])
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO a SELECT i id, NULL c FROM range(2, 2500, 1) tbl(i)
+
+;
+INSERT INTO a VALUES (1, [4, 5])
+
+;
+ROLLBACK
+
+;
+SELECT c FROM a WHERE id=1
+;
+[1, 2, 3]
+
+;
+SELECT * FROM a
+;
+1	[1, 2, 3]
+
+# now with non-null values
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO a SELECT i id, [-i, i, 33] c FROM range(-2, -2500, -1) tbl(i)
+
+;
+INSERT INTO a VALUES (1, [4, 5])
+
+;
+ROLLBACK
+
+;
+SELECT c FROM a WHERE id=1
+;
+[1, 2, 3]
+
+;
+SELECT * FROM a
+;
+1	[1, 2, 3]
+
+# bigger lists
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO a SELECT i id, [1, 2, 3, 4, 5, i, -33] c FROM range(2500, 5000, 1) tbl(i)
+
+;
+INSERT INTO a VALUES (1, [4, 5])
+
+;
+ROLLBACK
+
+;
+SELECT c FROM a WHERE id=1
+;
+[1, 2, 3]
+
+;
+SELECT * FROM a
+;
+1	[1, 2, 3]
+
+;
+INSERT INTO a VALUES (2, [4, 5])
+
+;
+INSERT INTO a VALUES (3, NULL)
+
+;
+INSERT INTO a VALUES (4, [NULL])
+
+;
+SELECT * FROM a
+;
+1	[1, 2, 3]
+2	[4, 5]
+3	NULL
+4	[NULL]

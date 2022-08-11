@@ -1,0 +1,100 @@
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=2
+max_threads=153
+thread_count=2
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00017a288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7f0fd3ff6c80 thread_stack 0x100000
+??:0(__interceptor_backtrace)[0x77602b]
+mysys/stacktrace.c:212(my_print_stacktrace)[0x3586647]
+sql/signal_handler.cc:0(handle_fatal_signal)[0x187c05b]
+??:0(__restore_rt)[0x7f0ffa3c4420]
+??:0(gsignal)[0x7f0ff9ff200b]
+??:0(abort)[0x7f0ff9fd1859]
+/lib/x86_64-linux-gnu/libc.so.6(+0x22729)[0x7f0ff9fd1729]
+??:0(__assert_fail)[0x7f0ff9fe2fd6]
+sql/sql_select.cc:4470(JOIN::save_explain_data(Explain_query*, bool, bool, bool, bool))[0xe8a7cf]
+??:0(JOIN::build_explain())[0xe88d90]
+sql/sql_select.cc:1815(JOIN::optimize())[0xe8ac79]
+sql/item_subselect.cc:4034(subselect_single_select_engine::exec())[0x1c9c593]
+??:0(Item_subselect::exec())[0x1c6571d]
+sql/item_subselect.cc:1543(Item_singlerow_subselect::val_decimal(my_decimal*))[0x1c6ecca]
+sql/sql_type.cc:301(VDec)[0x1535385]
+sql/sql_type.h:480(VDec2_lazy)[0x1a9d8af]
+sql/sql_type.cc:308(VDec_op)[0x1535655]
+sql/sql_type.h:387(Dec_ptr::to_longlong(bool))[0x156f6df]
+sql/item_func.h:391(Item_func::is_simplified_cond_processor(void*))[0x8cc796]
+sql/item.h:2742(Item_args::walk_args(bool (Item::*)(void*), bool, void*))[0x8cbdce]
+sql/item_cmpfunc.cc:5107(Item_cond::walk(bool (Item::*)(void*), bool, void*))[0x19eda22]
+sql/opt_subselect.cc:6044(and_new_conditions_to_optimized_cond(THD*, Item*, COND_EQUAL**, List<Item>&, Item::cond_result*))[0x146351f]
+sql/sql_select.cc:2227(JOIN::optimize_inner())[0xeaeedd]
+??:0(JOIN::optimize())[0xe8ac3c]
+sql/sql_derived.cc:1064(mysql_derived_optimize(THD*, LEX*, TABLE_LIST*))[0xbe64fd]
+??:0(mysql_handle_single_derived(LEX*, TABLE_LIST*, unsigned int))[0xbece5d]
+sql/sql_select.cc:2285(JOIN::optimize_inner())[0xeaed2b]
+??:0(JOIN::optimize())[0xe8ac3c]
+sql/sql_derived.cc:1064(mysql_derived_optimize(THD*, LEX*, TABLE_LIST*))[0xbe64fd]
+??:0(mysql_handle_single_derived(LEX*, TABLE_LIST*, unsigned int))[0xbece5d]
+sql/sql_select.cc:2285(JOIN::optimize_inner())[0xeaed2b]
+??:0(JOIN::optimize())[0xe8ac3c]
+??:0(mysql_select(THD*, TABLE_LIST*, List<Item>&, Item*, unsigned int, st_order*, st_order*, Item*, st_order*, unsigned long long, select_result*, st_select_lex_unit*, st_select_lex*))[0xe6b557]
+sql/sql_select.cc:545(handle_select(THD*, LEX*, select_result*, unsigned long))[0xe6aaca]
+sql/sql_parse.cc:6253(execute_sqlcom_select(THD*, TABLE_LIST*))[0xd49023]
+sql/sql_parse.cc:3944(mysql_execute_command(THD*, bool))[0xd2f90d]
+sql/sql_parse.cc:8028(mysql_parse(THD*, char*, unsigned int, Parser_state*))[0xd1155c]
+sql/sql_parse.cc:1991(dispatch_command(enum_server_command, THD*, char*, unsigned int, bool))[0xd0800b]
+??:0(do_command(THD*, bool))[0xd137aa]
+sql/sql_connect.cc:1418(do_handle_one_connection(CONNECT*, bool))[0x131b0a3]
+sql/sql_connect.cc:0(handle_one_connection)[0x131a831]
+perfschema/pfs.cc:2203(pfs_spawn_thread)[0x23fd89f]
+??:0(start_thread)[0x7f0ffa3b8609]
+??:0(clone)[0x7f0ffa0ce133]
+
+Trying to get some variables.
+Some pointers may be invalid and cause the dump to abort.
+Query (0x62900017761b): SELECT TRUE FROM ( SELECT * FROM v6 WHERE v1 = v1 GROUP BY v1 HAVING v1 < 84416560.000000 ) AS v8 NATURAL JOIN v0 AS v7
+
+Connection ID (thread ID): 28757
+Status: NOT_KILLED
+
+Optimizer switch: index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,index_merge_sort_intersection=off,engine_condition_pushdown=off,index_condition_pushdown=on,derived_merge=on,derived_with_keys=on,firstmatch=on,loosescan=on,materialization=on,in_to_exists=on,semijoin=on,partial_match_rowid_merge=on,partial_match_table_scan=on,subquery_cache=on,mrr=off,mrr_cost_based=off,mrr_sort_keys=off,outer_join_with_cache=on,semijoin_with_cache=on,join_cache_incremental=on,join_cache_hashed=on,join_cache_bka=on,optimize_join_buffer_size=on,table_elimination=on,extended_keys=on,exists_to_in=on,orderby_uses_equalities=on,condition_pushdown_for_derived=on,split_materialized=on,condition_pushdown_for_subquery=on,rowid_filter=on,condition_pushdown_from_having=on,not_null_range_scan=off
+
+The manual page at https://mariadb.com/kb/en/how-to-produce-a-full-stack-trace-for-mysqld/ contains
+information that should help you find out what is causing the crash.
+Writing a core file...
+Working directory at /dev/shm/out/mysql_client_dir_3306
+Resource Limits:
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             unlimited            unlimited            processes 
+Max open files            1048576              1048576              files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       2062354              2062354              signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us        
+Core pattern: core
+

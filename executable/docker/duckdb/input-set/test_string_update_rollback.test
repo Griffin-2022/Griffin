@@ -1,0 +1,117 @@
+# name: test/sql/update/test_string_update_rollback.test
+# description: Test rollback of string update
+# group: [update]
+
+# create a table
+;
+CREATE TABLE test (a VARCHAR);
+
+;
+INSERT INTO test VALUES ('hello'), ('world')
+
+;
+BEGIN TRANSACTION;
+
+# perform an update within the transaction
+;
+UPDATE test SET a='test' WHERE a='hello';
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+hello
+world
+
+# now rollback the update
+;
+ROLLBACK;
+
+;
+SELECT * FROM test ORDER BY a
+;
+hello
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+hello
+world
+
+# rollback of a value that is updated twice
+;
+UPDATE test SET a='test' WHERE a='hello';
+
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a='test2' WHERE a='test';
+
+;
+SELECT * FROM test ORDER BY a
+;
+test2
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+ROLLBACK;
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+# test rollback of string update in different part
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a='test2' WHERE a='world';
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+test2
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+ROLLBACK;
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+

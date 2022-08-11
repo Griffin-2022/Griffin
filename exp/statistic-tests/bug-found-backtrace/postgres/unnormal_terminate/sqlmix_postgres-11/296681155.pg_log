@@ -1,0 +1,111 @@
+	                       WHEN 7 THEN 'waiting for old snapshots'
+	                       WHEN 8 THEN 'waiting for readers before marking dead'
+	                       WHEN 9 THEN 'waiting for readers before dropping'
+	                       END as oidcol,
+	        S.param4 AS brintest,
+	        S.param5 AS int4col,
+	        S.param6 AS int8col,
+	        S.param16 AS float8col,
+	        S.param17 AS numericcol,
+	        S.param12 AS textcol,
+	        S.param13 AS datecol,
+	        S.param14 AS bpcharcol,
+	        S.param15 AS timestampcol
+	    FROM pg_stat_get_progress_info('CREATE INDEX') AS S
+	        LEFT JOIN pg_database D ON S.boxcol = D.oid;
+2022-08-01 23:55:51.590 UTC [44736] ERROR:  column s.timecol does not exist at character 698
+2022-08-01 23:55:51.590 UTC [44736] STATEMENT:  
+	
+	
+	CREATE VIEW byteacol AS
+	    SELECT
+	        S.charcol AS charcol, S.timecol AS timecol, D.intervalcol AS intervalcol,
+	        S.timetzcol AS timetzcol,
+	        CASE S.param5 WHEN 1 THEN 'COPY FROM'
+	                      WHEN 2 THEN 'COPY TO'
+	                      END AS cidrcol,
+	        CASE S.param6 WHEN 1 THEN 'FILE'
+	                      WHEN 2 THEN 'PROGRAM'
+	                      WHEN 3 THEN 'PIPE'
+	                      WHEN 4 THEN 'CALLBACK'
+	                      END AS "inetcol",
+	        S.param1 AS int4rangecol,
+	        S.param2 AS lsncol,
+	        S.param3 AS tidcol,
+	        S.param4 AS macaddrcol
+	    FROM pg_stat_get_progress_info('COPY') AS S
+	        LEFT JOIN pg_database D ON S.timecol = D.oid;
+2022-08-01 23:55:51.591 UTC [44736] ERROR:  column "rolname" does not exist at character 8
+2022-08-01 23:55:51.591 UTC [44736] STATEMENT:  SELECT rolname, float8(rolname) FROM fooarr;
+2022-08-01 23:55:51.591 UTC [44736] ERROR:  column u.latest_end_lsn does not exist at character 947
+2022-08-01 23:55:51.591 UTC [44736] STATEMENT:  
+	
+	CREATE VIEW last_msg_send_time AS
+	    SELECT
+	        U.oid       AS written_lsn,
+	        S.oid       AS flushed_lsn,
+	        S.receive_start_lsn   AS receive_start_lsn,
+	        U.latest_end_lsn    AS latest_end_lsn,
+	        CASE WHEN U.latest_end_lsn = 0 THEN
+	            'public'
+	        ELSE
+	            A.rolname
+	        END AS latest_end_time,
+	        CASE WHEN (U.latest_end_lsn <> 0 AND A.rolname = current_user
+	                     AND (pg_has_role(S.srvowner, 'USAGE')
+	                          OR has_server_privilege(S.oid, 'USAGE')))
+	                    OR (U.latest_end_lsn = 0 AND pg_has_role(S.srvowner, 'USAGE'))
+	                    OR (SELECT rolsuper FROM pg_authid WHERE rolname = current_user)
+	                    THEN U.last_msg_receipt_time
+	                 ELSE NULL END AS last_msg_receipt_time
+	    FROM pg_user_mapping U
+	        JOIN pg_foreign_server S ON (U.umserver = S.oid)
+	        LEFT JOIN pg_authid A ON (A.oid = U.latest_end_lsn);
+2022-08-01 23:55:51.592 UTC [44736] ERROR:  column "rolsuper" does not exist at character 16
+2022-08-01 23:55:51.592 UTC [44736] STATEMENT:  SELECT to_char(rolsuper, '0999999999999999')       FROM fooarr;
+2022-08-01 23:55:51.592 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.592 UTC [44736] STATEMENT:  select -('-9223372036854775808'::int8);
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '9223372036854775800'::int8 * '9223372036854775800'::int8;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '-9223372036854775800'::int8 - '100'::int4;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '9223372036854775800'::int8 * '100'::int4;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '9223372036854775800'::int8 * '100'::int2;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '100'::int2 + '9223372036854775800'::int8;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  division by zero
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  select '100'::int2 / '0'::int8;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  column "rolconnlimit" does not exist at character 8
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  SELECT rolconnlimit, rolconfig, rolconnlimit & rolconfig AS "and", rolconnlimit | rolconfig AS "or", rolconnlimit # rolconfig AS "xor", ~rolconnlimit AS "not" FROM fooarr;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  column "rolconnlimit" does not exist at character 8
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  SELECT rolconnlimit, rolconnlimit << 2 AS "shl", rolconnlimit >> 3 AS "shr" FROM fooarr;
+2022-08-01 23:55:51.593 UTC [44736] ERROR:  step size cannot equal zero
+2022-08-01 23:55:51.593 UTC [44736] STATEMENT:  SELECT * FROM generate_series('+4567890123456789'::int8, '+4567890123456799'::int8, 0);
+2022-08-01 23:55:51.594 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.594 UTC [44736] STATEMENT:  SELECT (-9223372036854775808)::int8 * (-1)::int8;
+2022-08-01 23:55:51.594 UTC [44736] ERROR:  bigint out of range
+2022-08-01 23:55:51.594 UTC [44736] STATEMENT:  SELECT lcm((-9223372036854775808)::int8, 1::int8);
+2022-08-01 23:55:51.594 UTC [44736] WARNING:  there is no transaction in progress
+2022-08-01 23:55:51.605 UTC [44736] PANIC:  could not write to file "pg_wal/xlogtemp.44736": No space left on device
+2022-08-01 23:55:51.605 UTC [44736] STATEMENT:  
+	
+	CREATE VIEW b AS
+	    SELECT
+	        rolname AS auth_tbl,
+	        oid AS uname,
+	        ARRAY(SELECT member FROM pg_auth_members WHERE roleid = oid) AS t2
+	    FROM pg_authid
+	    WHERE NOT rolcanlogin;
+2022-08-01 23:55:51.640 UTC [30117] LOG:  server process (PID 44736) was terminated by signal 6: Aborted
+2022-08-01 23:55:51.640 UTC [30117] LOG:  terminating any other active server processes
+2022-08-01 23:55:51.644 UTC [45067] FATAL:  the database system is in recovery mode
+2022-08-01 23:55:51.650 UTC [30117] LOG:  all server processes terminated; reinitializing
+2022-08-01 23:55:51.668 UTC [45072] LOG:  database system was interrupted; last known up at 2022-08-01 23:54:33 UTC
+2022-08-01 23:55:51.668 UTC [45073] FATAL:  the database system is in recovery mode
+2022-08-01 23:55:51.671 UTC [45074] FATAL:  the database system is in recovery mode
+2022-08-01 23:55:51.676 UTC [30117] LOG:  received smart shutdown request
+2022-08-01 23:55:51.745 UTC [45072] LOG:  recovered replication state of node 1 to 0/0
+2022-08-01 23:55:51.745 UTC [45072] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 23:55:51.749 UTC [45072] LOG:  redo starts at 0/15E88C68

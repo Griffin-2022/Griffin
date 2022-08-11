@@ -1,0 +1,70 @@
+# name: test/sql/catalog/view/test_view_schema_change.test
+# description: Test views with changing schema
+# group: [view]
+
+;
+PRAGMA enable_verification
+
+# create a table
+;
+CREATE TABLE t1(i INTEGER)
+
+;
+INSERT INTO t1 VALUES (41), (42), (43)
+
+# create a view that queries that table
+;
+CREATE VIEW v1 AS SELECT * FROM t1
+
+;
+SELECT * FROM v1
+;
+41
+42
+43
+
+# now drop the table and create a table that has a different schema
+;
+DROP TABLE t1
+
+;
+CREATE TABLE t1(i DATE)
+
+# querying the view fails because the column types don't match the expected types
+;
+SELECT * FROM v1
+
+# now drop the table and create one that has extra columns
+;
+DROP TABLE t1
+
+;
+CREATE TABLE t1(i INTEGER, j INTEGER)
+
+# again querying the view fails: there are extra columns present
+;
+SELECT * FROM v1
+
+# now drop the table and create one that has differently named columns
+;
+DROP TABLE t1
+
+;
+CREATE TABLE t1(k INTEGER)
+
+# this is fine: types still match, and the original names will be applied as alias!
+;
+SELECT i FROM v1
+;
+
+;
+DROP TABLE t1
+
+;
+CREATE TABLE t1(i INTEGER)
+
+# now we can query again!
+;
+SELECT * FROM v1
+;
+

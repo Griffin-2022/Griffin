@@ -1,0 +1,45 @@
+# name: test/issues/rigger/test_514.test
+# description: Issue 514
+# group: [rigger]
+
+;
+PRAGMA enable_verification
+
+# Incorrect result after an INSERT violates a UNIQUE constraint
+;
+CREATE TABLE t0(c0 INT);
+
+;
+CREATE UNIQUE INDEX i0 ON t0(c0);
+
+;
+INSERT INTO t0(c0) VALUES (1);
+
+;
+SELECT * FROM t0 WHERE t0.c0 = 1;
+;
+1
+
+;
+INSERT INTO t0(c0) VALUES (1);
+
+;
+SELECT * FROM t0 WHERE t0.c0 = 1;
+;
+1
+
+# verify correct behavior here too when we have multiple nodes
+;
+INSERT INTO t0(c0) VALUES (2);
+
+;
+INSERT INTO t0(c0) VALUES (3);
+
+;
+INSERT INTO t0(c0) VALUES (2);
+
+;
+SELECT * FROM t0 WHERE t0.c0 = 2;
+;
+2
+

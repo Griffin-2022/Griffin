@@ -1,0 +1,78 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000085,sig:11,src:016812+020815,time:2067064,execs:270179,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [select hex(zeroblob(-1))
+;]
+VDBE Trace:
+   0 Init             0    5    0               00 Start at 5
+   5 Integer         -1    4    0               00 r[4]=-1
+REG[4] =  i:-1
+   6 Function0        1    4    3 zeroblob(1)   01 r[3]=func(r[4])
+REG[4] =  i:-1
+REG[3] =  s0[]+0z
+   7 Function0        1    3    2 hex(1)        01 r[2]=func(r[3])
+REG[3] =  s0[]+0z
+REG[2] =   z0[](8)
+   8 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             2    1    0               00 r[1]=r[2]
+REG[1] =   s0[](8)
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   s0[](8)
+   4 Halt             0    0    0               00 
+
+Program received signal SIGSEGV, Segmentation fault.
+__strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+(gdb) #0  __strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+#1  0x000000000034a642 in sqlite3ExprCodeTarget (pParse=0x233b0d0, pExpr=0x233a770, target=8) at sqlite3.c:100443
+#2  0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x233b0d0, pList=0x233e460, target=8, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#3  0x00000000003ae220 in pushOntoSorter (pParse=0x233b0d0, pSort=0x7ffe41753b58, pSelect=0x23394b0, regData=9, regOrigData=0, nData=1, nPrefixReg=1) at sqlite3.c:125256
+#4  0x00000000003a9edf in selectInnerLoop (pParse=0x233b0d0, p=0x23394b0, srcTab=-1, pSort=0x7ffe41753b58, pDistinct=0x7ffe41753c10, pDest=0x7ffe41753cf8, iContinue=-4, iBreak=-2) at sqlite3.c:125809
+#5  0x00000000002fe191 in sqlite3Select (pParse=0x233b0d0, p=0x23394b0, pDest=0x7ffe41753cf8) at sqlite3.c:130743
+#6  0x00000000002fd24a in sqlite3Select (pParse=0x233b0d0, p=0x2337d40, pDest=0x7ffe41754018) at sqlite3.c:130524
+#7  0x0000000000309aa3 in sqlite3Insert (pParse=0x233b0d0, pTabList=0x233a2c0, pSelect=0x2337d40, pColumn=0x0, onError=11, pUpsert=0x0) at sqlite3.c:117162
+#8  0x00000000003949b6 in codeTriggerProgram (pParse=0x233b0d0, pStepList=0x23412f0, orconf=11) at sqlite3.c:132245
+#9  0x0000000000394209 in codeRowTrigger (pParse=0x7ffe41755210, pTrigger=0x2340820, pTab=0x23408f0, orconf=11) at sqlite3.c:132398
+#10 0x000000000039393d in getRowTrigger (pParse=0x7ffe41755210, pTrigger=0x2340820, pTab=0x23408f0, orconf=11) at sqlite3.c:132455
+#11 0x0000000000393453 in sqlite3CodeRowTriggerDirect (pParse=0x7ffe41755210, p=0x2340820, pTab=0x23408f0, reg=1, orconf=11, ignoreJump=-1) at sqlite3.c:132477
+#12 0x0000000000363845 in sqlite3CodeRowTrigger (pParse=0x7ffe41755210, pTrigger=0x2340820, op=120, pChanges=0x0, tr_tm=1, pTab=0x23408f0, reg=1, orconf=11, ignoreJump=-1) at sqlite3.c:132571
+#13 0x000000000030ad90 in sqlite3Insert (pParse=0x7ffe41755210, pTabList=0x233ac20, pSelect=0x0, pColumn=0x2337890, onError=11, pUpsert=0x0) at sqlite3.c:117389
+#14 0x00000000002ee6c8 in yy_reduce (yypParser=0x7ffe41754830, yyruleno=150, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe41755210) at sqlite3.c:151937
+#15 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffe41754830, yymajor=1, yyminor=...) at sqlite3.c:152877
+#16 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffe41755210, 
+    zSql=0x2336f53 ";SELECT length(zeroblob(-1", '4' <repeats 15 times>, "));;\n;SELECT zeroblob(100)\n;;\n;select zeroblob(-1)\n;select zeroblob(-1)|1\n;SELECT x'0000' IN (x'0000')\n;;CREATE INDEX t1a ON t0(c0, c0+c0);", 
+    pzErrMsg=0x7ffe417553f0) at sqlite3.c:154013
+#17 0x00000000002a1683 in sqlite3Prepare (db=0x231f610, 
+    zSql=0x231f15e ";INSERT INTO t0(c0) VALUES(1.23456);SELECT length(zeroblob(-1", '4' <repeats 15 times>, "));;\n;SELECT zeroblob(100)\n;;\n;select zeroblob(-1)\n;select zeroblob(-1)|1\n;SELECT x'0000' IN (x'0000')\n;;CREATE INDEX t1a ON"..., nBytes=215, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffe41755528, pzTail=0x7ffe41755510) at sqlite3.c:124303
+#18 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x231f610, 
+    zSql=0x231f15e ";INSERT INTO t0(c0) VALUES(1.23456);SELECT length(zeroblob(-1", '4' <repeats 15 times>, "));;\n;SELECT zeroblob(100)\n;;\n;select zeroblob(-1)\n;select zeroblob(-1)|1\n;SELECT x'0000' IN (x'0000')\n;;CREATE INDEX t1a ON"..., nBytes=215, prepFlags=128, pOld=0x0, ppStmt=0x7ffe41755528, pzTail=0x7ffe41755510) at sqlite3.c:124403
+#19 0x000000000029247f in sqlite3_prepare_v2 (db=0x231f610, 
+    zSql=0x231f15e ";INSERT INTO t0(c0) VALUES(1.23456);SELECT length(zeroblob(-1", '4' <repeats 15 times>, "));;\n;SELECT zeroblob(100)\n;;\n;select zeroblob(-1)\n;select zeroblob(-1)|1\n;SELECT x'0000' IN (x'0000')\n;;CREATE INDEX t1a ON"..., nBytes=215, ppStmt=0x7ffe41755528, pzTail=0x7ffe41755510) at sqlite3.c:124487
+#20 0x0000000000256bd0 in main (argc=1, argv=0x7ffe417556d8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 50639] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

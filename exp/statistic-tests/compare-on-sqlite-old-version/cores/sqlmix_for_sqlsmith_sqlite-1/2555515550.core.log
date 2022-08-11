@@ -1,0 +1,98 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000288,sig:06,src:020688+023509,time:10859279,execs:2678095,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT a,a,a FROM t1 EXCEPT SELECT a,a,a FROM t1 WHERE a>='d'
+    ORDER BY a, a DESC
+  
+;]
+VDBE Trace:
+   0 Init             0   82    0               00 Start at 82
+  82 Transaction      0    0    3 0             01 usesStmtJournal=0
+  83 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  84 String8          0   19    0 d             00 r[19]='d'
+REG[19] =   t1[d](8)
+  85 Goto             0    1    0               00 
+   1 Integer          0    1    0               00 r[1]=0
+REG[1] =  i:0
+   2 InitCoroutine    5   27    3               00 left SELECT
+  27 InitCoroutine    6   76   28               00 right SELECT
+  76 Yield            5   81    0               00 
+REG[5] =  i:2
+REG[5] =  i:76
+   3 SorterOpen       2    8    0 k(4,B,-B,B,B) 00 
+   4 OpenRead         1    2    0 1             00 root=2 iDb=0; t1
+   5 Explain          1    0    0 SCAN TABLE t1 00 
+   6 Rewind           1   17    0               00 
+  17 Close            1    0    0               00 
+  18 OpenPseudo       3   17    8               00 8 columns in r[17]
+  19 SorterSort       2   26    0               00 
+  26 EndCoroutine     5    0    0               00 
+REG[5] =  i:76
+  81 Halt             0    0    0               00 
+SQL: [SELECT a,a,a FROM t1 EXCEPT SELECT a,a,a FROM t1 WHERE a<'d'
+    ORDER BY a DESC, a
+  
+;]
+VDBE Trace:
+   0 Init             0   82    0               00 Start at 82
+  82 Transaction      0    0    3 0             01 usesStmtJournal=0
+  83 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  84 String8          0   19    0 d             00 r[19]='d'
+REG[19] =   t1[d](8)
+  85 Goto             0    1    0               00 
+   1 Integer          0    1    0               00 r[1]=0
+REG[1] =  i:0
+   2 InitCoroutine    5   27    3               00 left SELECT
+  27 InitCoroutine    6   76   28               00 right SELECT
+  76 Yield            5   81    0               00 
+REG[5] =  i:2
+REG[5] =  i:76
+   3 SorterOpen       2    8    0 k(4,-B,B,B,B) 00 
+   4 OpenRead         1    2    0 1             00 root=2 iDb=0; t1
+   5 Explain          1    0    0 SCAN TABLE t1 00 
+   6 Rewind           1   17    0               00 
+  17 Close            1    0    0               00 
+  18 OpenPseudo       3   17    8               00 8 columns in r[17]
+  19 SorterSort       2   26    0               00 
+  26 EndCoroutine     5    0    0               00 
+REG[5] =  i:76
+  81 Halt             0    0    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fa6b338c859 in __GI_abort () at abort.c:79
+#2  0x00007fa6b338c729 in __assert_fail_base (fmt=0x7fa6b3522588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=<optimized out>)
+    at assert.c:92
+#3  0x00007fa6b339dfd6 in __GI___assert_fail (assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=0x21067c "int sqlite3VdbeMemStringify(Mem *, u8, u8)") at assert.c:101
+#4  0x000000000027a9de in sqlite3VdbeMemStringify (pMem=0x25bd5f0, enc=1 '\001', bForce=1 '\001') at sqlite3.c:68526
+#5  0x00000000003c7fc0 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:78710
+#6  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#7  0x000000000024b5e9 in main (argc=1, argv=0x7ffd8585f788) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 34368] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

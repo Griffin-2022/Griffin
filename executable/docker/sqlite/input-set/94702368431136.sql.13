@@ -1,0 +1,88 @@
+CREATE VIRTUAL TABLE schema USING schema;
+;SELECT * FROM schema;
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;
+;SELECT length(tablename) FROM schema GROUP by tablename;
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;
+;SELECT tablename FROM schema GROUP by length(tablename);
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;
+;SELECT length(tablename) FROM schema GROUP by length(tablename);
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;
+;CREATE VIRTUAL TABLE vars USING tclvar;
+;SELECT name, arrayname, value FROM vars WHERE name='abc';
+;
+;SELECT name, arrayname, value FROM vars WHERE name='A';
+;
+;SELECT name, value FROM vars
+      WHERE name MATCH 'tcl_*' AND arrayname = '' 
+      ORDER BY name;
+;
+;SELECT * FROM schema WHERE dflt_value IS NULL LIMIT 1
+  
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;SELECT *, b.rowid
+      FROM schema a LEFT JOIN schema b ON a.dflt_value=b.dflt_value
+     WHERE a.rowid=1
+  
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA 'main'.table_info('vars')
+;PRAGMA 'main'.table_info('vars')
+;SELECT *, b.rowid
+      FROM schema a LEFT JOIN schema b ON a.dflt_value IS b.dflt_value
+                                      AND a.dflt_value IS NOT NULL
+     WHERE a.rowid=1
+  
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA 'main'.table_info('vars')
+;PRAGMA 'main'.table_info('vars')
+;BEGIN TRANSACTION;
+;CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, UNIQUE(b, c));
+;CREATE TABLE fkey(
+      to_tbl,
+      to_col
+    );
+;INSERT INTO "fkey" VALUES('t1',NULL);
+;COMMIT;
+;
+;CREATE VIRTUAL TABLE v_col USING schema 
+;SELECT name FROM v_col WHERE tablename = 't1' AND pk 
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA 'main'.table_info('vars')
+;PRAGMA 'main'.table_info('t1')
+;PRAGMA 'main'.table_info('fkey')
+;PRAGMA 'main'.table_info('v_col')
+;UPDATE fkey 
+    SET to_col = (SELECT name FROM v_col WHERE tablename = 't1' AND pk);
+;PRAGMA database_list
+;SELECT name FROM 'main'.sqlite_schema WHERE type='table'
+;PRAGMA 'main'.table_info('schema')
+;PRAGMA 'main'.table_info('vars')
+;PRAGMA 'main'.table_info('t1')
+;
+;SELECT * FROM fkey 
+;

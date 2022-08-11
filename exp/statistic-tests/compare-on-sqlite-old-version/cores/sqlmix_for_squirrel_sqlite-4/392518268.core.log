@@ -1,0 +1,923 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000142,sig:06,src:017796+019681,time:4518929,execs:910869,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+;pragma vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;
+;SELECT x, sum(x) OVER (
+    ROWS BETWEEN CURRENT ROW AND CURRENT ROW
+  ) FROM blue ORDER BY 1, 2;]
+VDBE Program Listing:
+   0 Init             0  135    0               00 Start at 135
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    4    0               00 nColumn=4
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3   76    7               00 
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+   9 OpenEphemeral    6    4    0               00 nColumn=4
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   25   14               00 
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 OpenRead         0    2    0 4             00 root=2 iDb=0; blue
+  16 Explain         16   14    0 SCAN TABLE blue 00 
+  17 Rewind           0   24    0               00 
+  18 Column           0    3    7               00 r[7]=blue.x
+  19 Column           0    3    8               00 r[8]=blue.x
+  20 Column           0    3    9               00 r[9]=blue.x
+  21 Column           0    3   10               00 r[10]=blue.x
+  22 Yield            6    0    0               00 
+  23 Next             0   18    0               01 
+  24 EndCoroutine     6    0    0               00 
+  25 Integer          1   11    0               00 r[11]=1
+  26 Explain         26    7    0 SCAN SUBQUERY 3 00 
+  27 InitCoroutine    6    0   14               00 
+  28 Yield            6   53    0               00 next row of 
+  29 Copy             7   13    0               00 r[13]=r[7]
+  30 Copy             8   14    0               00 r[14]=r[8]
+  31 Copy             9   15    0               00 r[15]=r[9]
+  32 Copy            10   16    0               00 r[16]=r[10]
+  33 MakeRecord      13    4   17               00 r[17]=mkrec(r[13..16])
+  34 NewRowid         7   18    0               00 r[18]=rowid
+  35 Insert           7   17   18               00 intkey=r[18] data=r[17]
+  36 Ne              11   42   18               00 if r[18]!=r[11] goto 42
+  37 Null             0    4    0               00 r[4]=NULL
+  38 Rewind           8    1    0               00 
+  39 Rewind           6    1    0               00 
+  40 Rewind           9    1    0               00 
+  41 Goto             0   52    0               00 
+  42 Column           9    3   19               00 r[19]=
+  43 AggStep          0   19    4 sum(1)        01 accum=r[4] step(r[19])
+  44 Next             9   45    0               00 
+  45 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  46 Gosub           12   68    0               00 
+  47 Next             6   48    0               00 
+  48 Column           8    3   19               00 r[19]=
+  49 AggInverse       1   19    4 sum(1)        01 accum=r[4] inverse(r[19])
+  50 Delete           8    0    0               02 
+  51 Next             8   52    0               00 
+  52 Goto             0   28    0               00 
+  53 Rewind           7   66    0               00 
+  54 Column           9    3   19               00 r[19]=
+  55 AggStep          0   19    4 sum(1)        01 accum=r[4] step(r[19])
+  56 Next             9   57    0               00 
+  57 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  58 Gosub           12   68    0               00 
+  59 Next             6   61    0               00 
+  60 Goto             0   66    0               00 
+  61 Column           8    3   19               00 r[19]=
+  62 AggInverse       1   19    4 sum(1)        01 accum=r[4] inverse(r[19])
+  63 Delete           8    0    0               02 
+  64 Next             8   65    0               00 
+  65 Goto             0   57    0               00 
+  66 ResetSorter      6    0    0               00 
+  67 Goto             0   75    0               00 
+  68 Noop             0    0    0               00 inner-loop subroutine
+  69 Column           6    0   20               00 r[20]=.x
+  70 Column           6    1   21               00 r[21]=.x:1
+  71 Copy             5   22    0               00 r[22]=r[5]
+  72 Column           6    2   23               00 r[23]=.x:2
+  73 Yield            3    0    0               00 
+  74 Return          12    0    0               00 end inner-loop subroutine
+  75 EndCoroutine     3    0    0               00 
+  76 SorterOpen      11    5    0 k(2,B,B)      00 
+  77 Integer          1   24    0               00 r[24]=1
+  78 Explain         78    0    0 SCAN SUBQUERY 2 00 
+  79 InitCoroutine    3    0    7               00 
+  80 Yield            3  105    0               00 next row of 
+  81 Copy            20   26    0               00 r[26]=r[20]
+  82 Copy            21   27    0               00 r[27]=r[21]
+  83 Copy            22   28    0               00 r[28]=r[22]
+  84 Copy            23   29    0               00 r[29]=r[23]
+  85 MakeRecord      26    4   30               00 r[30]=mkrec(r[26..29])
+  86 NewRowid         2   31    0               00 r[31]=rowid
+  87 Insert           2   30   31               00 intkey=r[31] data=r[30]
+  88 Ne              24   94   31               00 if r[31]!=r[24] goto 94
+  89 Null             0    1    0               00 r[1]=NULL
+  90 Rewind           3    1    0               00 
+  91 Rewind           1    1    0               00 
+  92 Rewind           4    1    0               00 
+  93 Goto             0  104    0               00 
+  94 Column           4    3   32               00 r[32]=
+  95 AggStep          0   32    1 sum(1)        01 accum=r[1] step(r[32])
+  96 Next             4   97    0               00 
+  97 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+  98 Gosub           25  120    0               00 
+  99 Next             1  100    0               00 
+ 100 Column           3    3   32               00 r[32]=
+ 101 AggInverse       1   32    1 sum(1)        01 accum=r[1] inverse(r[32])
+ 102 Delete           3    0    0               02 
+ 103 Next             3  104    0               00 
+ 104 Goto             0   80    0               00 
+ 105 Rewind           2  118    0               00 
+ 106 Column           4    3   32               00 r[32]=
+ 107 AggStep          0   32    1 sum(1)        01 accum=r[1] step(r[32])
+ 108 Next             4  109    0               00 
+ 109 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+ 110 Gosub           25  120    0               00 
+ 111 Next             1  113    0               00 
+ 112 Goto             0  118    0               00 
+ 113 Column           3    3   32               00 r[32]=
+ 114 AggInverse       1   32    1 sum(1)        01 accum=r[1] inverse(r[32])
+ 115 Delete           3    0    0               02 
+ 116 Next             3  117    0               00 
+ 117 Goto             0  109    0               00 
+ 118 ResetSorter      1    0    0               00 
+ 119 Goto             0  126    0               00 
+ 120 Noop             0    0    0               00 inner-loop subroutine
+ 121 Column           1    1   33               00 r[33]=.x:1
+ 122 Column           1    2   34               00 r[34]=.column3
+ 123 MakeRecord      33    2   37               00 r[37]=mkrec(r[33..34])
+ 124 SorterInsert    11   37   33 2             00 key=r[37]
+ 125 Return          25    0    0               00 end inner-loop subroutine
+ 126 Explain        126    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 127 OpenPseudo      12   38    5               00 5 columns in r[38]
+ 128 SorterSort      11  134    0               00 
+ 129 SorterData      11   38   12               00 r[38]=data
+ 130 Column          12    1   36               00 r[36]=sum(x) OVER (
+    ROWS BETWEEN CURRENT ROW AND CURRENT ROW
+  )
+ 131 Column          12    0   35               00 r[35]=x
+ 132 ResultRow       35    2    0               00 output=r[35..36]
+ 133 SorterNext      11  129    0               00 
+ 134 Halt             0    0    0               00 
+ 135 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 136 Goto             0    1    0               00 
+SQL: [;
+;SELECT green, sum(green) OVER (
+    ORDER BY x
+    ROWS BETWEEN CURRENT ROW AND CURRENT ROW
+  ) FROM blue ORDER BY 1, 2;]
+VDBE Program Listing:
+   0 Init             0  155    0               00 Start at 155
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    5    0               00 nColumn=5
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3   95    7               00 
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+   9 OpenEphemeral    6    6    0               00 nColumn=6
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   41   14               00 
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 SorterOpen      11    8    0 k(1,B)        00 
+  16 OpenRead         0    2    0 4             00 root=2 iDb=0; blue
+  17 Explain         17   14    0 SCAN TABLE blue 00 
+  18 Rewind           0   28    0               00 
+  19 Column           0    1    8               00 r[8]=blue.green
+  20 Column           0    1    9               00 r[9]=blue.green
+  21 Column           0    3   10               00 r[10]=blue.x
+  22 Column           0    1   11               00 r[11]=blue.green
+  23 Column           0    1   12               00 r[12]=blue.green
+  24 Column           0    3    7               00 r[7]=blue.x
+  25 MakeRecord       7    6   14               00 r[14]=mkrec(r[7..12])
+  26 SorterInsert    11   14    7 6             00 key=r[14]
+  27 Next             0   19    0               01 
+  28 Explain         28   14    0 USE TEMP B-TREE FOR ORDER BY 00 
+  29 OpenPseudo      12   15    8               00 8 columns in r[15]
+  30 SorterSort      11   40    0               00 
+  31 SorterData      11   15   12               00 r[15]=data
+  32 Column          12    5   13               00 r[13]=
+  33 Column          12    0   12               00 r[12]=
+  34 Column          12    4   11               00 r[11]=
+  35 Column          12    3   10               00 r[10]=
+  36 Column          12    2    9               00 r[9]=
+  37 Column          12    1    8               00 r[8]=
+  38 Yield            6    0    0               00 
+  39 SorterNext      11   31    0               00 
+  40 EndCoroutine     6    0    0               00 
+  41 Integer          1   16    0               00 r[16]=1
+  42 Explain         42    7    0 SCAN SUBQUERY 3 00 
+  43 InitCoroutine    6    0   14               00 
+  44 Yield            6   71    0               00 next row of 
+  45 Copy             8   18    0               00 r[18]=r[8]
+  46 Copy             9   19    0               00 r[19]=r[9]
+  47 Copy            10   20    0               00 r[20]=r[10]
+  48 Copy            11   21    0               00 r[21]=r[11]
+  49 Copy            12   22    0               00 r[22]=r[12]
+  50 Copy            13   23    0               00 r[23]=r[13]
+  51 MakeRecord      18    6   24               00 r[24]=mkrec(r[18..23])
+  52 NewRowid         7   25    0               00 r[25]=rowid
+  53 Insert           7   24   25               00 intkey=r[25] data=r[24]
+  54 Ne              16   60   25               00 if r[25]!=r[16] goto 60
+  55 Null             0    4    0               00 r[4]=NULL
+  56 Rewind           8    1    0               00 
+  57 Rewind           6    1    0               00 
+  58 Rewind           9    1    0               00 
+  59 Goto             0   70    0               00 
+  60 Column           9    5   26               00 r[26]=
+  61 AggStep          0   26    4 sum(1)        01 accum=r[4] step(r[26])
+  62 Next             9   63    0               00 
+  63 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  64 Gosub           17   86    0               00 
+  65 Next             6   66    0               00 
+  66 Column           8    5   26               00 r[26]=
+  67 AggInverse       1   26    4 sum(1)        01 accum=r[4] inverse(r[26])
+  68 Delete           8    0    0               02 
+  69 Next             8   70    0               00 
+  70 Goto             0   44    0               00 
+  71 Rewind           7   84    0               00 
+  72 Column           9    5   26               00 r[26]=
+  73 AggStep          0   26    4 sum(1)        01 accum=r[4] step(r[26])
+  74 Next             9   75    0               00 
+  75 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  76 Gosub           17   86    0               00 
+  77 Next             6   79    0               00 
+  78 Goto             0   84    0               00 
+  79 Column           8    5   26               00 r[26]=
+  80 AggInverse       1   26    4 sum(1)        01 accum=r[4] inverse(r[26])
+  81 Delete           8    0    0               02 
+  82 Next             8   83    0               00 
+  83 Goto             0   75    0               00 
+  84 ResetSorter      6    0    0               00 
+  85 Goto             0   94    0               00 
+  86 Noop             0    0    0               00 inner-loop subroutine
+  87 Column           6    0   27               00 r[27]=.green
+  88 Column           6    1   28               00 r[28]=.green:1
+  89 Copy             5   29    0               00 r[29]=r[5]
+  90 Column           6    2   30               00 r[30]=.x
+  91 Column           6    3   31               00 r[31]=.green:2
+  92 Yield            3    0    0               00 
+  93 Return          17    0    0               00 end inner-loop subroutine
+  94 EndCoroutine     3    0    0               00 
+  95 SorterOpen      13    5    0 k(2,B,B)      00 
+  96 Integer          1   32    0               00 r[32]=1
+  97 Explain         97    0    0 SCAN SUBQUERY 2 00 
+  98 InitCoroutine    3    0    7               00 
+  99 Yield            3  125    0               00 next row of 
+ 100 Copy            27   34    0               00 r[34]=r[27]
+ 101 Copy            28   35    0               00 r[35]=r[28]
+ 102 Copy            29   36    0               00 r[36]=r[29]
+ 103 Copy            30   37    0               00 r[37]=r[30]
+ 104 Copy            31   38    0               00 r[38]=r[31]
+ 105 MakeRecord      34    5   39               00 r[39]=mkrec(r[34..38])
+ 106 NewRowid         2   40    0               00 r[40]=rowid
+ 107 Insert           2   39   40               00 intkey=r[40] data=r[39]
+ 108 Ne              32  114   40               00 if r[40]!=r[32] goto 114
+ 109 Null             0    1    0               00 r[1]=NULL
+ 110 Rewind           3    1    0               00 
+ 111 Rewind           1    1    0               00 
+ 112 Rewind           4    1    0               00 
+ 113 Goto             0  124    0               00 
+ 114 Column           4    4   41               00 r[41]=
+ 115 AggStep          0   41    1 sum(1)        01 accum=r[1] step(r[41])
+ 116 Next             4  117    0               00 
+ 117 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+ 118 Gosub           33  140    0               00 
+ 119 Next             1  120    0               00 
+ 120 Column           3    4   41               00 r[41]=
+ 121 AggInverse       1   41    1 sum(1)        01 accum=r[1] inverse(r[41])
+ 122 Delete           3    0    0               02 
+ 123 Next             3  124    0               00 
+ 124 Goto             0   99    0               00 
+ 125 Rewind           2  138    0               00 
+ 126 Column           4    4   41               00 r[41]=
+ 127 AggStep          0   41    1 sum(1)        01 accum=r[1] step(r[41])
+ 128 Next             4  129    0               00 
+ 129 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+ 130 Gosub           33  140    0               00 
+ 131 Next             1  133    0               00 
+ 132 Goto             0  138    0               00 
+ 133 Column           3    4   41               00 r[41]=
+ 134 AggInverse       1   41    1 sum(1)        01 accum=r[1] inverse(r[41])
+ 135 Delete           3    0    0               02 
+ 136 Next             3  137    0               00 
+ 137 Goto             0  129    0               00 
+ 138 ResetSorter      1    0    0               00 
+ 139 Goto             0  146    0               00 
+ 140 Noop             0    0    0               00 inner-loop subroutine
+ 141 Column           1    1   42               00 r[42]=.green:1
+ 142 Column           1    2   43               00 r[43]=.column3
+ 143 MakeRecord      42    2   46               00 r[46]=mkrec(r[42..43])
+ 144 SorterInsert    13   46   42 2             00 key=r[46]
+ 145 Return          33    0    0               00 end inner-loop subroutine
+ 146 Explain        146    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 147 OpenPseudo      14   47    5               00 5 columns in r[47]
+ 148 SorterSort      13  154    0               00 
+ 149 SorterData      13   47   14               00 r[47]=data
+ 150 Column          14    1   45               00 r[45]=sum(green) OVER (
+    ORDER BY x
+    ROWS BETWEEN CURRENT ROW AND CURRENT ROW
+  )
+ 151 Column          14    0   44               00 r[44]=green
+ 152 ResultRow       44    2    0               00 output=r[44..45]
+ 153 SorterNext      13  149    0               00 
+ 154 Halt             0    0    0               00 
+ 155 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 156 Goto             0    1    0               00 
+SQL: [;
+;SELECT red, sum(red) OVER (
+    ORDER BY red
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) FROM blue ORDER BY 1, 2;]
+VDBE Program Listing:
+   0 Init             0  128    0               00 Start at 128
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    5    0               00 nColumn=5
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3   75    7               00 
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+   9 OpenEphemeral    6    6    0               00 nColumn=6
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   28   14               00 
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 Noop            11    8    0               00 
+  16 OpenRead         0    2    0 0             00 root=2 iDb=0; blue
+  17 Explain         17   14    0 SCAN TABLE blue 00 
+  18 Rewind           0   27    0               00 
+  19 Rowid            0    7    0               00 r[7]=rowid
+  20 Rowid            0    8    0               00 r[8]=rowid
+  21 Rowid            0    9    0               00 r[9]=rowid
+  22 Rowid            0   10    0               00 r[10]=rowid
+  23 Rowid            0   11    0               00 r[11]=rowid
+  24 Rowid            0   12    0               00 r[12]=rowid
+  25 Yield            6    0    0               00 
+  26 Next             0   19    0               01 
+  27 EndCoroutine     6    0    0               00 
+  28 Integer          1   13    0               00 r[13]=1
+  29 Explain         29    7    0 SCAN SUBQUERY 3 00 
+  30 InitCoroutine    6    0   14               00 
+  31 Yield            6   54    0               00 next row of 
+  32 Copy             7   15    0               00 r[15]=r[7]
+  33 Copy             8   16    0               00 r[16]=r[8]
+  34 Copy             9   17    0               00 r[17]=r[9]
+  35 Copy            10   18    0               00 r[18]=r[10]
+  36 Copy            11   19    0               00 r[19]=r[11]
+  37 Copy            12   20    0               00 r[20]=r[12]
+  38 MakeRecord      15    6   21               00 r[21]=mkrec(r[15..20])
+  39 NewRowid         7   22    0               00 r[22]=rowid
+  40 Insert           7   21   22               00 intkey=r[22] data=r[21]
+  41 Ne              13   46   22               00 if r[22]!=r[13] goto 46
+  42 Null             0    4    0               00 r[4]=NULL
+  43 Rewind           6    1    0               00 
+  44 Rewind           9    1    0               00 
+  45 Goto             0   53    0               00 
+  46 Column           9    5   23               00 r[23]=
+  47 AggStep          0   23    4 sum(1)        01 accum=r[4] step(r[23])
+  48 Next             9   49    0               00 
+  49 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  50 Gosub           14   66    0               00 
+  51 Delete           6    0    0               02 
+  52 Next             6   53    0               00 
+  53 Goto             0   31    0               00 
+  54 Rewind           7   64    0               00 
+  55 Column           9    5   23               00 r[23]=
+  56 AggStep          0   23    4 sum(1)        01 accum=r[4] step(r[23])
+  57 Next             9   58    0               00 
+  58 AggValue         4    1    5 sum(1)        00 r[5]=value N=1
+  59 Gosub           14   66    0               00 
+  60 Delete           6    0    0               02 
+  61 Next             6   63    0               00 
+  62 Goto             0   64    0               00 
+  63 Goto             0   58    0               00 
+  64 ResetSorter      6    0    0               00 
+  65 Goto             0   74    0               00 
+  66 Noop             0    0    0               00 inner-loop subroutine
+  67 Column           6    0   24               00 r[24]=.red
+  68 Column           6    1   25               00 r[25]=.red:1
+  69 Copy             5   26    0               00 r[26]=r[5]
+  70 Column           6    2   27               00 r[27]=.red:2
+  71 Column           6    3   28               00 r[28]=.red:3
+  72 Yield            3    0    0               00 
+  73 Return          14    0    0               00 end inner-loop subroutine
+  74 EndCoroutine     3    0    0               00 
+  75 SorterOpen      12    5    0 k(2,B,B)      00 
+  76 Integer          1   29    0               00 r[29]=1
+  77 Explain         77    0    0 SCAN SUBQUERY 2 00 
+  78 InitCoroutine    3    0    7               00 
+  79 Yield            3  101    0               00 next row of 
+  80 Copy            24   31    0               00 r[31]=r[24]
+  81 Copy            25   32    0               00 r[32]=r[25]
+  82 Copy            26   33    0               00 r[33]=r[26]
+  83 Copy            27   34    0               00 r[34]=r[27]
+  84 Copy            28   35    0               00 r[35]=r[28]
+  85 MakeRecord      31    5   36               00 r[36]=mkrec(r[31..35])
+  86 NewRowid         2   37    0               00 r[37]=rowid
+  87 Insert           2   36   37               00 intkey=r[37] data=r[36]
+  88 Ne              29   93   37               00 if r[37]!=r[29] goto 93
+  89 Null             0    1    0               00 r[1]=NULL
+  90 Rewind           1    1    0               00 
+  91 Rewind           4    1    0               00 
+  92 Goto             0  100    0               00 
+  93 Column           4    4   38               00 r[38]=
+  94 AggStep          0   38    1 sum(1)        01 accum=r[1] step(r[38])
+  95 Next             4   96    0               00 
+  96 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+  97 Gosub           30  113    0               00 
+  98 Delete           1    0    0               02 
+  99 Next             1  100    0               00 
+ 100 Goto             0   79    0               00 
+ 101 Rewind           2  111    0               00 
+ 102 Column           4    4   38               00 r[38]=
+ 103 AggStep          0   38    1 sum(1)        01 accum=r[1] step(r[38])
+ 104 Next             4  105    0               00 
+ 105 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+ 106 Gosub           30  113    0               00 
+ 107 Delete           1    0    0               02 
+ 108 Next             1  110    0               00 
+ 109 Goto             0  111    0               00 
+ 110 Goto             0  105    0               00 
+ 111 ResetSorter      1    0    0               00 
+ 112 Goto             0  119    0               00 
+ 113 Noop             0    0    0               00 inner-loop subroutine
+ 114 Column           1    1   39               00 r[39]=.red:1
+ 115 Column           1    2   40               00 r[40]=.column3
+ 116 MakeRecord      39    2   43               00 r[43]=mkrec(r[39..40])
+ 117 SorterInsert    12   43   39 2             00 key=r[43]
+ 118 Return          30    0    0               00 end inner-loop subroutine
+ 119 Explain        119    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 120 OpenPseudo      13   44    5               00 5 columns in r[44]
+ 121 SorterSort      12  127    0               00 
+ 122 SorterData      12   44   13               00 r[44]=data
+ 123 Column          13    1   42               00 r[42]=sum(red) OVER (
+    ORDER BY red
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  )
+ 124 Column          13    0   41               00 r[41]=red
+ 125 ResultRow       41    2    0               00 output=r[41..42]
+ 126 SorterNext      12  122    0               00 
+ 127 Halt             0    0    0               00 
+ 128 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 129 Goto             0    1    0               00 
+SQL: [;SELECT count(*) OVER (ORDER BY x) FROM blue
+
+;]
+VDBE Program Listing:
+   0 Init             0   86    0               00 Start at 86
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    1    0               00 nColumn=1
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3   24    7               00 
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 SorterOpen       6    3    0 k(1,B)        00 
+   9 OpenRead         0    2    0 4             00 root=2 iDb=0; blue
+  10 Explain         10    7    0 SCAN TABLE blue 00 
+  11 Rewind           0   16    0               00 
+  12 Column           0    3    4               00 r[4]=blue.x
+  13 MakeRecord       4    1    6               00 r[6]=mkrec(r[4])
+  14 SorterInsert     6    6    4 1             00 key=r[6]
+  15 Next             0   12    0               01 
+  16 Explain         16    7    0 USE TEMP B-TREE FOR ORDER BY 00 
+  17 OpenPseudo       7    7    3               00 3 columns in r[7]
+  18 SorterSort       6   23    0               00 
+  19 SorterData       6    7    7               00 r[7]=data
+  20 Column           7    0    5               00 r[5]=
+  21 Yield            3    0    0               00 
+  22 SorterNext       6   19    0               00 
+  23 EndCoroutine     3    0    0               00 
+  24 Integer          1    8    0               00 r[8]=1
+  25 Explain         25    0    0 SCAN SUBQUERY 2 00 
+  26 InitCoroutine    3    0    7               00 
+  27 Yield            3   61    0               00 next row of 
+  28 Copy             5   10    0               00 r[10]=r[5]
+  29 MakeRecord      10    1   11               00 r[11]=mkrec(r[10])
+  30 NewRowid         2   12    0               00 r[12]=rowid
+  31 Insert           2   11   12               00 intkey=r[12] data=r[11]
+  32 Ne               8   41   12               00 if r[12]!=r[8] goto 41
+  33 Null             0    1    0               00 r[1]=NULL
+  34 Rewind           1    1    0               00 
+  35 Rewind           4    1    0               00 
+  36 Copy            10   13    0               00 r[13]=r[10]
+  37 Copy            13   14    0               00 r[14]=r[13]
+  38 Copy            13   15    0               00 r[15]=r[13]
+  39 Copy            13   16    0               00 r[16]=r[13]
+  40 Goto             0   60    0               00 
+  41 Compare         13   10    1 k(1,B)        00 r[13] <-> r[10]
+  42 Jump            43   60   43               00 
+  43 Copy            10   13    0               00 r[13]=r[10]
+  44 AggStep          0   17    1 count(0)      00 accum=r[1] step(r[17])
+  45 Next             4   47    0               00 
+  46 Goto             0   51    0               00 
+  47 Column           4    0   17               00 r[17]=
+  48 Compare         16   17    1 k(1,B)        00 r[16] <-> r[17]
+  49 Jump            50   44   50               00 
+  50 Copy            17   16    0               00 r[16]=r[17]
+  51 AggValue         1    0    2 count(0)      00 r[2]=value N=0
+  52 Gosub            9   81    0               00 
+  53 Delete           1    0    0               02 
+  54 Next             1   56    0               00 
+  55 Goto             0   60    0               00 
+  56 Column           1    0   17               00 r[17]=
+  57 Compare         15   17    1 k(1,B)        00 r[15] <-> r[17]
+  58 Jump            59   52   59               00 
+  59 Copy            17   15    0               00 r[15]=r[17]
+  60 Goto             0   27    0               00 
+  61 Rewind           2   79    0               00 
+  62 AggStep          0   17    1 count(0)      00 accum=r[1] step(r[17])
+  63 Next             4   65    0               00 
+  64 Goto             0   69    0               00 
+  65 Column           4    0   17               00 r[17]=
+  66 Compare         16   17    1 k(1,B)        00 r[16] <-> r[17]
+  67 Jump            68   62   68               00 
+  68 Copy            17   16    0               00 r[16]=r[17]
+  69 AggValue         1    0    2 count(0)      00 r[2]=value N=0
+  70 Gosub            9   81    0               00 
+  71 Delete           1    0    0               02 
+  72 Next             1   74    0               00 
+  73 Goto             0   79    0               00 
+  74 Column           1    0   17               00 r[17]=
+  75 Compare         15   17    1 k(1,B)        00 r[15] <-> r[17]
+  76 Jump            77   70   77               00 
+  77 Copy            17   15    0               00 r[15]=r[17]
+  78 Goto             0   69    0               00 
+  79 ResetSorter      1    0    0               00 
+  80 Goto             0   85    0               00 
+  81 Noop             0    0    0               00 inner-loop subroutine
+  82 Copy             2   18    0               00 r[18]=r[2]
+  83 ResultRow       18    1    0               00 output=r[18]
+  84 Return           9    0    0               00 end inner-loop subroutine
+  85 Halt             0    0    0               00 
+  86 Transaction      0    0    1 0             01 usesStmtJournal=0
+  87 Goto             0    1    0               00 
+SQL: [;
+;SELECT avg(green) OVER (ORDER BY x) AS z FROM blue ORDER BY z;]
+VDBE Program Listing:
+   0 Init             0  181    0               00 Start at 181
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    3    0               00 nColumn=3
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3  106    7               00 
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+   9 OpenEphemeral    6    4    0               00 nColumn=4
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   37   14               00 
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 SorterOpen      11    6    0 k(1,B)        00 
+  16 OpenRead         0    2    0 4             00 root=2 iDb=0; blue
+  17 Explain         17   14    0 SCAN TABLE blue 00 
+  18 Rewind           0   26    0               00 
+  19 Column           0    3    8               00 r[8]=blue.x
+  20 Column           0    1    9               00 r[9]=blue.green
+  21 Column           0    1   10               00 r[10]=blue.green
+  22 Column           0    3    7               00 r[7]=blue.x
+  23 MakeRecord       7    4   12               00 r[12]=mkrec(r[7..10])
+  24 SorterInsert    11   12    7 4             00 key=r[12]
+  25 Next             0   19    0               01 
+  26 Explain         26   14    0 USE TEMP B-TREE FOR ORDER BY 00 
+  27 OpenPseudo      12   13    6               00 6 columns in r[13]
+  28 SorterSort      11   36    0               00 
+  29 SorterData      11   13   12               00 r[13]=data
+  30 Column          12    3   11               00 r[11]=
+  31 Column          12    0   10               00 r[10]=
+  32 Column          12    2    9               00 r[9]=
+  33 Column          12    1    8               00 r[8]=
+  34 Yield            6    0    0               00 
+  35 SorterNext      11   29    0               00 
+  36 EndCoroutine     6    0    0               00 
+  37 Integer          1   14    0               00 r[14]=1
+  38 Explain         38    7    0 SCAN SUBQUERY 3 00 
+  39 InitCoroutine    6    0   14               00 
+  40 Yield            6   78    0               00 next row of 
+  41 Copy             8   16    0               00 r[16]=r[8]
+  42 Copy             9   17    0               00 r[17]=r[9]
+  43 Copy            10   18    0               00 r[18]=r[10]
+  44 Copy            11   19    0               00 r[19]=r[11]
+  45 MakeRecord      16    4   20               00 r[20]=mkrec(r[16..19])
+  46 NewRowid         7   21    0               00 r[21]=rowid
+  47 Insert           7   20   21               00 intkey=r[21] data=r[20]
+  48 Ne              14   57   21               00 if r[21]!=r[14] goto 57
+  49 Null             0    4    0               00 r[4]=NULL
+  50 Rewind           6    1    0               00 
+  51 Rewind           9    1    0               00 
+  52 Copy            18   22    0               00 r[22]=r[18]
+  53 Copy            22   23    0               00 r[23]=r[22]
+  54 Copy            22   24    0               00 r[24]=r[22]
+  55 Copy            22   25    0               00 r[25]=r[22]
+  56 Goto             0   77    0               00 
+  57 Compare         22   18    1 k(1,B)        00 r[22] <-> r[18]
+  58 Jump            59   77   59               00 
+  59 Copy            18   22    0               00 r[22]=r[18]
+  60 Column           9    3   26               00 r[26]=
+  61 AggStep          0   26    4 avg(1)        01 accum=r[4] step(r[26])
+  62 Next             9   64    0               00 
+  63 Goto             0   68    0               00 
+  64 Column           9    2   27               00 r[27]=
+  65 Compare         25   27    1 k(1,B)        00 r[25] <-> r[27]
+  66 Jump            67   60   67               00 
+  67 Copy            27   25    0               00 r[25]=r[27]
+  68 AggValue         4    1    5 avg(1)        00 r[5]=value N=1
+  69 Gosub           15   99    0               00 
+  70 Delete           6    0    0               02 
+  71 Next             6   73    0               00 
+  72 Goto             0   77    0               00 
+  73 Column           6    2   27               00 r[27]=
+  74 Compare         24   27    1 k(1,B)        00 r[24] <-> r[27]
+  75 Jump            76   69   76               00 
+  76 Copy            27   24    0               00 r[24]=r[27]
+  77 Goto             0   40    0               00 
+  78 Rewind           7   97    0               00 
+  79 Column           9    3   26               00 r[26]=
+  80 AggStep          0   26    4 avg(1)        01 accum=r[4] step(r[26])
+  81 Next             9   83    0               00 
+  82 Goto             0   87    0               00 
+  83 Column           9    2   27               00 r[27]=
+  84 Compare         25   27    1 k(1,B)        00 r[25] <-> r[27]
+  85 Jump            86   79   86               00 
+  86 Copy            27   25    0               00 r[25]=r[27]
+  87 AggValue         4    1    5 avg(1)        00 r[5]=value N=1
+  88 Gosub           15   99    0               00 
+  89 Delete           6    0    0               02 
+  90 Next             6   92    0               00 
+  91 Goto             0   97    0               00 
+  92 Column           6    2   27               00 r[27]=
+  93 Compare         24   27    1 k(1,B)        00 r[24] <-> r[27]
+  94 Jump            95   88   95               00 
+  95 Copy            27   24    0               00 r[24]=r[27]
+  96 Goto             0   87    0               00 
+  97 ResetSorter      6    0    0               00 
+  98 Goto             0  105    0               00 
+  99 Noop             0    0    0               00 inner-loop subroutine
+ 100 Copy             5   28    0               00 r[28]=r[5]
+ 101 Column           6    0   29               00 r[29]=.x
+ 102 Column           6    1   30               00 r[30]=.green
+ 103 Yield            3    0    0               00 
+ 104 Return          15    0    0               00 end inner-loop subroutine
+ 105 EndCoroutine     3    0    0               00 
+ 106 SorterOpen      13    3    0 k(1,B)        00 
+ 107 Integer          1   31    0               00 r[31]=1
+ 108 Explain        108    0    0 SCAN SUBQUERY 2 00 
+ 109 InitCoroutine    3    0    7               00 
+ 110 Yield            3  147    0               00 next row of 
+ 111 Copy            28   33    0               00 r[33]=r[28]
+ 112 Copy            29   34    0               00 r[34]=r[29]
+ 113 Copy            30   35    0               00 r[35]=r[30]
+ 114 MakeRecord      33    3   36               00 r[36]=mkrec(r[33..35])
+ 115 NewRowid         2   37    0               00 r[37]=rowid
+ 116 Insert           2   36   37               00 intkey=r[37] data=r[36]
+ 117 Ne              31  126   37               00 if r[37]!=r[31] goto 126
+ 118 Null             0    1    0               00 r[1]=NULL
+ 119 Rewind           1    1    0               00 
+ 120 Rewind           4    1    0               00 
+ 121 Copy            34   38    0               00 r[38]=r[34]
+ 122 Copy            38   39    0               00 r[39]=r[38]
+ 123 Copy            38   40    0               00 r[40]=r[38]
+ 124 Copy            38   41    0               00 r[41]=r[38]
+ 125 Goto             0  146    0               00 
+ 126 Compare         38   34    1 k(1,B)        00 r[38] <-> r[34]
+ 127 Jump           128  146  128               00 
+ 128 Copy            34   38    0               00 r[38]=r[34]
+ 129 Column           4    2   42               00 r[42]=
+ 130 AggStep          0   42    1 avg(1)        01 accum=r[1] step(r[42])
+ 131 Next             4  133    0               00 
+ 132 Goto             0  137    0               00 
+ 133 Column           4    1   43               00 r[43]=
+ 134 Compare         41   43    1 k(1,B)        00 r[41] <-> r[43]
+ 135 Jump           136  129  136               00 
+ 136 Copy            43   41    0               00 r[41]=r[43]
+ 137 AggValue         1    1    2 avg(1)        00 r[2]=value N=1
+ 138 Gosub           32  168    0               00 
+ 139 Delete           1    0    0               02 
+ 140 Next             1  142    0               00 
+ 141 Goto             0  146    0               00 
+ 142 Column           1    1   43               00 r[43]=
+ 143 Compare         40   43    1 k(1,B)        00 r[40] <-> r[43]
+ 144 Jump           145  138  145               00 
+ 145 Copy            43   40    0               00 r[40]=r[43]
+ 146 Goto             0  110    0               00 
+ 147 Rewind           2  166    0               00 
+ 148 Column           4    2   42               00 r[42]=
+ 149 AggStep          0   42    1 avg(1)        01 accum=r[1] step(r[42])
+ 150 Next             4  152    0               00 
+ 151 Goto             0  156    0               00 
+ 152 Column           4    1   43               00 r[43]=
+ 153 Compare         41   43    1 k(1,B)        00 r[41] <-> r[43]
+ 154 Jump           155  148  155               00 
+ 155 Copy            43   41    0               00 r[41]=r[43]
+ 156 AggValue         1    1    2 avg(1)        00 r[2]=value N=1
+ 157 Gosub           32  168    0               00 
+ 158 Delete           1    0    0               02 
+ 159 Next             1  161    0               00 
+ 160 Goto             0  166    0               00 
+ 161 Column           1    1   43               00 r[43]=
+ 162 Compare         40   43    1 k(1,B)        00 r[40] <-> r[43]
+ 163 Jump           164  157  164               00 
+ 164 Copy            43   40    0               00 r[40]=r[43]
+ 165 Goto             0  156    0               00 
+ 166 ResetSorter      1    0    0               00 
+ 167 Goto             0  173    0               00 
+ 168 Noop             0    0    0               00 inner-loop subroutine
+ 169 Column           1    0   44               00 r[44]=.column1
+ 170 MakeRecord      44    1   46               00 r[46]=mkrec(r[44])
+ 171 SorterInsert    13   46   44 1             00 key=r[46]
+ 172 Return          32    0    0               00 end inner-loop subroutine
+ 173 Explain        173    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 174 OpenPseudo      14   47    3               00 3 columns in r[47]
+ 175 SorterSort      13  180    0               00 
+ 176 SorterData      13   47   14               00 r[47]=data
+ 177 Column          14    0   45               00 r[45]=z
+ 178 ResultRow       45    1    0               00 output=r[45]
+ 179 SorterNext      13  176    0               00 
+ 180 Halt             0    0    0               00 
+ 181 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 182 Goto             0    1    0               00 
+SQL: [;
+;SELECT * FROM blue WHERE 
+      (0, blue.red) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM blue);]
+VDBE Program Listing:
+   0 Init             0  146    0               00 Start at 146
+   1 OpenRead         0    2    0 4             00 root=2 iDb=0; blue
+   2 Explain          2    0    0 SEARCH TABLE blue USING INTEGER PRIMARY KEY (rowid=?) 00 
+   3 Integer         14    2    0               00 r[2]=14; return address
+   4 Once             0   14    0               00 
+   5 OpenEphemeral    2    1    0 k(1,)         00 nColumn=1; Result of SELECT 1
+   6 Explain          6    0    0 LIST SUBQUERY 1 00 
+   7 OpenRead         1    2    0 0             00 root=2 iDb=0; blue
+   8 Explain          8    6    0 SCAN TABLE blue 00 
+   9 Rewind           1   14    0               00 
+  10 SCopy            0    3    0               00 r[3]=r[0]
+  11 MakeRecord       3    1    4 D             00 r[4]=mkrec(r[3])
+  12 IdxInsert        2    4    3 1             00 key=r[4]
+  13 Next             1   10    0               01 
+  14 Return           2    0    0               00 
+  15 Rewind           2  145    0               00 
+  16 Column           2    0    1               00 r[1]=
+  17 IsNull           1  144    0               00 if r[1]==NULL goto 144
+  18 SeekRowid        0  144    1               00 intkey=r[1]
+  19 Noop             0    0    0               00 begin IN expr
+  20 Integer        135    5    0               00 r[5]=135; return address
+  21 Once             0  135    0               00 
+  22 OpenEphemeral    3    2    0 k(2,,B)       00 nColumn=2; Result of SELECT 1
+  23 Explain         23    0    0 LIST SUBQUERY 1 00 
+  24 Null             0    6    0               00 r[6]=NULL
+  25 OpenEphemeral    4    1    0               00 nColumn=1
+  26 OpenDup          5    4    0               00 
+  27 OpenDup          6    4    0               00 
+  28 OpenDup          7    4    0               00 
+  29 InitCoroutine    8   90   30               00 
+  30 Explain         30   23    0 CO-ROUTINE 3  00 
+  31 Null             0    9    0               00 r[9]=NULL
+  32 OpenEphemeral    9    1    0               00 nColumn=1
+  33 OpenDup         10    9    0               00 
+  34 OpenDup         11    9    0               00 
+  35 OpenDup         12    9    0               00 
+  36 InitCoroutine   11   45   37               00 
+  37 Explain         37   30    0 CO-ROUTINE 4  00 
+  38 OpenRead         1    2    0 0             00 root=2 iDb=0; blue
+  39 Explain         39   37    0 SCAN TABLE blue 00 
+  40 Rewind           1   44    0               00 
+  41 Integer          0   12    0               00 r[12]=0
+  42 Yield           11    0    0               00 
+  43 Next             1   41    0               01 
+  44 EndCoroutine    11    0    0               00 
+  45 Integer          1   13    0               00 r[13]=1
+  46 OpenDup         14    9    0               00 
+  47 Explain         47   30    0 SCAN SUBQUERY 4 00 
+  48 InitCoroutine   11    0   37               00 
+  49 Yield           11   70    0               00 next row of 
+  50 Copy            12   15    0               00 r[15]=r[12]
+  51 MakeRecord      15    1   16               00 r[16]=mkrec(r[15])
+  52 NewRowid        10   17    0               00 r[17]=rowid
+  53 Insert          10   16   17               00 intkey=r[17] data=r[16]
+  54 Ne              13   59   17               00 if r[17]!=r[13] goto 59
+  55 Null             0    9    0               00 r[9]=NULL
+  56 Rewind           9    1    0               00 
+  57 Rewind          12    1    0               00 
+  58 Goto             0   69    0               00 
+  59 Column          12    0   18               00 r[18]=
+  60 Next            12   61    0               00 
+  61 AggValue         9    1   10 lag(1)        00 r[10]=value N=1
+  62 Null             0   10    0               00 r[10]=NULL
+  63 Rowid            9   19    0               00 r[19]=rowid
+  64 AddImm          19   -1    0               00 r[19]=r[19]+-1
+  65 SeekRowid       14   67   19               00 intkey=r[19]
+  66 Column          14    0   10               00 r[10]=
+  67 Gosub           14   85    0               00 
+  68 Next             9   69    0               00 
+  69 Goto             0   49    0               00 
+  70 Rewind          10   83    0               00 
+  71 Column          12    0   18               00 r[18]=
+  72 Next            12   73    0               00 
+  73 AggValue         9    1   10 lag(1)        00 r[10]=value N=1
+  74 Null             0   10    0               00 r[10]=NULL
+  75 Rowid            9   19    0               00 r[19]=rowid
+  76 AddImm          19   -1    0               00 r[19]=r[19]+-1
+  77 SeekRowid       14   79   19               00 intkey=r[19]
+  78 Column          14    0   10               00 r[10]=
+  79 Gosub           14   85    0               00 
+  80 Next             9   82    0               00 
+  81 Goto             0   83    0               00 
+  82 Goto             0   73    0               00 
+  83 ResetSorter      9    0    0               00 
+  84 Goto             0   89    0               00 
+  85 Noop             0    0    0               00 inner-loop subroutine
+  86 Copy            10   20    0               00 r[20]=r[10]
+  87 Yield            8    0    0               00 
+  88 Return          14    0    0               00 end inner-loop subroutine
+  89 EndCoroutine     8    0    0               00 
+  90 Integer          1   21    0               00 r[21]=1
+  91 Explain         91   23    0 SCAN SUBQUERY 3 00 
+  92 InitCoroutine    8    0   30               00 
+  93 Yield            8  115    0               00 next row of 
+  94 Copy            20   23    0               00 r[23]=r[20]
+  95 MakeRecord      23    1   24               00 r[24]=mkrec(r[23])
+  96 NewRowid         5   25    0               00 r[25]=rowid
+  97 Insert           5   24   25               00 intkey=r[25] data=r[24]
+  98 Ne              21  103   25               00 if r[25]!=r[21] goto 103
+  99 Null             0    6    0               00 r[6]=NULL
+ 100 Rewind           4    1    0               00 
+ 101 Rewind           7    1    0               00 
+ 102 Goto             0  114    0               00 
+ 103 Goto             0  114    0               00 
+ 104 AggStep          0   26    6 dense_rank(0) 00 accum=r[6] step(r[26])
+ 105 Next             7  107    0               00 
+ 106 Goto             0  108    0               00 
+ 107 Goto             0  104    0               00 
+ 108 AggValue         6    0    7 dense_rank(0) 00 r[7]=value N=0
+ 109 Gosub           22  129    0               00 
+ 110 Delete           4    0    0               02 
+ 111 Next             4  113    0               00 
+ 112 Goto             0  114    0               00 
+ 113 Goto             0  109    0               00 
+ 114 Goto             0   93    0               00 
+ 115 Rewind           5  127    0               00 
+ 116 AggStep          0   26    6 dense_rank(0) 00 accum=r[6] step(r[26])
+ 117 Next             7  119    0               00 
+ 118 Goto             0  120    0               00 
+ 119 Goto             0  116    0               00 
+ 120 AggValue         6    0    7 dense_rank(0) 00 r[7]=value N=0
+ 121 Gosub           22  129    0               00 
+ 122 Delete           4    0    0               02 
+ 123 Next             4  125    0               00 
+ 124 Goto             0  127    0               00 
+ 125 Goto             0  121    0               00 
+ 126 Goto             0  120    0               00 
+ 127 ResetSorter      4    0    0               00 
+ 128 Goto             0  135    0               00 
+ 129 Noop             0    0    0               00 inner-loop subroutine
+ 130 SCopy            7   26    0               00 r[26]=r[7]
+ 131 Column           4    0   27               00 r[27]=.column1
+ 132 MakeRecord      26    2   28 @D            00 r[28]=mkrec(r[26..27])
+ 133 IdxInsert        3   28   26 2             00 key=r[28]
+ 134 Return          22    0    0               00 end inner-loop subroutine
+ 135 Return           5    0    0               00 
+ 136 Rowid            0   30    0               00 r[30]=rowid
+ 137 Affinity        29    2    0 @D            00 affinity(r[29..30])
+ 138 NotFound         3  144   29 2             00 key=r[29..30]; end IN expr
+ 139 Rowid            0   31    0               00 r[31]=rowid
+ 140 Column           0    1   32               00 r[32]=blue.green
+ 141 Column           0    2   33               00 r[33]=blue.t1
+ 142 Column           0    3   34               00 r[34]=blue.x
+ 143 ResultRow       31    4    0               00 output=r[31..34]
+ 144 Next             2   16    0               00 
+ 145 Halt             0    0    0               00 
+ 146 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 147 Integer          0   29    0               00 r[29]=0
+ 148 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f212aefb859 in __GI_abort () at abort.c:79
+#2  0x00007f212aefb729 in __assert_fail_base (fmt=0x7f212b091588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x222142 "memIsValid(pRec)", file=0x2291f4 "sqlite3.c", line=86917, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f212af0cfd6 in __GI___assert_fail (assertion=0x222142 "memIsValid(pRec)", file=0x2291f4 "sqlite3.c", line=86917, function=0x216a86 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003d3831 in sqlite3VdbeExec (p=0x824670) at sqlite3.c:86917
+#5  0x000000000041ba74 in sqlite3Step (p=0x824670) at sqlite3.c:82300
+#6  0x0000000000293d5d in sqlite3_step (pStmt=0x824670) at sqlite3.c:82365
+#7  0x0000000000258a39 in main (argc=1, argv=0x7fffb8b6c588) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 44573] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

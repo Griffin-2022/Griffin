@@ -1,0 +1,100 @@
+| | | | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | | | ib_que: Execute 4 (UPDATE) at 0x6290042a4578
+| | | | | | | | | >row_upd_step
+| | | | | | | | | <row_upd_step
+| | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x6290042a4eb0
+| | | | | | | | | ib_que: Execute 9 (QUERY THREAD) at 0x6290042a4e08
+| | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | que_graph_free_recursive: node: 0x6290042a4d50, type: 8
+| | | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | | que_graph_free_recursive: node: 0x6290042a4e08, type: 9
+| | | | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | | | que_graph_free_recursive: node: 0x6290042a4eb0, type: 1044
+| | | | | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | | | | que_graph_free_recursive: node: 0x6290042a4578, type: 4
+| | | | | | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | | | | <que_graph_free_recursive
+| | | | | | | | | | | | | >que_graph_free_recursive
+| | | | | | | | | | | | | | que_graph_free_recursive: node: 0x6290042a48f8, type: 6
+| | | | | | | | | | | | | <que_graph_free_recursive
+| | | | | | | | | | | | <que_graph_free_recursive
+| | | | | | | | | | | <que_graph_free_recursive
+| | | | | | | | | | <que_graph_free_recursive
+| | | | | | | | | <que_graph_free_recursive
+| | | | | | | | <que_eval_sql
+| | | | | | | | >que_eval_sql
+| | | | | | | | | que_eval_sql: query: PROCEDURE DROP_TABLE() IS
+iid CHAR;
+DECLARE CURSOR idx IS
+SELECT ID FROM SYS_INDEXES
+WHERE TABLE_ID=:id FOR UPDATE;
+BEGIN
+DELETE FROM SYS_TABLES WHERE ID=:id;
+DELETE FROM SYS_COLUMNS WHERE TABLE_ID=:id;
+OPEN idx;
+WHILE 1 = 1 LOOP
+  FETCH idx INTO iid;
+  IF (SQL % NOTFOUND) THEN EXIT; END IF;
+  DELETE FROM SYS_INDEXES WHERE CURRENT OF idx;
+  DELETE FROM SYS_FIELDS WHERE INDEX_ID=iid;
+END LOOP;
+CLOSE idx;
+END;
+
+| | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | dict_table_open_on_name: table: 'SYS_INDEXES'
+| | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | dict_table_open_on_name: table: 'SYS_TABLES'
+| | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | dict_table_open_on_name: table: 'SYS_COLUMNS'
+| | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | dict_table_open_on_name: table: 'SYS_INDEXES'
+| | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | dict_table_open_on_name: table: 'SYS_FIELDS'
+| | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | ib_que: Execute 9 (QUERY THREAD) at 0x629000dd7850
+| | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x629000dd78f8
+| | | | | | | | | ib_que: Execute 4 (UPDATE) at 0x629000dd5130
+| | | | | | | | | >row_upd_step
+| | | | | | | | | <row_upd_step
+| | | | | | | | | ib_que: Execute 6 (SELECT) at 0x629000dd54a8
+| | | | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | | | ib_que: Execute 4 (UPDATE) at 0x629000dd5130
+| | | | | | | | | >row_upd_step
+| | | | | | | | | | >row_upd
+| | | | | | | | | | | row_upd: table: SYS_TABLES
+| | | | | | | | | | | row_upd: info bits in update vector: 0x0
+| | | | | | | | | | | row_upd: foreign_id: NULL
+| | | | | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | | | | | mutex: mutex (0x69533c0) locking
+| | | | | | | | | | | mutex: mutex (0x69533c0) locked
+| | | | | | | | | | | mutex: mutex (0x69533c0) unlocking
+| | | | | | | | | | | >explain_filename
+| | | | | | | | | | | | enter: from 'SYS_TABLES'
+| | | | | | | | | | | | >add_identifier
+| | | | | | | | | | | | | info: conv 'SYS_TABLES' -> 'SYS_TABLES'
+| | | | | | | | | | | | <add_identifier
+| | | | | | | | | | | | exit: to '`SYS_TABLES`'
+| | | | | | | | | | | <explain_filename
+| | | | | | | | | | | exit: delete-mark clust `SYS_TABLES` (1) by 0x1f89b: RECORD(info_bits=32, 10 fields): {[11]pphyejoh/t1(0x70706879656A6F682F7431),[6]      (0x00000001F899),[7]      Y(0xA4000004051D59),[8]      Al(0x000000000000416C),[4]    (0x80000001),[4]   !(0x00000021),[8]        (0x0000000000000000),[4]   P(0x00000050),NULL,[4]  AZ(0x0000415A)}
+| | | | | | | | | | | mutex: mutex (0x69533c0) locking
+| | | | | | | | | | | mutex: mutex (0x69533c0) locked

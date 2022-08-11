@@ -1,0 +1,3912 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000005,sig:06,src:006597+004655,time:2404155,execs:205287,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    0 0             00 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    0 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [CREATE TABLE t1(a, CHECK( main.t1.a>0 ));]
+VDBE Trace:
+   0 Init             0   30    0               00 Start at 30
+  30 Transaction      0    1    0 0             01 usesStmtJournal=0
+  31 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  32 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:0
+   2 If               3    5    0               00 
+REG[3] =  i:0
+   3 SetCookie        0    2    4               00 
+   4 SetCookie        0    5    1               00 
+   5 CreateTable      0    2    0               00 r[2]=root iDb=0
+REG[2] =  i:2
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......](8)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......](8)
+REG[1] =  i:1
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+REG[4] =  NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain          0    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 MustBeInt        1   18    0               00 
+REG[1] =  i:1
+  16 NotExists        1   18    1               00 intkey=r[1]; pk
+REG[1] =  i:1
+  17 Rowid            1    5    0               00 r[5]=rowid
+REG[5] =  i:1
+  18 IsNull           5   26    0               00 if r[5]==NULL goto 26
+REG[5] =  i:1
+  19 String8          0    6    0 table         00 r[6]='table'
+REG[6] =   t5[table](8)
+  20 String8          0    7    0 t1            00 r[7]='t1'
+REG[7] =   t2[t1](8)
+  21 String8          0    8    0 t1            00 r[8]='t1'
+REG[8] =   t2[t1](8)
+  22 Copy             2    9    0               00 r[9]=r[2]
+REG[9] =  i:2
+  23 String8          0   10    0 CREATE TABLE t1(a, CHECK( main.t1.a>0 )) 00 r[10]='CREATE TABLE t1(a, CHECK( main.t1.a>0 ))'
+REG[10] =   t40[CREATE TABLE t1](8)
+  24 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s56[06171111015D7461626C657431743102.....]tablet1t1.](8)
+  25 Insert           1   11    5               00 intkey=r[5] data=r[11]
+REG[11] =  s56[06171111015D7461626C657431743102.....]tablet1t1.](8)
+REG[5] =  i:1
+  26 Close            1    0    0               00 
+  27 SetCookie        0    1    1               00 
+  28 ParseSchema      0    0    0 tbl_name='t1' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    1 0             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 t1            00 r[2]='t1'
+REG[2] =   t2[t1](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t2[t1](8)
+REG[1] =   s2[t1](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[table](8)
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+REG[4] =   t7[trigger](8)
+REG[3] =   s5[table](8)
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+REG[5] =   s2[t1](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:2
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s40[CREATE TABLE t1](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s2[t1](8)
+REG[6] =  i:2
+REG[7] =   s40[CREATE TABLE t1](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  29 Halt             0    0    0               00 
+SQL: [CREATE TABLE b(x, CHECK( xyzzy.b.x BETWEEN 5 AND 10 ));]
+VDBE Trace:
+   0 Init             0   30    0               00 Start at 30
+  30 Transaction      0    1    1 0             01 usesStmtJournal=0
+  31 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  32 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:4
+   2 If               3    5    0               00 
+REG[3] =  i:4
+   5 CreateTable      0    2    0               00 r[2]=root iDb=0
+REG[2] =  i:3
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......](8)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......](8)
+REG[1] =  i:2
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+REG[4] =  NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain          0    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 MustBeInt        1   18    0               00 
+REG[1] =  i:2
+  16 NotExists        1   18    1               00 intkey=r[1]; pk
+REG[1] =  i:2
+  17 Rowid            1    5    0               00 r[5]=rowid
+REG[5] =  i:2
+  18 IsNull           5   26    0               00 if r[5]==NULL goto 26
+REG[5] =  i:2
+  19 String8          0    6    0 table         00 r[6]='table'
+REG[6] =   t5[table](8)
+  20 String8          0    7    0 b             00 r[7]='b'
+REG[7] =   t1[b](8)
+  21 String8          0    8    0 b             00 r[8]='b'
+REG[8] =   t1[b](8)
+  22 Copy             2    9    0               00 r[9]=r[2]
+REG[9] =  i:3
+  23 String8          0   10    0 CREATE TABLE b(x, CHECK( xyzzy.b.x BETWEEN 5 AND 10 )) 00 r[10]='CREATE TABLE b(x, CHECK( xyzzy.b.x BETWEEN 5 AND 10 ))'
+REG[10] =   t54[CREATE TABLE b(](8)
+  24 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s68[06170F0F01797461626C656262034352.....ytablebb.CR](8)
+  25 Insert           1   11    5               00 intkey=r[5] data=r[11]
+REG[11] =  s68[06170F0F01797461626C656262034352.....ytablebb.CR](8)
+REG[5] =  i:2
+  26 Close            1    0    0               00 
+  27 SetCookie        0    1    2               00 
+  28 ParseSchema      0    0    0 tbl_name='b' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    2 0             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 b             00 r[2]='b'
+REG[2] =   t1[b](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[b](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s1[b](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[b](8)
+REG[1] =   s1[b](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[table](8)
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+REG[4] =   t7[trigger](8)
+REG[3] =   s5[table](8)
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+REG[5] =   s1[b](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:3
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s54[CREATE TABLE b(](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s1[b](8)
+REG[6] =  i:3
+REG[7] =   s54[CREATE TABLE b(](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  29 Halt             0    0    0               00 
+SQL: [ATTACH 'test.db' as db2;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 String8          0    1    0 test.db       00 r[1]='test.db'
+REG[1] =   t7[test.db](8)
+   2 String8          0    2    0 db2           00 r[2]='db2'
+REG[2] =   t3[db2](8)
+   3 Null             0    3    0               00 r[3]=NULL
+REG[3] =  NULL
+   4 Function0        0    1    4 sqlite_attach(3) 03 r[4]=func(r[1..3])
+REG[1] =   t7[test.db](8)
+REG[2] =   t3[db2](8)
+REG[3] =  NULL
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      2    0   17 0             00 usesStmtJournal=0
+  13 TableLock        2    1    0 sqlite_master 00 iDb=2 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    2 5             00 root=1 iDb=2; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s12[sqlite_stat1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s39[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s12[sqlite_stat1](8)
+REG[2] =  i:2
+REG[3] =   s39[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s5[t3c37](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t3](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s5[t3c37](8)
+REG[2] =  i:5
+REG[3] =   s21[CREATE TABLE t3](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s5[t3c14](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s102[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s5[t3c14](8)
+REG[2] =  i:0
+REG[3] =   s102[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      2    0   17 0             00 usesStmtJournal=0
+  12 TableLock        2    2    0 sqlite_stat1  00 iDb=2 root=2 write=0
+  13 Goto             0    1    0               00 
+   1 OpenRead         0    2    2 3             00 root=2 iDb=2; sqlite_stat1
+   2 Explain          0    0    0 SCAN TABLE sqlite_stat1 00 
+   3 Rewind           0    9    0               00 
+   9 Close            0    0    0               00 
+  10 Halt             0    0    0               00 
+REG[4] =  NULL
+   5 Expire           1    0    0               00 
+   6 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+SELECT * FROM b;]
+VDBE Trace:
+   0 Init             0    9    0               00 Start at 9
+   9 Transaction      0    0    2 0             01 usesStmtJournal=0
+  10 TableLock        0    3    0 b             00 iDb=0 root=3 write=0
+  11 Goto             0    1    0               00 
+   1 OpenRead         0    3    0 1             00 root=3 iDb=0; b
+   2 Explain          0    0    0 SCAN TABLE b  00 
+   3 Rewind           0    7    0               00 
+   7 Close            0    0    0               00 
+   8 Halt             0    0    0               00 
+SQL: [INSERT INTO b VALUES(1);]
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      0    1    2 0             01 usesStmtJournal=0
+  12 TableLock        0    3    1 b             00 iDb=0 root=3 write=1
+  13 Integer          5    4    0               00 r[4]=5
+REG[4] =  i:5
+  14 Integer         10    5    0               00 r[5]=10
+REG[5] =  i:10
+  15 Goto             0    1    0               00 
+   1 OpenWrite        0    3    0 1             00 root=3 iDb=0; b
+   2 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   3 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+   4 Lt               4    6    2 (BINARY)      41 if r[4]<r[2] goto 6
+REG[4] =  i:5
+REG[2] =  i:1
+   6 Halt           275    2    0 b             03 
+SQL: [;
+DETACH db10;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   2 Null             0    2    0               00 r[2]=NULL
+REG[2] =  NULL
+   3 String8          0    3    0 db10          00 r[3]='db10'
+REG[3] =   t4[db10](8)
+   4 Function0        0    3    4 sqlite_detach(1) 01 r[4]=func(r[3])
+REG[3] =   t4[db10](8)
+SQL: [;
+PRAGMA incremental_vacuum;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 Transaction      0    1    2 0             01 usesStmtJournal=0
+   8 Goto             0    1    0               00 
+   1 Integer       2147483647    1    0               00 r[1]=2147483647
+REG[1] =  i:2147483647
+   2 IncrVacuum       0    6    0               00 
+   6 Halt             0    0    0               00 
+SQL: [PRAGMA journal_mode=OFF;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 JournalMode      2    1    2               00 
+REG[1] =   t3[off](8)
+   2 JournalMode      0    1    2               00 
+REG[1] =   t3[off](8)
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t3[off](8)
+   4 Halt             0    0    0               00 
+SQL: [INSERT INTO t1(a,a,a,a) VALUES(1,2,4,3),(2,4,6,5),(3,10,30,20);]
+VDBE Trace:
+   0 Init             0   29    0               00 Start at 29
+  29 Transaction      0    1    2 0             01 usesStmtJournal=1
+  30 TableLock        0    2    1 t1            00 iDb=0 root=2 write=1
+  31 Integer          0   13    0               00 r[13]=0
+REG[13] =  i:0
+  32 Goto             0    1    0               00 
+   1 InitCoroutine    3   18    2               00 
+  18 OpenWrite        0    2    0 1             00 root=2 iDb=0; t1
+  19 Yield            3   27    0               00 
+REG[3] =  i:1
+REG[3] =  i:19
+   2 Integer          1    4    0               00 r[4]=1
+REG[4] =  i:1
+   3 Integer          2    5    0               00 r[5]=2
+REG[5] =  i:2
+   4 Integer          4    6    0               00 r[6]=4
+REG[6] =  i:4
+   5 Integer          3    7    0               00 r[7]=3
+REG[7] =  i:3
+   6 Yield            3    0    0               00 
+REG[3] =  i:19
+REG[3] =  i:6
+  20 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+  21 SCopy            4    2    0               00 r[2]=r[4]
+REG[2] =  i:1
+  22 Gt              13   24    2 (BINARY)      51 if r[13]>r[2] goto 24
+REG[13] =  i:0
+REG[2] =  i:1
+  24 MakeRecord       2    1   12               00 r[12]=mkrec(r[2])
+REG[12] =  s2[0209..](8)
+  25 Insert           0   12    1 t1            1B intkey=r[1] data=r[12]
+REG[12] =  s2[0209..](8)
+REG[1] =  i:1
+  26 Goto             0   19    0               00 
+  19 Yield            3   27    0               00 
+REG[3] =  i:6
+REG[3] =  i:19
+   7 Integer          2    4    0               00 r[4]=2
+REG[4] =  i:2
+   8 Integer          4    5    0               00 r[5]=4
+REG[5] =  i:4
+   9 Integer          6    6    0               00 r[6]=6
+REG[6] =  i:6
+  10 Integer          5    7    0               00 r[7]=5
+REG[7] =  i:5
+  11 Yield            3    0    0               00 
+REG[3] =  i:19
+REG[3] =  i:11
+  20 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+  21 SCopy            4    2    0               00 r[2]=r[4]
+REG[2] =  i:2
+  22 Gt              13   24    2 (BINARY)      51 if r[13]>r[2] goto 24
+REG[13] =  i:0
+REG[2] =  i:2
+  24 MakeRecord       2    1   12               00 r[12]=mkrec(r[2])
+REG[12] =  s3[020102...](8)
+  25 Insert           0   12    1 t1            1B intkey=r[1] data=r[12]
+REG[12] =  s3[020102...](8)
+REG[1] =  i:2
+  26 Goto             0   19    0               00 
+  19 Yield            3   27    0               00 
+REG[3] =  i:11
+REG[3] =  i:19
+  12 Integer          3    4    0               00 r[4]=3
+REG[4] =  i:3
+  13 Integer         10    5    0               00 r[5]=10
+REG[5] =  i:10
+  14 Integer         30    6    0               00 r[6]=30
+REG[6] =  i:30
+  15 Integer         20    7    0               00 r[7]=20
+REG[7] =  i:20
+  16 Yield            3    0    0               00 
+REG[3] =  i:19
+REG[3] =  i:16
+  20 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:3
+  21 SCopy            4    2    0               00 r[2]=r[4]
+REG[2] =  i:3
+  22 Gt              13   24    2 (BINARY)      51 if r[13]>r[2] goto 24
+REG[13] =  i:0
+REG[2] =  i:3
+  24 MakeRecord       2    1   12               00 r[12]=mkrec(r[2])
+REG[12] =  s3[020103...](8)
+  25 Insert           0   12    1 t1            1B intkey=r[1] data=r[12]
+REG[12] =  s3[020103...](8)
+REG[1] =  i:3
+  26 Goto             0   19    0               00 
+  19 Yield            3   27    0               00 
+REG[3] =  i:16
+REG[3] =  i:19
+  17 EndCoroutine     3    0    0               00 
+REG[3] =  i:19
+  27 Noop             0    0    0               00 
+  28 Halt             0    0    0               00 
+SQL: [PRAGMA journal_mode=WAL;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 JournalMode      2    1    5               00 
+REG[1] =   t3[wal](8)
+   2 JournalMode      0    1    5               00 
+REG[1] =   t3[off](8)
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t3[off](8)
+   4 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='b' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    2 0             01 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 b             00 r[2]='b'
+REG[2] =   t1[b](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[b](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s1[b](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[b](8)
+REG[1] =   s1[b](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[table](8)
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+REG[4] =   t7[trigger](8)
+REG[3] =   s5[table](8)
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+REG[5] =   s1[b](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:3
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s54[CREATE TABLE b(](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s1[b](8)
+REG[6] =  i:3
+REG[7] =   s54[CREATE TABLE b(](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+SQL: [;
+PRAGMA vdbe_listing=off;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [pragma auto_vacuum = 0 ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [BEGIN;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       0    0    0               00 
+SQL: [COMMIT;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    0    0               00 
+SQL: [PRAGMA auto_vacuum = 2;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [PRAGMA auto_vacuum = 1;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [PRAGMA cache_size = 1;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s40[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s54[CREATE TABLE b(](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:3
+REG[3] =   s54[CREATE TABLE b(](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+PRAGMA mmap_size = 0 ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_4;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_4          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_8          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_25;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_25         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_89;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_89         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_98;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_98         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_99;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_99         00 
+   2 Halt             0    0    0               00 
+SQL: [COMMIT ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    0    0               00 
+SQL: [SAVEPOINT sp_11;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_11         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_51;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_51         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_76;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_76         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_85;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_85         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_86;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_86         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_87;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_87         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_95;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_95         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_96;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_96         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [;
+BEGIN ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       0    0    0               00 
+SQL: [SAVEPOINT sp_25;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_25         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_31;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_31         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_69;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_69         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_70;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_70         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_87;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_87         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_93;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_93         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_25;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_25         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_17;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_17         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_0;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_0          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_9          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_11;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_11         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_19;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_19         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_31;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_31         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_0;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_0          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_4;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_4          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_32;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_32         00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_88;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_88         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_54         00 
+SQL: [SAVEPOINT sp_15;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_15         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_30;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_30         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_33;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_33         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_57;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_57         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_39;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_39         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_94;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_94         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_11;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_11         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_19;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_19         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_23;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_23         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_2;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_2          00 
+SQL: [SAVEPOINT sp_19;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_19         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,0]     02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_8          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,0]     02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_58;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_58         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,0]     02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_93;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_93         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_39;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_39         00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_77;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_77         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_92;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_92         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_58;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_58         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_64;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_64         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_77;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_77         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_82;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_82         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_33;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_33         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_39;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_39         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_77;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_77         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_78;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_78         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_85;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_85         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_11;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_11         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_57;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_57         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_32;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_32         00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_75;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_75         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_96;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_96         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_12;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_12         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_5;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_5          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_6;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_6          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_7;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_7          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_31;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_31         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_35;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_35         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,0]     02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_26;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_26         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_64;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_64         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_76;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_76         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_85;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_85         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_88;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_88         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_9          00 
+SQL: [SAVEPOINT sp_12;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_12         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,0]     02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_35;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_35         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_14;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_14         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_69;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_69         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_78;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_78         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_84;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_84         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_85;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_85         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_35;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_35         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_3;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_3          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_4;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_4          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_15;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_15         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_70;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_70         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_79;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_79         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_82;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_82         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_1;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_1          00 
+SQL: [SAVEPOINT sp_1;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_1          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_3;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_3          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_12;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_12         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_43;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_43         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_57;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_57         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_23;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_23         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_30;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_30         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_8          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_9          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_23;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_23         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_4;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_4          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_6;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_6          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_9          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_37;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_37         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_95;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_95         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_84;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_84         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_90;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_90         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_94;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_94         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_12;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_12         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_18;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_18         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_28;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_28         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_33;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_33         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_51;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_51         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_70;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_70         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_72;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_72         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_5;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_5          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_23;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_23         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_79;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_79         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [COMMIT ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_78;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_78         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_80;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_80         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_90;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_90         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_91;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_91         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_28;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_28         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_51;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_51         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_8          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_75;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_75         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_25;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_25         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_30;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_30         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_77;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_77         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_78;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_78         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_15;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_15         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_30;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_30         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_76;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_76         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_77;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_77         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_91;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_91         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_23;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_23         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_58;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_58         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_12;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_12         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_14;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_14         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_72;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_72         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_76;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_76         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_28;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_28         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_37;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_37         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_64;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_64         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_9          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_13;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_13         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_28;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_28         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_37;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_37         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_58;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_58         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_26;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_26         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_63;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_63         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_31;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_31         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_51;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_51         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_57;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_57         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_62;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_62         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_66;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_66         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_75;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_75         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_17;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_17         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_35;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_35         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_58;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_58         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_81;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_81         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_86;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_86         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_9;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_9          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_20;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_20         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_32;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_32         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_38;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_38         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_41;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_41         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_26;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_26         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_26;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_26         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_43;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_43         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_49;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_49         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_52;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_52         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_76;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_76         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_78;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_78         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_86;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_86         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_43;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_43         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_64;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_64         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_74;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_74         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_86;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_86         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_88;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_88         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_90;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_90         00 
+SQL: [SAVEPOINT sp_3;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_3          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_5;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_5          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_25;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_25         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_36;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_36         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_7;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_7          00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_21;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_21         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_39;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_39         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_50;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_50         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_69;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_69         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_71;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_71         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_16         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_26;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_26         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_40;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_40         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_61;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_61         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_82;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_82         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_57;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_57         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_73;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_73         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_11;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_11         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_29;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_29         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_55;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_55         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_59;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_59         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_72;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_72         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_7;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_7          00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_24;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_24         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_27;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_27         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_53;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_53         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_31;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_31         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_32;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_32         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_42;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_42         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_44;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_44         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_51;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_51         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_70;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_70         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_82;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_82         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_83;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_83         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_35;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_35         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_46;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_46         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_60;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_60         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_68;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_68         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_79;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_79         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_82;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_82         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_87;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_87         00 
+   2 Halt             0    0    0               00 
+SQL: [;
+PRAGMA integrity_check;]
+VDBE Trace:
+   0 Init             0   31    0               00 Start at 31
+  31 Transaction      0    0    2 0             01 usesStmtJournal=0
+  32 Transaction      1    0    0 0             01 usesStmtJournal=0
+  33 Transaction      2    0   17 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 IntegrityCk      2    1    1 ]             01 
+  13 IsNull           2   18    0               00 if r[2]==NULL goto 18
+REG[2] =  NULL
+  18 IfPos            1   20    0               00 if r[1]>0 then r[1]-=0, goto 20
+REG[1] =  i:100
+  20 IntegrityCk      2    3    1 [2,1,0,-1431655766] 02 
+  21 IsNull           2   26    0               00 if r[2]==NULL goto 26
+REG[2] =  NULL
+  26 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:100
+  27 If               1   30    0               00 
+REG[1] =  i:0
+  28 String8          0    3    0 ok            00 r[3]='ok'
+REG[3] =   t2[ok](8)
+  29 ResultRow        3    1    0               00 output=r[3]
+REG[3] =   t2[ok](8)
+  30 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_34;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_34         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_43;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_43         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_45;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_45         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_47;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_47         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_65;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_65         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_67;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_67         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_69;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_69         00 
+   2 Halt             0    0    0               00 
+SQL: [ROLLBACK TO sp_8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        2    0    0 sp_8          00 
+SQL: [SAVEPOINT sp_22;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_22         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_48;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_48         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_54;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_54         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_56;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_56         00 
+   2 Halt             0    0    0               00 
+SQL: [SAVEPOINT sp_72;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Savepoint        0    0    0 sp_72         00 
+   2 Halt             0    0    0               00 
+[Inferior 1 (process 120156) exited normally]
+(gdb) (gdb) quit

@@ -1,0 +1,80 @@
+# name: test/sql/function/string/test_concat.test
+# description: Test concat function
+# group: [string]
+
+# Test Case disclaimer
+
+# Assertions built using the Domain Testing technique
+# at: https://bbst.courses/wp-content/uploads/2018/01/Kaner-Intro-to-Domain-Testing-2018.pdf
+
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello'), ('world'), (NULL)
+
+# normal concat
+;
+SELECT s || ' ' || s FROM strings ORDER BY s
+;
+NULL
+hello hello
+world world
+
+# unicode concat
+;
+SELECT s || ' ' || '🦆' FROM strings ORDER BY s
+;
+NULL
+hello 🦆
+world 🦆
+
+;
+SELECT s || ' ' || '🦆' FROM strings ORDER BY s
+;
+NULL
+hello 🦆
+world 🦆
+
+# concat with constant NULL
+;
+SELECT s || ' ' || '🦆' || NULL FROM strings ORDER BY s
+;
+NULL
+NULL
+NULL
+
+# concat requires at least one argument
+;
+SELECT CONCAT()
+
+# concat with one argument works
+;
+SELECT CONCAT('hello')
+;
+hello
+
+# varargs concat
+;
+SELECT CONCAT('hello', 33, 22)
+;
+hello3322
+
+# CONCAT ignores null values
+;
+SELECT CONCAT('hello', 33, NULL, 22, NULL)
+;
+hello3322
+
+# this also applies to non-constant null values
+;
+SELECT CONCAT('hello', ' ', s) FROM strings ORDER BY s
+;
+hello 
+hello hello
+hello world
+

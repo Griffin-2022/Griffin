@@ -1,0 +1,51 @@
+# name: test/sql/index/art/test_art_multi_column.test
+# description: Test ART index on table with multiple columns
+# group: [art]
+
+;
+CREATE TABLE integers(i BIGINT, j INTEGER, k VARCHAR)
+
+;
+CREATE INDEX i_index ON integers using art(j)
+
+;
+INSERT INTO integers VALUES (10, 1, 'hello'), (11, 2, 'world')
+
+# condition on "i"
+;
+SELECT i FROM integers WHERE i=10
+;
+10
+
+;
+SELECT * FROM integers WHERE i=10
+;
+10	1	hello
+
+# condition on "j"
+;
+SELECT j FROM integers WHERE j=1
+;
+1
+
+;
+SELECT * FROM integers WHERE j=1
+;
+10	1	hello
+
+# condition on "k"
+;
+SELECT k FROM integers WHERE k='hello'
+;
+hello
+
+;
+SELECT i, k FROM integers WHERE k='hello'
+;
+10	hello
+
+;
+SELECT * FROM integers WHERE k='hello'
+;
+10	1	hello
+

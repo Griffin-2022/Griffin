@@ -1,0 +1,105 @@
+# name: test/sql/function/string/test_like_escape.test
+# description: Test LIKE statement with custom ESCAPE
+# group: [string]
+
+# scalar like with escape
+;
+SELECT '%++' LIKE '*%++' ESCAPE '*';
+;
+1
+
+# Not Like
+;
+SELECT '%++' NOT LIKE '*%++' ESCAPE '*';
+;
+0
+
+# unterminated escapes
+;
+SELECT '%' LIKE '%' ESCAPE '%';
+
+;
+SELECT '%' LIKE '*' ESCAPE '*';
+
+# Default tests
+;
+SELECT '\' LIKE '\\' ESCAPE '\';
+;
+1
+
+;
+SELECT '\\' LIKE '\\' ESCAPE '\';
+;
+0
+
+;
+SELECT '%' LIKE '*%' ESCAPE '*';
+;
+1
+
+;
+SELECT '_ ' LIKE '*_ ' ESCAPE '*';
+;
+1
+
+;
+SELECT ' a ' LIKE '*_ ' ESCAPE '*';
+;
+0
+
+;
+SELECT '%_' LIKE '%_' ESCAPE '';
+;
+1
+
+;
+SELECT '*%' NOT LIKE '*%' ESCAPE '*';
+;
+1
+
+# It should fail when more than one escape character is specified
+;
+SELECT '%_' LIKE '%_' ESCAPE '\\';
+
+;
+SELECT '%_' LIKE '%_' ESCAPE '**';
+
+# Test LIKE statement with ESCAPE in the middle of the pattern
+;
+CREATE TABLE strings(s STRING, pat STRING);
+
+;
+INSERT INTO strings VALUES ('abab', 'ab%'), ('aaa', 'a*_a'), ('aaa', '*%b'), ('bbb', 'a%');
+
+;
+SELECT s FROM strings;
+;
+abab
+aaa
+aaa
+bbb
+
+;
+SELECT pat FROM strings;
+;
+ab%
+a*_a
+*%b
+a%
+
+;
+SELECT s FROM strings WHERE pat LIKE 'a*%' ESCAPE '*';
+;
+bbb
+
+;
+SELECT s FROM strings WHERE 'aba' LIKE pat ESCAPE '*';
+;
+abab
+bbb
+
+;
+SELECT s FROM strings WHERE s LIKE pat ESCAPE '*';
+;
+abab
+

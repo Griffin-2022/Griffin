@@ -1,0 +1,112 @@
+# name: test/sql/types/struct/struct_cast.test
+# description: Test struct cast
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+# constant casts
+;
+SELECT {'i': 1, 'j': 2}::ROW(i BIGINT, j VARCHAR);
+;
+{'i': 1, 'j': 2}
+
+;
+SELECT {'i': NULL, 'j': 'hello'}::ROW(i BIGINT, j VARCHAR);
+;
+{'i': NULL, 'j': hello}
+
+;
+SELECT {'i': NULL, 'j': NULL}::ROW(i BIGINT, j VARCHAR);
+;
+{'i': NULL, 'j': NULL}
+
+;
+SELECT NULL::ROW(i BIGINT, j VARCHAR);
+;
+NULL
+
+# cast and extract
+;
+SELECT ({'i': NULL, 'j': NULL}::ROW(i BIGINT, j VARCHAR))['i'];
+;
+NULL
+
+;
+SELECT ({'i': NULL, 'j': NULL})['i']
+;
+NULL
+
+;
+SELECT (NULL::ROW(i BIGINT, j VARCHAR))['i'];
+;
+NULL
+
+# nested struct casts
+;
+SELECT {'i': 1, 'j': {'a': 2, 'b': 3}}::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR));
+;
+{'i': 1, 'j': {'a': 2, 'b': 3}}
+
+;
+SELECT {'i': 1, 'j': {'a': NULL, 'b': 3}}::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR));
+;
+{'i': 1, 'j': {'a': NULL, 'b': 3}}
+
+;
+SELECT {'i': 1, 'j': {'a': 2, 'b': NULL}}::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR));
+;
+{'i': 1, 'j': {'a': 2, 'b': NULL}}
+
+;
+SELECT {'i': 1, 'j': NULL}::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR));
+;
+{'i': 1, 'j': NULL}
+
+# cast and extract
+;
+SELECT ({'i': 1, 'j': NULL}::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR)))['j']['a'];
+;
+NULL
+
+;
+SELECT NULL::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR));
+;
+NULL
+
+# now the same but non-constant
+;
+CREATE TABLE structs(s ROW(i INTEGER, j INTEGER))
+
+;
+INSERT INTO structs VALUES ({'i': 1, 'j': 2}), ({'i': NULL, 'j': 2}), ({'i': 1, 'j': NULL}), (NULL)
+
+;
+SELECT s::ROW(i BIGINT, j VARCHAR) FROM structs
+;
+{'i': 1, 'j': 2}
+{'i': NULL, 'j': 2}
+{'i': 1, 'j': NULL}
+NULL
+
+# nested struct
+;
+CREATE TABLE nested_structs(s ROW(i INTEGER, j ROW(a INTEGER, b INTEGER)))
+
+;
+INSERT INTO nested_structs VALUES
+({'i': 1, 'j': {'a': 2, 'b': 3}}),
+({'i': 1, 'j': {'a': NULL, 'b': 3}}),
+({'i': 1, 'j': {'a': 2, 'b': NULL}}),
+({'i': 1, 'j': NULL}),
+(NULL)
+
+
+;
+SELECT s::ROW(i BIGINT, j ROW(a BIGINT, b VARCHAR)) FROM nested_structs
+;
+{'i': 1, 'j': {'a': 2, 'b': 3}}
+{'i': 1, 'j': {'a': NULL, 'b': 3}}
+{'i': 1, 'j': {'a': 2, 'b': NULL}}
+{'i': 1, 'j': NULL}
+NULL

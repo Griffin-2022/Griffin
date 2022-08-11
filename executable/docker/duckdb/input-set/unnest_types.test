@@ -1,0 +1,118 @@
+# name: test/sql/types/list/unnest_types.test
+# description: Test unnest with different types
+# group: [list]
+
+;
+PRAGMA enable_verification
+
+# integers
+foreach type <integral>
+
+;
+create table a as select list(i::${type}) AS l from range(1, 6, 1) t1(i)
+
+;
+select l from a order by 1;
+;
+[1, 2, 3, 4, 5]
+
+;
+select unnest(l) from a order by 1
+;
+1
+2
+3
+4
+5
+
+;
+drop table a
+
+endloop
+
+# decimals
+foreach type decimal(4,1) decimal(8,1) decimal(12,1) decimal(18,1)
+
+;
+create table a as select list(i::${type}) AS l from range(1, 6, 1) t1(i)
+
+;
+select l from a order by 1;
+;
+[1.0, 2.0, 3.0, 4.0, 5.0]
+
+;
+select unnest(l) from a order by 1
+;
+1
+2
+3
+4
+5
+
+;
+drop table a
+
+endloop
+
+foreach type float double
+
+;
+create table a as select list(('1e'||i::varchar)::${type}) AS l from range(1, 6, 1) t1(i)
+
+;
+select unnest(l) from a order by 1
+;
+10.000000
+100.000000
+1000.000000
+10000.000000
+100000.000000
+
+;
+drop table a
+
+endloop
+
+
+# intervals
+;
+create table a as select list(interval (i) years) AS l from range(1, 6, 1) t1(i)
+
+;
+select l from a order by 1;
+;
+[1 year, 2 years, 3 years, 4 years, 5 years]
+
+;
+select unnest(l) from a order by 1
+;
+1 year
+2 years
+3 years
+4 years
+5 years
+
+;
+drop table a
+
+# bools
+;
+create table a as select list(i%2=0) AS l from range(1, 6, 1) t1(i);
+
+;
+select l from a order by 1;
+;
+[False, True, False, True, False]
+
+;
+select unnest(l) from a order by 1;
+;
+false
+false
+false
+true
+true
+
+;
+drop table a

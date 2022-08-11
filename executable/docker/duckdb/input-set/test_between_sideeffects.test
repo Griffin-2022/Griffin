@@ -1,0 +1,50 @@
+# name: test/sql/function/generic/test_between_sideeffects.test
+# description: Test between statement with expressions that have side effects
+# group: [generic]
+
+;
+PRAGMA enable_verification
+
+# prepared statement with BETWEEN
+;
+PREPARE v1 AS SELECT ? BETWEEN 1 AND 2
+
+;
+EXECUTE v1(1)
+;
+true
+
+;
+EXECUTE v1(3)
+;
+false
+
+;
+EXECUTE v1(1, 2)
+
+;
+PREPARE v2 AS SELECT 1 WHERE ? BETWEEN now() - INTERVAL '1 minute' AND now() + INTERVAL '1 minute';
+
+;
+EXECUTE v2(now())
+;
+1
+
+;
+EXECUTE v2(now() - INTERVAL '10 minute')
+;
+
+# this should always be false
+loop i 0 100
+
+;
+SELECT (RANDOM() * 10)::INT BETWEEN 6 AND 5
+;
+false
+
+;
+SELECT (RANDOM() * 10)::INT NOT BETWEEN 6 AND 5
+;
+true
+
+endloop

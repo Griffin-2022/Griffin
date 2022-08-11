@@ -1,0 +1,43 @@
+# name: test/sql/storage/wal/wal_store_integers.test
+# description: Test simple storage with WAL
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/test_store_integers.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a database and insert values
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21), (NULL, NULL)
+
+;
+CREATE TABLE test2 (a INTEGER);
+
+;
+INSERT INTO test2 VALUES (13), (12), (11)
+
+# verify that the tables are still there after a restart
+restart
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL	NULL
+11	22
+12	21
+13	22
+
+;
+SELECT * FROM test2 ORDER BY a
+;
+11
+12
+13

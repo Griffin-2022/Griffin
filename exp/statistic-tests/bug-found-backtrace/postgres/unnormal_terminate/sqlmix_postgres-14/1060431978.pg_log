@@ -1,0 +1,111 @@
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,test1);
+2022-08-02 06:44:29.221 UTC [3385] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 06:44:29.221 UTC [3385] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,a,test1 order by b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,test1);
+2022-08-02 06:44:29.223 UTC [3385] ERROR:  collation "test1" for encoding "SQL_ASCII" does not exist at character 16
+2022-08-02 06:44:29.223 UTC [3385] STATEMENT:  select max(foo COLLATE "test1") filter (where (bar collate "POSIX") > '0')
+	from (values ('a', 'b')) AS v(foo,bar);
+2022-08-02 06:44:29.224 UTC [3385] ERROR:  relation "tenk1" does not exist at character 290
+2022-08-02 06:44:29.224 UTC [3385] STATEMENT:  create view aggordview1 as
+	select ten,
+	       percentile_disc(0.5) within group (order by thousand) as p50,
+	       percentile_disc(0.5) within group (order by thousand) filter (where hundred=1) as px,
+	       rank(5,'AZZZZ',50) within group (order by hundred, string4 desc, hundred)
+	  from tenk1
+	 group by ten order by ten;
+2022-08-02 06:44:29.224 UTC [3385] ERROR:  view "aggordview1" does not exist
+2022-08-02 06:44:29.224 UTC [3385] STATEMENT:  drop view aggordview1;
+2022-08-02 06:44:29.224 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.224 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.256 UTC [3385] ERROR:  date/time field value out of range: "2016-02-30"
+2022-08-02 06:44:29.256 UTC [3385] STATEMENT:  SELECT to_date('2016-02-30', 'YYYY-MM-DD');
+2022-08-02 06:44:29.256 UTC [3385] ERROR:  relation "testcase_pkey" does not exist
+2022-08-02 06:44:29.256 UTC [3385] STATEMENT:  
+	ALTER TABLE testcase_pkey ATTACH PARTITION ÇâÉß FOR VALUES FROM (20) TO (30);
+2022-08-02 06:44:29.264 UTC [3385] ERROR:  relation "i" does not exist
+2022-08-02 06:44:29.264 UTC [3385] STATEMENT:  
+	ALTER TABLE i SET (parallel_workers = 0);
+2022-08-02 06:44:29.274 UTC [3385] ERROR:  column "test1_a_idx" is of type integer but expression is of type integer[] at character 25
+2022-08-02 06:44:29.274 UTC [3385] STATEMENT:  
+	  insert into b select array[g] from generate_series(2, 800) g;
+2022-08-02 06:44:29.281 UTC [3385] ERROR:  column "test1_a_idx" is of type integer but expression is of type integer[] at character 25
+2022-08-02 06:44:29.281 UTC [3385] STATEMENT:  
+	  insert into b select array[1] from generate_series(1, 8192) g;
+2022-08-02 06:44:29.286 UTC [3385] ERROR:  column "test1_a_idx" is of type integer but expression is of type integer[] at character 25
+2022-08-02 06:44:29.286 UTC [3385] STATEMENT:  
+	  insert into b select array[1] from generate_series(1, 8192) g;
+2022-08-02 06:44:29.289 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.297 UTC [3385] ERROR:  invalid size: ".."
+2022-08-02 06:44:29.297 UTC [3385] STATEMENT:  SELECT pg_size_bytes('..');
+2022-08-02 06:44:29.298 UTC [3385] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 06:44:29.298 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.298 UTC [3385] ERROR:  permission denied: "pg_description" is a system catalog
+2022-08-02 06:44:29.298 UTC [3385] STATEMENT:  
+	  drop table pg_description;
+2022-08-02 06:44:29.298 UTC [3385] ERROR:  column "foo" is of type integer but expression is of type integer[] at character 29
+2022-08-02 06:44:29.298 UTC [3385] STATEMENT:  
+	  insert into test1 select array[g] from generate_series(2, 800) g;
+2022-08-02 06:44:29.299 UTC [3385] ERROR:  relation "collate_test1" does not exist
+2022-08-02 06:44:29.299 UTC [3385] STATEMENT:   -- fail
+	CREATE INDEX collate_test1_idx6 ON collate_test1 ((a COLLATE "C"));
+2022-08-02 06:44:29.299 UTC [3385] ERROR:  relation "ÄüÆ³Íñó¤" does not exist
+2022-08-02 06:44:29.299 UTC [3385] STATEMENT:  
+	create index idxparti2 on ÄüÆ³Íñó¤ (ìÞÙ¸æñÕèindex1, c);
+2022-08-02 06:44:29.299 UTC [3385] ERROR:  relation "ìÞÙ¸æñÕèindex2" does not exist at character 14
+2022-08-02 06:44:29.299 UTC [3385] STATEMENT:  
+	INSERT INTO ìÞÙ¸æñÕèindex2 VALUES (3);
+2022-08-02 06:44:29.301 UTC [3385] ERROR:  relation "t2" does not exist
+2022-08-02 06:44:29.301 UTC [3385] STATEMENT:  
+	alter table t2 detach partition ìÞÙ¸æñÕèindex2;
+2022-08-02 06:44:29.301 UTC [3385] ERROR:  relation "ìÞÙ¸æñÕèindex2" does not exist
+2022-08-02 06:44:29.301 UTC [3385] STATEMENT:  
+	create index on ìÞÙ¸æñÕèindex2(myvarchar);
+2022-08-02 06:44:29.318 UTC [3385] ERROR:  relation "ìÞÙ¸æñÕèindex2" does not exist at character 30
+2022-08-02 06:44:29.318 UTC [3385] STATEMENT:  
+	create table ìÞÙ¸æñÕè (like ìÞÙ¸æñÕèindex2);
+2022-08-02 06:44:29.322 UTC [3385] ERROR:  table "ìÞÙ¸æñÕè" does not exist
+2022-08-02 06:44:29.322 UTC [3385] STATEMENT:  
+	  drop table ìÞÙ¸æñÕè;
+2022-08-02 06:44:29.326 UTC [3385] ERROR:  column "ÄüÆ³Íñó¤" of relation "ìÞÙ¸æñÕèindex2" does not exist
+2022-08-02 06:44:29.326 UTC [3385] STATEMENT:  
+	alter table ìÞÙ¸æñÕèindex2 add primary key (ÄüÆ³Íñó¤);
+2022-08-02 06:44:29.327 UTC [3385] ERROR:  cannot drop column "alter_op_test_fn" because it is part of the partition key of relation "ìÞÙ¸æñÕèindex2"
+2022-08-02 06:44:29.327 UTC [3385] STATEMENT:  
+	alter table ìÞÙ¸æñÕèindex2 drop column alter_op_test_fn;
+2022-08-02 06:44:29.327 UTC [3385] ERROR:  invalid bound specification for a range partition at character 72
+2022-08-02 06:44:29.327 UTC [3385] STATEMENT:  
+	alter table ìÞÙ¸æñÕèindex2 attach partition ìÞÙ¸æñÕèindex2 for values in (4);
+2022-08-02 06:44:29.328 UTC [3385] ERROR:  relation "t2" does not exist
+2022-08-02 06:44:29.328 UTC [3385] STATEMENT:  	-- should fail
+	alter table t2 detach partition t2;
+2022-08-02 06:44:29.328 UTC [3385] ERROR:  invalid bound specification for a range partition at character 59
+2022-08-02 06:44:29.328 UTC [3385] STATEMENT:  
+	create table ints partition of ìÞÙ¸æñÕèindex2 for values in (1);
+2022-08-02 06:44:29.329 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.382 UTC [3385] ERROR:  "b" is not a view
+2022-08-02 06:44:29.382 UTC [3385] STATEMENT:  DROP VIEW b;
+2022-08-02 06:44:29.386 UTC [3385] ERROR:  column "test1_a_idx" is of type integer but expression is of type integer[] at character 25
+2022-08-02 06:44:29.386 UTC [3385] STATEMENT:  
+	  insert into b select array[g] from generate_series(2, 800) g;
+2022-08-02 06:44:29.386 UTC [3385] ERROR:  column "test1_a_idx" is of type integer but expression is of type integer[] at character 25
+2022-08-02 06:44:29.386 UTC [3385] STATEMENT:  
+	  insert into b select array[1] from generate_series(1, 8192) g;
+2022-08-02 06:44:29.414 UTC [3385] WARNING:  there is no transaction in progress
+2022-08-02 06:44:29.426 UTC [3385] ERROR:  recovery is not in progress
+2022-08-02 06:44:29.426 UTC [3385] STATEMENT:  SELECT pg_promote(wait_seconds => 300)
+	;
+2022-08-02 06:44:29.580 UTC [3385] PANIC:  could not write to file "pg_wal/xlogtemp.3385": No space left on device
+2022-08-02 06:44:29.580 UTC [3385] STATEMENT:  
+	  insert into b select array[1] from generate_series(1, 8192) g;
+2022-08-02 06:44:29.618 UTC [130576] LOG:  server process (PID 3385) was terminated by signal 6: Aborted
+2022-08-02 06:44:29.618 UTC [130576] LOG:  terminating any other active server processes
+2022-08-02 06:44:29.623 UTC [130576] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:44:29.635 UTC [4055] LOG:  database system was interrupted; last known up at 2022-08-02 06:44:18 UTC
+2022-08-02 06:44:29.636 UTC [4056] FATAL:  the database system is in recovery mode
+2022-08-02 06:44:29.638 UTC [4059] FATAL:  the database system is in recovery mode
+2022-08-02 06:44:29.640 UTC [4060] FATAL:  the database system is in recovery mode
+2022-08-02 06:44:29.645 UTC [130576] LOG:  received smart shutdown request
+2022-08-02 06:44:29.659 UTC [4055] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:44:29.660 UTC [4055] LOG:  redo starts at 0/1D81DE90
+2022-08-02 06:44:29.663 UTC [130576] LOG:  abnormal database system shutdown

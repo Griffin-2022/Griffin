@@ -1,0 +1,98 @@
+# name: test/sql/index/art/test_art_node_leaf_with_duplicates_multi_column.test
+# description: ART Node Leaf with removing duplicated keys from multi column table
+# group: [art]
+
+;
+CREATE TABLE integers AS SELECT range a, 1 AS b, 1 AS c FROM range(1024)
+
+;
+CREATE INDEX b_index ON integers(b)
+
+# verify counts
+
+;
+SELECT sum(b) FROM integers
+;
+1024
+
+;
+SELECT sum(b) FROM integers WHERE b = 1
+;
+1024
+
+;
+SELECT sum(b) FROM integers
+;
+1024
+
+# now delete some elements
+
+;
+DELETE FROM integers WHERE a < 100
+
+# verify counts
+
+;
+SELECT COUNT(b) FROM integers
+;
+924
+
+;
+SELECT COUNT(b) FROM integers WHERE b = 1
+;
+924
+
+;
+SELECT sum(b) FROM integers
+;
+924
+
+# now delete more elements
+
+;
+DELETE FROM integers WHERE a < 600
+
+# verify counts
+
+;
+SELECT COUNT(b) FROM integers
+;
+424
+
+;
+SELECT COUNT(b) FROM integers WHERE b = 1
+;
+424
+
+;
+SELECT sum(b) FROM integers
+;
+424
+
+# now delete all elements
+
+;
+DELETE FROM integers WHERE a < 1024
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+SELECT COUNT(*) FROM integers WHERE b = 1
+;
+0
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+DROP INDEX b_index
+
+;
+DROP TABLE integers

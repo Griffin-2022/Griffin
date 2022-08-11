@@ -1,4 +1,0 @@
-PRAGMA writable_schema = 1;
-CREATE TABLE c1(x);
-CREATE TABLE sqlite_sequence (name PRIMARY KEY) WITHOUT ROWID;
-ALTER TABLE c1 RENAME TO a;

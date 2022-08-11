@@ -1,0 +1,111 @@
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	--
+	-- Test case derived from bug #9085: check * qualification of composite
+	-- parameters for SQL functions
+	--
+	
+	create temp table testtable_apple_index (testtable_orange_index int, testpart_apple text);
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	create function testpart_orange(v gexec_test_a_idx) returns void as $$
+	insert into gexec_test_a_idx values (v.*);
+	$$ language sql;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	create function testpart_apple_index(v testtable_apple_index) returns void as $$
+	select testpart_orange(v);
+	$$ language sql;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	create function testpart_orange_index(v testtable_apple_index) returns void as $$
+	select testpart_apple_index(testpart_orange_index.v.*);
+	$$ language sql;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	select testpart_orange(row(2,'two'));
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 259
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	--
+	-- We allow I/O conversion casts from composite types to strings to be
+	-- invoked via cast syntax, but not functional syntax.  This is because
+	-- the latter is too prone to be invoked unintentionally.
+	--
+	select cast (testtable_apple_index as text) from testtable_apple_index;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:    -- error
+	-- same, but RECORD instead of named composite type:
+	select cast (row('Jim', 'Beam') as text);
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 34
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	select f.gexec_test_c_idx from gexec_test_a_idx f;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 19
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	select b(f) from gexec_test f;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	create function parent_tab(gexec_test_a_idx) returns text language sql
+	as $$select $1.gexec_test_b_idx || ' ' || $1.gexec_test_c_idx$$;
+2022-08-02 05:44:30.118 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 33
+2022-08-02 05:44:30.118 UTC [83621] STATEMENT:  
+	
+	select f.testpart_orange from tbl_heap_psql f;
+2022-08-02 05:44:30.119 UTC [83621] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 05:44:30.119 UTC [83621] STATEMENT:  
+	
+	-- check no-op rowtype conversions
+	create temp table tt3 () inherits(tt2);
+2022-08-02 05:44:30.119 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 05:44:30.119 UTC [83621] STATEMENT:  
+	INSERT INTO gexec_test_a_idx(gexec_test_b_idx, gexec_test_b_idx) VALUES('fa', 'fb');
+2022-08-02 05:44:30.119 UTC [83621] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:44:30.119 UTC [83621] STATEMENT:  
+	-- existing column in b NULL composite yield NULL
+	SELECT (NULL::gexec_test).b;
+2022-08-02 05:44:30.119 UTC [83621] WARNING:  there is no transaction in progress
+2022-08-02 05:44:30.119 UTC [83621] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:44:30.119 UTC [83621] STATEMENT:  DISCARD ALL;
+2022-08-02 05:44:30.119 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:44:30.119 UTC [83621] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 05:44:30.120 UTC [83621] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 05:44:30.120 UTC [83621] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 05:44:30.121 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 05:44:30.121 UTC [83621] STATEMENT:  SELECT pg_current_wal_lsn()
+	;
+2022-08-02 05:44:30.121 UTC [83621] ERROR:  cannot execute REFRESH MATERIALIZED VIEW in a read-only transaction
+2022-08-02 05:44:30.121 UTC [83621] STATEMENT:  REFRESH MATERIALIZED VIEW tid_matview;
+2022-08-02 05:44:30.121 UTC [83621] ERROR:  cannot execute DROP MATERIALIZED VIEW in a read-only transaction
+2022-08-02 05:44:30.121 UTC [83621] STATEMENT:  DROP MATERIALIZED VIEW tid_matview;
+2022-08-02 05:44:30.121 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 17
+2022-08-02 05:44:30.121 UTC [83621] STATEMENT:  
+	
+	SELECT * FROM test_argresult_array_domain_check_violation();
+2022-08-02 05:44:30.121 UTC [83621] WARNING:  there is no transaction in progress
+2022-08-02 05:44:30.122 UTC [83621] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:44:30.122 UTC [83621] STATEMENT:  DISCARD ALL;
+2022-08-02 05:44:30.122 UTC [83621] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:44:30.122 UTC [83621] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 05:44:30.122 UTC [83621] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 05:44:30.122 UTC [83621] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 05:44:31.884 UTC [86629] PANIC:  could not open critical system index 2662
+2022-08-02 05:44:31.887 UTC [83051] LOG:  server process (PID 86629) was terminated by signal 6: Aborted
+2022-08-02 05:44:31.887 UTC [83051] LOG:  terminating any other active server processes
+2022-08-02 05:44:31.914 UTC [83051] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:44:31.925 UTC [86633] LOG:  database system was interrupted; last known up at 2022-08-02 05:44:25 UTC
+2022-08-02 05:44:31.937 UTC [86633] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:44:31.937 UTC [86633] LOG:  redo starts at 0/24261F0
+2022-08-02 05:44:31.937 UTC [86633] LOG:  invalid record length at 0/24262D8: wanted 24, got 0
+2022-08-02 05:44:31.937 UTC [86633] LOG:  redo done at 0/24262A0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 05:44:31.948 UTC [83051] LOG:  database system is ready to accept connections
+2022-08-02 05:44:32.253 UTC [86668] WARNING:  there is no transaction in progress
+2022-08-02 05:44:32.314 UTC [86680] ERROR:  logical decoding requires wal_level >= logical

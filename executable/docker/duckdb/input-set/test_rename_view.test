@@ -1,0 +1,70 @@
+# name: test/sql/alter/rename_view/test_rename_view.test
+# description: Test RENAME VIEW single transaction
+# group: [rename_view]
+
+;
+CREATE TABLE tbl(i INTEGER);
+INSERT INTO tbl VALUES (999), (100);
+CREATE VIEW vw AS SELECT * FROM tbl;
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER VIEW vw RENAME TO vw2
+
+;
+SELECT * FROM vw2
+;
+999
+100
+
+;
+SELECT * FROM vw
+
+;
+ROLLBACK
+
+;
+SELECT * FROM vw;
+;
+999
+100
+
+;
+SELECT * FROM vw2
+
+;
+BEGIN TRANSACTION;
+
+;
+ALTER VIEW vw RENAME TO vw2
+
+;
+COMMIT
+
+;
+SELECT * FROM vw2
+;
+999
+100
+
+;
+SELECT * FROM vw
+
+;
+CREATE VIEW vw AS SELECT i+1 AS i FROM tbl
+
+;
+SELECT * FROM vw
+;
+1000
+101
+
+# cannot rename a system view
+;
+ALTER VIEW sqlite_master RENAME TO my_sqlite_master
+
+# cannot rename a view that does not exist
+;
+ALTER VIEW nonexistingview RENAME TO my_new_view

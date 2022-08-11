@@ -1,0 +1,125 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000440,sig:06,src:020994+004609,time:24187582,execs:4472993,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;
+;SELECT (SELECT DISTINCT sum(a) OVER() FROM t2 ORDER BY 1), a FROM t2 
+  ORDER BY 1;]
+VDBE Program Listing:
+   0 Init             0   77    0               00 Start at 77
+   1 SorterOpen       2    4    0 k(1,B)        00 
+   2 OpenRead         0    2    0 1             00 root=2 iDb=0; t2
+   3 Explain          3    0    0 SCAN TABLE t2 00 
+   4 Rewind           0   68    0               00 
+   5 Column           0    0    2               00 r[2]=t2.a
+   6 Integer         63    4    0               00 r[4]=63; return address
+   7 Once             0   63    0               00 
+   8 Explain          8    0    0 SCALAR SUBQUERY 1 00 
+   9 Null             0    5    5               00 r[5..5]=NULL; Init subquery result
+  10 Null             0    6    0               00 r[6]=NULL
+  11 Null             0    8    0               00 r[8]=NULL
+  12 OpenEphemeral    3    2    0               00 nColumn=2
+  13 OpenDup          4    3    0               00 
+  14 OpenDup          5    3    0               00 
+  15 OpenDup          6    3    0               00 
+  16 InitCoroutine   10   26   17               00 
+  17 Explain         17    8    0 CO-ROUTINE 3  00 
+  18 OpenRead         1    2    0 1             00 root=2 iDb=0; t2
+  19 Explain         19   17    0 SCAN TABLE t2 00 
+  20 Rewind           1   25    0               00 
+  21 Column           1    0   11               00 r[11]=t2.a
+  22 Column           1    0   12               00 r[12]=t2.a
+  23 Yield           10    0    0               00 
+  24 Next             1   21    0               01 
+  25 EndCoroutine    10    0    0               00 
+  26 Noop             8    3    0               00 
+  27 Integer          1   13    0               00 r[13]=1; LIMIT counter
+  28 SorterOpen       9    1    0 k(1,B)        00 
+  29 Integer          0   15    0               00 r[15]=0; clear abort flag
+  30 Null             0   18   18               00 r[18..18]=NULL
+  31 Gosub           17   61    0               00 
+  32 Explain         32    8    0 SCAN SUBQUERY 3 00 
+  33 InitCoroutine   10    0   17               00 
+  34 Yield           10   40    0               00 next row of 
+  35 Explain         35    8    0 USE TEMP B-TREE FOR DISTINCT 00 
+  36 SCopy            9   20    0               00 r[20]=r[9]
+  37 MakeRecord      20    1   21               00 r[21]=mkrec(r[20])
+  38 SorterInsert     9   21    0               00 key=r[21]
+  39 Goto             0   34    0               00 
+  40 OpenPseudo      10   20    1               00 1 columns in r[20]
+  41 SorterSort       9   63    0               00 GROUP BY sort
+  42 SorterData       9   20   10               00 r[20]=data
+  43 Column          10    0   19               00 r[19]=
+  44 Compare         18   19    1 k(1,B)        00 r[18] <-> r[19]
+  45 Jump            46   50   46               00 
+  46 Move            19   18    1               00 r[18]=r[19]
+  47 Gosub           16   56    0               00 output one row
+  48 IfPos           15   63    0               00 if r[15]>0 then r[15]-=0, goto 63; check abort flag
+  49 Gosub           17   61    0               00 reset accumulator
+  50 Integer          1   14    0               00 r[14]=1; indicate data in accumulator
+  51 SorterNext       9   42    0               00 
+  52 Gosub           16   56    0               00 output final row
+  53 Goto             0   63    0               00 
+  54 Integer          1   15    0               00 r[15]=1; set abort flag
+  55 Return          16    0    0               00 
+  56 IfPos           14   58    0               00 if r[14]>0 then r[14]-=0, goto 58; Groupby result generator entry point
+  57 Return          16    0    0               00 
+  58 Copy             9    5    0               00 r[5]=r[9]
+  59 DecrJumpZero    13   54    0               00 if (--r[13])==0 goto 54
+  60 Return          16    0    0               00 end groupby result generator
+  61 Integer          0   14    0               00 r[14]=0; indicate accumulator empty
+  62 Return          17    0    0               00 
+  63 Return           4    0    0               00 
+  64 Copy             5    1    0               00 r[1]=r[5]
+  65 MakeRecord       1    2   22               00 r[22]=mkrec(r[1..2])
+  66 SorterInsert     2   22    1 2             00 key=r[22]
+  67 Next             0    5    0               01 
+  68 Explain         68    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+  69 OpenPseudo      11   23    4               00 4 columns in r[23]
+  70 SorterSort       2   76    0               00 
+  71 SorterData       2   23   11               00 r[23]=data
+  72 Column          11    1    3               00 r[3]=a
+  73 Column          11    0    2               00 r[2]=(SELECT DISTINCT sum(a) OVER() FROM t2 ORDER BY 1)
+  74 ResultRow        2    2    0               00 output=r[2..3]
+  75 SorterNext       2   71    0               00 
+  76 Halt             0    0    0               00 
+  77 Transaction      0    0    4 0             01 usesStmtJournal=0
+  78 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f3085421859 in __GI_abort () at abort.c:79
+#2  0x00007f3085421729 in __assert_fail_base (fmt=0x7f30855b7588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x222142 "memIsValid(pRec)", file=0x2291f4 "sqlite3.c", line=86917, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f3085432fd6 in __GI___assert_fail (assertion=0x222142 "memIsValid(pRec)", file=0x2291f4 "sqlite3.c", line=86917, function=0x216a86 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003d3831 in sqlite3VdbeExec (p=0x1780810) at sqlite3.c:86917
+#5  0x000000000041ba74 in sqlite3Step (p=0x1780810) at sqlite3.c:82300
+#6  0x0000000000293d5d in sqlite3_step (pStmt=0x1780810) at sqlite3.c:82365
+#7  0x0000000000258a39 in main (argc=1, argv=0x7fff14d8d828) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 54387] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

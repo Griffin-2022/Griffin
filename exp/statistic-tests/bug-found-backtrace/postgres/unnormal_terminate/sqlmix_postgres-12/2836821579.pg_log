@@ -1,0 +1,111 @@
+2022-08-02 02:13:44.441 UTC [12770] WARNING:  there is no transaction in progress
+2022-08-02 02:13:44.441 UTC [12770] WARNING:  there is no transaction in progress
+2022-08-02 02:13:44.446 UTC [12770] ERROR:  conversion "myconv_bad" does not exist
+2022-08-02 02:13:44.446 UTC [12770] STATEMENT:  COMMENT ON CONVERSION myconv_bad IS 'foo';
+2022-08-02 02:13:44.446 UTC [12770] WARNING:  there is no transaction in progress
+2022-08-02 02:13:44.450 UTC [12770] ERROR:  duplicate key value violates unique constraint "int8alias1_pkey"
+2022-08-02 02:13:44.450 UTC [12770] STATEMENT:  insert into int8alias1  values
+	  ('\x666f6f',		'valid, pure ASCII'),
+	  ('\x666f6f8fdb',	'valid'),
+	  ('\x666f6f81c0',	'valid, no translation to UTF-8'),
+	  ('\x666f6f82f5',	'valid, translates to two UTF-8 chars '),
+	  ('\x666f6f8fdb8f',	'incomplete char '),
+	  ('\x666f6f820a',	'incomplete char, followed by newline '),
+	  ('\x666f6f008fdb',	'invalid, NUL byte'),
+	  ('\x666f6f8f00db',	'invalid, NUL byte'),
+	  ('\x666f6f8fdb00',	'invalid, NUL byte');
+2022-08-02 02:13:44.451 UTC [12770] WARNING:  there is no transaction in progress
+2022-08-02 02:13:44.459 UTC [12770] ERROR:  function sepgsql_setcon(text) does not exist at character 54
+2022-08-02 02:13:44.459 UTC [12770] STATEMENT:  
+	
+	CREATE FUNCTION f5 (text) RETURNS bool
+		AS 'SELECT sepgsql_setcon($1)'
+	    LANGUAGE sql;
+2022-08-02 02:13:44.461 UTC [12770] ERROR:  no security label providers have been loaded
+2022-08-02 02:13:44.461 UTC [12770] STATEMENT:  
+	SECURITY LABEL ON FUNCTION auth_func(text,text)
+	    IS 'system_u:object_r:sepgsql_regtest_trusted_proc_exec_t:s0';
+2022-08-02 02:13:44.462 UTC [12770] ERROR:  "int8alias1" is not partitioned
+2022-08-02 02:13:44.462 UTC [12770] STATEMENT:  
+	CREATE TABLE ec0 PARTITION OF int8alias1 FOR VALUES FROM ('10') TO ('100');
+2022-08-02 02:13:44.468 UTC [12770] ERROR:  no security label providers have been loaded
+2022-08-02 02:13:44.468 UTC [12770] STATEMENT:  			-- be failed
+	SECURITY LABEL ON COLUMN int8alias2
+	    IS 'system_u:object_r:sepgsql_ro_table_t:s0';
+2022-08-02 02:13:44.469 UTC [12770] ERROR:  no security label providers have been loaded
+2022-08-02 02:13:44.469 UTC [12770] STATEMENT:  	-- be failed
+	SECURITY LABEL ON COLUMN int8alias2.int8alias2out
+	    IS 'system_u:object_r:sepgsql_ro_table_t:s0';
+2022-08-02 02:13:44.471 UTC [12770] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-02 02:13:44.471 UTC [12770] STATEMENT:  
+	
+	ROLLBACK TO SAVEPOINT svpt_1;
+2022-08-02 02:13:44.471 UTC [12770] WARNING:  there is no transaction in progress
+2022-08-02 02:13:44.479 UTC [12770] WARNING:  there is already a transaction in progress
+=================================================================
+==12770==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc8dad69d0 sp 0x7ffc8dad69c8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f4cca07d082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==12770==ABORTING
+2022-08-02 02:13:44.521 UTC [11445] LOG:  server process (PID 12770) was terminated by signal 6: Aborted
+2022-08-02 02:13:44.521 UTC [11445] LOG:  terminating any other active server processes
+2022-08-02 02:13:44.527 UTC [11445] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:13:44.539 UTC [13150] LOG:  database system was interrupted; last known up at 2022-08-02 02:13:44 UTC
+2022-08-02 02:13:44.540 UTC [13151] FATAL:  the database system is in recovery mode
+2022-08-02 02:13:44.542 UTC [13154] FATAL:  the database system is in recovery mode
+2022-08-02 02:13:44.545 UTC [13155] FATAL:  the database system is in recovery mode
+2022-08-02 02:13:44.548 UTC [13150] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:13:44.549 UTC [13150] LOG:  redo starts at 0/3000028
+2022-08-02 02:13:44.551 UTC [11445] LOG:  received smart shutdown request
+2022-08-02 02:13:44.556 UTC [11445] LOG:  abnormal database system shutdown

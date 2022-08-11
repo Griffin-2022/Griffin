@@ -1,0 +1,111 @@
+2022-08-02 06:00:06.209 UTC [76099] STATEMENT:  create table description as
+	select * from
+	  (values (100), (300), (500)) as r(objoid),
+	  lateral (
+	    select (test1_a_idx/2)::numeric as classoid,
+	           array_agg(test1_a_idx::numeric) as t2,
+		   count(*) as objsubid
+	    from a
+	    where test1_a_idx < r.objoid
+	    group by test1_a_idx/2) as s;
+2022-08-02 06:00:06.209 UTC [76099] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:00:06.209 UTC [76099] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:00:06.247 UTC [76099] WARNING:  there is no transaction in progress
+2022-08-02 06:00:06.252 UTC [76099] ERROR:  column "objoid" does not exist at character 57
+2022-08-02 06:00:06.252 UTC [76099] STATEMENT:  CREATE VIEW objsubid AS SELECT * FROM test1_a_idx WHERE objoid COLLATE "C" >= 'bbc';
+2022-08-02 06:00:06.252 UTC [76099] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 06:00:06.252 UTC [76099] STATEMENT:  COPY test1_a_idx FROM STDIN NULL 'null';
+2022-08-02 06:00:06.253 UTC [76099] ERROR:  column "description" does not exist
+2022-08-02 06:00:06.253 UTC [76099] STATEMENT:  create index ÈçäÆÉ± on test1_a_idx(description desc);
+2022-08-02 06:00:06.253 UTC [76099] ERROR:  relation "c" does not exist
+2022-08-02 06:00:06.253 UTC [76099] STATEMENT:  CREATE INDEX ìÞÙ¸æñÕè ON c (pg_description);
+2022-08-02 06:00:06.254 UTC [76099] ERROR:  relation "c" does not exist
+2022-08-02 06:00:06.254 UTC [76099] STATEMENT:  CREATE INDEX collate_test1_idx5 ON c (description COLLATE "POSIX");
+2022-08-02 06:00:06.255 UTC [76099] ERROR:  statistics object "ctlt1_expr_stat" does not exist
+2022-08-02 06:00:06.255 UTC [76099] STATEMENT:  COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats';
+2022-08-02 06:00:06.255 UTC [76099] ERROR:  relation "objoid" does not exist
+2022-08-02 06:00:06.255 UTC [76099] STATEMENT:  CREATE INDEX collate_test1_idx6 ON objoid ((ìÞÙ¸æñÕè COLLATE "POSIX"));
+2022-08-02 06:00:06.256 UTC [76099] ERROR:  relation "ÄüÆ³Íñó¤" already exists
+2022-08-02 06:00:06.256 UTC [76099] STATEMENT:  create temp table ÄüÆ³Íñó¤ (ÇâÉß int, ìÞÙ¸æñÕèindex1 int, ìÞÙ¸æñÕèindex2 int, primary key(ÇâÉß, ìÞÙ¸æñÕèindex1) deferrable);
+2022-08-02 06:00:06.257 UTC [76099] ERROR:  relation "objoid" does not exist
+2022-08-02 06:00:06.257 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt1_a_check ON objoid IS 't1_a_check';
+2022-08-02 06:00:06.257 UTC [76099] ERROR:  constraint "ctlt3_a_check" for table "ÄüÆ³Íñó¤" does not exist
+2022-08-02 06:00:06.257 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt3_a_check ON ÄüÆ³Íñó¤ IS 't3_a_check';
+2022-08-02 06:00:06.257 UTC [76099] ERROR:  relation "c" does not exist
+2022-08-02 06:00:06.257 UTC [76099] STATEMENT:  ALTER TABLE c ADD FOREIGN KEY (pg_description) REFERENCES objsubid;
+2022-08-02 06:00:06.260 UTC [76099] ERROR:  relation "ìÞÙ¸æñÕèindex2" does not exist at character 13
+2022-08-02 06:00:06.260 UTC [76099] STATEMENT:  INSERT INTO ìÞÙ¸æñÕèindex2 VALUES ('pg_description' COLLATE "C");
+2022-08-02 06:00:06.262 UTC [76099] ERROR:  could not create locale "NONSENSE": No such file or directory
+2022-08-02 06:00:06.262 UTC [76099] STATEMENT:  CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LC_COLLATE = "NONSENSE", LC_CTYPE = "POSIX");
+2022-08-02 06:00:06.262 UTC [76099] ERROR:  could not create locale "NONSENSE": No such file or directory
+2022-08-02 06:00:06.262 UTC [76099] STATEMENT:  CREATE COLLATION case_sensitive (LOCALE = '', LOCALE = "NONSENSE");
+2022-08-02 06:00:06.262 UTC [76099] WARNING:  could not determine encoding for locale "": codeset is "ANSI_X3.4-1968"
+2022-08-02 06:00:06.262 UTC [76099] WARNING:  could not determine encoding for locale "": codeset is "ANSI_X3.4-1968"
+2022-08-02 06:00:06.262 UTC [76099] WARNING:  collation "coll_dup_chk" has version mismatch
+2022-08-02 06:00:06.263 UTC [76099] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 06:00:06.263 UTC [76099] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(foobar,foobar,combocidtest order by b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(foobar,b,combocidtest);
+2022-08-02 06:00:06.263 UTC [76099] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 06:00:06.263 UTC [76099] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(foobar,b,combocidtest order by combocidtest using ~<~)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(foobar,b,combocidtest);
+2022-08-02 06:00:06.263 UTC [76099] WARNING:  there is no transaction in progress
+2022-08-02 06:00:06.333 UTC [76099] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 06:00:06.333 UTC [76099] STATEMENT:  COPY a FROM STDIN NULL 'null';
+2022-08-02 06:00:06.333 UTC [76099] ERROR:  column "sqlsim11" does not exist at character 40
+2022-08-02 06:00:06.333 UTC [76099] STATEMENT:  CREATE INDEX sqlsim19 ON test1_a_idx ((sqlsim11 || foo));
+2022-08-02 06:00:06.334 UTC [76099] ERROR:  statistics object "ctlt1_expr_stat" does not exist
+2022-08-02 06:00:06.334 UTC [76099] STATEMENT:  COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats';
+2022-08-02 06:00:06.336 UTC [76099] ERROR:  relation "sqlsim5" does not exist
+2022-08-02 06:00:06.336 UTC [76099] STATEMENT:  COMMENT ON COLUMN sqlsim5.sqlsim6 IS 'sqlsim6';
+2022-08-02 06:00:06.336 UTC [76099] ERROR:  constraint "ctlt3_a_check" for table "pg_description" does not exist
+2022-08-02 06:00:06.336 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt3_a_check ON pg_description IS 't3_a_check';
+2022-08-02 06:00:06.338 UTC [76099] ERROR:  column reference "b" is ambiguous at character 53
+2022-08-02 06:00:06.338 UTC [76099] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(b,b,a order by b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(b,b,a);
+2022-08-02 06:00:06.338 UTC [76099] ERROR:  column reference "b" is ambiguous at character 53
+2022-08-02 06:00:06.338 UTC [76099] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(b,b,a order by a using ~<~)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(b,b,a);
+2022-08-02 06:00:06.349 UTC [76099] ERROR:  could not connect to the publisher: connection to server on socket "/tmp/Ph6aVDeArg/.s.PGSQL.54055" failed: No such file or directory
+		Is the server running locally and accepting connections on that socket?
+2022-08-02 06:00:06.349 UTC [76099] STATEMENT:  CREATE SUBSCRIPTION sub1 CONNECTION 'port=54055 host=/tmp/Ph6aVDeArg dbname=postgres' PUBLICATION pub1
+	;
+2022-08-02 06:00:06.376 UTC [76099] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 06:00:06.376 UTC [76099] STATEMENT:  COPY a FROM STDIN NULL 'null';
+2022-08-02 06:00:06.376 UTC [76099] ERROR:  statistics object "ctlt1_expr_stat" does not exist
+2022-08-02 06:00:06.376 UTC [76099] STATEMENT:  COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats';
+2022-08-02 06:00:06.376 UTC [76099] ERROR:  constraint "ctlt1_a_check" for table "a" does not exist
+2022-08-02 06:00:06.376 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt1_a_check ON a IS 't1_a_check';
+2022-08-02 06:00:06.376 UTC [76099] ERROR:  relation "sqlsim5" does not exist
+2022-08-02 06:00:06.376 UTC [76099] STATEMENT:  COMMENT ON COLUMN sqlsim5.sqlsim6 IS 'sqlsim6';
+2022-08-02 06:00:06.376 UTC [76099] ERROR:  constraint "ctlt3_a_check" for table "a" does not exist
+2022-08-02 06:00:06.376 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt3_a_check ON a IS 't3_a_check';
+2022-08-02 06:00:06.382 UTC [76099] ERROR:  relation "ÄüÆ³Íñó¤" does not exist at character 120
+2022-08-02 06:00:06.382 UTC [76099] STATEMENT:  create table classoid as
+	select (ìÞÙ¸æñÕèindex2/2)::numeric as ÈçäÆÉ±, sum(7::int4) as t2, count(*) as ìÞÙ¸æñÕè
+	  from ÄüÆ³Íñó¤ group by ìÞÙ¸æñÕèindex2/2;
+2022-08-02 06:00:06.382 UTC [76099] WARNING:  there is no transaction in progress
+2022-08-02 06:00:06.398 UTC [76099] ERROR:  column "objsubid" does not exist
+2022-08-02 06:00:06.398 UTC [76099] STATEMENT:  create index ìÞÙ¸æñÕè on test1(objsubid);
+2022-08-02 06:00:06.398 UTC [76099] ERROR:  constraint "ctlt1_a_check" for table "test1" does not exist
+2022-08-02 06:00:06.398 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt1_a_check ON test1 IS 't1_a_check';
+2022-08-02 06:00:06.398 UTC [76099] ERROR:  constraint "ctlt3_a_check" for table "test1" does not exist
+2022-08-02 06:00:06.398 UTC [76099] STATEMENT:  COMMENT ON CONSTRAINT ctlt3_a_check ON test1 IS 't3_a_check';
+2022-08-02 06:00:06.435 UTC [76099] WARNING:  there is no transaction in progress
+2022-08-02 06:00:06.454 UTC [76099] PANIC:  could not write to file "pg_wal/xlogtemp.76099": No space left on device
+2022-08-02 06:00:06.454 UTC [76099] STATEMENT:  CREATE TABLE a (b VARCHAR)
+		WITH (toast.autovacuum_vacuum_cost_delay = 23);
+2022-08-02 06:00:06.478 UTC [75986] LOG:  server process (PID 76099) was terminated by signal 6: Aborted
+2022-08-02 06:00:06.478 UTC [75986] LOG:  terminating any other active server processes
+2022-08-02 06:00:06.482 UTC [75986] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:00:06.495 UTC [76569] LOG:  database system was interrupted; last known up at 2022-08-02 05:59:51 UTC
+2022-08-02 06:00:06.499 UTC [76574] FATAL:  the database system is in recovery mode
+2022-08-02 06:00:06.501 UTC [76577] FATAL:  the database system is in recovery mode
+2022-08-02 06:00:06.503 UTC [76578] FATAL:  the database system is in recovery mode
+2022-08-02 06:00:06.508 UTC [75986] LOG:  received smart shutdown request
+2022-08-02 06:00:06.510 UTC [76569] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:00:06.510 UTC [76569] LOG:  redo starts at 0/167A560
+2022-08-02 06:00:06.514 UTC [75986] LOG:  abnormal database system shutdown

@@ -1,0 +1,121 @@
+	CREATE PUBLICATION addr_pub FOR TABLE addr_nsp.gentable;
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('large object', '{123}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('schema', '{one,two}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('role', '{one}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('role', '{one,two}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('database', '{one,two}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	SELECT pg_get_object_address('subscription', '{one}', '{}');
+2022-08-02 02:18:49.683 UTC [101455] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:18:49.683 UTC [101455] STATEMENT:  
+	
+	-- test successful cases
+	WITH objects (type, name, args) AS (VALUES
+					('table', '{addr_nsp, gentable}'::text[], '{}'::text[]),
+					('table', '{addr_nsp, parttable}'::text[], '{}'::text[]),
+					('index', '{addr_nsp, var_record_colnn}', '{}'),
+					('index', '{addr_nsp, var_record_colnn}', '{}'),
+					('sequence', '{addr_nsp, gentable_a_seq}', '{}'),
+					-- toast table
+					('view', '{addr_nsp, var_record_colnn}', '{}'),
+					('materialized view', '{addr_nsp, genmatview}', '{}'),
+					('foreign table', '{addr_nsp, genftable}', '{}'),
+					('table column', '{addr_nsp, gentable, b}', '{}'),
+					('foreign table column', '{addr_nsp, genftable, a}', '{}'),
+					('aggregate', '{addr_nsp, genaggr}', '{int4}'),
+					('function', '{pg_catalog, pg_identify_object}', '{pg_catalog.oid, pg_catalog.oid, int4}'),
+					('procedure', '{addr_nsp, proc}', '{int4}'),
+					('type', '{pg_catalog._int4}', '{}'),
+					('type', '{addr_nsp.newsum}', '{}'),
+					('type', '{addr_nsp.newsum}', '{}'),
+					('type', '{addr_nsp.newsum}', '{}'),
+					('cast', '{int8}', '{int4}'),
+					('collation', '{default}', '{}'),
+					('table constraint', '{addr_nsp, gentable, a_chk}', '{}'),
+					('domain constraint', '{addr_nsp.newsum}', '{domconstr}'),
+					('conversion', '{pg_catalog, koi8_r_to_mic}', '{}'),
+					('default value', '{addr_nsp, gentable, b}', '{}'),
+					('language', '{plpgsql}', '{}'),
+					-- large object
+					('operator', '{+}', '{int4, int4}'),
+					('operator class', '{btree, int4_ops}', '{}'),
+					('operator family', '{btree, integer_ops}', '{}'),
+					('operator of access method', '{btree,integer_ops,1}', '{integer,integer}'),
+					('function of access method', '{btree,integer_ops,2}', '{integer,integer}'),
+					('rule', '{addr_nsp, var_record_colnn, _RETURN}', '{}'),
+					('trigger', '{addr_nsp, gentable, aggf_trans}', '{}'),
+					('schema', '{addr_nsp}', '{}'),
+					('text search parser', '{addr_ts_prs}', '{}'),
+					('text search dictionary', '{addr_ts_dict}', '{}'),
+					('text search template', '{addr_ts_temp}', '{}'),
+					('text search configuration', '{addr_ts_conf}', '{}'),
+					('role', '{regress_addr_user}', '{}'),
+					-- database
+					-- tablespace
+					('foreign-data wrapper', '{addr_fdw}', '{}'),
+					('server', '{addr_fserv}', '{}'),
+					('user mapping', '{regress_addr_user}', '{integer}'),
+					('default acl', '{regress_addr_user,public}', '{r}'),
+					('default acl', '{regress_addr_user}', '{r}'),
+					-- extension
+					-- event trigger
+					('policy', '{addr_nsp, gentable, genpol}', '{}'),
+					('transform', '{int}', '{sql}'),
+					('access method', '{btree}', '{}'),
+					('publication', '{addr_pub}', '{}'),
+					('publication relation', '{addr_nsp, gentable}', '{addr_pub}'),
+					('subscription', '{regress_addr_sub}', '{}'),
+					('statistics object', '{addr_nsp, gentable_stat}', '{}')
+	        )
+	SELECT (pg_identify_object(addr1.classid, addr1.objid, addr1.objsubid)).*,
+		-- test roundtrip through pg_identify_object_as_address
+		ROW(pg_identify_object(addr1.classid, addr1.objid, addr1.objsubid)) =
+		ROW(pg_identify_object(addr2.classid, addr2.objid, addr2.objsubid))
+		  FROM objects, pg_get_object_address(type, name, args) addr1,
+				pg_identify_object_as_address(classid, objid, objsubid) ioa(typ,nms,args),
+				pg_get_object_address(typ, nms, ioa.args) as addr2
+		ORDER BY addr1.classid, addr1.objid, addr1.objsubid;
+2022-08-02 02:18:49.684 UTC [101455] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:18:49.684 UTC [101455] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 02:18:49.684 UTC [101455] WARNING:  there is no transaction in progress
+2022-08-02 02:18:49.684 UTC [101455] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:18:49.684 UTC [101455] STATEMENT:  DISCARD ALL;
+2022-08-02 02:18:49.684 UTC [101455] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:18:49.684 UTC [101455] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 02:18:49.684 UTC [101455] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:18:49.684 UTC [101455] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 02:18:52.206 UTC [104762] PANIC:  could not open critical system index 2662
+2022-08-02 02:18:52.207 UTC [94147] LOG:  server process (PID 104762) was terminated by signal 6: Aborted
+2022-08-02 02:18:52.207 UTC [94147] LOG:  terminating any other active server processes
+2022-08-02 02:18:52.246 UTC [94147] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:18:52.261 UTC [104767] LOG:  database system was interrupted; last known up at 2022-08-02 02:18:38 UTC
+2022-08-02 02:18:52.279 UTC [104767] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:18:52.280 UTC [104767] LOG:  redo starts at 0/11452DA8
+2022-08-02 02:18:52.337 UTC [104767] LOG:  invalid record length at 0/11866FC0: wanted 24, got 0
+2022-08-02 02:18:52.337 UTC [104767] LOG:  redo done at 0/11866F88 system usage: CPU: user: 0.04 s, system: 0.01 s, elapsed: 0.05 s
+2022-08-02 02:18:52.351 UTC [94147] LOG:  database system is ready to accept connections
+2022-08-02 02:18:53.218 UTC [104976] PANIC:  could not open critical system index 2662
+2022-08-02 02:18:53.220 UTC [94147] LOG:  server process (PID 104976) was terminated by signal 6: Aborted
+2022-08-02 02:18:53.220 UTC [94147] LOG:  terminating any other active server processes
+2022-08-02 02:18:53.223 UTC [104980] FATAL:  the database system is in recovery mode
+2022-08-02 02:18:53.227 UTC [94147] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:18:53.237 UTC [94147] LOG:  received smart shutdown request
+2022-08-02 02:18:53.238 UTC [104986] LOG:  database system was interrupted; last known up at 2022-08-02 02:18:52 UTC
+2022-08-02 02:18:53.259 UTC [104986] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:18:53.260 UTC [104986] LOG:  invalid record length at 0/11867038: wanted 24, got 0
+2022-08-02 02:18:53.260 UTC [104986] LOG:  redo is not required
+2022-08-02 02:18:53.266 UTC [94147] LOG:  abnormal database system shutdown
+2022-08-02 02:18:53.268 UTC [94147] LOG:  database system is shut down

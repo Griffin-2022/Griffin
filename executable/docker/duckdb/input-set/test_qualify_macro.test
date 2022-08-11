@@ -1,0 +1,51 @@
+# name: test/sql/aggregate/qualify/test_qualify_macro.test
+# description: Test QUALIFY clause in the subquery of a macro function
+# group: [qualify]
+
+# load the DB from disk
+load __TEST_DIR__/macro_storage.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
+
+# create a macro
+;
+CREATE MACRO plus1(x) AS (x + (SELECT COUNT(*) FROM (SELECT b, SUM(test.a) FROM test GROUP BY b QUALIFY row_number() OVER (PARTITION BY b) = 1)))
+
+# use the macro
+;
+SELECT plus1(3)
+;
+5
+
+loop i 0 2
+
+# restart the system
+restart
+
+;
+SELECT plus1(5)
+;
+7
+
+# drop the macro again
+;
+DROP MACRO plus1
+
+;
+SELECT plus1(2)
+
+# after recreating the macro we can use it again
+;
+CREATE MACRO plus1(x) AS (x + (SELECT COUNT(*) FROM (SELECT b, SUM(test.a) FROM test GROUP BY b QUALIFY row_number() OVER (PARTITION BY b) = 1)))
+
+endloop

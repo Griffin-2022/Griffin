@@ -1,0 +1,69 @@
+# name: test/sql/function/numeric/test_even.test
+# description: Test even
+# group: [numeric]
+
+;
+PRAGMA enable_verification
+
+;
+select i, even(i + 0.4) from generate_series(-4,4) tbl(i);
+;
+-4	-4
+-3	-4
+-2	-2
+-1	-2
+0	2
+1	2
+2	4
+3	4
+4	6
+
+
+;
+select i, even(i + 0.9) from generate_series(-4,4) tbl(i);
+;
+-4	-4
+-3	-4
+-2	-2
+-1	-2
+0	2
+1	2
+2	4
+3	4
+4	6
+
+# decimals
+;
+SELECT even(19.4), even(-19.4)
+;
+20	-20
+
+;
+SELECT even(8.9), even(-8.9)
+;
+10	-10
+
+# doubles
+;
+SELECT even(45::DOUBLE), even(-35::DOUBLE)
+;
+46	-36
+
+;
+SELECT even(NULL)
+;
+NULL
+
+;
+SELECT even('abcd')
+
+# check bound
+;
+SELECT even(1.7976931348623155e+308)
+;
+1.7976931348623155e+308
+
+;
+SELECT even(-1.7976931348623155e+308)
+;
+-1.7976931348623155e+308

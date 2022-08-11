@@ -1,0 +1,78 @@
+# name: test/sql/function/string/test_replace.test
+# description: REPLACE test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# test replace on NULLs
+;
+select REPLACE('This is the main test string', NULL, 'ALT')
+;
+NULL
+
+;
+select REPLACE(NULL, 'main', 'ALT')
+;
+NULL
+
+;
+select REPLACE('This is the main test string', 'main', NULL)
+;
+NULL
+
+# test replace on scalars
+;
+select REPLACE('This is the main test string', 'main', 'ALT')
+;
+This is the ALT test string
+
+;
+select REPLACE('This is the main test string', 'main', 'larger-main')
+;
+This is the larger-main test string
+
+;
+select REPLACE('aaaaaaa', 'a', '0123456789')
+;
+0123456789012345678901234567890123456789012345678901234567890123456789
+
+# test replace on tables
+;
+CREATE TABLE strings(a STRING, b STRING)
+
+;
+INSERT INTO strings VALUES ('Hello', 'World'), ('HuLlD', NULL), ('MotörHead','RÄcks'), ('', NULL)
+
+;
+select REPLACE(a, 'l', '-') FROM strings
+;
+He--o
+HuL-D
+MotörHead
+(empty)
+
+;
+select REPLACE(b, 'Ä', '--') FROM strings
+;
+World
+NULL
+R--cks
+NULL
+
+;
+select REPLACE(a, 'H', '') FROM strings WHERE b IS NOT NULL
+;
+ello
+Motöread
+
+# test incorrect usage of replace
+;
+select REPLACE(1)
+
+;
+select REPLACE(1, 2)
+
+;
+select REPLACE(1, 2, 3, 4)
+

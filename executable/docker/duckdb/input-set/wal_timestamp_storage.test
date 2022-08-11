@@ -1,0 +1,51 @@
+# name: test/sql/storage/wal/wal_timestamp_storage.test
+# description: Test storage for timestamp type with WAL
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/timestamp_storage_test.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a table with hugeints
+;
+CREATE TABLE timestamp (t TIMESTAMP)
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:01'), (NULL), ('2007-01-01 00:00:01'), ('2008-02-01 00:00:01'), ('2008-01-02 00:00:01'), ('2008-01-01 10:00:00'), ('2008-01-01 00:10:00'), ('2008-01-01 00:00:10')
+
+# reload the database from disk a few times
+loop i 0 2
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+SELECT * FROM timestamp ORDER BY t
+;
+NULL
+2007-01-01 00:00:01
+2008-01-01 00:00:01
+2008-01-01 00:00:10
+2008-01-01 00:10:00
+2008-01-01 10:00:00
+2008-01-02 00:00:01
+2008-02-01 00:00:01
+
+;
+SELECT * FROM timestamp WHERE t=TIMESTAMP '2007-01-01 00:00:01' ORDER BY t
+;
+2007-01-01 00:00:01
+
+;
+SELECT * FROM timestamp WHERE t=TIMESTAMP '2000-01-01 00:00:01' ORDER BY t
+;
+
+
+endloop

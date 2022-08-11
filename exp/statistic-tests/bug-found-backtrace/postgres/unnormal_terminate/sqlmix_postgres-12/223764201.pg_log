@@ -1,0 +1,111 @@
+	  raise notice 'x = %', x;
+	  x := null;  -- fail
+	end$$;
+2022-08-02 05:32:16.952 UTC [72102] ERROR:  function b() does not exist
+2022-08-02 05:32:16.952 UTC [72102] STATEMENT:   CREATE TRIGGER temp_parted_oncommit_test1 BEFORE INSERT ON temp_parted_oncommit_1 FOR EACH ROW EXECUTE PROCEDURE b()
+	;
+2022-08-02 05:32:16.954 UTC [72102] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 05:32:16.954 UTC [72102] ERROR:  relation "temp_parted_oncommit_1" does not exist
+2022-08-02 05:32:16.954 UTC [72102] STATEMENT:  DROP TRIGGER temp_parted_oncommit_test1 ON temp_parted_oncommit_1;
+2022-08-02 05:32:16.954 UTC [72102] ERROR:  table "f2" does not exist
+2022-08-02 05:32:16.954 UTC [72102] STATEMENT:  DROP TABLE f2;
+2022-08-02 05:32:16.954 UTC [72102] ERROR:  relation "ucview" does not exist
+2022-08-02 05:32:16.954 UTC [72102] STATEMENT:   CREATE INDEX ec0_pkey ON ucview (currentid)
+	;
+2022-08-02 05:32:16.955 UTC [72102] ERROR:  relation "ec0_pkey" does not exist
+2022-08-02 05:32:16.955 UTC [72102] STATEMENT:  ALTER INDEX ec0_pkey NO DEPENDS ON EXTENSION test_ext5;
+2022-08-02 05:32:16.959 UTC [72102] ERROR:  relation "tt1" does not exist
+2022-08-02 05:32:16.959 UTC [72102] STATEMENT:  
+	create index sqlsim3 on tt1 using hash (f1);
+2022-08-02 05:32:16.960 UTC [72102] ERROR:  value for domain twophase_view violates check constraint "twophase_view_check"
+2022-08-02 05:32:16.960 UTC [72102] STATEMENT:  
+	select '{[4,50)}'::twophase_view @> 7;
+2022-08-02 05:32:16.960 UTC [72102] ERROR:  cannot determine result data type
+2022-08-02 05:32:16.960 UTC [72102] STATEMENT:  
+	
+	-- should fail
+	create function bogus_func(int)
+	  returns anymultirange as 'select int4multirange(int4range(1,10))' language sql;
+2022-08-02 05:32:16.961 UTC [72102] ERROR:  syntax error at or near "?" at character 46
+2022-08-02 05:32:16.961 UTC [72102] STATEMENT:  
+	
+	--
+	-- Ranges of composites
+	--
+	
+	create type ?column? as (?column? int, b int);
+2022-08-02 05:32:16.961 UTC [72102] WARNING:  there is no transaction in progress
+2022-08-02 05:32:16.972 UTC [72102] ERROR:  could not open extension control file "/root/bin_aflpp_asan/usr/local/pgsql/share/extension/test_ext5.control": No such file or directory
+2022-08-02 05:32:16.972 UTC [72102] STATEMENT:   CREATE EXTENSION test_ext5 SCHEMA test_ext
+	;
+2022-08-02 05:32:16.974 UTC [72102] ERROR:  schema "test_ext" does not exist
+2022-08-02 05:32:16.974 UTC [72102] STATEMENT:  DROP SCHEMA test_ext CASCADE;
+2022-08-02 05:32:16.974 UTC [72102] ERROR:  aggregate int8alias1lt(integer) does not exist
+2022-08-02 05:32:16.974 UTC [72102] STATEMENT:  DROP AGGREGATE int8alias1lt(int);
+=================================================================
+==72102==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7fff7d8e59d0 sp 0x7fff7d8e59c8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f540a426082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==72102==ABORTING
+2022-08-02 05:32:17.004 UTC [60053] LOG:  server process (PID 72102) was terminated by signal 6: Aborted
+2022-08-02 05:32:17.004 UTC [60053] LOG:  terminating any other active server processes
+2022-08-02 05:32:17.010 UTC [60053] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:32:17.031 UTC [73253] LOG:  database system was interrupted; last known up at 2022-08-02 05:32:16 UTC
+2022-08-02 05:32:17.031 UTC [73254] FATAL:  the database system is in recovery mode
+2022-08-02 05:32:17.034 UTC [73257] FATAL:  the database system is in recovery mode
+2022-08-02 05:32:17.036 UTC [73258] FATAL:  the database system is in recovery mode
+2022-08-02 05:32:17.042 UTC [60053] LOG:  received smart shutdown request
+2022-08-02 05:32:17.070 UTC [73253] LOG:  recovered replication state of node 5 to 0/AABBCCDD
+2022-08-02 05:32:17.070 UTC [73253] LOG:  recovered replication state of node 1 to 0/1
+2022-08-02 05:32:17.070 UTC [73253] LOG:  recovered replication state of node 2 to 0/0

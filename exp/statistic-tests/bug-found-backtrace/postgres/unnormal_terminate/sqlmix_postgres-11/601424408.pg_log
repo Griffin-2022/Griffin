@@ -1,0 +1,126 @@
+2022-08-02 06:50:56.919 UTC [101098] STATEMENT:  
+	-- ALTER TABLE recreates the indexes, which should keep their collations.
+	ALTER TABLE delete_test ALTER gencomptype TYPE TEXT;
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  schema "schema_to_reindex" does not exist
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	REINDEX SCHEMA schema_to_reindex;
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	
+	drop table foo_tbl;
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 81
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	
+	-- check handling of self-conflicts at various isolation levels
+	
+	create table foo_ptbl_tens (var_ptbl int primary key, q int);
+2022-08-02 06:50:56.920 UTC [101098] WARNING:  there is no transaction in progress
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	
+	begin transaction isolation level read committed;
+2022-08-02 06:50:56.920 UTC [101098] WARNING:  there is no transaction in progress
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 117
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	
+	-- now check that DO UPDATE works correctly for target partition with
+	-- different attribute numbers
+	create table n (tpart_ones char, tpart int unique);
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	alter table var_ptbl_tens attach partition t for values in (3);
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 54
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	
+	-- case with multi-level partitioning
+	create table tpart_tens partition of var_ptbl_tens for values in (5) partition by list (truncate_tab);
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	create table f1 partition of tpart_tens for values from (0) to (1000) partition by range (f3);
+2022-08-02 06:50:56.920 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.920 UTC [101098] STATEMENT:  
+	alter index tpart_tens attach partition n;
+2022-08-02 06:50:56.921 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.921 UTC [101098] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:50:56.921 UTC [101098] WARNING:  there is no transaction in progress
+2022-08-02 06:50:56.921 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.921 UTC [101098] STATEMENT:  DISCARD ALL;
+2022-08-02 06:50:56.921 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:50:56.921 UTC [101098] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:50:56.921 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.921 UTC [101098] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  
+	
+	CREATE TABLE hash_split_heap(keycol text);
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 23
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  
+	SELECT nummultirange(numrange(3,4)) && nummultirange(numrange(1,2), numrange(7,8));
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  
+	GRANT SELECT (prosrc) ON pg_proc TO CURRENT_USER;
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  GRANT SELECT ON n TO public;
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  
+	SAVEPOINT foo;
+2022-08-02 06:50:56.923 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.923 UTC [101098] STATEMENT:  
+	SELECT numrange(5,null) @> nummultirange(numrange(8,null));
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  
+	SELECT '{[1,9)}' @> '{[1,5)}'::nummultirange;
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  ALTER VIEW hash_idx SET (security_barrier=false);
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  
+	SELECT numrange(1,5) <@ nummultirange(numrange(1,5), numrange(8,9));
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  BEGIN ISOLATION LEVEL SERIALIZABLE;
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  BEGIN ISOLATION LEVEL SERIALIZABLE;
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  
+	select nummultirange(numrange(3,4)) >> numrange(1,2);
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  
+	select 'empty'::numrange >> nummultirange();
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  DISCARD ALL;
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:50:56.924 UTC [101098] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:50:56.924 UTC [101098] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:50:57.648 UTC [117580] PANIC:  could not open critical system index 2662
+2022-08-02 06:50:57.650 UTC [101061] LOG:  server process (PID 117580) was terminated by signal 6: Aborted
+2022-08-02 06:50:57.650 UTC [101061] LOG:  terminating any other active server processes
+2022-08-02 06:50:57.699 UTC [101061] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:50:57.715 UTC [117581] LOG:  database system was interrupted; last known up at 2022-08-02 06:50:02 UTC
+2022-08-02 06:50:57.731 UTC [117581] LOG:  recovered replication state of node 5 to 0/AABBCCDD
+2022-08-02 06:50:57.731 UTC [117581] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:50:57.732 UTC [117581] LOG:  redo starts at 0/175C1F90
+2022-08-02 06:50:57.732 UTC [117581] WARNING:  could not open directory "base/89887": No such file or directory
+2022-08-02 06:50:57.732 UTC [117581] WARNING:  some useless files may be left behind in old database directory "base/89887"
+2022-08-02 06:50:57.913 UTC [117581] LOG:  invalid record length at 0/18139408: wanted 24, got 0
+2022-08-02 06:50:57.914 UTC [117581] LOG:  redo done at 0/181393E0 system usage: CPU: user: 0.15 s, system: 0.02 s, elapsed: 0.18 s
+2022-08-02 06:50:57.933 UTC [101061] LOG:  database system is ready to accept connections
+2022-08-02 06:50:58.046 UTC [117595] LOG:  connection received: host=127.0.0.1 port=47504
+2022-08-02 06:50:58.047 UTC [117595] LOG:  connection authorized: user=postgres database=x
+2022-08-02 06:50:58.047 UTC [117595] PANIC:  could not open critical system index 2662
+2022-08-02 06:50:58.049 UTC [101061] LOG:  server process (PID 117595) was terminated by signal 6: Aborted
+2022-08-02 06:50:58.049 UTC [101061] LOG:  terminating any other active server processes
+2022-08-02 06:50:58.052 UTC [117599] LOG:  connection received: host=127.0.0.1 port=47508
+2022-08-02 06:50:58.052 UTC [117599] FATAL:  the database system is in recovery mode
+2022-08-02 06:50:58.056 UTC [101061] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:50:58.068 UTC [101061] LOG:  received smart shutdown request
+2022-08-02 06:50:58.069 UTC [117605] LOG:  database system was interrupted; last known up at 2022-08-02 06:50:57 UTC
+2022-08-02 06:50:58.088 UTC [117605] LOG:  recovered replication state of node 5 to 0/AABBCCDD
+2022-08-02 06:50:58.088 UTC [117605] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:50:58.089 UTC [117605] LOG:  invalid record length at 0/18139480: wanted 24, got 0
+2022-08-02 06:50:58.089 UTC [117605] LOG:  redo is not required

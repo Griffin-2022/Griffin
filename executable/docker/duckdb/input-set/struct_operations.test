@@ -1,0 +1,50 @@
+# name: test/sql/types/struct/struct_operations.test
+# description: Test various operations on structs
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(id INTEGER, b ROW(i INTEGER, j INTEGER));
+
+;
+INSERT INTO a VALUES (1, {i: 1, j: 2});
+
+;
+CREATE TABLE b(id INTEGER, j VARCHAR);
+
+;
+INSERT INTO b VALUES (1, 'hello');
+
+# unequality join
+;
+SELECT * FROM a LEFT JOIN b ON a.id<>b.id
+;
+1	{'i': 1, 'j': 2}	NULL	NULL
+
+;
+SELECT * FROM a RIGHT JOIN b ON a.id<>b.id
+;
+NULL	NULL	1	hello
+
+# range join
+;
+SELECT * FROM a LEFT JOIN b ON a.id>b.id
+;
+1	{'i': 1, 'j': 2}	NULL	NULL
+
+;
+SELECT * FROM a RIGHT JOIN b ON a.id>b.id
+;
+NULL	NULL	1	hello
+
+# unsupported operations
+# TODO
+mode skip
+
+# subquery
+;
+SELECT (SELECT b FROM a)
+;
+{'i': 1, 'j': 2}

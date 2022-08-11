@@ -1,0 +1,111 @@
+	
+	CREATE TRIGGER trigtest_before_row BEFORE INSERT OR UPDATE OR DELETE
+	ON foreign_schema.foreign_table_1
+	FOR EACH ROW
+	EXECUTE PROCEDURE dummy_trigger();
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute CREATE FOREIGN TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	CREATE FOREIGN TABLE ft2 () INHERITS (fd_pt1)
+	  SERVER s0 OPTIONS (delimiter ',', quote '"', "be quoted" 'value');
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute CREATE FOREIGN TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	CREATE FOREIGN TABLE ft3 (
+		c1 integer NOT NULL,
+		c2 text,
+		c3 date
+	) INHERITS(ft2)
+	  SERVER s0;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 ADD COLUMN c7 integer NOT NULL;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 ALTER COLUMN c7 DROP NOT NULL;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 ALTER COLUMN c1 SET (n_distinct = 100);
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 ALTER COLUMN c8 SET STORAGE EXTERNAL;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 DROP COLUMN c6;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	ALTER TABLE fd_pt1 ADD CONSTRAINT fd_pt1chk3 CHECK (c2 <> '') NOT VALID;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute DROP OWNED in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	DROP OWNED BY regress_test_role2;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	
+	-- Foreign partition DDL stuff
+	CREATE TABLE fd_pt2 (
+		c1 integer NOT NULL,
+		c2 text,
+		c3 date
+	) PARTITION BY LIST (c1);
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	
+	-- partition must have parent's constraints
+	ALTER TABLE fd_pt2 DETACH PARTITION fd_pt2_1;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	
+	ALTER TABLE fd_pt2 DETACH PARTITION fd_pt2_1;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute DROP FOREIGN TABLE in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:    -- ERROR
+	
+	DROP FOREIGN TABLE fd_pt2_1;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute DROP SERVER in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:                                  -- ERROR
+	DROP SERVER t1 CASCADE;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute DROP SERVER in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	DROP SERVER s8 CASCADE;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  cannot execute DROP FOREIGN DATA WRAPPER in a read-only transaction
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	DROP FOREIGN DATA WRAPPER dummy CASCADE;
+2022-08-02 04:59:52.805 UTC [101947] ERROR:  could not find pg_class tuple for index 2662 at character 34
+2022-08-02 04:59:52.805 UTC [101947] STATEMENT:  
+	SELECT srvname, srvoptions FROM pg_foreign_server;
+2022-08-02 04:59:52.806 UTC [101947] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 04:59:52.806 UTC [101947] STATEMENT:  
+	SELECT * FROM pg_user_mapping;
+2022-08-02 04:59:52.806 UTC [101947] WARNING:  there is no transaction in progress
+2022-08-02 04:59:52.806 UTC [101947] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:59:52.806 UTC [101947] STATEMENT:  DISCARD ALL;
+2022-08-02 04:59:52.806 UTC [101947] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 04:59:52.806 UTC [101947] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 04:59:52.806 UTC [101947] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 04:59:52.806 UTC [101947] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 04:59:52.813 UTC [101947] ERROR:  cannot execute CREATE DOMAIN in a read-only transaction
+2022-08-02 04:59:52.813 UTC [101947] STATEMENT:  create domain nummultirange_test int4;
+2022-08-02 04:59:52.816 UTC [104407] PANIC:  could not open critical system index 2662
+2022-08-02 04:59:52.816 UTC [101947] ERROR:  could not open critical system index 2662
+2022-08-02 04:59:52.816 UTC [101947] STATEMENT:  SELECT 1 AS two UNION ALL SELECT 2;
+2022-08-02 04:59:52.817 UTC [104408] FATAL:  terminating background worker "parallel worker" due to administrator command
+2022-08-02 04:59:52.818 UTC [101568] LOG:  background worker "parallel worker" (PID 104407) was terminated by signal 6: Aborted
+2022-08-02 04:59:52.818 UTC [101568] LOG:  terminating any other active server processes
+2022-08-02 04:59:52.849 UTC [101568] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:59:52.860 UTC [104410] LOG:  database system was interrupted; last known up at 2022-08-02 04:59:51 UTC
+2022-08-02 04:59:52.871 UTC [104410] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:59:52.872 UTC [104410] LOG:  redo starts at 0/5B9D6B0
+2022-08-02 04:59:52.872 UTC [104410] LOG:  invalid record length at 0/5B9D760: wanted 24, got 0
+2022-08-02 04:59:52.872 UTC [104410] LOG:  redo done at 0/5B9D6E8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 04:59:52.881 UTC [101568] LOG:  database system is ready to accept connections
+2022-08-02 04:59:53.164 UTC [104429] PANIC:  could not open critical system index 2662
+2022-08-02 04:59:53.165 UTC [101568] LOG:  server process (PID 104429) was terminated by signal 6: Aborted
+2022-08-02 04:59:53.166 UTC [101568] LOG:  terminating any other active server processes
+2022-08-02 04:59:53.169 UTC [104433] FATAL:  the database system is in recovery mode
+2022-08-02 04:59:53.173 UTC [101568] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:59:53.182 UTC [101568] LOG:  received smart shutdown request
+2022-08-02 04:59:53.183 UTC [104439] LOG:  database system was interrupted; last known up at 2022-08-02 04:59:52 UTC
+2022-08-02 04:59:53.194 UTC [104439] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:59:53.194 UTC [104439] LOG:  invalid record length at 0/5B9D7D8: wanted 24, got 0
+2022-08-02 04:59:53.194 UTC [104439] LOG:  redo is not required
+2022-08-02 04:59:53.200 UTC [101568] LOG:  abnormal database system shutdown
+2022-08-02 04:59:53.202 UTC [101568] LOG:  database system is shut down

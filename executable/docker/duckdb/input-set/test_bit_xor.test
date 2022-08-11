@@ -1,0 +1,56 @@
+# name: test/sql/aggregate/aggregates/test_bit_xor.test
+# description: Test BIT_XOR operator
+# group: [aggregates]
+
+# test on scalar values
+;
+SELECT BIT_XOR(3), BIT_XOR(NULL)
+;
+3
+NULL
+
+# test on a sequence
+;
+CREATE SEQUENCE seq;
+
+;
+SELECT BIT_XOR(nextval('seq'))
+;
+1
+
+;
+SELECT BIT_XOR(nextval('seq'))
+;
+2
+
+# test on a set of integers
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (3), (7), (15), (31), (3), (15)
+
+;
+SELECT BIT_XOR(i), BIT_XOR(1), BIT_XOR(DISTINCT i), BIT_XOR(NULL) FROM integers
+;
+24
+0
+20
+NULL
+
+# test on an empty set
+;
+SELECT BIT_XOR(i) FROM integers WHERE i > 100
+;
+NULL
+
+# test incorrect usage
+;
+SELECT BIT_XOR()
+
+;
+SELECT BIT_XOR(1, 2, 3)
+
+;
+SELECT BIT_XOR(BIT_XOR(1))
+

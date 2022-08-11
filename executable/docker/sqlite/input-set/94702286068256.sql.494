@@ -1,0 +1,33 @@
+PRAGMA page_size = 1024;
+;PRAGMA journal_mode = PERSIST;
+;PRAGMA cache_size = 10;
+;BEGIN;
+;CREATE TABLE t1(a INTEGER PRIMARY KEY, b BLOB);
+;INSERT INTO t1 VALUES(NULL, a_string(400));
+;INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*   2 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*   4 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*   8 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*  16 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*  32 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/*  64 */
+    INSERT INTO t1 SELECT NULL, a_string(400) FROM t1;
+;/* 128 */
+  COMMIT;
+;UPDATE t1 SET b = a_string(400);
+;
+;UPDATE t1 SET b = a_string(399) WHERE a <= $nUp
+  
+;PRAGMA integrity_check 
+;CREATE INDEX i1 ON t1(b);
+;UPDATE t1 SET b = a_string(400);
+;
+;UPDATE t1 SET b = a_string(399) WHERE a <= $nUp
+  
+;PRAGMA integrity_check 
+;

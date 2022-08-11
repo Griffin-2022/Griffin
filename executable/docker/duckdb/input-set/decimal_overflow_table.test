@@ -1,0 +1,39 @@
+# name: test/sql/types/decimal/decimal_overflow_table.test
+# description: Test overflow in various decimal computations involving a table
+# group: [decimal]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE decimals(d DECIMAL(18,1))
+
+;
+INSERT INTO decimals VALUES (99000000000000000.0)
+
+# addition
+;
+SELECT d+1 FROM decimals
+;
+99000000000000001.0
+
+;
+SELECT d+1000000000000000.0 FROM decimals
+
+# subtraction
+;
+SELECT -1-d FROM decimals
+;
+-99000000000000001.0
+
+;
+SELECT -1000000000000000.0-d FROM decimals
+
+# multiplication
+;
+SELECT 1*d FROM decimals
+;
+99000000000000000.0
+
+;
+SELECT 2*d FROM decimals

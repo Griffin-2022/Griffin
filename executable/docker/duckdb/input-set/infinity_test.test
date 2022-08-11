@@ -1,0 +1,159 @@
+# name: test/sql/types/float/infinity_test.test
+# description: Test usage of the INF value
+# group: [float]
+
+;
+PRAGMA enable_verification
+
+foreach type FLOAT DOUBLE
+
+foreach key UNIQUE CHECK(1)
+
+# inf as a constant
+;
+SELECT 'INF'::${type}, '-INF'::${type}
+;
+inf	-inf
+
+# inf comparison
+;
+select 'inf'::${type} == 'inf'::${type}
+;
+true
+
+;
+select 'inf'::${type} <> 'inf'::${type}
+;
+false
+
+;
+select 'inf'::${type} <> 3.0::${type}
+;
+true
+
+# storing inf in a table
+;
+CREATE TABLE floats(f ${type} ${key});
+
+;
+INSERT INTO floats VALUES ('INF'), (1), ('-INF')
+
+;
+SELECT * FROM floats
+;
+inf
+1
+-inf
+
+# table filters on inf
+# =
+;
+SELECT f FROM floats WHERE f=1
+;
+1
+
+;
+SELECT f FROM floats WHERE f='inf'::${type}
+;
+inf
+
+;
+SELECT f FROM floats WHERE f='-inf'::${type}
+;
+-inf
+
+# <>
+;
+SELECT f FROM floats WHERE f<>1 ORDER BY 1
+;
+-inf
+inf
+
+;
+SELECT f FROM floats WHERE f<>'inf'::${type} ORDER BY 1
+;
+-inf
+1
+
+;
+SELECT f FROM floats WHERE f<>'-inf'::${type} ORDER BY 1
+;
+1
+inf
+
+# >
+;
+SELECT f FROM floats WHERE f>1 ORDER BY 1
+;
+inf
+
+;
+SELECT f FROM floats WHERE f>'-inf'::${type} ORDER BY 1
+;
+1
+inf
+
+;
+SELECT f FROM floats WHERE f>'inf'::${type}
+;
+
+# >=
+;
+SELECT f FROM floats WHERE f>=1 ORDER BY ALL
+;
+1
+inf
+
+;
+SELECT f FROM floats WHERE f>='-inf'::${type} ORDER BY ALL
+;
+-inf
+1
+inf
+
+;
+SELECT f FROM floats WHERE f>='inf'::${type} ORDER BY ALL
+;
+inf
+
+# <
+;
+SELECT f FROM floats WHERE f<1
+;
+-inf
+
+;
+SELECT f FROM floats WHERE f<'inf'::${type} ORDER BY ALL
+;
+-inf
+1
+
+;
+SELECT f FROM floats WHERE f<'-inf'::${type} ORDER BY ALL
+;
+
+# <=
+;
+SELECT f FROM floats WHERE f<=1 ORDER BY ALL
+;
+-inf
+1
+
+;
+SELECT f FROM floats WHERE f<='inf'::${type} ORDER BY ALL
+;
+-inf
+1
+inf
+
+;
+SELECT f FROM floats WHERE f<='-inf'::${type} ORDER BY ALL
+;
+-inf
+
+;
+DROP TABLE floats
+
+endloop
+
+endloop

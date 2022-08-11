@@ -1,0 +1,111 @@
+2022-08-02 02:25:25.832 UTC [76074] ERROR:  relation "c" does not exist
+2022-08-02 02:25:25.832 UTC [76074] STATEMENT:  COPY c FROM STDIN NULL 'null';
+2022-08-02 02:25:25.832 UTC [76074] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 02:25:25.832 UTC [76074] ERROR:  cannot inherit from temporary relation "sqlsim12"
+2022-08-02 02:25:25.832 UTC [76074] STATEMENT:  create table anycompatiblerange_anycompatiblemultirange_func() inherits (sqlsim12);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,b,c order by b+1)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,b,c order by c using ~<~)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  create table sqlsim21(sqlsim22 bytea);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  select string_agg(sqlsim22, '') from sqlsim21;
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  select (select count(*) filter (where outer_c <> 0)
+	        from (values (1)) t0(inner_c))
+	from (values (2),(3)) t1(outer_c);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  select rank(3) within group (order by x)
+	from (values (1),(1),(2),(2),(3),(3),(4)) v(x);
+2022-08-02 02:25:25.836 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.836 UTC [76074] STATEMENT:  create view aggordview1 as
+	select ten,
+	       percentile_disc(0.5) within group (order by thousand) as p50,
+	       percentile_disc(0.5) within group (order by thousand) filter (where hundred=1) as px,
+	       rank(5,'AZZZZ',50) within group (order by hundred, string4 desc, hundred)
+	  from tenk1
+	 group by ten order by ten;
+2022-08-02 02:25:25.837 UTC [76074] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:25:25.837 UTC [76074] STATEMENT:  begin work;
+2022-08-02 02:25:25.837 UTC [76074] WARNING:  there is no transaction in progress
+2022-08-02 02:25:25.839 UTC [76074] ERROR:  table "multirangetypes_sql" does not exist
+2022-08-02 02:25:25.839 UTC [76074] STATEMENT:  drop table multirangetypes_sql;
+2022-08-02 02:25:25.839 UTC [76074] ERROR:  table "combocidtest" does not exist
+2022-08-02 02:25:25.839 UTC [76074] STATEMENT:  drop table combocidtest;
+2022-08-02 02:25:25.839 UTC [76074] ERROR:  table "mr_inoutparam_succeed" does not exist
+2022-08-02 02:25:25.839 UTC [76074] STATEMENT:  drop table mr_inoutparam_succeed;
+2022-08-02 02:25:25.839 UTC [76074] WARNING:  there is no transaction in progress
+2022-08-02 02:25:25.867 UTC [76074] ERROR:  relation "tab_2" does not exist
+2022-08-02 02:25:25.867 UTC [76074] STATEMENT:  CREATE INDEX tab1_pkey ON tab_2 USING brin (a) WITH (pages_per_range=2);
+=================================================================
+==76074==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffeb1247710 sp 0x7ffeb1247708
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f96479b6082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==76074==ABORTING
+2022-08-02 02:25:25.919 UTC [74786] LOG:  server process (PID 76074) was terminated by signal 6: Aborted
+2022-08-02 02:25:25.919 UTC [74786] LOG:  terminating any other active server processes
+2022-08-02 02:25:25.924 UTC [74786] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:25:25.956 UTC [87636] LOG:  database system was interrupted; last known up at 2022-08-02 02:25:11 UTC
+2022-08-02 02:25:25.958 UTC [87640] FATAL:  the database system is in recovery mode
+2022-08-02 02:25:25.960 UTC [87643] FATAL:  the database system is in recovery mode
+2022-08-02 02:25:25.962 UTC [87644] FATAL:  the database system is in recovery mode
+2022-08-02 02:25:25.968 UTC [74786] LOG:  received smart shutdown request
+2022-08-02 02:25:25.979 UTC [87636] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 02:25:25.979 UTC [87636] LOG:  recovered replication state of node 4 to 0/0
+2022-08-02 02:25:25.979 UTC [87636] LOG:  recovered replication state of node 2 to 0/0

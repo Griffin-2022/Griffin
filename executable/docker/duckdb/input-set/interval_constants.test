@@ -1,0 +1,148 @@
+# name: test/sql/types/interval/interval_constants.test
+# description: Test constant intervals
+# group: [interval]
+
+;
+PRAGMA enable_verification
+
+# interval constants with different representations
+;
+SELECT interval 2 days;
+;
+2 days
+
+;
+SELECT interval (2) day;
+;
+2 days
+
+;
+SELECT interval (1+1) days;
+;
+2 days
+
+;
+SELECT interval '2' days;
+;
+2 days
+
+# use the interval functions
+;
+SELECT to_years(2), to_months(2), to_days(2), to_hours(2), to_minutes(2), to_seconds(2);
+;
+2 years	2 months	2 days	02:00:00	00:02:00	00:00:02
+
+# non-constant expression
+;
+SELECT interval (i) day from range(1, 4) tbl(i);
+;
+1 day
+2 days
+3 days
+
+;
+SELECT interval (i + 1) day from range(1, 4) tbl(i);
+;
+2 days
+3 days
+4 days
+
+# try all the different types
+;
+SELECT interval 2 years, interval 2 year;
+;
+2 years	2 years
+
+;
+SELECT interval 2 months, interval 2 month;
+;
+2 months	2 months
+
+;
+SELECT interval 2 days, interval 2 day;
+;
+2 days	2 days
+
+;
+SELECT interval 2 hours, interval 2 hour;
+;
+02:00:00	02:00:00
+
+;
+SELECT interval 2 minutes, interval 2 minute;
+;
+00:02:00	00:02:00
+
+;
+SELECT interval 2 seconds, interval 2 second;
+;
+00:00:02	00:00:02
+
+# for now we don't support the weird ones
+# 2 years 10 months
+;
+SELECT interval '2 10' years to months
+
+# 2 days 10 hours
+;
+SELECT interval '2 10' days to hours
+
+# 12 days 15:06:00
+;
+SELECT interval '12 15:06' days to minutes
+
+# 12 days 15:06:04.123
+;
+SELECT interval '12 15:06:04.123' days to seconds
+
+# 12:30:00
+;
+SELECT interval '12:30' hours to minutes
+
+# 15:06:04.123
+;
+SELECT interval '15:06:04.123' hours to seconds
+
+# 00:12:30
+;
+SELECT interval '12:30' minutes to seconds
+
+# test out of range interval constants
+;
+SELECT interval '99999999999999' years;
+
+;
+SELECT interval '214748364' years;
+
+;
+SELECT interval '9223372036854775807' hours;
+
+;
+SELECT interval '9223372036854775807' minutes;
+
+;
+SELECT interval '9223372036854775807' seconds;
+
+;
+SELECT interval '9223372036854775807' milliseconds;
+
+# milli/microseconds
+;
+SELECT interval 3 milliseconds;
+;
+00:00:00.003
+
+;
+SELECT interval 3 microseconds;
+;
+00:00:00.000003
+
+;
+select timestamp '1992-01-01 12:00:00' + interval 3 microseconds + interval 3 milliseconds
+;
+1992-01-01 12:00:00.003003
+
+;
+select timestamp '1992-01-01 12:00:00' + (interval 3 microseconds + interval 3 milliseconds)
+;
+1992-01-01 12:00:00.003003

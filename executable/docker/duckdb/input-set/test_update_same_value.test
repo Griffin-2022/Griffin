@@ -1,0 +1,184 @@
+# name: test/sql/update/test_update_same_value.test
+# description: Update the same value multiple times in one transaction
+# group: [update]
+
+;
+PRAGMA enable_verification
+
+# create a table
+;
+CREATE TABLE test (a INTEGER);
+
+;
+INSERT INTO test VALUES (1), (2), (3)
+
+;
+SELECT * FROM test ORDER BY a
+;
+1
+2
+3
+
+# update entire table
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET a=a+1
+
+# not seen yet by con2, only by con1
+;
+SELECT * FROM test
+;
+2
+3
+4
+
+;
+SELECT * FROM test WHERE a=4
+;
+4
+
+;
+SELECT * FROM test
+;
+1
+2
+3
+
+# update the entire table again
+;
+UPDATE test SET a=a+1
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+;
+SELECT * FROM test ORDER BY a
+;
+1
+2
+3
+
+# now commit
+;
+COMMIT
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+# now perform updates one by one
+;
+BEGIN TRANSACTION
+
+;
+SELECT * FROM test
+;
+3
+4
+5
+
+;
+SELECT * FROM test WHERE a=5
+;
+5
+
+# 5 => 9
+;
+UPDATE test SET a=9 WHERE a=5
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+9
+
+# test concurrent update in con2, it should fail now
+;
+UPDATE test SET a=a+1
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+# 3 => 7
+;
+UPDATE test SET a=7 WHERE a=3
+
+;
+SELECT * FROM test ORDER BY a
+;
+4
+7
+9
+
+# test concurrent update in con2, it should fail now
+;
+UPDATE test SET a=a+1
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+# 4 => 8
+;
+UPDATE test SET a=8 WHERE a=4
+
+;
+SELECT * FROM test ORDER BY a
+;
+7
+8
+9
+
+# test concurrent update in con2, it should fail now
+;
+UPDATE test SET a=a+1
+
+;
+SELECT * FROM test ORDER BY a
+;
+3
+4
+5
+
+# commit
+;
+COMMIT
+
+;
+SELECT * FROM test ORDER BY a
+;
+7
+8
+9
+
+;
+SELECT * FROM test ORDER BY a
+;
+7
+8
+9
+

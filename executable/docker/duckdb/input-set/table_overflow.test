@@ -1,0 +1,143 @@
+# name: test/sql/overflow/table_overflow.test
+# description: Test handling of integer overflows in table
+# group: [overflow]
+
+# statement ok
+# PRAGMA enable_verification
+
+# tinyint
+;
+CREATE TABLE tinyints(i TINYINT);
+
+;
+INSERT INTO tinyints VALUES (1), (10);
+
+# addition
+;
+SELECT i+100::TINYINT FROM tinyints ORDER BY 1;
+;
+101
+110
+
+# overflow in addition
+;
+SELECT i+120::TINYINT FROM tinyints ORDER BY 1;
+
+# no overflow if we filter the offending element
+;
+SELECT i+120::TINYINT FROM tinyints WHERE i=1 ORDER BY 1;
+;
+121
+
+# subtraction
+;
+SELECT -100::TINYINT-i FROM tinyints ORDER BY 1;
+;
+-110
+-101
+
+;
+SELECT -120::TINYINT-i FROM tinyints ORDER BY 1;
+
+# no overflow if we filter the offending element
+;
+SELECT -120::TINYINT-i FROM tinyints WHERE i=1 ORDER BY 1;
+;
+-121
+
+# addition with negation
+;
+SELECT -120::TINYINT + (-i) FROM tinyints ORDER BY 1;
+
+# multiple negations
+;
+SELECT -120::TINYINT + (-(-(-i))) FROM tinyints ORDER BY 1;
+
+# multiplication
+;
+SELECT i*10::TINYINT FROM tinyints ORDER BY 1;
+;
+10
+100
+
+;
+SELECT i*15::TINYINT FROM tinyints ORDER BY 1;
+
+;
+SELECT (i*10::TINYINT)*10::TINYINT FROM tinyints ORDER BY 1;
+
+# no overflow if we filter the offending element
+;
+SELECT (i*10::TINYINT)*10::TINYINT FROM tinyints WHERE i=1 ORDER BY 1;
+;
+100
+
+# what if we have a subquery?
+;
+SELECT (i*10::TINYINT)*10::TINYINT FROM (SELECT * FROM tinyints) tbl(i) ORDER BY 1;
+
+;
+SELECT (i*10::TINYINT)*10::TINYINT FROM (SELECT * FROM tinyints) tbl(i) WHERE i=1 ORDER BY 1;
+;
+100
+
+# what if we have a UNION in the subquery
+;
+SELECT (i*10::TINYINT)*10::TINYINT FROM (SELECT * FROM tinyints WHERE i=1 UNION ALL SELECT * FROM tinyints WHERE i=10) tbl(i) ORDER BY 1;
+
+# smallints
+;
+CREATE TABLE smallints(i SMALLINT);
+
+;
+INSERT INTO smallints VALUES (1), (10);
+
+# overflow in various smallint ops
+;
+SELECT i+32765::SMALLINT FROM smallints
+
+;
+SELECT i+32765::SMALLINT FROM smallints WHERE i=1
+;
+32766
+
+;
+SELECT -32765::SMALLINT-i FROM smallints
+
+;
+SELECT -32765::SMALLINT-i FROM smallints WHERE i=1
+;
+-32766
+
+;
+SELECT i*10000::SMALLINT FROM smallints
+
+;
+SELECT i*10000::SMALLINT FROM smallints WHERE i=1
+;
+10000
+
+# including a cast to tinyint
+;
+SELECT i::TINYINT+120::TINYINT FROM smallints
+
+;
+SELECT i::TINYINT+120::TINYINT FROM smallints WHERE i=1
+;
+121
+
+# what if the smallint doesn't fit?
+;
+INSERT INTO smallints VALUES (1000)
+
+;
+SELECT i::TINYINT FROM smallints
+
+;
+SELECT i::TINYINT+120::TINYINT FROM smallints WHERE i=1
+;
+121
+
+
+# include multiple projections...
+# include joins (specifically left joins! they add nulls)

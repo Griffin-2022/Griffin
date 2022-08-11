@@ -1,0 +1,49 @@
+# name: test/sql/function/numeric/test_invalid_math.test
+# description: Test invalid input for math functions
+# group: [numeric]
+
+;
+PRAGMA enable_verification
+
+# cannot take log of negative number or zero
+;
+SELECTl log(0);
+
+;
+SELECTl log(-1);
+
+;
+SELECTl ln(0);
+
+;
+SELECTl ln(-1);
+
+;
+SELECTl log10(0);
+
+;
+SELECTl log10(-1);
+
+# cannot take square root of a negative number
+;
+SELECTl sqrt(-1);
+
+;
+SELECT SQRT(0)
+;
+0
+
+;
+SELECT POW(1e300,100), POW(-1e300,100), POW(-1.0, 0.5)
+;
+inf	inf	nan
+
+;
+SELECT EXP(1e300), EXP(1e100)
+;
+inf	inf
+
+;
+SELECT ACOS(3), ACOS(100), DEGREES(1e308)
+;
+nan	nan	inf

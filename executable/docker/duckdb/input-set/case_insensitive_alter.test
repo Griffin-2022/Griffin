@@ -1,0 +1,41 @@
+# name: test/sql/catalog/case_insensitive_alter.test
+# description: Test case insensitive alter
+# group: [catalog]
+
+;
+CREATE TABLE "MyTable"(i integer, "BigColumn" integer);
+
+;
+ALTER TABLE MyTable ALTER BIGCOLUMN SET DATA TYPE VARCHAR
+
+;
+ALTER TABLE MyTable DROP COLUMN BIGCOLUMN;
+
+;
+SELECT BIGCOLUMN FROM MyTable
+
+;
+ALTER TABLE MyTable ADD COLUMN "BIGCOLUMN" VARCHAR;
+
+;
+ALTER TABLE MyTable ALTER COLUMN BIGCOLUMN SET DEFAULT 3
+
+;
+INSERT INTO MyTable(BIGCOLUMN) VALUES (DEFAULT)
+
+;
+SELECT BIGCOLUMN FROM MyTable
+;
+3
+
+;
+ALTER TABLE MyTable ALTER COLUMN BIGCOLUMN DROP DEFAULT
+
+;
+SELECT BIGCOLUMN FROM MyTable
+
+;
+ALTER TABLE MyTable RENAME BIGCOLUMN TO "SmallColumn"
+
+;
+SELECT SmallColumn FROM MyTable

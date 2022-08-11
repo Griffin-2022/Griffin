@@ -1,0 +1,170 @@
+# name: test/sql/types/numeric/ubigint_try_cast.test
+# description: ubigint try cast
+# group: [numeric]
+
+;
+PRAGMA enable_verification
+
+# ubigint casts
+;
+CREATE TABLE ubigints AS SELECT i::UBIGINT i FROM (VALUES (0), (18446744073709551615)) tbl(i)
+
+# unsigned
+;
+SELECT i::UTINYINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS UTINYINT) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::USMALLINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS USMALLINT) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::UINTEGER FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS UINTEGER) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+# signed
+;
+SELECT i::TINYINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS TINYINT) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::SMALLINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS SMALLINT) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::INTEGER FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS INTEGER) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::BIGINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS BIGINT) FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT i::HUGEINT FROM ubigints ORDER BY i
+;
+0
+18446744073709551615
+
+# -> float
+;
+SELECT i::FLOAT FROM ubigints ORDER BY i
+;
+0
+18446744073709551615
+
+;
+SELECT i::DOUBLE FROM ubigints ORDER BY i
+;
+0
+18446744073709551615
+
+# -> bool
+;
+SELECT i::BOOL FROM ubigints ORDER BY i
+;
+False
+True
+
+# -> varchar
+;
+SELECT i::VARCHAR FROM ubigints ORDER BY i
+;
+0
+18446744073709551615
+
+# from string casts
+;
+CREATE TABLE strings AS SELECT * FROM (VALUES ('   '), ('blablabla'), ('-1000'), ('-1'), ('-0'), ('0'), ('18446744073709551615'), ('100000000000000000000')) tbl(s)
+
+;
+SELECT s::UBIGINT FROM strings
+
+;
+SELECT TRY_CAST(s AS UBIGINT) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+0
+0
+18446744073709551615
+NULL
+
+# -> decimal casts
+;
+SELECT i::DECIMAL(3,0)::UBIGINT FROM ubigints ORDER BY i
+
+;
+SELECT i::DECIMAL(9,0)::UBIGINT FROM ubigints ORDER BY i
+
+;
+SELECT i::DECIMAL(18,0)::UBIGINT FROM ubigints ORDER BY i
+
+;
+SELECT i::DECIMAL(38,0)::UBIGINT FROM ubigints ORDER BY i
+;
+0
+18446744073709551615
+
+;
+SELECT i::DECIMAL(38,20)::UBIGINT FROM ubigints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS DECIMAL(3,0))::UBIGINT FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(9,0))::UBIGINT FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(18,0))::UBIGINT FROM ubigints ORDER BY i
+;
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(38,20))::UBIGINT FROM ubigints ORDER BY i
+;
+0
+NULL

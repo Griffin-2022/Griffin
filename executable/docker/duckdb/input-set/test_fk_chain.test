@@ -1,0 +1,87 @@
+# name: test/sql/constraints/foreignkey/test_fk_chain.test
+# description: tests involving longer chains of foreign key tables
+# group: [foreignkey]
+
+;
+CREATE TABLE t1(i1 INTEGER UNIQUE)
+
+;
+INSERT INTO t1 VALUES (1), (2), (3), (4)
+
+;
+CREATE TABLE t2(i2 INTEGER PRIMARY KEY, FOREIGN KEY (i2) REFERENCES t1(i1))
+
+;
+INSERT INTO t2 VALUES (1), (2), (3)
+
+;
+CREATE TABLE t3(i3 INTEGER UNIQUE, FOREIGN KEY (i3) REFERENCES t2(i2))
+
+;
+INSERT INTO t3 VALUES (1), (2)
+
+;
+CREATE TABLE t4(i4 INTEGER, FOREIGN KEY (i4) REFERENCES t3(i3))
+
+;
+INSERT INTO t4 VALUES (1)
+
+# insert
+;
+INSERT INTO t2 VALUES (5)
+
+;
+INSERT INTO t3 VALUES (4)
+
+;
+INSERT INTO t4 VALUES (3)
+
+;
+INSERT INTO t2 VALUES (4)
+
+;
+INSERT INTO t3 VALUES (3)
+
+;
+INSERT INTO t4 VALUES (2)
+
+# delete
+;
+DELETE FROM t1 WHERE i1=4
+
+;
+DELETE FROM t2 WHERE i2=3
+
+;
+DELETE FROM t3 WHERE i3=2
+
+;
+DELETE FROM t2 WHERE i2=4
+
+;
+DELETE FROM t3 WHERE i3=3
+
+;
+DELETE FROM t4 WHERE i4=2
+
+# drop table
+;
+DROP TABLE t1;
+
+;
+DROP TABLE t2;
+
+;
+DROP TABLE t3;
+
+;
+DROP TABLE t4;
+
+;
+DROP TABLE t3;
+
+;
+DROP TABLE t2;
+
+;
+DROP TABLE t1;

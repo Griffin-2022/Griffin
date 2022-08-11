@@ -1,0 +1,320 @@
+CREATE TABLE tbl1(a INTEGER PRIMARY KEY, b);
+;CREATE TABLE tbl2(a INTEGER PRIMARY KEY, b);
+;CREATE TABLE tbl3(a INTEGER PRIMARY KEY, b);
+;WITH ss(ii) AS ( SELECT 1 UNION ALL SELECT ii+1 FROM ss WHERE ii<100 )
+  INSERT INTO tbl1 SELECT ii, '1.' || ii FROM ss;
+;WITH ss(ii) AS ( SELECT 1 UNION ALL SELECT ii+1 FROM ss WHERE ii<100 )
+  INSERT INTO tbl2 SELECT ii, '2.' || ii FROM ss;
+;WITH ss(ii) AS ( SELECT 1 UNION ALL SELECT ii+1 FROM ss WHERE ii<100 )
+  INSERT INTO tbl3 SELECT ii, '3.' || ii FROM ss;
+;CREATE VIRTUAL TABLE temp.uu USING unionvtab(
+    "VALUES(NULL,'tbl2', 26, 74), (NULL,'tbl3', 75, 100), (NULL,'tbl1', 1, 25)"
+  );
+;SELECT*FROM"temp".sqlite_master WHERE name='uu' AND sql='CREATE VIRTUAL TABLE uu USING unionvtab(
+    "VALUES(NULL,''tbl2'', 26, 74), (NULL,''tbl3'', 75, 100), (NULL,''tbl1'', 1, 25)"
+  )' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='uu' AND sql='CREATE VIRTUAL TABLE uu USING unionvtab(
+    "VALUES(NULL,''tbl2'', 26, 74), (NULL,''tbl3'', 75, 100), (NULL,''tbl1'', 1, 25)"
+  )' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL,'tbl2', 26, 74), (NULL,'tbl3', 75, 100), (NULL,'tbl1', 1, 25)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='tbl1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='tbl2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='tbl3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('tbl1', ?)
+;PRAGMA table_info='tbl1'
+;
+;SELECT * FROM uu WHERE rowid = 10;
+;SELECT rowid, * FROM 'tbl1' WHERE rowid=10
+;
+;SELECT * FROM uu WHERE rowid = 25;
+;SELECT rowid, * FROM 'tbl1' WHERE rowid=25
+;
+;SELECT count(*) FROM uu WHERE rowid <= 24 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid<=24
+;SELECT count(*) FROM uu WHERE rowid <= 25 
+;SELECT rowid, * FROM 'tbl1'
+;SELECT count(*) FROM uu WHERE rowid <= 26 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=26
+;SELECT count(*) FROM uu WHERE rowid <= 73 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=73
+;SELECT count(*) FROM uu WHERE rowid <= 74 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2'
+;SELECT count(*) FROM uu WHERE rowid <= 75 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=75
+;SELECT count(*) FROM uu WHERE rowid <= 99 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=99
+;SELECT count(*) FROM uu WHERE rowid <= 100 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid <= 101 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid < 25 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid<=24
+;SELECT count(*) FROM uu WHERE rowid < 26 
+;SELECT rowid, * FROM 'tbl1'
+;SELECT count(*) FROM uu WHERE rowid < 27 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=26
+;SELECT count(*) FROM uu WHERE rowid < 73 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=72
+;SELECT count(*) FROM uu WHERE rowid < 74 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=73
+;SELECT count(*) FROM uu WHERE rowid < 75 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2'
+;SELECT count(*) FROM uu WHERE rowid < 76 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=75
+;SELECT count(*) FROM uu WHERE rowid < 99 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=98
+;SELECT count(*) FROM uu WHERE rowid < 100 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=99
+;SELECT count(*) FROM uu WHERE rowid < 101 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 24 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid>=25 UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 25 
+;SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 26 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=27 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 27 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=28 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 73 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=74 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 74 
+;SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid > 75 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=76
+;SELECT count(*) FROM uu WHERE rowid > 76 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=77
+;SELECT count(*) FROM uu WHERE rowid > 99 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=100
+;SELECT count(*) FROM uu WHERE rowid > 100 
+;SELECT count(*) FROM uu WHERE rowid > 101 
+;SELECT count(*) FROM uu WHERE rowid >= 24 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid>=24 UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 25 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid>=25 UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 26 
+;SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 27 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=27 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 73 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=73 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 74 
+;SELECT rowid, * FROM 'tbl2' WHERE rowid>=74 UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 75 
+;SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >= 76 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=76
+;SELECT count(*) FROM uu WHERE rowid >= 99 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=99
+;SELECT count(*) FROM uu WHERE rowid >= 100 
+;SELECT rowid, * FROM 'tbl3' WHERE rowid>=100
+;SELECT count(*) FROM uu WHERE rowid >= 101 
+;SELECT count(*) FROM uu WHERE rowid >= $S 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid >  $S 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid <= $S 
+;SELECT count(*) FROM uu WHERE rowid <  $S 
+;SELECT count(*) FROM uu WHERE rowid >= $L 
+;SELECT count(*) FROM uu WHERE rowid >  $L 
+;SELECT count(*) FROM uu WHERE rowid <= $L 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE rowid <  $L 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;SELECT count(*) FROM uu WHERE a < 25 
+;SELECT rowid, * FROM 'tbl1' WHERE rowid<=24
+;SELECT count(*) FROM uu WHERE a < 26 
+;SELECT rowid, * FROM 'tbl1'
+;SELECT count(*) FROM uu WHERE a < 27 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=26
+;SELECT count(*) FROM uu WHERE a < 73 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=72
+;SELECT count(*) FROM uu WHERE a < 74 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' WHERE rowid<=73
+;SELECT count(*) FROM uu WHERE a < 75 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2'
+;SELECT count(*) FROM uu WHERE a < 76 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=75
+;SELECT count(*) FROM uu WHERE a < 99 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=98
+;SELECT count(*) FROM uu WHERE a < 100 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3' WHERE rowid<=99
+;SELECT count(*) FROM uu WHERE a < 101 
+;SELECT rowid, * FROM 'tbl1' UNION ALL SELECT rowid, * FROM 'tbl2' UNION ALL SELECT rowid, * FROM 'tbl3'
+;CREATE TABLE s1(k INTEGER PRIMARY KEY, v);
+;INSERT INTO s1 VALUES($S, 'one');
+;INSERT INTO s1 VALUES($S+1, 'two');
+;INSERT INTO s1 VALUES($S+2, 'three');
+;CREATE TABLE l1(k INTEGER PRIMARY KEY, v);
+;INSERT INTO l1 VALUES($L, 'six');
+;INSERT INTO l1 VALUES($L-1, 'five');
+;INSERT INTO l1 VALUES($L-2, 'four');
+;CREATE VIRTUAL TABLE temp.sl USING unionvtab(
+    "SELECT NULL, 'l1', 0, 9223372036854775807
+     UNION ALL
+     SELECT NULL, 's1', -9223372036854775808, -1"
+  );
+;SELECT*FROM"temp".sqlite_master WHERE name='sl' AND sql='CREATE VIRTUAL TABLE sl USING unionvtab(
+    "SELECT NULL, ''l1'', 0, 9223372036854775807
+     UNION ALL
+     SELECT NULL, ''s1'', -9223372036854775808, -1"
+  )' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='sl' AND sql='CREATE VIRTUAL TABLE sl USING unionvtab(
+    "SELECT NULL, ''l1'', 0, 9223372036854775807
+     UNION ALL
+     SELECT NULL, ''s1'', -9223372036854775808, -1"
+  )' ORDER BY rowid
+;SELECT * FROM (SELECT NULL, 'l1', 0, 9223372036854775807
+     UNION ALL
+     SELECT NULL, 's1', -9223372036854775808, -1) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='s1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='l1'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('s1', ?)
+;PRAGMA table_info='s1'
+;
+;SELECT * FROM sl;
+;SELECT rowid, * FROM 's1' UNION ALL SELECT rowid, * FROM 'l1'
+;
+;SELECT * FROM sl WHERE rowid=$k 
+;SELECT rowid, * FROM 's1' WHERE rowid=-9223372036854775808
+;SELECT rowid, * FROM 's1' WHERE rowid=-9223372036854775807
+;SELECT rowid, * FROM 's1' WHERE rowid=-9223372036854775806
+;SELECT rowid, * FROM 'l1' WHERE rowid=9223372036854775805
+;SELECT rowid, * FROM 'l1' WHERE rowid=9223372036854775806
+;SELECT rowid, * FROM 'l1' WHERE rowid=9223372036854775807
+;SELECT * FROM sl WHERE rowid>-9223372036854775808
+
+;SELECT rowid, * FROM 's1' WHERE rowid>=-9223372036854775807 UNION ALL SELECT rowid, * FROM 'l1'
+;SELECT * FROM sl WHERE rowid>=-9223372036854775808
+
+;SELECT rowid, * FROM 's1' UNION ALL SELECT rowid, * FROM 'l1'
+;SELECT * FROM sl WHERE rowid<=-9223372036854775808
+
+;SELECT rowid, * FROM 's1' WHERE rowid=-9223372036854775808
+;SELECT * FROM sl WHERE rowid<-9223372036854775808
+
+;SELECT * FROM sl WHERE rowid<9223372036854775807
+
+;SELECT rowid, * FROM 's1' UNION ALL SELECT rowid, * FROM 'l1' WHERE rowid<=9223372036854775806
+;SELECT * FROM sl WHERE rowid<=9223372036854775807
+
+;SELECT rowid, * FROM 's1' UNION ALL SELECT rowid, * FROM 'l1'
+;SELECT * FROM sl WHERE rowid>=9223372036854775807
+
+;SELECT rowid, * FROM 'l1' WHERE rowid=9223372036854775807
+;SELECT * FROM sl WHERE rowid>9223372036854775807
+
+;CREATE TABLE c0(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c1(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c2(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c3(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c4(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c5(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c6(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c7(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c8(one, two INTEGER PRIMARY KEY);
+;CREATE TABLE c9(one, two INTEGER PRIMARY KEY);
+;INSERT INTO c0 VALUES('zero', 0);
+;INSERT INTO c1 VALUES('one', 1);
+;INSERT INTO c2 VALUES('two', 2);
+;INSERT INTO c3 VALUES('three', 3);
+;INSERT INTO c4 VALUES('four', 4);
+;INSERT INTO c5 VALUES('five', 5);
+;INSERT INTO c6 VALUES('six', 6);
+;INSERT INTO c7 VALUES('seven', 7);
+;INSERT INTO c8 VALUES('eight', 8);
+;INSERT INTO c9 VALUES('nine', 9);
+;CREATE VIRTUAL TABLE temp.cc USING unionvtab([
+    SELECT 'main', 'c9', 9, 9 UNION ALL
+    SELECT 'main', 'c8', 8, 8 UNION ALL
+    SELECT 'main', 'c7', 7, 7 UNION ALL
+    SELECT 'main', 'c6', 6, 6 UNION ALL
+    SELECT 'main', 'c5', 5, 5 UNION ALL
+    SELECT 'main', 'c4', 4, 4 UNION ALL
+    SELECT 'main', 'c3', 3, 3 UNION ALL
+    SELECT 'main', 'c2', 2, 2 UNION ALL
+    SELECT 'main', 'c1', 1, 1 UNION ALL
+    SELECT 'main', 'c0', 0, 0
+  ]);
+;SELECT*FROM"temp".sqlite_master WHERE name='cc' AND sql='CREATE VIRTUAL TABLE cc USING unionvtab([
+    SELECT ''main'', ''c9'', 9, 9 UNION ALL
+    SELECT ''main'', ''c8'', 8, 8 UNION ALL
+    SELECT ''main'', ''c7'', 7, 7 UNION ALL
+    SELECT ''main'', ''c6'', 6, 6 UNION ALL
+    SELECT ''main'', ''c5'', 5, 5 UNION ALL
+    SELECT ''main'', ''c4'', 4, 4 UNION ALL
+    SELECT ''main'', ''c3'', 3, 3 UNION ALL
+    SELECT ''main'', ''c2'', 2, 2 UNION ALL
+    SELECT ''main'', ''c1'', 1, 1 UNION ALL
+    SELECT ''main'', ''c0'', 0, 0
+  ])' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='cc' AND sql='CREATE VIRTUAL TABLE cc USING unionvtab([
+    SELECT ''main'', ''c9'', 9, 9 UNION ALL
+    SELECT ''main'', ''c8'', 8, 8 UNION ALL
+    SELECT ''main'', ''c7'', 7, 7 UNION ALL
+    SELECT ''main'', ''c6'', 6, 6 UNION ALL
+    SELECT ''main'', ''c5'', 5, 5 UNION ALL
+    SELECT ''main'', ''c4'', 4, 4 UNION ALL
+    SELECT ''main'', ''c3'', 3, 3 UNION ALL
+    SELECT ''main'', ''c2'', 2, 2 UNION ALL
+    SELECT ''main'', ''c1'', 1, 1 UNION ALL
+    SELECT ''main'', ''c0'', 0, 0
+  ])' ORDER BY rowid
+;SELECT * FROM (
+    SELECT 'main', 'c9', 9, 9 UNION ALL
+    SELECT 'main', 'c8', 8, 8 UNION ALL
+    SELECT 'main', 'c7', 7, 7 UNION ALL
+    SELECT 'main', 'c6', 6, 6 UNION ALL
+    SELECT 'main', 'c5', 5, 5 UNION ALL
+    SELECT 'main', 'c4', 4, 4 UNION ALL
+    SELECT 'main', 'c3', 3, 3 UNION ALL
+    SELECT 'main', 'c2', 2, 2 UNION ALL
+    SELECT 'main', 'c1', 1, 1 UNION ALL
+    SELECT 'main', 'c0', 0, 0
+  ) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c0'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c3'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c4'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c5'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c6'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c7'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c8'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='c9'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('c0', ?)
+;PRAGMA table_info='c0'
+;SELECT sum(two) FROM cc;
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;
+;SELECT one FROM cc WHERE one>='seven'
+
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT y.one FROM cc AS x, cc AS y WHERE x.one=y.one AND x.rowid>5
+
+;SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT cc.one FROM c4, cc WHERE cc.rowid>c4.rowid
+
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;SELECT * FROM cc WHERE two LIKE '6'
+
+;SELECT rowid, * FROM 'main'.'c0' UNION ALL SELECT rowid, * FROM 'main'.'c1' UNION ALL SELECT rowid, * FROM 'main'.'c2' UNION ALL SELECT rowid, * FROM 'main'.'c3' UNION ALL SELECT rowid, * FROM 'main'.'c4' UNION ALL SELECT rowid, * FROM 'main'.'c5' UNION ALL SELECT rowid, * FROM 'main'.'c6' UNION ALL SELECT rowid, * FROM 'main'.'c7' UNION ALL SELECT rowid, * FROM 'main'.'c8' UNION ALL SELECT rowid, * FROM 'main'.'c9'
+;

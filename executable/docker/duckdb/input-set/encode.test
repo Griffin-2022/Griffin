@@ -1,0 +1,37 @@
+# name: test/sql/function/blob/encode.test
+# description: Test blob encode/decode functions
+# group: [blob]
+
+;
+PRAGMA enable_verification
+
+# test basic encode/decode usage
+;
+SELECT encode('ü')
+;
+\xC3\xBC
+
+;
+SELECT decode(encode('ü'))
+;
+ü
+
+;
+SELECT decode('\xF0\x9F\xA6\x86'::BLOB)
+;
+🦆
+
+# test invalid decodes
+;
+SELECT decode('\xFF'::BLOB)
+
+;
+SELECT decode('\x00'::BLOB)
+
+;
+SELECT decode(encode(a)) || a from (values ('hello'), ('world')) tbl(a);
+;
+hellohello
+worldworld
+
+

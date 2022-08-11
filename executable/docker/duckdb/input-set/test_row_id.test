@@ -1,0 +1,77 @@
+# name: test/sql/projection/test_row_id.test
+# description: Test Row IDs
+# group: [projection]
+
+;
+PRAGMA enable_verification
+
+;
+create table a(i integer);
+
+;
+insert into a values (42), (44);
+
+# we can query row ids
+;
+SELECT rowid, * FROM a
+;
+0	42
+1	44
+
+;
+SELECT rowid+1 FROM a WHERE CASE WHEN i=42 THEN rowid=0 ELSE rowid=1 END;
+;
+1
+2
+
+# rowid isn't expanded in *
+;
+SELECT * FROM a
+;
+42
+44
+
+# we can't update rowids
+;
+UPDATE a SET rowid=5
+
+# we also can't insert with explicit row ids
+;
+INSERT INTO a (rowid, i)  VALUES (5, 6)
+
+# we can use rowid as column name
+;
+create table b(rowid integer);
+
+;
+insert into b values (42), (22);
+
+# this rowid is expanded
+;
+SELECT * FROM b ORDER BY 1
+;
+22
+42
+
+# selecting rowid just selects the column
+;
+SELECT rowid FROM b ORDER BY 1
+;
+22
+42
+
+# now we can update
+;
+UPDATE b SET rowid=5
+
+# and insert
+;
+INSERT INTO b (rowid) VALUES (5)
+
+;
+SELECT * FROM b
+;
+5
+5
+5
+

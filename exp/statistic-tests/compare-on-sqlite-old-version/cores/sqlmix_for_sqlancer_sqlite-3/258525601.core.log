@@ -1,0 +1,57 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000490,sig:06,src:019083+011057,time:15238907,execs:4214120,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fb072b1d859 in __GI_abort () at abort.c:79
+#2  0x00007fb072b1d729 in __assert_fail_base (fmt=0x7fb072cb3588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fb072b2efd6 in __GI___assert_fail (assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d160 in sqlite3ColumnsFromExprList (pParse=0x7ffe58aff070, pEList=0x8286d0, pnCol=0x829526, paCol=0x8294e8) at sqlite3.c:126590
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7ffe58aff070, pFrom=0x828b88) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7ffe58aff070, p=0x824530) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7ffe58aff070, p=0x824530, pDest=0x7ffe58afdd68) at sqlite3.c:130281
+#8  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffe58aff070, pExpr=0x824080) at sqlite3.c:99820
+#9  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffe58aff070, pExpr=0x824080, target=5) at sqlite3.c:100770
+#10 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffe58aff070, pList=0x837f40, target=5, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#11 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffe58aff070, pSelect=0x83a4c0, pInfo=0x7ffe58afe0b0) at sqlite3.c:125172
+#12 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffe58aff070, p=0x83a4c0, srcTab=-1, pSort=0x0, pDistinct=0x0, pDest=0x7ffe58afe460, iContinue=-2, iBreak=-2) at sqlite3.c:125624
+#13 0x00000000002fffb0 in sqlite3Select (pParse=0x7ffe58aff070, p=0x83a4c0, pDest=0x7ffe58afe460) at sqlite3.c:131196
+#14 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffe58afe690, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe58aff070) at sqlite3.c:151581
+#15 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffe58afe690, yymajor=1, yyminor=...) at sqlite3.c:152877
+#16 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffe58aff070, zSql=0x83a9d1 ";SELECT \n    sum(x) OVER ( ORDER BY x ) \n  FROM t1 \n  ORDER BY (SELECT sum(x) FROM t1)\n\n;", pzErrMsg=0x7ffe58aff250) at sqlite3.c:154013
+#17 0x00000000002a1683 in sqlite3Prepare (db=0x81fcc0, 
+    zSql=0x81fa3c "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT \n    sum(x) OVER ( ORDER BY x ) \n  FROM t1 \n  ORDER BY (SELECT sum(x) FROM t1)\n\n;", 
+    nBytes=186, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffe58aff388, pzTail=0x7ffe58aff370) at sqlite3.c:124303
+#18 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x81fcc0, 
+    zSql=0x81fa3c "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT \n    sum(x) OVER ( ORDER BY x ) \n  FROM t1 \n  ORDER BY (SELECT sum(x) FROM t1)\n\n;", 
+    nBytes=186, prepFlags=128, pOld=0x0, ppStmt=0x7ffe58aff388, pzTail=0x7ffe58aff370) at sqlite3.c:124403
+#19 0x000000000029247f in sqlite3_prepare_v2 (db=0x81fcc0, 
+    zSql=0x81fa3c "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT \n    sum(x) OVER ( ORDER BY x ) \n  FROM t1 \n  ORDER BY (SELECT sum(x) FROM t1)\n\n;", 
+    nBytes=186, ppStmt=0x7ffe58aff388, pzTail=0x7ffe58aff370) at sqlite3.c:124487
+#20 0x0000000000256bd0 in main (argc=1, argv=0x7ffe58aff538) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 61745] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

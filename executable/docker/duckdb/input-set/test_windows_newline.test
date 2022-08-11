@@ -1,0 +1,51 @@
+# name: test/sql/copy/csv/test_windows_newline.test
+# description: Test Windows Newlines with a long file
+# group: [csv]
+
+# many strings with windows newlines
+# load CSV file into a table
+;
+CREATE TABLE test (a INTEGER, b VARCHAR, c INTEGER);
+
+;
+COPY test FROM 'test/sql/copy/csv/data/test/windows_newline.csv';
+;
+20000
+
+;
+SELECT SUM(a), MIN(LENGTH(b)), MAX(LENGTH(b)), SUM(LENGTH(b)), SUM(c) FROM test;
+;
+199990000.000000	5	5	100000.000000	200030000.000000
+
+;
+DELETE FROM test;
+
+# now do the same with a multi-byte quote that is not actually used
+;
+COPY test FROM 'test/sql/copy/csv/data/test/windows_newline.csv' (QUOTE 'BLABLABLA', AUTO_DETECT FALSE);
+;
+20000
+
+;
+SELECT SUM(a), MIN(LENGTH(b)), MAX(LENGTH(b)), SUM(LENGTH(b)), SUM(c) FROM test;
+;
+199990000.000000	5	5	100000.000000	200030000.000000
+
+;
+DROP TABLE test;
+
+# csv file with one value and many empty values with windows newline
+# load CSV file into a table
+;
+CREATE TABLE test (a INTEGER);
+
+;
+COPY test FROM 'test/sql/copy/csv/data/test/windows_newline_empty.csv' (HEADER 0);
+;
+20000
+
+;
+SELECT SUM(a) FROM test;
+;
+1.000000
+

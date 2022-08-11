@@ -1,0 +1,39 @@
+# name: test/sql/storage/test_large_commits.test
+# description: Test large commits that should trigger auto-checkpoints
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/large_commits.db
+
+foreach compression <compression>
+
+;
+PRAGMA force_compression='${compression}'
+
+# set checkpoint threshold
+;
+PRAGMA wal_autocheckpoint='10KB'
+
+;
+CREATE TABLE test(i INTEGER);
+
+# this should trigger an auto checkpoint
+;
+INSERT INTO test SELECT * FROM range(100000) tbl(i)
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test
+;
+0	99999	100000
+
+restart
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test
+;
+0	99999	100000
+
+;
+DROP TABLE test
+
+endloop

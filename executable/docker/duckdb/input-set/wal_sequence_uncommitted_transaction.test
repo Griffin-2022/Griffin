@@ -1,0 +1,39 @@
+# name: test/sql/storage/wal/wal_sequence_uncommitted_transaction.test
+# description: Use sequences with uncommited transaction
+# group: [wal]
+
+load __TEST_DIR__/store_sequences.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE SEQUENCE seq
+
+# start a transaction in con2
+;
+BEGIN transaction
+
+# select the nextval
+;
+SELECT nextval('seq')
+;
+1
+
+# query the sequence in con as well
+;
+SELECT nextval('seq')
+;
+2
+
+# restart the database
+restart
+
+# the sequence is now at position 3
+;
+SELECT nextval('seq')
+;
+3

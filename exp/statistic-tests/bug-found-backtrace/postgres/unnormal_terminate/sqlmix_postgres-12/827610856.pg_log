@@ -1,0 +1,111 @@
+2022-08-01 22:26:10.290 UTC [54303] STATEMENT:  select row(1, 2)::int8alias1cmp < row(1)::int8alias1lt;
+2022-08-01 22:26:10.291 UTC [54303] ERROR:  cannot cast type record to ec0 at character 17
+2022-08-01 22:26:10.291 UTC [54303] STATEMENT:  select row(1, 2)::ec0 *<> row(1, 3)::ec0;
+2022-08-01 22:26:10.292 UTC [54303] ERROR:  cannot cast type record to ec0 at character 18
+2022-08-01 22:26:10.292 UTC [54303] STATEMENT:  select row(1, -2)::ec0 *= row(1, -3)::ec0;
+2022-08-01 22:26:10.292 UTC [54303] ERROR:  type "int8alias2eq" does not exist at character 20
+2022-08-01 22:26:10.292 UTC [54303] STATEMENT:  select row(1, -3)::int8alias2eq *> row(1, -2)::int8alias2eq;
+2022-08-01 22:26:10.292 UTC [54303] ERROR:  cannot cast type record to int8alias2 at character 21
+2022-08-01 22:26:10.292 UTC [54303] STATEMENT:  select row(-2, true)::int8alias2 *< row(-1, true)::int8alias2;
+2022-08-01 22:26:10.301 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:10.308 UTC [54303] ERROR:  function sepgsql_getcon() does not exist at character 53
+2022-08-01 22:26:10.308 UTC [54303] STATEMENT:  
+	
+	CREATE FUNCTION f1 () RETURNS text
+	    AS 'SELECT sepgsql_getcon()'
+	    LANGUAGE sql;
+2022-08-01 22:26:10.308 UTC [54303] ERROR:  function sepgsql_getcon() does not exist at character 53
+2022-08-01 22:26:10.308 UTC [54303] STATEMENT:  
+	
+	CREATE FUNCTION f2 () RETURNS text
+	    AS 'SELECT sepgsql_getcon()'
+	    LANGUAGE sql;
+2022-08-01 22:26:10.312 UTC [54303] ERROR:  function sepgsql_getcon() does not exist at character 116
+2022-08-01 22:26:10.312 UTC [54303] STATEMENT:  
+	
+	CREATE FUNCTION auth_func(text, text) RETURNS bool
+	    LANGUAGE sql
+	    AS 'SELECT sepgsql_setcon(regexp_replace(sepgsql_getcon(), ''_r:.*$'', ''_r:'' || int8alias1out))
+	        FROM int8alias1 WHERE int8alias1out = $1 AND int8alias1out = $2';
+2022-08-01 22:26:10.313 UTC [54303] ERROR:  no security label providers have been loaded
+2022-08-01 22:26:10.313 UTC [54303] STATEMENT:  
+	SECURITY LABEL ON FUNCTION auth_func(text,text)
+	    IS 'system_u:object_r:sepgsql_regtest_trusted_proc_exec_t:s0';
+2022-08-01 22:26:10.313 UTC [54303] ERROR:  no security label providers have been loaded
+2022-08-01 22:26:10.313 UTC [54303] STATEMENT:  
+	SECURITY LABEL ON TABLE int8alias1
+		IS 'system_u:object_r:sepgsql_regtest_foo_table_t:s0';
+2022-08-01 22:26:10.403 UTC [54303] ERROR:  no security label providers have been loaded
+2022-08-01 22:26:10.403 UTC [54303] STATEMENT:  	-- ok
+	SECURITY LABEL ON TABLE int8alias2eq
+	    IS 'system_u:object_r:sepgsql_ro_table_t:s0';
+2022-08-01 22:26:10.403 UTC [54303] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-01 22:26:10.403 UTC [54303] STATEMENT:  
+	
+	ROLLBACK TO SAVEPOINT svpt_1;
+2022-08-01 22:26:10.403 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:10.433 UTC [54303] ERROR:  could not identify a hash function for type money
+2022-08-01 22:26:10.433 UTC [54303] STATEMENT:  SELECT v as value, hash_array(v)::bit(32) as standard
+	FROM   (VALUES ('{0}'::money[])) x(v);
+2022-08-01 22:26:10.435 UTC [54303] ERROR:  table "int8alias1lt" does not exist
+2022-08-01 22:26:10.435 UTC [54303] STATEMENT:  DROP TABLE int8alias1lt;
+2022-08-01 22:26:10.439 UTC [54303] ERROR:  could not identify an extended hash function for type money
+2022-08-01 22:26:10.439 UTC [54303] STATEMENT:  SELECT v as value, hash_record_extended(v, 0)::bit(32) as extended0
+	FROM   (VALUES (row(1, 'aaa')::int8alias2out)) x(v);
+2022-08-01 22:26:10.440 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:10.446 UTC [54303] ERROR:  exclusive backup not in progress
+2022-08-01 22:26:10.446 UTC [54303] STATEMENT:  SELECT * FROM pg_stop_backup();
+2022-08-01 22:26:10.446 UTC [54303] ERROR:  schema "addr_nsp" does not exist at character 14
+2022-08-01 22:26:10.446 UTC [54303] STATEMENT:  CREATE TABLE addr_nsp.int8alias1 (
+		int8alias1in serial primary key CONSTRAINT a_chk CHECK (int8alias1in > 0),
+		int8alias1out text DEFAULT 'hello');
+2022-08-01 22:26:10.446 UTC [54303] ERROR:  schema "addr_nsp" does not exist
+2022-08-01 22:26:10.446 UTC [54303] STATEMENT:  CREATE STATISTICS addr_nsp.gentable_stat ON a, b FROM addr_nsp.gentable;
+2022-08-01 22:26:10.446 UTC [54303] ERROR:  unrecognized object type "stone"
+2022-08-01 22:26:10.446 UTC [54303] STATEMENT:  SELECT pg_get_object_address('stone', '{}', '{}');
+2022-08-01 22:26:10.447 UTC [54303] ERROR:  name list length must be exactly 1
+2022-08-01 22:26:10.447 UTC [54303] STATEMENT:  SELECT pg_get_object_address('foreign-data wrapper', '{one,two}', '{}');
+2022-08-01 22:26:10.447 UTC [54303] ERROR:  extension "one" does not exist
+2022-08-01 22:26:10.447 UTC [54303] STATEMENT:  SELECT pg_get_object_address('extension', '{one}', '{}');
+2022-08-01 22:26:10.447 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:10.803 UTC [54303] ERROR:  value 9 out of bounds for option "fillfactor"
+2022-08-01 22:26:10.803 UTC [54303] STATEMENT:  create index spgist_point_idx2 on int8alias1 using spgist(int8alias1out) with (fillfactor = 9);
+2022-08-01 22:26:10.804 UTC [54303] ERROR:  invalid input syntax for type integer: "fee" at character 33
+2022-08-01 22:26:10.804 UTC [54303] STATEMENT:  insert into int8alias1lt values('fee'), ('fi'), ('fo'), ('fum');
+2022-08-01 22:26:10.804 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:11.162 UTC [54303] ERROR:  value 9 out of bounds for option "fillfactor"
+2022-08-01 22:26:11.162 UTC [54303] STATEMENT:  create index spgist_point_idx2 on int8alias1 using spgist(int8alias1out) with (fillfactor = 9);
+2022-08-01 22:26:11.163 UTC [54303] ERROR:  invalid input syntax for type integer: "fee" at character 33
+2022-08-01 22:26:11.163 UTC [54303] STATEMENT:  insert into int8alias1lt values('fee'), ('fi'), ('fo'), ('fum');
+2022-08-01 22:26:11.163 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:11.511 UTC [54303] ERROR:  could not extend file "base/12975/21498": No space left on device
+2022-08-01 22:26:11.511 UTC [54303] STATEMENT:  insert into int8alias1lt (int8alias1cmp, ec0)
+	select g, 'f' || repeat('o', 100) || g from generate_series(1, 10000) g
+	union all
+	select g, 'baaaaaaaaaaaaaar' || g from generate_series(1, 1000) g;
+2022-08-01 22:26:11.512 UTC [54303] ERROR:  value 9 out of bounds for option "fillfactor"
+2022-08-01 22:26:11.512 UTC [54303] STATEMENT:  create index spgist_point_idx2 on int8alias1 using spgist(int8alias1out) with (fillfactor = 9);
+2022-08-01 22:26:11.513 UTC [54303] ERROR:  invalid input syntax for type integer: "fee" at character 33
+2022-08-01 22:26:11.513 UTC [54303] STATEMENT:  insert into int8alias1lt values('fee'), ('fi'), ('fo'), ('fum');
+2022-08-01 22:26:11.513 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:11.862 UTC [54303] ERROR:  value 9 out of bounds for option "fillfactor"
+2022-08-01 22:26:11.862 UTC [54303] STATEMENT:  create index spgist_point_idx2 on int8alias1 using spgist(int8alias1out) with (fillfactor = 9);
+2022-08-01 22:26:11.862 UTC [54303] ERROR:  invalid input syntax for type integer: "fee" at character 33
+2022-08-01 22:26:11.862 UTC [54303] STATEMENT:  insert into int8alias1lt values('fee'), ('fi'), ('fo'), ('fum');
+2022-08-01 22:26:11.862 UTC [54303] WARNING:  there is no transaction in progress
+2022-08-01 22:26:12.206 UTC [54303] PANIC:  could not write to file "pg_wal/xlogtemp.54303": No space left on device
+2022-08-01 22:26:12.206 UTC [54303] STATEMENT:  insert into int8alias1lt (int8alias1cmp, ec0)
+	select g, 'f' || repeat('o', 100) || g from generate_series(1, 10000) g
+	union all
+	select g, 'baaaaaaaaaaaaaar' || g from generate_series(1, 1000) g;
+2022-08-01 22:26:12.235 UTC [54115] LOG:  server process (PID 54303) was terminated by signal 6: Aborted
+2022-08-01 22:26:12.235 UTC [54115] LOG:  terminating any other active server processes
+2022-08-01 22:26:12.240 UTC [54115] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:26:12.255 UTC [56445] LOG:  database system was interrupted; last known up at 2022-08-01 22:26:07 UTC
+2022-08-01 22:26:12.256 UTC [56446] FATAL:  the database system is in recovery mode
+2022-08-01 22:26:12.258 UTC [56450] FATAL:  the database system is in recovery mode
+2022-08-01 22:26:12.260 UTC [56452] FATAL:  the database system is in recovery mode
+2022-08-01 22:26:12.267 UTC [56445] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:26:12.267 UTC [56445] LOG:  redo starts at 0/3000028
+2022-08-01 22:26:12.268 UTC [54115] LOG:  received smart shutdown request
+2022-08-01 22:26:12.274 UTC [54115] LOG:  abnormal database system shutdown

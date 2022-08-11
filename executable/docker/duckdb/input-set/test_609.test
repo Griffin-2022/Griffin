@@ -1,0 +1,30 @@
+# name: test/issues/rigger/test_609.test
+# description: Issue 609
+# group: [rigger]
+
+;
+PRAGMA enable_verification
+
+# Incorrect result for MIN() on expression involving rowid
+;
+CREATE TABLE t0(c0 INT, c1 INT);
+
+;
+INSERT INTO t0(c0) VALUES (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0),  (0), (0), (0), (0), (0), (0), (NULL), (NULL);
+
+;
+CREATE INDEX b ON t0(c1);
+
+;
+UPDATE t0 SET c1 = NULL;
+
+;
+SELECT MIN(1000::bigint<<t0.rowid) FROM t0;
+;
+16777216000
+
+;
+SELECT MIN(1000::bigint<<t0.rowid) FROM t0 WHERE NOT c0;
+;
+16777216000
+

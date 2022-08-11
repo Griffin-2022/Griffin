@@ -1,0 +1,136 @@
+# name: test/sql/aggregate/aggregates/test_arg_min_max.test
+# description: Test argmin and argmax operator
+# group: [aggregates]
+
+#Corner cases
+;
+select argmin()
+
+;
+select argmin(NULL,NULL)
+;
+NULL
+
+;
+select argmin(1,1)
+;
+1
+
+;
+select argmin(*)
+
+;
+select argmin(i,i) from range (100) tbl(i);
+;
+0
+
+;
+select argmin(i,i) from range (100) tbl(i) where 1 = 0;
+;
+NULL
+
+;
+select argmax()
+
+;
+select argmax(NULL,NULL)
+;
+NULL
+
+;
+select argmax(1,1)
+;
+1
+
+;
+select argmax(*)
+
+;
+select argmax(i,i) from range (100) tbl(i);
+;
+99
+
+;
+select argmax(i,i) from range (100) tbl(i) where 1 = 0;
+;
+NULL
+
+;
+create table args (a integer, b integer)
+
+;
+insert into args values (1,1), (2,2), (8,8), (10,10)
+
+;
+select argmin(a,b), argmax(a,b) from args;
+;
+1.000000	10.000000
+
+;
+select argmin(a,b), argmax(a,b) from args group by a%2 ORDER BY argmin(a,b);
+;
+1	1
+2	10
+
+;
+CREATE TABLE blobs (b BYTEA, a BIGINT);
+
+;
+INSERT INTO blobs VALUES('\xaa\xff\xaa',5), ('\xAA\xFF\xAA\xAA\xFF\xAA',30), ('\xAA\xFF\xAA\xAA\xFF\xAA\xAA\xFF\xAA',20)
+
+;
+select argmin(b,a), argmax(b,a)  from blobs ;
+;
+\xAA\xFF\xAA	\xAA\xFF\xAA\xAA\xFF\xAA
+
+;
+select argmin(a,b), argmax(a,b)  from blobs ;
+;
+5	20
+
+# Window Function
+require vector_size 512
+
+;
+select argmin(a,b) over ( partition by a%2) from args;
+;
+1
+2
+2
+2
+
+;
+select argmax(a,b) over ( partition by a%2) from args;
+;
+1
+10
+10
+10
+
+;
+create table names (name string, salary integer)
+
+;
+insert into names values ('Pedro',10), ('Hannes',20), ('Mark',15), ('Hubert-Blaine-Wolfeschlegelsteinhausenbergerdorff',30)
+
+;
+select argmin(name,salary),argmax(name,salary)  from names;
+;
+Pedro	Hubert-Blaine-Wolfeschlegelsteinhausenbergerdorff
+
+;
+select argmin(salary,name),argmax(salary,name)  from names;
+;
+20	10
+
+# test min_by max_by alias
+;
+select min_by(name,salary),max_by(name,salary)  from names;
+;
+Pedro	Hubert-Blaine-Wolfeschlegelsteinhausenbergerdorff
+
+# test arg_min arg_max alias
+;
+select arg_min(name,salary),arg_max(name,salary)  from names;
+;
+Pedro	Hubert-Blaine-Wolfeschlegelsteinhausenbergerdorff

@@ -1,0 +1,55 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000489,sig:11,src:021169+010867,time:15177464,execs:4188385,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+musable (mem=0xaaaaaaaaaaaaaaaa) at malloc.c:4843
+(gdb) #0  musable (mem=0xaaaaaaaaaaaaaaaa) at malloc.c:4843
+#1  __malloc_usable_size (m=0xaaaaaaaaaaaaaaaa) at malloc.c:4867
+#2  0x000000000027213e in sqlite3MemSize (pPrior=0xaaaaaaaaaaaaaaaa) at sqlite3.c:22927
+#3  0x000000000025d20b in sqlite3DbMallocSize (db=0xd43c80, p=0xaaaaaaaaaaaaaaaa) at sqlite3.c:26809
+#4  0x000000000031caea in sqlite3ExprListDup (db=0xd43c80, p=0xaaaaaaaaaaaaaaaa, flags=0) at sqlite3.c:98290
+#5  0x00000000003a1362 in sqlite3WindowRewrite (pParse=0x7ffe5e28ce00, p=0xd5c3b0) at sqlite3.c:146325
+#6  0x00000000002fc6de in sqlite3Select (pParse=0x7ffe5e28ce00, p=0xd5c3b0, pDest=0x7ffe5e28baf8) at sqlite3.c:130281
+#7  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffe5e28ce00, pExpr=0xd5b0f0) at sqlite3.c:99820
+#8  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffe5e28ce00, pExpr=0xd5b0f0, target=1) at sqlite3.c:100770
+#9  0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffe5e28ce00, pList=0xd59e30, target=1, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#10 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffe5e28ce00, pSelect=0xd56140, pInfo=0x7ffe5e28be40) at sqlite3.c:125172
+#11 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffe5e28ce00, p=0xd56140, srcTab=-1, pSort=0x0, pDistinct=0x7ffe5e28c0e0, pDest=0x7ffe5e28c1f0, iContinue=-4, iBreak=-2) at sqlite3.c:125624
+#12 0x00000000002fe191 in sqlite3Select (pParse=0x7ffe5e28ce00, p=0xd56140, pDest=0x7ffe5e28c1f0) at sqlite3.c:130743
+#13 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffe5e28c420, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe5e28ce00) at sqlite3.c:151581
+#14 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffe5e28c420, yymajor=1, yyminor=...) at sqlite3.c:152877
+#15 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffe5e28ce00, zSql=0xd62b12 ";;\n;SELECT sum(x) OVER () FROM t1\n   ORDER BY EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ());", pzErrMsg=0x7ffe5e28cfe0)
+    at sqlite3.c:154013
+#16 0x00000000002a1683 in sqlite3Prepare (db=0xd43c80, 
+    zSql=0xd439d3 ";\n;SELECT EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ()) FROM t1;;\n;SELECT sum(x) OVER () FROM t1\n   ORDER BY EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ());", nBytes=161, prepFlags=128, 
+    pReprepare=0x0, ppStmt=0x7ffe5e28d118, pzTail=0x7ffe5e28d100) at sqlite3.c:124303
+#17 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xd43c80, 
+    zSql=0xd439d3 ";\n;SELECT EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ()) FROM t1;;\n;SELECT sum(x) OVER () FROM t1\n   ORDER BY EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ());", nBytes=161, prepFlags=128, pOld=0x0, 
+    ppStmt=0x7ffe5e28d118, pzTail=0x7ffe5e28d100) at sqlite3.c:124403
+#18 0x000000000029247f in sqlite3_prepare_v2 (db=0xd43c80, 
+    zSql=0xd439d3 ";\n;SELECT EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ()) FROM t1;;\n;SELECT sum(x) OVER () FROM t1\n   ORDER BY EXISTS(SELECT 1 FROM t1 ORDER BY sum(x) OVER ());", nBytes=161, ppStmt=0x7ffe5e28d118, 
+    pzTail=0x7ffe5e28d100) at sqlite3.c:124487
+#19 0x0000000000256bd0 in main (argc=1, argv=0x7ffe5e28d2c8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 61738] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

@@ -1,0 +1,64 @@
+# name: test/sql/alter/rename_view/test_rename_view_transactions.test
+# description: Test RENAME VIEW two parallel transactions
+# group: [rename_view]
+
+;
+CREATE TABLE tbl(i INTEGER)
+
+;
+INSERT INTO tbl VALUES (999), (100)
+
+;
+CREATE VIEW vw AS SELECT * FROM tbl
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER VIEW vw RENAME TO vw2
+
+;
+SELECT * FROM vw2
+;
+999
+100
+
+;
+SELECT * FROM vw
+
+;
+SELECT * FROM vw
+;
+999
+100
+
+;
+SELECT * FROM vw2
+
+;
+COMMIT
+
+;
+COMMIT
+
+;
+SELECT * FROM vw
+
+;
+SELECT * FROM vw
+
+;
+SELECT * FROM vw2
+;
+999
+100
+
+;
+SELECT * FROM vw2
+;
+999
+100
+

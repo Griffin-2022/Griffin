@@ -1,0 +1,61 @@
+# name: test/optimizer/distributivity_rule.test
+# description: Constant folding test
+# group: [optimizer]
+
+;
+CREATE TABLE test(A BOOLEAN, B BOOLEAN, C BOOLEAN, D BOOLEAN, X BOOLEAN, Y BOOLEAN, Z BOOLEAN);
+
+;
+PRAGMA explain_output = OPTIMIZED_ONLY;
+
+
+;
+EXPLAIN SELECT (X AND A AND B) OR (A AND X AND C) OR (X AND B AND D) FROM test
+;
+
+;
+EXPLAIN SELECT X AND ((A AND B) OR (A AND C) OR (B AND D)) FROM test
+;
+
+# (X AND B) OR (X AND C) => X AND (B OR C)
+;
+EXPLAIN SELECT (X AND B) OR (X AND C) FROM test
+;
+
+;
+EXPLAIN SELECT X AND (B OR C) FROM test
+;
+
+# X OR X = X
+;
+EXPLAIN SELECT X OR X FROM test
+;
+
+;
+EXPLAIN SELECT X OR X OR X OR X FROM test
+;
+
+;
+EXPLAIN SELECT X OR (X OR (X OR X)) FROM test
+;
+
+# X OR (X AND A) => X
+;
+EXPLAIN SELECT X OR (X AND A) FROM test
+;
+
+;
+EXPLAIN SELECT X OR X FROM test
+;
+
+;
+CREATE TABLE test2(X INTEGER, Y INTEGER, Z INTEGER);
+
+;
+EXPLAIN SELECT (X=1 AND Y=1) OR (X=1 AND Z=1) FROM test2
+;
+
+;
+EXPLAIN SELECT X=1 AND (Y=1 OR Z=1) FROM test2
+;
+

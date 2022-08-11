@@ -1,0 +1,52 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < /root/crashes/id:000004,sig:06,src:035012,time:35725781,execs:46978314,op:havoc,rep:16
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f4a997b9859 in __GI_abort () at abort.c:79
+#2  0x00007f4a997b9729 in __assert_fail_base (
+    fmt=0x7f4a9994f588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", 
+    assertion=0x55166e "pPage->childPtrSize==0", file=0x549ad6 "sqlite3.c", 
+    line=66777, function=<optimized out>) at assert.c:92
+#3  0x00007f4a997cafd6 in __GI___assert_fail (
+    assertion=0x55166e "pPage->childPtrSize==0", file=0x549ad6 "sqlite3.c", 
+    line=66777, 
+    function=0x551607 "void btreeParseCellPtr(MemPage *, u8 *, CellInfo *)")
+    at assert.c:101
+#4  0x0000000000444a63 in btreeParseCellPtr (pPage=0x2406ab0, 
+    pCell=0x24036e4 "\202\035\001\a\033\023\017\b\204#triggerxx2cCREATE TRIGGER xx2 BEFORE INSERT ON c FOR EACH ROW\n        BEGIN\n        INSERT INTO c VALUES ( (SELECT coalesce(max(d),0) + 1 FROM c), \n  \t  0, 0,\n  \t  (SELECT coalesce(sum(t3),0"..., pInfo=0x7ffd44a25f78) at sqlite3.c:66777
+#5  0x000000000045199b in ptrmapPutOvflPtr (pPage=0x2406ab0, pSrc=0x24049b0, 
+    pCell=0x24036e4 "\202\035\001\a\033\023\017\b\204#triggerxx2cCREATE TRIGGER xx2 BEFORE INSERT ON c FOR EACH ROW\n        BEGIN\n        INSERT INTO c VALUES ( (SELECT coalesce(max(d),0) + 1 FROM c), \n  \t  0, 0,\n  \t  (SELECT coalesce(sum(t3),0"..., pRC=0x7ffd44a262d0) at sqlite3.c:66980
+#6  0x000000000048c8a4 in balance_nonroot (pParent=0x2400c00, iParentIdx=0, 
+    aOvflSpace=0x2405270 "0\037@\002", isRoot=1, bBulk=0) at sqlite3.c:73818
+#7  0x0000000000488135 in balance (pCur=0x241c3c8) at sqlite3.c:74213
+#8  0x0000000000478c32 in sqlite3BtreeInsert (pCur=0x241c3c8, 
+    pX=0x7ffd44a26b68, flags=8, seekResult=0) at sqlite3.c:74636
+#9  0x0000000000467e0b in sqlite3VdbeExec (p=0x23ff7c0) at sqlite3.c:92003
+#10 0x0000000000416374 in sqlite3Step (p=0x23ff7c0) at sqlite3.c:85145
+#11 0x000000000040e242 in sqlite3_step (pStmt=0x23ff7c0) at sqlite3.c:85202
+#12 0x000000000040556f in main (argc=1, argv=0x7ffd44a27398) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 111715] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

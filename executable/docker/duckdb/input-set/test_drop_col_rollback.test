@@ -1,0 +1,33 @@
+# name: test/sql/alter/drop_col/test_drop_col_rollback.test
+# description: Test ALTER TABLE DROP COLUMN: Rollback of DROP COLUMN
+# group: [drop_col]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE test DROP COLUMN j
+
+;
+SELECT * FROM test
+;
+1
+2
+
+;
+ROLLBACK
+
+;
+SELECT * FROM test
+;
+1
+1
+2
+2
+

@@ -1,0 +1,63 @@
+# name: test/sql/storage/catalog/test_store_sequences.test
+# description: Use sequences over different runs
+# group: [catalog]
+
+load __TEST_DIR__/store_sequences.db
+
+# standard sequence
+;
+CREATE SEQUENCE seq
+
+# more complex sequence
+;
+CREATE SEQUENCE seq_cycle INCREMENT 1 MAXVALUE 3 START 2 CYCLE;
+
+;
+SELECT nextval('seq')
+;
+1
+
+;
+SELECT nextval('seq_cycle')
+;
+2
+
+# restart and check that sequence still works
+restart
+
+;
+SELECT nextval('seq')
+;
+2
+
+;
+SELECT nextval('seq_cycle')
+;
+3
+
+# again
+restart
+
+;
+SELECT nextval('seq'), nextval('seq')
+;
+3	4
+
+;
+SELECT nextval('seq_cycle')
+;
+1
+
+# drop sequence
+;
+DROP SEQUENCE seq;
+
+restart
+
+# verify that sequence is gone
+;
+SELECT nextval('seq')
+
+# other sequence is still there
+;
+SELECT nextval('seq_cycle')

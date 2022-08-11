@@ -1,0 +1,111 @@
+2022-08-01 18:35:40.693 UTC [120817] STATEMENT:  INSERT INTO tpart_tens (htab, truncate_tab, htab2) VALUES
+	('{4,2,6,7,8,1}','{{red},{black},{purple},{blue},{blue}}',NULL);
+2022-08-01 18:35:40.693 UTC [120817] ERROR:  relation "credential" does not exist at character 60
+2022-08-01 18:35:40.693 UTC [120817] STATEMENT:  SELECT max(r), min(r), max(r), min(r), max(r), min(r) FROM credential;
+2022-08-01 18:35:40.693 UTC [120817] ERROR:  no schema has been selected to create in
+2022-08-01 18:35:40.693 UTC [120817] STATEMENT:  create type _return as (f1 int, f2 text);
+2022-08-01 18:35:40.693 UTC [120817] ERROR:  permission denied for table t2
+2022-08-01 18:35:40.693 UTC [120817] STATEMENT:  select * from t2;
+2022-08-01 18:35:40.693 UTC [120817] ERROR:  type "_return" does not exist
+2022-08-01 18:35:40.693 UTC [120817] STATEMENT:  drop type _return;
+2022-08-01 18:35:40.695 UTC [120817] ERROR:  dimension array or low bound array cannot be null
+2022-08-01 18:35:40.695 UTC [120817] STATEMENT:  select array_fill(1, array[2,2], null);
+2022-08-01 18:35:40.695 UTC [120817] ERROR:  wrong number of array subscripts
+2022-08-01 18:35:40.695 UTC [120817] STATEMENT:  select array_fill(1, array[2,2], '{}');
+2022-08-01 18:35:40.695 UTC [120817] ERROR:  wrong number of array subscripts
+2022-08-01 18:35:40.695 UTC [120817] STATEMENT:  select array_fill(1, array[3,3], array[1,1,1]);
+2022-08-01 18:35:40.695 UTC [120817] ERROR:  dimension values cannot be null
+2022-08-01 18:35:40.695 UTC [120817] STATEMENT:  select array_fill(1, array[1,2,null]);
+2022-08-01 18:35:40.698 UTC [120817] ERROR:  cannot accumulate empty arrays
+2022-08-01 18:35:40.698 UTC [120817] STATEMENT:  select array_agg('{}'::int[]) from generate_series(1,2);
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  relation "credential" does not exist at character 13
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  insert into credential
+	  select string_agg(random()::text,'') from generate_series(1,10000);
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  no schema has been selected to create in
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  create type htab as (c1 text, c2 text);
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  type "htab[]" does not exist at character 34
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  create temp table htab2 (_return htab[]);
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  relation "credential" does not exist at character 13
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  insert into credential select array[row(r,r)::htab] from t1;
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  column notation .c2 applied to type smallint, which is not a composite type at character 20
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  select length(md5((auth_tbl[1]).c2)) from t2;
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  permission denied for table t1
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  truncate table t1;
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  relation "credential" does not exist at character 36
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  select length(md5((r[1]).c2)) from credential;
+2022-08-01 18:35:40.701 UTC [120817] ERROR:  must be owner of table t1
+2022-08-01 18:35:40.701 UTC [120817] STATEMENT:  drop table t1;
+2022-08-01 18:35:40.702 UTC [120817] ERROR:  type "htab" does not exist
+2022-08-01 18:35:40.702 UTC [120817] STATEMENT:  drop type htab;
+2022-08-01 18:35:40.702 UTC [120817] ERROR:  thresholds must be one-dimensional array
+2022-08-01 18:35:40.702 UTC [120817] STATEMENT:  SELECT width_bucket(5, ARRAY[ARRAY[1, 2], ARRAY[3, 4]]);
+2022-08-01 18:35:40.702 UTC [120817] ERROR:  number of elements to trim must be between 0 and 3
+2022-08-01 18:35:40.702 UTC [120817] STATEMENT:  SELECT trim_array(ARRAY[1, 2, 3], 10);
+2022-08-01 18:35:40.703 UTC [120817] WARNING:  there is no transaction in progress
+=================================================================
+==120817==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7fff75971630 sp 0x7fff75971628
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f9cb5e8e082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==120817==ABORTING
+2022-08-01 18:35:40.764 UTC [64738] LOG:  server process (PID 120817) was terminated by signal 6: Aborted
+2022-08-01 18:35:40.764 UTC [64738] LOG:  terminating any other active server processes
+2022-08-01 18:35:40.772 UTC [64738] LOG:  all server processes terminated; reinitializing
+2022-08-01 18:35:40.789 UTC [130563] LOG:  database system was interrupted; last known up at 2022-08-01 18:35:27 UTC
+2022-08-01 18:35:40.815 UTC [130563] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 18:35:40.817 UTC [130563] LOG:  redo starts at 0/40000468
+2022-08-01 18:35:41.405 UTC [130563] LOG:  invalid record length at 0/41CD6EE8: wanted 24, got 0
+2022-08-01 18:35:41.405 UTC [130563] LOG:  redo done at 0/41CD6E90 system usage: CPU: user: 0.54 s, system: 0.03 s, elapsed: 0.58 s
+2022-08-01 18:35:41.423 UTC [64738] LOG:  database system is ready to accept connections
+2022-08-01 18:35:43.511 UTC [130642] LOG:  connection received: host=127.0.0.1 port=53082
+2022-08-01 18:35:43.512 UTC [130642] LOG:  connection authorized: user=postgres database=x

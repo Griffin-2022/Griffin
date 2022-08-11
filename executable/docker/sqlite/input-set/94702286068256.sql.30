@@ -1,0 +1,29 @@
+CREATE VIRTUAL TABLE t1 USING tcl("vtab_cmd t1 {a b}");
+;CREATE VIRTUAL TABLE t2 USING tcl("vtab_cmd t2 {c d}");
+;CREATE VIRTUAL TABLE t3 USING tcl("vtab_cmd t3 {e f}");
+;
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1 WHERE a='abc'
+
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1 WHERE a='abc' AND b='def'
+
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1 WHERE a='abc' AND a='def'
+
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1,t2 WHERE c=a
+
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1, t2 CROSS JOIN t3 WHERE t2.c = +t1.b AND t3.e=t2.d
+
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM t1, t2, t3 WHERE t2.c = +t1.b AND t3.e = t2.d
+
+;CREATE TABLE x1(a, b);
+;
+;EXPLAIN QUERY PLAN 
+  SELECT * FROM x1 CROSS JOIN t1, t2, t3 
+    WHERE t1.a = t2.c AND t1.b = t3.e
+
+;

@@ -1,0 +1,126 @@
+# name: test/sql/transactions/test_index_versioned_deletes.test
+# description: Test index with versioned data from deletes
+# group: [transactions]
+
+;
+CREATE TABLE integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO integers VALUES (1), (2), (3)
+
+# local delete
+;
+BEGIN TRANSACTION
+
+# "1" exists for both transactions
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+;
+DELETE FROM integers WHERE i=1
+
+# "1" only exists for con2
+;
+SELECT i FROM integers WHERE i=1
+;
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+# rollback
+;
+DELETE FROM integers WHERE i=1
+
+;
+ROLLBACK
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+# local update of primary key column
+;
+BEGIN TRANSACTION
+
+# 1 => 4
+;
+UPDATE integers SET i=4 WHERE i=1
+
+;
+SELECT i FROM integers WHERE i=1
+;
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+;
+SELECT i FROM integers WHERE i=4
+;
+4
+
+;
+SELECT i FROM integers WHERE i=4
+;
+
+# delete 4
+;
+DELETE FROM integers WHERE i=4
+
+;
+SELECT i FROM integers WHERE i=1
+;
+
+;
+SELECT i FROM integers WHERE i=1
+;
+1
+
+;
+SELECT i FROM integers WHERE i=4
+;
+
+;
+SELECT i FROM integers WHERE i=4
+;
+
+# commit
+;
+COMMIT
+
+;
+SELECT i FROM integers WHERE i=1
+;
+
+;
+SELECT i FROM integers WHERE i=1
+;
+
+;
+SELECT i FROM integers ORDER BY i
+;
+2
+3
+
+;
+SELECT i FROM integers ORDER BY i
+;
+2
+3
+

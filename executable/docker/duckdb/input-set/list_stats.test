@@ -1,0 +1,135 @@
+# name: test/sql/types/list/list_stats.test
+# description: Test stats propagation for lists
+# group: [list]
+
+# struct stats
+;
+SELECT STATS([3, 4])
+;
+<REGEX>:.*3.*4.*
+
+;
+SELECT [3, 4]
+;
+[3, 4]
+
+;
+SELECT STATS(NULL::INT[])
+;
+<REGEX>:.*Has Null: true.*
+
+;
+SELECT NULL::INT[]
+;
+NULL
+
+;
+SELECT STATS(['hello', 'world'])
+
+;
+SELECT STATS([interval 1 year, interval 2 year])
+
+;
+SELECT ['hello', 'world']
+;
+[hello, world]
+
+;
+SELECT [interval 1 year, interval 2 year]
+;
+[1 year, 2 years]
+
+;
+CREATE TABLE integers(i integer)
+
+;
+insert into integers values (3), (4);
+
+;
+SELECT STATS([i]) FROM integers LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: false.*
+
+;
+SELECT [i] FROM integers
+;
+[3]
+[4]
+
+;
+insert into integers values (NULL);
+
+;
+SELECT STATS([i]) FROM integers LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: true.*
+
+;
+SELECT [i] FROM integers
+;
+[3]
+[4]
+[NULL]
+
+;
+CREATE TABLE lists AS SELECT [3, 4] l
+
+# list_extract always propagates a null
+;
+SELECT STATS(l[1]) FROM lists LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: true.*
+
+;
+SELECT l[1] FROM lists
+;
+3
+
+# empty list
+;
+INSERT INTO lists VALUES ([])
+
+;
+SELECT STATS(l[1]) FROM lists LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: true.*
+
+;
+SELECT l[1] FROM lists
+;
+3
+NULL
+
+# null list
+;
+INSERT INTO lists VALUES (NULL)
+
+;
+SELECT STATS(l[1]) FROM lists LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: true.*
+
+;
+SELECT l[1] FROM lists
+;
+3
+NULL
+NULL
+
+# null IN list
+
+;
+INSERT INTO lists VALUES ([NULL])
+
+;
+SELECT STATS(l[1]) FROM lists LIMIT 1
+;
+<REGEX>:.*3.*4.*Has Null: true.*
+
+;
+SELECT l[1] FROM lists
+;
+3
+NULL
+NULL
+NULL

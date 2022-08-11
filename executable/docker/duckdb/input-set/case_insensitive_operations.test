@@ -1,0 +1,146 @@
+# name: test/sql/catalog/case_insensitive_operations.test
+# description: Test case insensitive operations
+# group: [catalog]
+
+;
+PRAGMA enable_verification
+
+loop i 0 2
+
+;
+CREATE TABLE INTEGERS(I INTEGER);
+
+;
+INSERT INTO integers (i) VALUES (1), (2), (3), (NULL);
+
+;
+SELECT integers.i FROM integers ORDER BY i;
+;
+NULL
+1
+2
+3
+
+;
+SELECT integers.i AS i FROM integers GROUP BY I ORDER BY "integers"."I";
+;
+NULL
+1
+2
+3
+
+;
+SELECT integers.i AS "ZZZ" FROM integers GROUP BY "zzz" ORDER BY "INTEGERS"."i";
+;
+NULL
+1
+2
+3
+
+
+;
+WITH "CTE"("ZZZ") AS (
+	SELECT integers.i AS "ZZZ" FROM integers GROUP BY "zzz"
+)
+SELECT * FROM cte ORDER BY zZz;
+;
+NULL
+1
+2
+3
+
+;
+WITH "CTE"("ZZZ") AS (
+	SELECT integers.i AS "ZZZ" FROM integers GROUP BY "zzz"
+),
+	"cte" AS (SELECT 42)
+
+;
+UPDATE integers SET i=integers.i+1
+;
+4
+
+;
+SELECT i FROM integers ORDER BY integers.i;
+;
+NULL
+2
+3
+4
+
+;
+DELETE FROM integers WHERE i IS NULL;
+;
+1
+
+;
+SELECT i FROM integers ORDER BY integers.i;
+;
+2
+3
+4
+
+;
+ALTER TABLE integers ADD COLUMN J INTEGER;
+
+;
+SELECT i, j FROM integers ORDER BY integers.i;
+;
+2	NULL
+3	NULL
+4	NULL
+
+;
+UPDATE integers SET j=integers.i;
+;
+3
+
+;
+ALTER TABLE integers DROP COLUMN i;
+
+;
+SELECT j FROM integers ORDER BY integers.j;
+;
+2
+3
+4
+
+;
+SELECT tbl.k FROM (SELECT j FROM integers) TBL(K) ORDER BY K;
+;
+2
+3
+4
+
+;
+DROP TABLE integers;
+
+# structs
+;
+CREATE TABLE STRUCTS(S ROW(I ROW(K INTEGER)));
+
+;
+INSERT INTO structs VALUES ({'i': {'k': 42}});
+
+;
+SELECT structs.S.i.K, "STRUCTS"."S"."I"."K", "structs"."s"."i"."k" FROM structs
+;
+42	42	42
+
+;
+SELECT "STRUCTS"."S"."I"."K" FROM structs GROUP BY "STRUCTS"."S"."I"."K"
+;
+42
+
+;
+SELECT structs.S.i.K FROM structs GROUP BY structs.S.i.K
+;
+42
+
+;
+DROP TABLE structs;
+
+;
+PRAGMA preserve_identifier_case=false;
+
+endloop

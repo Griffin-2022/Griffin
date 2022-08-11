@@ -1,0 +1,256 @@
+# name: test/sql/function/string/test_glob.test
+# description: Test GLOB statement
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# scalar glob
+;
+SELECT 'aaa' GLOB 'bbb'
+;
+0
+
+;
+SELECT 'aaa' GLOB 'aaa'
+;
+1
+
+;
+SELECT 'aaa' GLOB '*'
+;
+1
+
+;
+SELECT 'aaa' GLOB '*a'
+;
+1
+
+;
+SELECT 'aaa' GLOB '*b'
+;
+0
+
+;
+SELECT 'aaa' GLOB 'a*'
+;
+1
+
+;
+SELECT 'aaa' GLOB 'b*'
+;
+0
+
+;
+SELECT 'aaa' GLOB 'a?a'
+;
+1
+
+;
+SELECT 'aaa' GLOB 'a?'
+;
+0
+
+;
+SELECT 'aaa' GLOB '??*'
+;
+1
+
+;
+SELECT 'aaa' GLOB '????*'
+;
+0
+
+;
+SELECT 'ababac' GLOB '*abac'
+;
+1
+
+# bracket matching
+;
+SELECT '3' GLOB '[0-9]'
+;
+1
+
+;
+SELECT 'a' GLOB '[0-9]'
+;
+0
+
+# multiple brackets in a row
+;
+SELECT '012' GLOB '[0-9][0-9][0-9]'
+;
+1
+
+# trailing in pattern after brackets
+;
+SELECT '012' GLOB '[0-9][0-9][0-9]a'
+;
+0
+
+# trailing in string after brackets
+;
+SELECT '012a' GLOB '[0-9][0-9][0-9]'
+;
+0
+
+# more complicated brackets
+;
+SELECT 'b3' GLOB '[abc0-9][abc0-9]'
+;
+1
+
+;
+SELECT 'd3' GLOB '[abc0-9][abc0-9]'
+;
+0
+
+# inverse brackets
+;
+SELECT 'a' GLOB '[!0-9]'
+;
+1
+
+;
+SELECT '1' GLOB '[!0-9]'
+;
+0
+
+# escapes
+;
+SELECT '*' GLOB '\*'
+;
+1
+
+;
+SELECT 'a' GLOB '\*'
+;
+0
+
+# escaped escape
+;
+SELECT '\' GLOB '\\'
+;
+1
+
+# '
+;
+SELECT 'a' GLOB '\\'
+;
+0
+
+# bracket in a bracket
+# this is valid as long as the closing bracket is the first non-exclamation mark character
+;
+SELECT '3]' GLOB '[]3][]]'
+;
+1
+
+;
+SELECT '3]' GLOB '[]3][]]'
+;
+1
+
+# bracket is not properly closed
+;
+SELECT '3' GLOB '[3'
+;
+0
+
+# trailing range
+;
+SELECT '3' GLOB '[3-'
+;
+0
+
+# trailing escape
+;
+SELECT '3' GLOB '\\'
+;
+0
+
+;
+SELECT '3' GLOB '\'
+;
+0
+
+# a bunch of asterisks
+;
+SELECT '3' GLOB '3***'
+;
+1
+
+;
+SELECT '1245' GLOB '**1***2*******4*5***'
+;
+1
+
+;
+SELECT 'aaaaaaaaaaaaaaaaaaaaaaa' GLOB '*a'
+;
+1
+
+# special characters in brackets
+;
+SELECT '?' GLOB '[?]'
+;
+1
+
+;
+SELECT '3' GLOB '[?]'
+;
+0
+
+;
+SELECT '*' GLOB '[*]'
+;
+1
+
+;
+SELECT '3' GLOB '[*]'
+;
+0
+
+# multiple ranges in a bracket
+;
+SELECT '6' GLOB '[1-35-7]'
+;
+1
+
+;
+SELECT '4' GLOB '[1-35-7]'
+;
+0
+
+# trailing bracket
+;
+SELECT '4' GLOB '['
+;
+0
+
+# like with table
+;
+CREATE TABLE strings(s STRING, pat STRING);
+
+;
+INSERT INTO strings VALUES ('abab', 'ab*'), ('aaa', 'a?a'), ('aaa', '*b*')
+
+;
+SELECT s FROM strings WHERE s GLOB 'ab*'
+;
+abab
+
+;
+SELECT s FROM strings WHERE 'aba' GLOB pat
+;
+abab
+aaa
+aaa
+
+;
+SELECT s FROM strings WHERE s GLOB pat
+;
+abab
+aaa
+

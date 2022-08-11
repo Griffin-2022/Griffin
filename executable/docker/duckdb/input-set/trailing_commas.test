@@ -1,0 +1,79 @@
+# name: test/sql/parser/trailing_commas.test
+# description: Test trailing commas
+# group: [parser]
+
+;
+PRAGMA enable_verification
+
+;
+SELECT 42,
+;
+42
+
+;
+SELECT 42,
+       84,
+;
+42	84
+
+;
+SELECT DISTINCT 42,
+       84,
+;
+42	84
+
+;
+VALUES (42,)
+;
+42
+
+;
+VALUES (42,),
+;
+42
+
+;
+SELECT * FROM (VALUES (42,))
+;
+42
+
+;
+CREATE TABLE integers(i INTEGER, j INTEGER,);
+
+;
+INSERT INTO integers VALUES (42, 84,),;
+
+;
+SELECT * FROM integers,
+;
+42	84
+
+;
+SELECT i, SUM(j) FROM integers GROUP BY i,
+;
+42	84
+
+;
+UPDATE integers SET i=100,
+
+;
+SELECT i FROM integers
+;
+100
+
+# lists
+;
+SELECT [1,]
+;
+[1]
+
+;
+SELECT ARRAY[1,]
+;
+[1]
+
+# structs
+;
+SELECT {'a': 42, 'b': 84,}
+;
+{'a': 42, 'b': 84}

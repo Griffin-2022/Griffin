@@ -1,0 +1,35 @@
+# name: test/sql/fts/test_indexing_and_schema.test
+# description: Refer default schema when the table name doesn't have a qualifier.
+# group: [fts]
+
+require fts
+
+;
+CREATE SCHEMA test
+
+;
+CREATE TABLE test.documents(id VARCHAR, body VARCHAR)
+
+;
+INSERT INTO test.documents VALUES ('doc1', ' QUÁCKING+QUÁCKING+QUÁCKING'), ('doc2', ' BÁRKING+BÁRKING+BÁRKING+BÁRKING'), ('doc3', ' MÉOWING+MÉOWING+MÉOWING+MÉOWING+MÉOWING+999')
+
+;
+PRAGMA create_fts_index('documents', 'id', 'body')
+
+;
+SET SCHEMA='test'
+
+;
+PRAGMA create_fts_index('documents', 'id', 'body')
+
+;
+SET SCHEMA='main'
+
+;
+PRAGMA drop_fts_index('documents')
+
+;
+SET SCHEMA='test'
+
+;
+PRAGMA drop_fts_index('documents')

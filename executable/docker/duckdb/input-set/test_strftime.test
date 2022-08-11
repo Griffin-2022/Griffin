@@ -1,0 +1,132 @@
+# name: test/sql/function/date/test_strftime.test
+# description: Test strftime function
+# group: [date]
+
+;
+PRAGMA enable_verification
+
+# simple single specifier
+;
+SELECT strftime(DATE '1992-01-01', '%Y');
+;
+1992
+
+# flip the order
+;
+SELECT strftime('%Y', DATE '1992-01-01');
+;
+1992
+
+;
+SELECT strftime('%Y', TIMESTAMP '1992-01-01');
+;
+1992
+
+# some literals
+;
+SELECT strftime(DATE '1992-01-01', '(%Y)');
+;
+(1992)
+
+# escapes
+;
+SELECT strftime(DATE '1992-01-01', '%% %Y %%');
+;
+% 1992 %
+
+# many consecutive escapes
+;
+SELECT strftime(DATE '1992-01-01', '%%%%%% %Y %%%%%%');
+;
+%%% 1992 %%%
+
+# multiple specifiers
+;
+SELECT strftime(DATE '1992-02-01', '%d/%m/%Y');
+;
+01/02/1992
+
+# we can repeat the same specifier many times
+;
+SELECT strftime(DATE '1992-02-01', '%Y %Y %Y %Y');
+;
+1992 1992 1992 1992
+
+# test on a table
+;
+CREATE TABLE dates(d DATE);
+INSERT INTO dates VALUES ('1992-01-01'), ('1993-03-20'), (NULL);
+
+;
+SELECT strftime(d, '%d/%m/%Y') FROM dates ORDER BY d;
+;
+NULL
+01/01/1992
+20/03/1993
+
+# null date
+;
+SELECT strftime(NULL::DATE, '%d/%m/%Y') FROM dates ORDER BY d;
+;
+NULL
+NULL
+NULL
+
+# null format
+;
+SELECT strftime(d, NULL) FROM dates ORDER BY d;
+;
+NULL
+NULL
+NULL
+
+;
+SELECT strftime(NULL::TIMESTAMP, NULL) FROM range(3);
+;
+NULL
+NULL
+NULL
+
+;
+SELECT strftime(NULL::TIMESTAMP, '%%%%%% %Y %%%%%%') FROM range(3);
+;
+NULL
+NULL
+NULL
+
+# no specifiers, only constant
+;
+SELECT strftime(DATE '1992-01-01', 'hello world');
+;
+hello world
+
+# non-constant format not supported
+;
+SELECT strftime(d, d::VARCHAR) FROM dates ORDER BY d;
+
+# unterminated escape
+;
+SELECT strftime(DATE '1992-01-01', '%');
+
+# unrecognized code
+;
+SELECT strftime(DATE '1992-01-01', '%R');
+
+# millisecond specifier %g
+;
+select strftime(strptime('023', '%g'), '%g'), strftime(strptime('0', '%g'), '%g'), strftime(strptime('000', '%g'), '%g'), strftime(strptime('999', '%g'), '%g');
+;
+023
+000
+000
+999
+
+;
+SELECT strptime('-1', '%g');
+
+;
+SELECT strptime('1000', '%g');
+
+# this won't work without explicit casts
+;
+SELECT strftime('%Y', '1992-01-01');

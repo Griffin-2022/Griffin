@@ -1,0 +1,167 @@
+# name: test/sql/index/art/test_art_node_leaf_with_duplicates.test
+# description: ART Node Leaf with removing duplicated keys
+# group: [art]
+
+;
+CREATE TABLE integers(i integer)
+
+;
+CREATE INDEX i_index ON integers(i)
+
+# insert 4 elements
+loop i 0 4
+
+;
+INSERT INTO integers VALUES (1);
+
+endloop
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+4
+
+# verify sums
+
+;
+SELECT sum(i) FROM integers WHERE i <= 2
+;
+4
+
+# now delete all elements
+
+;
+DELETE FROM integers WHERE i = 1
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+0
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+# insert 1024 elements
+loop i 0 1024
+
+;
+INSERT INTO integers VALUES (1);
+
+endloop
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+1024
+
+# verify sums
+
+;
+SELECT sum(i) FROM integers WHERE i <= 2
+;
+1024
+
+# now delete all elements
+
+;
+DELETE FROM integers WHERE i = 1
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+0
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+# insert 3000 elements: 1
+loop i 0 3000
+
+;
+INSERT INTO integers VALUES (1);
+
+endloop
+
+# insert 1024 elements: 2
+loop i 0 1024
+
+;
+INSERT INTO integers VALUES (2);
+
+endloop
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+3000
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 2
+;
+1024
+
+;
+SELECT COUNT(*) FROM integers WHERE i <= 2
+;
+4024
+
+# verify sums
+
+;
+SELECT sum(i) FROM integers WHERE i <= 2
+;
+5048
+
+# now delete all elements: 2
+
+;
+DELETE FROM integers WHERE i = 2
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+3000
+
+;
+SELECT COUNT(*) FROM integers
+;
+3000
+
+# now delete all elements: 1
+
+;
+DELETE FROM integers WHERE i = 1
+
+# verify counts
+
+;
+SELECT COUNT(*) FROM integers WHERE i = 1
+;
+0
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+DROP INDEX i_index
+
+;
+DROP TABLE integers

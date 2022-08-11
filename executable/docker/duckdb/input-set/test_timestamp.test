@@ -1,0 +1,143 @@
+# name: test/sql/types/timestamp/test_timestamp.test
+# description: Test TIMESTAMP type
+# group: [timestamp]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE IF NOT EXISTS timestamp (t TIMESTAMP);
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:01'), (NULL), ('2007-01-01 00:00:01'), ('2008-02-01 00:00:01'), ('2008-01-02 00:00:01'), ('2008-01-01 10:00:00'), ('2008-01-01 00:10:00'), ('2008-01-01 00:00:10')
+
+;
+SELECT timestamp '2017-07-23 13:10:11';
+;
+2017-07-23 13:10:11
+
+# iso timestamps
+;
+SELECT timestamp '2017-07-23T13:10:11', timestamp '2017-07-23T13:10:11Z';
+;
+2017-07-23 13:10:11
+2017-07-23 13:10:11
+
+# spaces everywhere
+;
+SELECT timestamp '    2017-07-23     13:10:11    ';
+;
+2017-07-23 13:10:11
+
+# other trailing, preceding, or middle gunk is not accepted
+;
+SELECT timestamp '    2017-07-23     13:10:11    AA';
+
+;
+SELECT timestamp 'AA2017-07-23 13:10:11';
+
+;
+SELECT timestamp '2017-07-23A13:10:11';
+
+;
+SELECT t FROM timestamp ORDER BY t;
+;
+NULL
+2007-01-01 00:00:01
+2008-01-01 00:00:01
+2008-01-01 00:00:10
+2008-01-01 00:10:00
+2008-01-01 10:00:00
+2008-01-02 00:00:01
+2008-02-01 00:00:01
+
+;
+SELECT MIN(t) FROM timestamp;
+;
+2007-01-01 00:00:01
+
+;
+SELECT MAX(t) FROM timestamp;
+;
+2008-02-01 00:00:01
+
+;
+SELECT SUM(t) FROM timestamp
+
+;
+SELECT AVG(t) FROM timestamp
+
+;
+SELECT t+t FROM timestamp
+
+;
+SELECT t*t FROM timestamp
+
+;
+SELECT t/t FROM timestamp
+
+;
+SELECT t%t FROM timestamp
+
+;
+SELECT t-t FROM timestamp
+;
+00:00:00
+NULL
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+
+;
+SELECT YEAR(TIMESTAMP '1992-01-01 01:01:01');
+;
+1992
+
+;
+SELECT YEAR(TIMESTAMP '1992-01-01 01:01:01'::DATE);
+;
+1992
+
+;
+SELECT (TIMESTAMP '1992-01-01 01:01:01')::DATE;
+;
+1992-01-01
+
+;
+SELECT (TIMESTAMP '1992-01-01 01:01:01')::TIME;
+;
+01:01:01
+
+;
+SELECT t::DATE FROM timestamp WHERE EXTRACT(YEAR from t)=2007 ORDER BY 1
+;
+2007-01-01
+
+;
+SELECT t::TIME FROM timestamp WHERE EXTRACT(YEAR from t)=2007 ORDER BY 1
+;
+00:00:01
+
+;
+SELECT (DATE '1992-01-01')::TIMESTAMP;
+;
+1992-01-01 00:00:00
+
+;
+SELECT TIMESTAMP '2008-01-01 00:00:01.5'::VARCHAR
+;
+2008-01-01 00:00:01.5
+
+;
+SELECT TIMESTAMP '-8-01-01 00:00:01.5'::VARCHAR
+;
+0009-01-01 (BC) 00:00:01.5
+
+# timestamp with large date
+;
+SELECT TIMESTAMP '100000-01-01 00:00:01.5'::VARCHAR
+;
+100000-01-01 00:00:01.5

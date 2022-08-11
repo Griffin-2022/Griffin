@@ -1,0 +1,81 @@
+# name: test/sql/transactions/test_transactional_sequences.test
+# description: Test that sequences are transactional
+# group: [transactions]
+
+# start a transaction for both nodes
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# create a sequence in node one
+;
+CREATE SEQUENCE seq;
+
+# node one can see it
+;
+SELECT nextval('seq');
+;
+1
+
+# node two can't see it
+;
+SELECT nextval('seq');
+
+# we commit the sequence
+;
+COMMIT
+
+# node two still can't see it
+;
+SELECT nextval('seq');
+
+# now commit node two
+;
+COMMIT
+
+# we can now see the sequence in node two
+;
+SELECT nextval('seq');
+;
+2
+
+# drop sequence seq in a transaction
+;
+BEGIN TRANSACTION
+
+;
+DROP SEQUENCE seq;
+
+# node one can't use it anymore
+;
+SELECT nextval('seq');
+
+# node two can still use it
+;
+SELECT nextval('seq');
+;
+3
+
+# rollback cancels the drop sequence
+;
+ROLLBACK;
+
+# we can still use it
+;
+SELECT nextval('seq');
+;
+4
+
+# now we drop it for real
+;
+DROP SEQUENCE seq;
+
+# we can't use it anymore
+;
+SELECT nextval('seq');
+
+;
+SELECT nextval('seq');
+

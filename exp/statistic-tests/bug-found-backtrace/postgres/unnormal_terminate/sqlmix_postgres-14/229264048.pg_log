@@ -1,0 +1,111 @@
+2022-08-02 02:46:46.729 UTC [94114] ERROR:  column notation .x applied to type d4_fk, which is not a composite type
+2022-08-02 02:46:46.729 UTC [94114] STATEMENT:  create domain objoid as d4_fk check((value).x <= (value).y);
+2022-08-02 02:46:46.730 UTC [94114] ERROR:  domain d4_fk does not allow null values
+2022-08-02 02:46:46.730 UTC [94114] STATEMENT:  SELECT json_populate_recordset(null::d4_fk, '[{"x": 0, "y": 1}]');
+2022-08-02 02:46:46.730 UTC [94114] ERROR:  function return row and query-specified return row do not match
+2022-08-02 02:46:46.730 UTC [94114] STATEMENT:  select * from json_populate_recordset(row(1000000000::int,50::int),'[{"t":"2"},{"a":"3"}]') q (a text, t text);
+2022-08-02 02:46:46.731 UTC [94114] ERROR:  cannot drop type d4_fk because other objects depend on it
+2022-08-02 02:46:46.731 UTC [94114] STATEMENT:  DROP TYPE d4_fk;
+2022-08-02 02:46:46.731 UTC [94114] ERROR:  "d4_pid" is not a domain
+2022-08-02 02:46:46.731 UTC [94114] STATEMENT:  DROP DOMAIN d4_pid;
+2022-08-02 02:46:46.731 UTC [94114] ERROR:  argument list must have even number of elements
+2022-08-02 02:46:46.731 UTC [94114] STATEMENT:  SELECT json_build_object(VARIADIC '{a,d4_primary,c}'::text[]);
+2022-08-02 02:46:46.731 UTC [94114] ERROR:  argument 1 cannot be null
+2022-08-02 02:46:46.731 UTC [94114] STATEMENT:  SELECT json_build_object(null,2);
+2022-08-02 02:46:46.731 UTC [94114] ERROR:  key value must be scalar, not array, composite, or json
+2022-08-02 02:46:46.731 UTC [94114] STATEMENT:  SELECT json_build_object(json '{"a":1,"d4_primary":2}', 3);
+2022-08-02 02:46:46.733 UTC [94114] ERROR:  INSERT has more expressions than target columns at character 30
+2022-08-02 02:46:46.733 UTC [94114] STATEMENT:  INSERT INTO t VALUES (847002,'t16','GE1043');
+2022-08-02 02:46:46.733 UTC [94114] ERROR:  array must have even number of elements
+2022-08-02 02:46:46.733 UTC [94114] STATEMENT:  SELECT json_object('{a,d4_fk,c}');
+2022-08-02 02:46:46.734 UTC [94114] ERROR:  mismatched array dimensions
+2022-08-02 02:46:46.734 UTC [94114] STATEMENT:  select json_object('{a,d4_fk,c,"d e f",g}','{1,2,3,"a d4_fk c"}');
+2022-08-02 02:46:46.734 UTC [94114] ERROR:  expected JSON array
+2022-08-02 02:46:46.734 UTC [94114] STATEMENT:  select * from json_to_record('{"ia": [[1], 2]}') as x(ia _int4);
+2022-08-02 02:46:46.735 UTC [94114] ERROR:  flag array element is not a string
+2022-08-02 02:46:46.735 UTC [94114] STATEMENT:  select json_to_tsvector('english', '{"a": "aaa in bbb", "d4_fk": 123, "c": 456, "d": true, "f": false, "g": null}'::json, 'null');
+2022-08-02 02:46:46.735 UTC [94114] WARNING:  there is no transaction in progress
+2022-08-02 02:46:46.744 UTC [94114] ERROR:  unacceptable tablespace name "pg_foo"
+2022-08-02 02:46:46.744 UTC [94114] STATEMENT:  
+	
+	-- reserved tablespace name
+	CREATE TABLESPACE pg_foo LOCATION '/no/such/location';
+2022-08-02 02:46:46.744 UTC [94114] WARNING:  there is no transaction in progress
+2022-08-02 02:46:46.744 UTC [94114] ERROR:  unacceptable schema name "pg_foo"
+2022-08-02 02:46:46.744 UTC [94114] STATEMENT:  
+	CREATE SCHEMA pg_foo;
+2022-08-02 02:46:46.744 UTC [94114] WARNING:  there is no transaction in progress
+2022-08-02 02:46:46.744 UTC [94114] ERROR:  index "test1_a_idx" does not exist
+2022-08-02 02:46:46.744 UTC [94114] STATEMENT:  DROP INDEX test1_a_idx;
+2022-08-02 02:46:46.744 UTC [94114] ERROR:  result is out of range
+2022-08-02 02:46:46.744 UTC [94114] STATEMENT:  SELECT '127.0.0.1'::inet - 10000000000;
+2022-08-02 02:46:46.744 UTC [94114] WARNING:  there is no transaction in progress
+2022-08-02 02:46:46.763 UTC [94114] WARNING:  there is no transaction in progress
+2022-08-02 02:46:46.779 UTC [94114] WARNING:  there is no transaction in progress
+=================================================================
+==94114==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7fff795a9310 sp 0x7fff795a9308
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f8090a2a082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==94114==ABORTING
+2022-08-02 02:46:46.828 UTC [92237] LOG:  server process (PID 94114) was terminated by signal 6: Aborted
+2022-08-02 02:46:46.828 UTC [92237] LOG:  terminating any other active server processes
+2022-08-02 02:46:46.833 UTC [92237] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:46:46.848 UTC [96045] LOG:  database system was interrupted; last known up at 2022-08-02 02:46:40 UTC
+2022-08-02 02:46:46.849 UTC [96046] FATAL:  the database system is in recovery mode
+2022-08-02 02:46:46.851 UTC [96049] FATAL:  the database system is in recovery mode
+2022-08-02 02:46:46.853 UTC [96050] FATAL:  the database system is in recovery mode
+2022-08-02 02:46:46.860 UTC [92237] LOG:  received smart shutdown request
+2022-08-02 02:46:46.865 UTC [96045] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:46:46.866 UTC [96045] LOG:  redo starts at 0/46D7CA8
+2022-08-02 02:46:46.870 UTC [92237] LOG:  abnormal database system shutdown

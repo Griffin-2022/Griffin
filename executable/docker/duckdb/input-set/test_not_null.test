@@ -1,0 +1,50 @@
+# name: test/sql/constraints/test_not_null.test
+# description: NOT NULL constraint
+# group: [constraints]
+
+;
+CREATE TABLE integers(i INTEGER NOT NULL)
+
+;
+INSERT INTO integers VALUES (3)
+
+;
+INSERT INTO integers VALUES (NULL)
+
+;
+UPDATE integers SET i=4
+
+;
+UPDATE integers SET i=NULL
+
+;
+CREATE TABLE integers_with_null(i INTEGER)
+
+;
+INSERT INTO integers_with_null VALUES (3), (4), (5), (NULL);
+
+;
+INSERT INTO integers (i) SELECT * FROM integers_with_null
+
+;
+INSERT INTO integers (i) SELECT * FROM integers_with_null WHERE i IS NOT NULL
+
+;
+SELECT * FROM integers ORDER BY i
+;
+3
+4
+4
+5
+
+;
+UPDATE integers SET i=4 WHERE i>4
+
+;
+SELECT * FROM integers ORDER BY i
+;
+3
+4
+4
+4
+

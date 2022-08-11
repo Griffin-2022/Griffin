@@ -1,0 +1,111 @@
+	-- 8: an empty range
+	(8, 'empty'::daterange)
+	;
+2022-08-01 22:10:33.207 UTC [76545] ERROR:  type "float8multirange" does not exist at character 41
+2022-08-01 22:10:33.207 UTC [76545] STATEMENT:  create table float8multirange_test(f8mr float8multirange, i int);
+2022-08-01 22:10:33.208 UTC [76545] ERROR:  type "bank_account_pkey" does not exist
+2022-08-01 22:10:33.208 UTC [76545] STATEMENT:  drop type bank_account_pkey;
+2022-08-01 22:10:33.208 UTC [76545] ERROR:  type "pg_description" already exists
+2022-08-01 22:10:33.208 UTC [76545] STATEMENT:  create type pg_description as (x int, y int);
+2022-08-01 22:10:33.209 UTC [76545] ERROR:  cannot drop type pg_description because it is required by the database system
+2022-08-01 22:10:33.209 UTC [76545] STATEMENT:  drop type pg_description cascade;
+2022-08-01 22:10:33.209 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.216 UTC [76545] ERROR:  event triggers are not supported for DROP EVENT TRIGGER
+2022-08-01 22:10:33.216 UTC [76545] STATEMENT:  
+	
+	-- should fail, can't have event triggers on event triggers
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('DROP EVENT TRIGGER')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:33.216 UTC [76545] ERROR:  event triggers are not supported for CREATE DATABASE
+2022-08-01 22:10:33.216 UTC [76545] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE DATABASE')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:33.216 UTC [76545] ERROR:  event triggers are not supported for CREATE TABLESPACE
+2022-08-01 22:10:33.216 UTC [76545] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE TABLESPACE')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:33.217 UTC [76545] ERROR:  event trigger "regress_event_trigger" does not exist
+2022-08-01 22:10:33.217 UTC [76545] STATEMENT:  
+	alter event trigger regress_event_trigger enable replica;
+2022-08-01 22:10:33.218 UTC [76545] ERROR:  function f1() does not exist
+2022-08-01 22:10:33.218 UTC [76545] STATEMENT:  
+	drop routine f1(), p1();
+2022-08-01 22:10:33.219 UTC [76545] ERROR:  operator does not exist: test1 = test1
+2022-08-01 22:10:33.219 UTC [76545] STATEMENT:  create operator class ctype_hash_ops
+	  default for type test1 using hash as
+	  operator 1 =(test1, test1);
+2022-08-01 22:10:33.219 UTC [76545] ERROR:  schema "evttrig" does not exist
+2022-08-01 22:10:33.219 UTC [76545] STATEMENT:  
+	ALTER TABLE evttrig.test1 ALTER COLUMN objoid DROP DEFAULT;
+2022-08-01 22:10:33.222 UTC [76545] ERROR:  function drop_sql_command() does not exist
+2022-08-01 22:10:33.222 UTC [76545] STATEMENT:  
+	
+	CREATE EVENT TRIGGER sql_drop_command ON sql_drop
+	    WHEN TAG IN ('DROP POLICY') EXECUTE PROCEDURE drop_sql_command();
+2022-08-01 22:10:33.222 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.232 UTC [76545] ERROR:  function f1() does not exist
+2022-08-01 22:10:33.232 UTC [76545] STATEMENT:  
+	drop routine f1(), p1();
+2022-08-01 22:10:33.233 UTC [76545] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-01 22:10:33.233 UTC [76545] STATEMENT:  ROLLBACK TO SAVEPOINT five;
+2022-08-01 22:10:33.233 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.233 UTC [76545] ERROR:  schema "schema_two" does not exist
+2022-08-01 22:10:33.233 UTC [76545] STATEMENT:  
+	
+	CREATE OR REPLACE FUNCTION schema_two.add(int, int) RETURNS int LANGUAGE plpgsql
+	  CALLED ON NULL INPUT
+	  AS $$ BEGIN RETURN coalesce($1,0) + coalesce($2,0); END; $$;
+2022-08-01 22:10:33.236 UTC [76545] ERROR:  COMMIT AND CHAIN can only be used in transaction blocks
+2022-08-01 22:10:33.236 UTC [76545] STATEMENT:   COMMIT AND CHAIN;
+2022-08-01 22:10:33.236 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.236 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.246 UTC [76545] ERROR:  event triggers are not supported for CREATE TABLESPACE
+2022-08-01 22:10:33.246 UTC [76545] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE TABLESPACE')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:33.246 UTC [76545] ERROR:  event trigger "regress_event_trigger" does not exist
+2022-08-01 22:10:33.246 UTC [76545] STATEMENT:  
+	alter event trigger regress_event_trigger enable replica;
+2022-08-01 22:10:33.247 UTC [76545] ERROR:  function f1() does not exist
+2022-08-01 22:10:33.247 UTC [76545] STATEMENT:  
+	drop routine f1(), p1();
+2022-08-01 22:10:33.248 UTC [76545] ERROR:  operator does not exist: test1 = test1
+2022-08-01 22:10:33.248 UTC [76545] STATEMENT:  create operator class ctype_hash_ops
+	  default for type test1 using hash as
+	  operator 1 =(test1, test1);
+2022-08-01 22:10:33.248 UTC [76545] ERROR:  function undroppable() does not exist
+2022-08-01 22:10:33.248 UTC [76545] STATEMENT:  
+	
+	CREATE EVENT TRIGGER undroppable ON sql_drop
+		EXECUTE PROCEDURE undroppable();
+2022-08-01 22:10:33.249 UTC [76545] ERROR:  schema "evttrig" does not exist
+2022-08-01 22:10:33.249 UTC [76545] STATEMENT:  
+	ALTER TABLE evttrig.test1 ALTER COLUMN objoid DROP DEFAULT;
+2022-08-01 22:10:33.251 UTC [76545] WARNING:  there is already a transaction in progress
+2022-08-01 22:10:33.251 UTC [76545] WARNING:  there is no transaction in progress
+2022-08-01 22:10:33.251 UTC [76545] ERROR:  relation "classoid" does not exist
+2022-08-01 22:10:33.251 UTC [76545] STATEMENT:  analyze classoid;
+2022-08-01 22:10:33.301 UTC [76545] PANIC:  could not write to file "pg_wal/xlogtemp.76545": No space left on device
+2022-08-01 22:10:33.301 UTC [76545] STATEMENT:  create table ìÞÙ¸æñÕèindex2 as
+	select t2 from generate_series(0, 19999) t2;
+2022-08-01 22:10:33.322 UTC [76202] LOG:  server process (PID 76545) was terminated by signal 6: Aborted
+2022-08-01 22:10:33.322 UTC [76202] LOG:  terminating any other active server processes
+2022-08-01 22:10:33.329 UTC [77109] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:33.332 UTC [77112] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:33.337 UTC [76202] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:10:33.349 UTC [77115] LOG:  database system was interrupted; last known up at 2022-08-01 22:10:24 UTC
+2022-08-01 22:10:33.350 UTC [77116] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:33.380 UTC [76202] LOG:  received smart shutdown request
+2022-08-01 22:10:33.387 UTC [77115] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:10:33.388 UTC [77115] LOG:  redo starts at 0/167D7A8
+2022-08-01 22:10:33.392 UTC [76202] LOG:  abnormal database system shutdown

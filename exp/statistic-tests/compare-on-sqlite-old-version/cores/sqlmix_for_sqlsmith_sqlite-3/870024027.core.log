@@ -1,0 +1,82 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000429,sig:06,src:024024+021162,time:10097721,execs:1422770,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;
+;
+;DROP TABLE IF EXISTS t4;]
+VDBE Trace:
+   0 Init             0    2    0               00 Start at 2
+   2 Transaction      0    0    2 1             01 usesStmtJournal=0
+   3 Transaction      1    0    2 1             01 usesStmtJournal=0
+   4 Goto             0    1    0               00 
+   1 Halt             0    0    0               00 
+SQL: [;SELECT * FROM t2;]
+VDBE Trace:
+   0 Init             0    9    0               00 Start at 9
+   9 Transaction      0    0    2 1             01 usesStmtJournal=0
+  10 TableLock        0    2    0 t2            00 iDb=0 root=2 write=0
+  11 Goto             0    1    0               00 
+   1 OpenRead         0    2    0 1             00 root=2 iDb=0; t2
+   2 Explain          0    0    0 SCAN TABLE t2 00 
+   3 Rewind           0    7    0               00 
+   7 Close            0    0    0               00 
+   8 Halt             0    0    0               00 
+SQL: [;INSERT INTO t2(oid,a,a) VALUES(1099511627776,8,'0000010000000000');]
+VDBE Trace:
+   0 Init             0   19    0               00 Start at 19
+  19 Transaction      0    1    2 1             01 usesStmtJournal=0
+  20 TableLock        0    2    1 t2            00 iDb=0 root=2 write=1
+  21 Integer       999999    5    0               00 r[5]=999999
+REG[5] =  i:999999
+  22 Goto             0    1    0               00 
+   1 Integer          0    3    0               00 r[3]=0
+REG[3] =  i:0
+   2 OpenWrite        0    2    0 1             00 root=2 iDb=0; t2
+   3 Int64            0    1    0 1099511627776 00 r[1]=1099511627776
+REG[1] =  i:1099511627776
+   4 NotNull          1    6    0               00 if r[1]!=NULL goto 6
+REG[1] =  i:1099511627776
+   6 MustBeInt        1    0    0               00 
+REG[1] =  i:1099511627776
+   7 Integer          8    2    0               00 r[2]=8
+REG[2] =  i:8
+   8 Lt               2   10    2 (BINARY)      42 if r[2]<r[2] goto 10
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f84f91d3859 in __GI_abort () at abort.c:79
+#2  0x00007f84f91d3729 in __assert_fail_base (fmt=0x7f84f9369588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f84f91e4fd6 in __GI___assert_fail (assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=0x21067c "int sqlite3VdbeMemStringify(Mem *, u8, u8)") at assert.c:101
+#4  0x000000000027a9de in sqlite3VdbeMemStringify (pMem=0x26694a0, enc=1 '\001', bForce=1 '\001') at sqlite3.c:68526
+#5  0x00000000003c7fc0 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:78710
+#6  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#7  0x000000000024b5e9 in main (argc=1, argv=0x7ffe7e5d12d8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 43556] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

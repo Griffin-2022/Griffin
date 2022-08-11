@@ -1,0 +1,111 @@
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 2; index info: 2048 total in 2 blocks; 688 free (1 chunks); 1360 used: pg_toast_2612_index
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 2; index info: 2048 total in 2 blocks; 688 free (1 chunks); 1360 used: pg_toast_2606_index
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 2; index info: 2048 total in 2 blocks; 688 free (1 chunks); 1360 used: pg_toast_2604_index
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 2; index info: 2048 total in 2 blocks; 688 free (1 chunks); 1360 used: pg_toast_6100_index
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; 173 more child contexts containing 1737384 total in 579 blocks; 275704 free (116 chunks); 1461680 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; WAL record construction: 273976 total in 2 blocks; 6360 free (0 chunks); 267616 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; PrivateRefCount: 8192 total in 1 blocks; 1576 free (0 chunks); 6616 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; MdSmgr: 16384 total in 2 blocks; 7944 free (2 chunks); 8440 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; LOCALLOCK hash: 16384 total in 2 blocks; 4592 free (2 chunks); 11792 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; Timezones: 2165480 total in 4 blocks; 2616 free (0 chunks); 2162864 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  level: 1; ErrorContext: 8192 total in 1 blocks; 7928 free (4 chunks); 264 used
+2022-08-02 09:17:22.240 UTC [52254] LOG:  Grand total: 11071224 bytes in 1005 blocks; 1659312 free (2939 chunks); 9411912 used
+2022-08-02 09:17:22.240 UTC [52254] ERROR:  relation "tenk1" does not exist at character 228
+2022-08-02 09:17:22.240 UTC [52254] STATEMENT:  CREATE FUNCTION unbounded_syntax_test2b(unbounded int) RETURNS TABLE (a int, b int, c int)
+	LANGUAGE SQL
+	AS $$
+	  SELECT sum(unique1) over (rows between unbounded preceding and unbounded following),
+	         unique1, four
+	  FROM tenk1 WHERE unique1 < 10;
+	$$;
+2022-08-02 09:17:22.240 UTC [52254] ERROR:  role "regress_foreign_data_user" already exists
+2022-08-02 09:17:22.240 UTC [52254] STATEMENT:  
+	
+	CREATE ROLE regress_foreign_data_user LOGIN SUPERUSER;
+2022-08-02 09:17:22.241 UTC [52254] ERROR:  collation "sv_SE" for encoding "SQL_ASCII" does not exist
+2022-08-02 09:17:22.241 UTC [52254] STATEMENT:  
+	
+	
+	CREATE DOMAIN testdomain_sv AS text COLLATE "sv_SE";
+2022-08-02 09:17:22.241 UTC [52254] ERROR:  type "testdomain_sv" does not exist at character 57
+2022-08-02 09:17:22.241 UTC [52254] STATEMENT:   -- fails
+	CREATE TABLE collate_test4 (
+	    a int,
+	    b testdomain_sv
+	);
+=================================================================
+==52254==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffeb93a8e94 at pc 0x00000057ca86 bp 0x7ffeb93a8c90 sp 0x7ffeb93a8c88
+READ of size 1 at 0x7ffeb93a8e94 thread T0
+    #0 0x57ca85  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57ca85)
+    #1 0x99ea68  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99ea68)
+    #2 0x99deb6  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99deb6)
+    #3 0x119309b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x119309b)
+    #4 0x118f991  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118f991)
+    #5 0x118e3f3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118e3f3)
+    #6 0x118d660  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118d660)
+    #7 0x118b88d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b88d)
+    #8 0x118a128  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a128)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f400709a082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+Address 0x7ffeb93a8e94 is located in stack of thread T0 at offset 404 in frame
+    #0 0x99e66f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99e66f)
+
+  This frame has 4 object(s):
+    [32, 248) 'skey' (line 145)
+    [320, 352) 'values' (line 149)
+    [384, 388) 'nulls' (line 150)
+    [400, 404) 'replaces' (line 151) <== Memory access at offset 404 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57ca85) 
+Shadow bytes around the buggy address:
+  0x10005726d180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d190: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d1a0: f1 f1 f1 f1 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d1b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f2
+  0x10005726d1c0: f2 f2 f2 f2 f2 f2 f2 f2 00 00 00 00 f2 f2 f2 f2
+=>0x10005726d1d0: 04 f2[04]f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d1e0: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  0x10005726d1f0: 00 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d210: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10005726d220: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==52254==ABORTING
+2022-08-02 09:17:22.269 UTC [42457] LOG:  server process (PID 52254) was terminated by signal 6: Aborted
+2022-08-02 09:17:22.269 UTC [42457] LOG:  terminating any other active server processes
+2022-08-02 09:17:22.276 UTC [53313] FATAL:  the database system is in recovery mode
+2022-08-02 09:17:22.278 UTC [53316] FATAL:  the database system is in recovery mode
+2022-08-02 09:17:22.280 UTC [53317] FATAL:  the database system is in recovery mode
+2022-08-02 09:17:22.284 UTC [42457] LOG:  all server processes terminated; reinitializing
+2022-08-02 09:17:22.310 UTC [42457] LOG:  received smart shutdown request
+2022-08-02 09:17:22.311 UTC [53323] LOG:  database system was interrupted; last known up at 2022-08-02 09:17:16 UTC
+2022-08-02 09:17:22.373 UTC [53323] LOG:  recovered replication state of node 5 to 0/0
+2022-08-02 09:17:22.373 UTC [53323] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 09:17:22.373 UTC [53323] LOG:  database system was not properly shut down; automatic recovery in progress

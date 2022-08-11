@@ -1,0 +1,94 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000700,sig:06,src:019782+022175,time:30648839,execs:6183172,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: ;
+;SELECT quote(t2) FROM t1 WHERE t2 LIKE 'ab%' ORDER BY +t2 ASC;
+SQL-trace: ;
+;CREATE TABLE c0(c1 TEXT COLLATE nocase);
+SQL-trace: ;INSERT INTO t1(t2) SELECT t2 FROM t1;
+SQL-trace: ;SELECT quote(t2) FROM t1 WHERE t2 LIKE 'ab%' ORDER BY t2;
+SQL-trace: CREATE INDEX y ON tr2(t0)
+;
+SQL-trace: SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;
+SQL-trace: ;SELECT name, type, sql FROM sqlite_master order by name
+  
+;
+SQL-trace: ;CREATE INDEX c ON tr2(t0);
+SQL-trace: ;
+;
+;CREATE TABLE i1(z INT UNIQUE COLLATE binary);
+SQL-trace: ;INSERT INTO tr2(rowid, t0) VALUES (99,'+/');
+SQL-trace: ;SELECT * FROM tr2 WHERE (t0 LIKE '+/');
+SQL-trace: ;
+;VACUUM;
+SQL-trace: ATTACH ':memory:' AS vacuum_db;
+SQL-trace: PRAGMA vacuum_db.synchronous=OFF
+SQL-trace: BEGIN;
+SQL-trace: SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14)   FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: CREATE TABLE vacuum_db.t1(x, t2 DEFAULT(datetime('now')))
+SQL-trace: CREATE TABLE vacuum_db.tr2(t0 TEXT PRIMARY KEY COLLATE nocase)
+SQL-trace: CREATE TABLE vacuum_db.c0(c1 TEXT COLLATE nocase)
+SQL-trace: CREATE TABLE vacuum_db.i1(z INT UNIQUE COLLATE binary)
+SQL-trace: SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14)  FROM sqlite_master WHERE sql LIKE 'CREATE INDEX %' 
+SQL-trace: CREATE INDEX vacuum_db.a ON t1(t2)
+
+SQL-trace: CREATE INDEX vacuum_db.b ON t1(t2)
+
+SQL-trace: CREATE INDEX vacuum_db.t1i1 ON t1(abs(x))
+SQL-trace: CREATE INDEX vacuum_db.t2i1 ON t1(x,x)
+SQL-trace: CREATE INDEX vacuum_db.tr1 ON t1(t2)
+
+SQL-trace: CREATE INDEX vacuum_db.y ON tr2(t0)
+
+SQL-trace: CREATE INDEX vacuum_db.c ON tr2(t0)
+SQL-trace: SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21)   FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';'FROM main.sqlite_master WHERE type = 'table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: INSERT INTO vacuum_db.'t1' SELECT * FROM main.'t1';
+SQL-trace: INSERT INTO vacuum_db.'tr2' SELECT * FROM main.'tr2';
+SQL-trace: INSERT INTO vacuum_db.'c0' SELECT * FROM main.'c0';
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fade385d859 in __GI_abort () at abort.c:79
+#2  0x00007fade385d729 in __assert_fail_base (fmt=0x7fade39f3588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x227729 "sqlite3_stricmp(sqlite3StrBINARY, zColl)!=0 || sqlite3StrBINARY==zColl", 
+    file=0x222c23 "sqlite3.c", line=108020, function=<optimized out>) at assert.c:92
+#3  0x00007fade386efd6 in __GI___assert_fail (assertion=0x227729 "sqlite3_stricmp(sqlite3StrBINARY, zColl)!=0 || sqlite3StrBINARY==zColl", file=0x222c23 "sqlite3.c", line=108020, 
+    function=0x20a00b "int xferOptimization(Parse *, Table *, Select *, int, int)") at assert.c:101
+#4  0x0000000000345560 in sqlite3Insert (pParse=<optimized out>, pTabList=<optimized out>, pSelect=<optimized out>, pColumn=0x0, onError=<optimized out>) at sqlite3.c:108019
+#5  0x00000000003066b3 in yy_reduce (yypParser=0x1bef290, yyruleno=<optimized out>) at sqlite3.c:133484
+#6  0x00000000002fef8e in sqlite3Parser (yyp=0x1bef290, yymajor=<optimized out>, yyminor=..., pParse=<optimized out>) at sqlite3.c:134258
+#7  0x00000000002fc544 in sqlite3RunParser (pParse=0x1b5d450, zSql=0x1b5bec0 "INSERT INTO vacuum_db.'i1' SELECT * FROM main.'i1';", pzErrMsg=0x7fff7fb14498) at sqlite3.c:135186
+#8  0x00000000002facac in sqlite3Prepare (db=0x1b4a850, zSql=0x1b5bec0 "INSERT INTO vacuum_db.'i1' SELECT * FROM main.'i1';", nBytes=<optimized out>, saveSqlFlag=0, pReprepare=<optimized out>, ppStmt=0x7fff7fb14558, 
+    pzTail=0x0) at sqlite3.c:112596
+#9  0x00000000002fa0f4 in sqlite3LockAndPrepare (db=0x1b4a850, zSql=0x1b5bec0 "INSERT INTO vacuum_db.'i1' SELECT * FROM main.'i1';", nBytes=-1, saveSqlFlag=0, pOld=0x0, ppStmt=<optimized out>, pzTail=0x0)
+    at sqlite3.c:112688
+#10 0x00000000003fb16b in execSql (db=0x1b4a850, pzErrMsg=0x1b5fce8, zSql=<optimized out>) at sqlite3.c:112752
+#11 0x00000000003fb5ec in execExecSql (db=0x1b4a850, pzErrMsg=0x1b5fce8, zSql=<optimized out>) at sqlite3.c:120748
+#12 0x00000000003de49e in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:120939
+#13 0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#14 0x000000000024b5e9 in main (argc=1, argv=0x7fff7fb14cf8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 45789] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

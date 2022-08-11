@@ -1,0 +1,27 @@
+CREATE VIRTUAL TABLE zzz USING zipfile('test.zip');
+;INSERT INTO zzz(name, mode) VALUES('dirname', 'drwxr-xr-x');
+;SELECT name, mode, data FROM zzz;
+;
+;INSERT INTO zzz(name, data) VALUES('dirname2', NULL);
+;INSERT INTO zzz(name, data) VALUES('dirname2/file1.txt', 'abcdefghijklmnop');
+;
+;UPDATE zzz SET name = 'dirname3' WHERE name = 'dirname/';
+;
+;
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;

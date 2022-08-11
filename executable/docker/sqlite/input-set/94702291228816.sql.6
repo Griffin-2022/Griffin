@@ -1,0 +1,20 @@
+ATTACH ':memory:' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;CREATE TABLE main.t1(a,b);
+;CREATE TABLE aux.t2(x,y);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;INSERT INTO t1 VALUES(1,2);
+;INSERT INTO t2 VALUES(3,4);
+;
+;CREATE VIEW v1 AS SELECT * FROM t1, aux.t2;
+;CREATE VIEW v2 AS WITH v(m,n) AS (SELECT x,y FROM aux.t2) SELECT * FROM t1, v;
+;CREATE VIEW v2 AS WITH v(m,n) AS (SELECT 5,?2) SELECT * FROM t1, v;
+;CREATE TRIGGER r1 AFTER INSERT ON t1 BEGIN
+     WITH v(m,n) AS (SELECT x,y FROM aux.t2) SELECT * FROM t1, v;
+  END;
+;CREATE TRIGGER r1 AFTER INSERT ON t1 BEGIN
+     WITH v(m,n) AS (SELECT 5,?2) SELECT * FROM t1, v;
+  END;
+;

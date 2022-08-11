@@ -1,0 +1,150 @@
+SELECT * FROM t2
+;PRAGMA integrity_check
+;CREATE TRIGGER 'trigger' AFTER INSERT ON t2 BEGIN SELECT 1; END;
+;SELECT name FROM sqlite_master WHERE type='trigger';
+;
+;DROP TRIGGER 'trigger';
+;
+;CREATE TRIGGER "trigger" AFTER INSERT ON t2 BEGIN SELECT 1; END;
+;
+;DROP TRIGGER "trigger";
+;
+;CREATE TRIGGER [trigger] AFTER INSERT ON t2 BEGIN SELECT 1; END;
+;
+;DROP TRIGGER [trigger];
+;
+;CREATE TABLE t3(a,b);
+;CREATE TABLE t4(x UNIQUE, b);
+;CREATE TRIGGER r34 AFTER INSERT ON t3 BEGIN
+          REPLACE INTO t4 VALUES(new.a,new.b);
+        END;
+;INSERT INTO t3 VALUES(1,2);
+;SELECT * FROM t3 UNION ALL SELECT 99, 99 UNION ALL SELECT * FROM t4;
+;
+;INSERT INTO t3 VALUES(1,3);
+;
+;DROP TABLE t3;
+;DROP TABLE t4;
+;
+;ATTACH 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;
+;CREATE TABLE main.t4(a, b, c);
+;CREATE TABLE temp.t4(a, b, c);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE aux.t4(a, b, c);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE insert_log(db, a, b, c);
+;
+;CREATE TEMP TRIGGER trig1 AFTER INSERT ON main.t4 BEGIN 
+        INSERT INTO insert_log VALUES('main', new.a, new.b, new.c);
+      END;
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig1' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig1' ORDER BY rowid
+;CREATE TEMP TRIGGER trig2 AFTER INSERT ON temp.t4 BEGIN 
+        INSERT INTO insert_log VALUES('temp', new.a, new.b, new.c);
+      END;
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig2' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig2' ORDER BY rowid
+;CREATE TEMP TRIGGER trig3 AFTER INSERT ON aux.t4 BEGIN 
+        INSERT INTO insert_log VALUES('aux', new.a, new.b, new.c);
+      END;
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig3' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='trig3' ORDER BY rowid
+;
+;INSERT INTO main.t4 VALUES(1, 2, 3);
+;INSERT INTO temp.t4 VALUES(4, 5, 6);
+;INSERT INTO aux.t4  VALUES(7, 8, 9);
+;
+;SELECT * FROM insert_log;
+;
+;BEGIN;
+;INSERT INTO main.t4 VALUES(1, 2, 3);
+;INSERT INTO temp.t4 VALUES(4, 5, 6);
+;INSERT INTO aux.t4  VALUES(7, 8, 9);
+;ROLLBACK;
+;
+;SELECT * FROM insert_log;
+;
+;DELETE FROM insert_log;
+;INSERT INTO main.t4 VALUES(11, 12, 13);
+;INSERT INTO temp.t4 VALUES(14, 15, 16);
+;INSERT INTO aux.t4  VALUES(17, 18, 19);
+;
+;SELECT * FROM insert_log;
+;
+;DROP TABLE insert_log;
+;CREATE TABLE aux.insert_log(db, d, e, f);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='insert_log' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='insert_log' AND type!='trigger' ORDER BY rowid
+;
+;INSERT INTO main.t4 VALUES(21, 22, 23);
+;INSERT INTO temp.t4 VALUES(24, 25, 26);
+;INSERT INTO aux.t4  VALUES(27, 28, 29);
+;
+;SELECT * FROM insert_log;
+;
+;SELECT raise(abort,'message');
+;CREATE TABLE tA(a INTEGER PRIMARY KEY, b, c);
+;CREATE TRIGGER tA_trigger BEFORE UPDATE ON "tA" BEGIN SELECT 1; END;
+;INSERT INTO tA VALUES(1, 2, 3);
+;
+;UPDATE tA SET a = 'abc' 
+;INSERT INTO tA VALUES('abc', 2, 3) 
+;CREATE TABLE t16(a,b,c);
+;CREATE INDEX t16a ON t16(a);
+;CREATE INDEX t16b ON t16(b);
+;
+;CREATE TRIGGER main.t16err1 AFTER INSERT ON tA BEGIN
+      INSERT INTO main.t16 VALUES
+;CREATE TRIGGER main.t16err2 AFTER INSERT ON tA BEGIN
+      UPDATE main.t16 SET
+;CREATE TRIGGER main.t16err3 AFTER INSERT ON tA BEGIN
+      DELETE FROM main.t16;
+;CREATE TRIGGER main.t16err4 AFTER INSERT ON tA BEGIN
+      UPDATE t16 NOT INDEXED SET
+;CREATE TRIGGER main.t16err5 AFTER INSERT ON tA BEGIN
+      UPDATE t16 INDEXED BY t16a SET
+;CREATE TRIGGER main.t16err6 AFTER INSERT ON tA BEGIN
+      DELETE FROM t16 NOT INDEXED WHERE
+;CREATE TRIGGER main.t16err7 AFTER INSERT ON tA BEGIN
+      DELETE FROM t16 INDEXED BY t16a WHERE
+;CREATE TABLE t17a(ii INT);
+;CREATE TABLE t17b(tt TEXT PRIMARY KEY, ss);
+;CREATE TRIGGER t17a_ai AFTER INSERT ON t17a BEGIN
+    INSERT INTO t17b(tt) VALUES(new.ii);
+  END;
+;CREATE TRIGGER t17b_ai AFTER INSERT ON t17b BEGIN
+    UPDATE t17b SET ss = 4;
+  END;
+;INSERT INTO t17a(ii) VALUES('1');
+;PRAGMA integrity_check;
+;
+;CREATE TABLE t18(a PRIMARY KEY,b,c);
+;INSERT INTO t18(a,b,c) VALUES(1,2,3);
+;CREATE TRIGGER t18r1 BEFORE UPDATE ON t18 BEGIN
+    UPDATE t18 SET b=1000 WHERE a=old.a;
+  END;
+;UPDATE t18 SET c=b WHERE a=1;
+;SELECT * FROM t18;
+;
+;DELETE FROM t18;
+;INSERT INTO t18(a,b,c) VALUES(1,2,3);
+;UPDATE t18 SET c=b, b=b+1 WHERE a=1;
+;SELECT * FROM t18;
+;
+;CREATE TABLE t19(a INT PRIMARY KEY, b, c)WITHOUT ROWID;
+;INSERT INTO t19(a,b,c) VALUES(1,2,3);
+;CREATE TRIGGER t19r3 BEFORE UPDATE ON t19 BEGIN SELECT new.b; END;
+;UPDATE t19 SET c=b WHERE a=1;
+;SELECT * FROM t19;
+;
+;DELETE FROM t19;
+;INSERT INTO t19(a,b,c) VALUES(1,2,3);
+;UPDATE t19 SET c=CASE WHEN b=2 THEN b ELSE b+99 END WHERE a=1;
+;SELECT * FROM t19;
+;
+;

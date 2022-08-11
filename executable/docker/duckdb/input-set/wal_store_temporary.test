@@ -1,0 +1,92 @@
+# name: test/sql/storage/wal/wal_store_temporary.test
+# description: Temporary tables are not written to disk
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/test_store_temporary.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a temporary table and do some ops on there
+;
+CREATE TABLE persistent (i INTEGER)
+
+;
+CREATE TEMPORARY TABLE temp.a (i INTEGER)
+
+# insert values, delete them, etc
+;
+INSERT INTO a VALUES (42)
+
+;
+DELETE FROM a
+
+;
+DELETE FROM temp.a
+
+# check schema
+;
+DELETE FROM asdf.a
+
+# temporary sequences
+;
+CREATE TEMPORARY SEQUENCE seq
+
+;
+CREATE TEMPORARY SEQUENCE seq2
+
+;
+DROP SEQUENCE seq2
+
+# temporary views
+;
+CREATE TEMPORARY VIEW v1 AS SELECT 42
+
+;
+CREATE TEMPORARY VIEW v2 AS SELECT 42
+
+;
+DROP VIEW v2
+
+;
+INSERT INTO temp.a VALUES (43)
+
+;
+UPDATE temp.a SET i = 44
+
+;
+UPDATE a SET i = 45
+
+# alter table on a temporary structure
+;
+ALTER TABLE a RENAME COLUMN i TO k
+
+;
+SELECT * FROM persistent
+
+;
+SELECT * FROM a
+
+# now restart
+restart
+
+# persistent table is still there
+;
+SELECT * FROM persistent
+
+# temporary table is gone
+;
+SELECT * FROM a
+
+;
+CREATE TEMPORARY TABLE a (i INTEGER)
+
+;
+CREATE TEMPORARY SEQUENCE seq
+
+;
+CREATE TEMPORARY VIEW v1 AS SELECT 42

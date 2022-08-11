@@ -1,0 +1,77 @@
+# name: test/sql/catalog/dependencies/test_default_value_dependency.test
+# description: Default values and dependencies
+# group: [dependencies]
+
+# dependency on a sequence in a default value
+;
+CREATE SEQUENCE seq
+
+;
+CREATE TABLE integers(i INTEGER DEFAULT nextval('seq'), j INTEGER)
+
+;
+INSERT INTO integers (j) VALUES (1), (1), (1), (1), (1)
+
+;
+SELECT SUM(i) FROM integers
+;
+15.000000
+
+# we can't drop the sequence: the table depends on it
+;
+DROP SEQUENCE seq
+
+# cascade drop works
+;
+DROP SEQUENCE seq CASCADE
+
+# but it also drops the table
+;
+SELECT * FROM integers
+
+# dependency on multiple sequences in default value
+;
+CREATE SEQUENCE seq
+
+;
+CREATE SEQUENCE seq1
+
+;
+CREATE SEQUENCE seq2
+
+;
+CREATE TABLE integers(i INTEGER DEFAULT nextval('seq' || CAST(nextval('seq') AS VARCHAR)), j INTEGER)
+
+# seq1 exists, so the result of the first default value is 1
+;
+INSERT INTO integers (j) VALUES (1)
+
+# we can drop seq1 and seq2: the dependency is not fixed
+;
+DROP SEQUENCE seq1
+
+;
+DROP SEQUENCE seq2
+
+# seq2 does not exist after this drop, so another insert fails
+;
+INSERT INTO integers (j) VALUES (1)
+
+# table is now [1, 1]: query it
+;
+SELECT SUM(i) FROM integers
+;
+1.000000
+
+# we can't drop seq however: the dependency is fixed
+;
+DROP SEQUENCE seq
+
+# need to do a cascading drop
+;
+DROP SEQUENCE seq CASCADE
+
+# now the table is gone
+;
+SELECT * FROM integers
+

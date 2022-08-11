@@ -1,0 +1,56 @@
+# name: test/sql/constraints/foreignkey/test_fk_rollback.test
+# description: FOREIGN KEY and rollback
+# group: [foreignkey]
+
+;
+CREATE TABLE pk_integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO pk_integers VALUES (1);
+
+;
+BEGIN TRANSACTION
+
+;
+CREATE TABLE fk_integers(j INTEGER, FOREIGN KEY (j) REFERENCES pk_integers(i))
+
+# can't delete the primary table because of dependency
+;
+DROP TABLE pk_integers
+
+;
+ROLLBACK
+
+# can delete the primary table because no exist dependency
+;
+DROP TABLE pk_integers
+
+;
+CREATE TABLE pk_integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO pk_integers VALUES (1), (2);
+
+;
+CREATE TABLE fk_integers(j INTEGER, FOREIGN KEY (j) REFERENCES pk_integers(i))
+
+;
+INSERT INTO fk_integers VALUES (2);
+
+;
+BEGIN TRANSACTION
+
+;
+DROP TABLE fk_integers
+
+;
+ROLLBACK
+
+;
+DELETE FROM pk_integers WHERE i=2;
+
+;
+INSERT INTO fk_integers VALUES (3);
+
+;
+DROP TABLE pk_integers

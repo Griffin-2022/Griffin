@@ -1,0 +1,111 @@
+	select ('[1, "2", null]'::jsonb)[2];
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select ('[1, "2", null]'::jsonb)[3];
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select ('[1, "2", null]'::jsonb)[-2];
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select ('{"a": 1, "b": "c", "d": [1, 2, 3]}'::jsonb)['d'][1];
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select * from b;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	
+	-- replace jsonb
+	update b set auth_tbl['a'] = '"test"';
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select * from b where auth_tbl['key_doesnt_exists'] = '"value"';
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	insert into b values (1, '[0]');
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	
+	-- keep consistent values position
+	delete from uname;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select * from uname;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select * from keycol;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	select * from b;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	
+	-- the start jsonb is an array
+	delete from b;
+2022-08-02 08:19:59.572 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.572 UTC [23264] STATEMENT:  
+	update b set auth_tbl['a']['b'][1] = '1';
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	
+	delete from keycol;
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	insert into b values (1, '{"a": 1}');
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	update b set auth_tbl['a']['b']['c'] = '1';
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	update b set auth_tbl['a'][0]['c'] = '1';
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	update b set auth_tbl[0][0] = '1';
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select jsonb_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::jsonb, '["string", "numeric"]');
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	
+	-- to_tsvector corner cases
+	select to_tsvector('""'::jsonb);
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select to_tsvector('null'::jsonb);
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select jsonb_to_tsvector('[]'::jsonb, '"all"');
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	
+	select jsonb_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::jsonb, '""');
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select ts_headline('english', '{"a": "aaa bbb", "b": {"c": "ccc ddd fff", "c1": "ccc1 ddd1"}, "d": ["ggg hhh", "iii jjj"]}'::jsonb, tsquery('bbb & ddd & hhh'), 'StartSel = <, StopSel = >');
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select '12345.0000000000000000000000000000000000000000000005'::jsonb::int4;
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  
+	select '12345.0000000000000000000000000000000000000000000005'::jsonb::int8;
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  DISCARD ALL;
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 08:19:59.573 UTC [23264] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:19:59.573 UTC [23264] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 08:19:59.574 UTC [29203] PANIC:  could not open critical system index 2662
+2022-08-02 08:19:59.575 UTC [23238] LOG:  server process (PID 29203) was terminated by signal 6: Aborted
+2022-08-02 08:19:59.575 UTC [23238] LOG:  terminating any other active server processes
+2022-08-02 08:19:59.615 UTC [23238] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:19:59.636 UTC [29206] LOG:  database system was interrupted; last known up at 2022-08-02 08:19:09 UTC
+2022-08-02 08:19:59.645 UTC [29206] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:19:59.645 UTC [29211] FATAL:  the database system is in recovery mode
+2022-08-02 08:19:59.645 UTC [29206] LOG:  redo starts at 0/2BE7EE8
+2022-08-02 08:19:59.647 UTC [29214] FATAL:  the database system is in recovery mode
+2022-08-02 08:19:59.648 UTC [29215] FATAL:  the database system is in recovery mode
+2022-08-02 08:19:59.653 UTC [23238] LOG:  received smart shutdown request
+2022-08-02 08:19:59.656 UTC [23238] LOG:  abnormal database system shutdown

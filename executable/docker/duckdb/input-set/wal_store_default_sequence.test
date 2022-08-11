@@ -1,0 +1,73 @@
+# name: test/sql/storage/wal/wal_store_default_sequence.test
+# description: Test storage of default values with sequences
+# group: [wal]
+
+load __TEST_DIR__/test_store_defaults.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a table with a reference to a sequence as default value
+;
+CREATE SEQUENCE seq;
+
+# use the sequence so that currval can return a value
+;
+SELECT nextval('seq')
+;
+1
+
+;
+CREATE TABLE test (a INTEGER DEFAULT nextval('seq'), b INTEGER, c INTEGER DEFAULT currval('seq'));
+
+;
+INSERT INTO test (b) VALUES (11)
+
+# restart the database
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM test ORDER BY b
+;
+2	11	2
+
+# verify that the sequence was used during the append
+;
+INSERT INTO test (b) VALUES (12);
+
+;
+INSERT INTO test (b) VALUES (13);
+
+;
+SELECT * FROM test ORDER BY b
+;
+2	11	2
+3	12	3
+4	13	4
+
+# restart and insert one more time
+restart
+
+;
+INSERT INTO test (b) VALUES (14)
+
+;
+INSERT INTO test (b) VALUES (15)
+
+;
+SELECT * FROM test ORDER BY b
+;
+2	11	2
+3	12	3
+4	13	4
+5	14	5
+6	15	6

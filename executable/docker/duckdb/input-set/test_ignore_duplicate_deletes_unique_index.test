@@ -1,0 +1,42 @@
+# name: test/sql/storage/test_ignore_duplicate_deletes_unique_index.test
+# description: Test ignoring of old tuples in unique index creation
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/test_ignore_duplicate_delete.db
+
+;
+CREATE TABLE TBL (id INT NOT NULL, age INT NOT NULL, PRIMARY KEY ( id ))
+
+;
+INSERT INTO TBL VALUES (1, 1);
+
+;
+DELETE FROM TBL WHERE id = 1;
+
+;
+INSERT INTO TBL VALUES (1, 1);
+
+;
+SELECT * FROM TBL
+;
+1	1
+
+;
+SELECT * FROM TBL WHERE id=1
+;
+1	1
+
+restart
+
+;
+SELECT * FROM TBL
+;
+1	1
+
+;
+SELECT * FROM TBL WHERE id=1
+;
+1	1
+
+

@@ -1,0 +1,278 @@
+# name: test/sql/export/export_database.test
+# description: Test export database
+# group: [export]
+
+# create a bunch of tables with data and views
+
+;
+BEGIN TRANSACTION
+
+;
+CREATE TABLE integers(i INTEGER, j INTEGER, CHECK(i+j<10))
+
+;
+CREATE TABLE strings(v VARCHAR, d DATE, PRIMARY KEY(d))
+
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+;
+CREATE TABLE enums(current_mood mood)
+
+;
+INSERT INTO integers VALUES (1, 3), (4, 2), (NULL, 1)
+
+;
+INSERT INTO strings VALUES ('NULL', DATE '1992-01-01'), (NULL, DATE '1993-01-01');
+
+;
+INSERT INTO enums VALUES ('sad'),('ok'),('sad'),('happy')
+
+;
+CREATE TABLE "table.with-symbols"(i INTEGER)
+
+;
+INSERT INTO "table.with-symbols" VALUES (1), (4), (NULL)
+
+;
+CREATE TABLE "table ""." ( "col ""." TEXT)
+
+;
+INSERT INTO "table ""." ("col "".") VALUES ('quote_escaped_quote_''')
+
+;
+CREATE TABLE "SAME_NAME"(i INTEGER, j INTEGER);
+
+;
+CREATE TABLE "same_name"(i INTEGER, j INTEGER);
+
+;
+INSERT INTO "SAME_NAME" VALUES (1, 1), (2, 2)
+
+;
+CREATE VIEW v1 AS SELECT * FROM integers WHERE i>3; --
+CREATE VIEW v2 AS SELECT * FROM integers WHERE i < 3;
+CREATE VIEW "view.with-symbols" AS SELECT * FROM "table.with-symbols" WHERE i < 3;
+CREATE VIEW "view ""." AS SELECT * FROM "table.with-symbols" WHERE i < 3;
+
+;
+CREATE VIEW v3 AS SELECT * FROM integers WHERE i IS NULL --
+
+;
+CREATE SEQUENCE seq
+
+;
+SELECT nextval('seq')
+;
+1
+
+;
+SELECT * FROM v2 ORDER BY 1
+;
+1	3
+
+# check data
+;
+SELECT * FROM integers ORDER BY 1
+;
+NULL	1
+1	3
+4	2
+
+;
+SELECT * FROM enums ORDER BY 1
+;
+sad
+sad
+ok
+happy
+
+;
+SELECT * FROM strings ORDER BY 1
+;
+NULL	1993-01-01
+NULL	1992-01-01
+
+;
+SELECT * FROM v1 ORDER BY 1
+;
+4	2
+
+;
+SELECT * FROM v2 ORDER BY 1
+;
+1	3
+
+;
+SELECT * FROM v3 ORDER BY 1
+;
+NULL	1
+
+;
+SELECT * FROM "table.with-symbols" ORDER BY 1
+;
+NULL
+1
+4
+
+;
+SELECT * FROM "view.with-symbols" ORDER BY 1
+;
+1
+
+
+;
+SELECT "table ""."."col "".", "col ""." FROM "table "".";
+;
+quote_escaped_quote_'	quote_escaped_quote_'
+
+;
+SELECT * FROM "view ""." ORDER BY 1
+;
+1
+
+;
+SELECT * FROM "SAME_NAME" ORDER BY i
+;
+1	1
+2	2
+
+;
+CREATE SCHEMA s1;
+CREATE SCHEMA s2;
+
+
+;
+CREATE TABLE table01(i INTEGER, j INTEGER);
+CREATE TABLE s1.table01(i INTEGER, j INTEGER);
+CREATE TABLE s2.table01(i INTEGER, j INTEGER);
+
+;
+INSERT INTO table01 VALUES (1, 1), (2, 2);
+INSERT INTO s1.table01 VALUES (3, 3), (4, 4);
+INSERT INTO s2.table01 VALUES (5, 5), (6, 6);
+
+
+;
+SELECT * FROM table01 ORDER BY i;
+;
+1	1
+2	2
+
+;
+SELECT * FROM s1.table01 ORDER BY i;
+;
+3	3
+4	4
+
+;
+SELECT * FROM s2.table01 ORDER BY i;
+;
+5	5
+6	6
+
+# now export the db
+;
+EXPORT DATABASE '__TEST_DIR__/export_test' (FORMAT CSV)
+
+;
+ROLLBACK
+
+;
+IMPORT DATABASE '__TEST_DIR__/export_test'
+
+# check data
+;
+SELECT * FROM integers ORDER BY 1
+;
+NULL	1
+1	3
+4	2
+
+;
+SELECT * FROM strings ORDER BY 1
+;
+NULL	1993-01-01
+NULL	1992-01-01
+
+;
+SELECT * FROM enums ORDER BY 1
+;
+sad
+sad
+ok
+happy
+
+;
+SELECT * FROM v1 ORDER BY 1
+;
+4	2
+
+;
+SELECT * FROM v2 ORDER BY 1
+;
+1	3
+
+;
+SELECT * FROM v3 ORDER BY 1
+;
+NULL	1
+
+# sequence is not reset to base value, but keeps the value it had
+;
+SELECT nextval('seq')
+;
+2
+
+;
+SELECT * FROM "table.with-symbols" ORDER BY 1
+;
+NULL
+1
+4
+
+;
+SELECT * FROM "view.with-symbols" ORDER BY 1
+;
+1
+
+;
+SELECT "table ""."."col "".", "col ""." FROM "table "".";
+;
+quote_escaped_quote_'	quote_escaped_quote_'
+
+;
+SELECT * FROM "view ""." ORDER BY 1
+;
+1
+
+;
+SELECT * FROM "SAME_NAME" ORDER BY i
+;
+1	1
+2	2
+
+;
+SELECT * FROM table01 ORDER BY i;
+;
+1	1
+2	2
+
+;
+SELECT * FROM s1.table01 ORDER BY i;
+;
+3	3
+4	4
+
+;
+SELECT * FROM s2.table01 ORDER BY i;
+;
+5	5
+6	6
+
+# verify that constraints are still there
+;
+INSERT INTO integers VALUES (5, 6)
+
+;
+INSERT INTO strings VALUES(NULL, NULL)

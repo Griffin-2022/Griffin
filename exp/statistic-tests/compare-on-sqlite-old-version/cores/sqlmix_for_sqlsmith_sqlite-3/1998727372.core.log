@@ -1,0 +1,61 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000146,sig:06,src:019897+021836,time:3961566,execs:432864,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: ;ROLLBACK;
+SQL-trace: ;CREATE TABLE a(
+      table2, cnt, del, r1, log, t1_idx_00000062, var, k, nam, t1y,
+      t5, t6, i4, t7, tr3, t8, v2, logs, msg, timestamp,
+      dbtime, i5, i6, t11, ttt, t2x, t2y, filename, tablename, istart,
+      iend, h, q, t, c2, e, f, t10b, t11b, t11bnc,
+      t11bb, t11cnc, t11cb, t12nc, t12b, log_entry, col1, newname, t12, t13,
+      t14, t15, t16, m, rins, rins2, parent, child, parent_id, w,
+      tr, abc, def, seq, i, aa, bb, y1, y1a, w1,
+      pk, w2, xyz, xyz1, db1, v0SQL-trace: SAVEPOINT sp_10
+;
+SQL-trace: ;SELECT x>x FROM t1;
+SQL-trace: ;UPDATE t1 SET t2=10, t2=20;
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fadac8aa859 in __GI_abort () at abort.c:79
+#2  0x00007fadac8aa729 in __assert_fail_base (fmt=0x7fadaca40588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x2069a8 "pPk->tnum==pTab->tnum", file=0x222c23 "sqlite3.c", line=105908, function=<optimized out>)
+    at assert.c:92
+#3  0x00007fadac8bbfd6 in __GI___assert_fail (assertion=0x2069a8 "pPk->tnum==pTab->tnum", file=0x222c23 "sqlite3.c", line=105908, function=0x223709 "void sqlite3OpenTable(Parse *, int, int, Table *, int)") at assert.c:101
+#4  0x0000000000315400 in sqlite3OpenTable (pParse=0x1481ad0, iCur=<optimized out>, iDb=<optimized out>, pTab=0x149a480, opcode=102) at sqlite3.c:105908
+#5  0x0000000000356014 in sqlite3RefillIndex (pParse=0x1481ad0, pIndex=0x149c8b0, memRootPage=1) at sqlite3.c:99603
+#6  0x000000000031f419 in sqlite3CreateIndex (pParse=<optimized out>, pName1=<optimized out>, pName2=<optimized out>, pTblName=<optimized out>, pList=<optimized out>, onError=<optimized out>, pStart=<optimized out>, 
+    pPIWhere=0x0, sortOrder=<optimized out>, ifNotExist=<optimized out>) at sqlite3.c:100180
+#7  0x00000000003022e9 in yy_reduce (yypParser=0x15104d0, yyruleno=<optimized out>) at sqlite3.c:133800
+#8  0x00000000002fef8e in sqlite3Parser (yyp=0x15104d0, yymajor=<optimized out>, yyminor=..., pParse=<optimized out>) at sqlite3.c:134258
+#9  0x00000000002fc544 in sqlite3RunParser (pParse=0x1481ad0, 
+    zSql=0x1516400 "CREATE INDEX x3 ON t1(t2)\n;;SELECT t2!=t2 FROM t1;INSERT INTO a SELECT * FROM t1;;BEGIN;SAVEPOINT sp_40\n;;ROLLBACK;;SELECT min(t2,t2,t2+t2,t2-t2) FROM t1;;ROLLBACK;;BEGIN;;UPDATE t1 SET t2=1, t2=2;;SE"..., pzErrMsg=0x7ffeb1d8b2d8) at sqlite3.c:135186
+#10 0x00000000002fac4e in sqlite3Prepare (db=0x147f850, 
+    zSql=0x148633f "CREATE INDEX x3 ON t1(t2)\n;;SELECT t2!=t2 FROM t1;INSERT INTO a SELECT * FROM t1;;BEGIN;SAVEPOINT sp_40\n;;ROLLBACK;;SELECT min(t2,t2,t2+t2,t2-t2) FROM t1;;ROLLBACK;;BEGIN;;UPDATE t1 SET t2=1, t2=2;;SE"..., nBytes=<optimized out>, saveSqlFlag=1, pReprepare=<optimized out>, ppStmt=0x7ffeb1d8b408, pzTail=0x7ffeb1d8b3f0) at sqlite3.c:112589
+#11 0x00000000002fa0f4 in sqlite3LockAndPrepare (db=0x147f850, 
+    zSql=0x148633f "CREATE INDEX x3 ON t1(t2)\n;;SELECT t2!=t2 FROM t1;INSERT INTO a SELECT * FROM t1;;BEGIN;SAVEPOINT sp_40\n;;ROLLBACK;;SELECT min(t2,t2,t2+t2,t2-t2) FROM t1;;ROLLBACK;;BEGIN;;UPDATE t1 SET t2=1, t2=2;;SE"..., nBytes=8849, saveSqlFlag=1, pOld=0x0, ppStmt=<optimized out>, pzTail=0x7ffeb1d8b3f0) at sqlite3.c:112688
+#12 0x000000000028f38c in sqlite3_prepare_v2 (db=0x2, zSql=0x7ffeb1d8ab80 "", nBytes=0, ppStmt=0x7ffeb1d8b408, pzTail=<optimized out>) at sqlite3.c:112764
+#13 0x000000000024b100 in main (argc=1, argv=0x7ffeb1d8b5b8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 41307] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

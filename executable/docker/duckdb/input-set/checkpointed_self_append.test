@@ -1,0 +1,39 @@
+# name: test/sql/storage/checkpointed_self_append.test
+# description: Test appending to a checkpointed table from itself
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/checkpointed_self_append.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE vals(i INTEGER)
+
+;
+INSERT INTO vals SELECT CASE WHEN i % 2 = 0 THEN NULL ELSE i END FROM range(200000) tbl(i)
+
+;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals
+;
+1	199999	100000	200000
+
+;
+CHECKPOINT
+
+;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals
+;
+1	199999	100000	200000
+
+;
+INSERT INTO vals SELECT * FROM vals;
+
+;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals
+;
+1	199999	200000	400000

@@ -1,0 +1,91 @@
+# name: test/sql/function/string/regex_extract.test
+# description: regex extract test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+SELECT regexp_extract('foobarbaz', 'b..')
+;
+bar
+
+;
+SELECT regexp_extract('foobarbaz', 'b..', 1)
+;
+(empty)
+
+;
+SELECT regexp_extract('foobarbaz', '(b..)(b..)')
+;
+barbaz
+
+;
+SELECT regexp_extract('foobarbaz', '(b..)(b..)', 1)
+;
+bar
+
+;
+SELECT regexp_extract('foobarbaz', '(b..)(b..)', 2)
+;
+baz
+
+;
+SELECT regexp_extract('foobarbaz', '(b..)(b..)', -1)
+
+;
+SELECT regexp_extract('foobarbaz', '(b..)(b..)', 42)
+
+;
+CREATE TABLE test (s VARCHAR, p VARCHAR, i INT)
+
+;
+INSERT INTO test VALUES
+    ('foobarbaz', 'b..', 0),
+    ('foobarbaz', 'b..', 1),
+    ('foobarbaz', '(b..)(b..)', 0),
+    ('foobarbaz', '(b..)(b..)', 1),
+    ('foobarbaz', '(b..)(b..)', 2)
+
+;
+SELECT regexp_extract(s, p, i) FROM test
+
+;
+SELECT regexp_extract(s, p, 0) FROM test
+;
+bar
+bar
+barbaz
+barbaz
+barbaz
+
+;
+SELECT regexp_extract(s, 'b..', 0) FROM test
+;
+bar
+bar
+bar
+bar
+bar
+
+;
+SELECT regexp_extract(s, '(b..)(b..)', i) FROM test
+
+# null values
+;
+SELECT regexp_extract('foobarbaz', NULL, 0)
+;
+(empty)
+
+;
+SELECT regexp_extract('foobarbaz', 'b..', NULL)
+;
+(empty)
+
+;
+SELECT regexp_extract(NULL, 'b..')
+;
+NULL
+
+;
+SELECT regexp_extract('foobarbaz', 'b..', '1')

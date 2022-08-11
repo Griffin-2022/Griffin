@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000541,sig:11,src:019938+000137,time:35047769,execs:12234356,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7ffef39c1630, p=0x175a9c0) at sqlite3.c:146356
+146356	      pSublist = exprListAppendList(pParse, pSublist, pWin->pOwner->x.pList);
+(gdb) #0  0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7ffef39c1630, p=0x175a9c0) at sqlite3.c:146356
+#1  0x00000000002fc6de in sqlite3Select (pParse=0x7ffef39c1630, p=0x175a9c0, pDest=0x7ffef39c0040) at sqlite3.c:130281
+#2  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7ffef39c1630, pExpr=0x1772ed0, iTab=2) at sqlite3.c:99650
+#3  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7ffef39c1630, pX=0x1772ed0, inFlags=4, prRhsHasNull=0x0, aiMap=0x1774640, piTab=0x7ffef39c0274) at sqlite3.c:99448
+#4  0x00000000003795bd in codeEqualityTerm (pParse=0x7ffef39c1630, pTerm=0x1770a60, pLevel=0x1770ce8, iEq=0, bRev=0, iTarget=1) at sqlite3.c:136693
+#5  0x0000000000374503 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffef39c1630, v=0x175e200, pWInfo=0x1770950, iLevel=0, pLevel=0x1770ce8, notReady=18446744073709551615) at sqlite3.c:137510
+#6  0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffef39c1630, pTabList=0x175dd50, pWhere=0x175d8a0, pOrderBy=0x0, pResultSet=0x175e6b0, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#7  0x00000000002fdcea in sqlite3Select (pParse=0x7ffef39c1630, p=0x1775db0, pDest=0x7ffef39c0a20) at sqlite3.c:130695
+#8  0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffef39c0c50, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffef39c1630) at sqlite3.c:151581
+#9  0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffef39c0c50, yymajor=1, yyminor=...) at sqlite3.c:152877
+#10 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffef39c1630, 
+    zSql=0x177df61 ";SELECT count(*) FROM 'a'\n;SELECT rowid, a, a, a FROM 'a' WHERE rowid = ?\n;SELECT rowid, b, b, b FROM 'b' WHERE rowid = ?\n;SELECT count(*) FROM 'a'\n;SELECT rowid, b, a, b FROM 'b'\n;SELECT count(*) FRO"..., pzErrMsg=0x7ffef39c1810) at sqlite3.c:154013
+#11 0x00000000002a1683 in sqlite3Prepare (db=0x17579d0, 
+    zSql=0x1758689 ";\n;SELECT * FROM t1 WHERE \n      (0, t1.a) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t1);SELECT count(*) FROM 'a'\n;SELECT rowid, a, a, a FROM 'a' WHERE rowid = ?\n;SELECT rowid, b, b, b FROM '"..., nBytes=2461, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffef39c1948, pzTail=0x7ffef39c1930) at sqlite3.c:124303
+#12 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x17579d0, 
+    zSql=0x1758689 ";\n;SELECT * FROM t1 WHERE \n      (0, t1.a) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t1);SELECT count(*) FROM 'a'\n;SELECT rowid, a, a, a FROM 'a' WHERE rowid = ?\n;SELECT rowid, b, b, b FROM '"..., nBytes=2461, prepFlags=128, pOld=0x0, ppStmt=0x7ffef39c1948, pzTail=0x7ffef39c1930) at sqlite3.c:124403
+#13 0x000000000029247f in sqlite3_prepare_v2 (db=0x17579d0, 
+    zSql=0x1758689 ";\n;SELECT * FROM t1 WHERE \n      (0, t1.a) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t1);SELECT count(*) FROM 'a'\n;SELECT rowid, a, a, a FROM 'a' WHERE rowid = ?\n;SELECT rowid, b, b, b FROM '"..., nBytes=2461, ppStmt=0x7ffef39c1948, pzTail=0x7ffef39c1930) at sqlite3.c:124487
+#14 0x0000000000256bd0 in main (argc=1, argv=0x7ffef39c1af8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 54803] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

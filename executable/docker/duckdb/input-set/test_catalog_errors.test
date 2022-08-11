@@ -1,0 +1,63 @@
+# name: test/sql/catalog/test_catalog_errors.test
+# description: Test various errors in catalog management
+# group: [catalog]
+
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+CREATE VIEW vintegers AS SELECT 42;
+
+# cannot CREATE OR REPLACE a table with a view
+;
+CREATE OR REPLACE VIEW integers AS SELECT 42;
+
+# cannot use DROP VIEW to drop a table
+;
+DROP VIEW integers
+
+# cannot drop a table that does not exist
+;
+DROP TABLE blabla
+
+# cannot alter a table that does not exist
+;
+ALTER TABLE blabla RENAME COLUMN i TO k
+
+# cannot drop view with DROP TABLE
+;
+DROP TABLE IF EXISTS vintegers
+
+;
+CREATE INDEX i_index ON integers(i);
+
+# cannot create an index that already exists
+;
+CREATE INDEX i_index ON integers(i);
+
+# with IF NOT EXISTS it does not fail!
+;
+CREATE INDEX IF NOT EXISTS i_index ON integers(i);
+
+# drop the index
+;
+DROP INDEX i_index
+
+# cannot drop the index again: it no longer exists
+;
+DROP INDEX i_index
+
+# IF NOT EXISTS does not report the failure
+;
+DROP INDEX IF EXISTS i_index
+
+# create the index again
+;
+CREATE INDEX i_index ON integers(i);
+
+# dropping the table also drops the index
+;
+DROP TABLE integers;
+
+;
+DROP INDEX i_index

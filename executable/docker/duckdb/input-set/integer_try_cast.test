@@ -1,0 +1,214 @@
+# name: test/sql/types/numeric/integer_try_cast.test
+# description: Integer try cast
+# group: [numeric]
+
+;
+PRAGMA enable_verification
+
+# integer casts
+;
+CREATE TABLE integers AS SELECT i::INTEGER i FROM (VALUES (-2147483648), (0), (2147483647)) tbl(i)
+
+# -> unsigned
+;
+SELECT i::UTINYINT FROM integers
+
+;
+SELECT i::USMALLINT FROM integers
+
+;
+SELECT i::UINTEGER FROM integers
+
+;
+SELECT i::UBIGINT FROM integers
+
+;
+SELECT i::UTINYINT FROM integers WHERE i>=0 ORDER BY i
+
+;
+SELECT i::USMALLINT FROM integers WHERE i>=0 ORDER BY i
+
+;
+SELECT i::UINTEGER FROM integers WHERE i>=0 ORDER BY i
+;
+0
+2147483647
+
+;
+SELECT i::UBIGINT FROM integers WHERE i>=0 ORDER BY i
+;
+0
+2147483647
+
+;
+SELECT TRY_CAST(i AS UTINYINT)::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS USMALLINT)::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS UINTEGER)::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+2147483647
+
+;
+SELECT TRY_CAST(i AS UBIGINT)::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+2147483647
+
+# -> signed
+;
+SELECT i::TINYINT FROM integers ORDER BY i
+
+;
+SELECT TRY_CAST(i AS TINYINT) FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT i::SMALLINT FROM integers ORDER BY i
+
+;
+SELECT TRY_CAST(i AS SMALLINT) FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT i::BIGINT::INTEGER FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+;
+SELECT i::HUGEINT::INTEGER FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+# tinyint -> float
+;
+SELECT i::FLOAT FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+;
+SELECT i::DOUBLE FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+# -> bool
+;
+SELECT i::BOOL FROM integers ORDER BY i
+;
+True
+False
+True
+
+# -> varchar
+;
+SELECT i::VARCHAR FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+# from string casts
+;
+CREATE TABLE strings AS SELECT * FROM (VALUES ('   '), ('blablabla'), ('-10000000000'), ('-2147483648'), ('0'), ('2147483647'), ('10000000000')) tbl(s)
+
+;
+SELECT s::INTEGER FROM strings
+
+;
+SELECT TRY_CAST(s AS INTEGER) FROM strings
+;
+NULL
+NULL
+NULL
+-2147483648
+0
+2147483647
+NULL
+
+# -> decimal casts
+;
+SELECT i::DECIMAL(3,0)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT i::DECIMAL(9,0)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT i::DECIMAL(18,0)::INTEGER FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+;
+SELECT i::DECIMAL(38,0)::INTEGER FROM integers ORDER BY i
+;
+-2147483648
+0
+2147483647
+
+;
+SELECT i::DECIMAL(3,0)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT i::DECIMAL(9,0)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT i::DECIMAL(18,9)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT i::DECIMAL(38,29)::INTEGER FROM integers ORDER BY i
+
+;
+SELECT TRY_CAST(i AS DECIMAL(3,0))::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(9,0))::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(18,9))::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(38,29))::INTEGER FROM integers ORDER BY i
+;
+NULL
+0
+NULL

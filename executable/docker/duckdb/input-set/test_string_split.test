@@ -1,0 +1,354 @@
+# name: test/sql/function/string/test_string_split.test
+# description: String split test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# test unnesting of null values a bit
+;
+SELECT string_split(NULL, NULL)
+;
+NULL
+
+;
+SELECT * FROM (VALUES (string_split('hello world', ' ')), (string_split(NULL, ' ')), (string_split('a b c', NULL)), (string_split('a b c', ' '))) tbl(i)
+;
+[hello, world]
+NULL
+[a b c]
+[a, b, c]
+
+;
+CREATE TABLE strings_with_null (s VARCHAR)
+
+;
+INSERT INTO strings_with_null VALUES ('aba'), (NULL), ('ababa')
+
+;
+SELECT UNNEST(string_split(s, 'b')) FROM strings_with_null
+;
+a
+a
+a
+a
+a
+
+;
+SELECT UNNEST(string_split(NULL, ' ')) IS NULL LIMIT 5
+;
+
+;
+SELECT UNNEST(string_split('üüüüü', '◌̈'))
+;
+üüüüü
+
+;
+SELECT UNNEST(string_split('üüüüü', '◌'))
+;
+üüüüü
+
+;
+SELECT UNNEST(string_split_regex('üüüüü', '◌̈'))
+;
+üüüüü
+
+;
+SELECT UNNEST(string_split_regex('üüüüü', '◌'))
+;
+üüüüü
+
+;
+SELECT UNNEST(string_split(' 🦆🦆  🦆🦆', '  '))
+;
+ 🦆🦆
+🦆🦆
+
+;
+SELECT UNNEST(string_split('a a a a a', ' '))
+;
+a
+a
+a
+a
+a
+
+;
+SELECT UNNEST(string_split('🦆 🦆 🦆 🦆 🦆', ' '))
+;
+🦆
+🦆
+🦆
+🦆
+🦆
+
+;
+SELECT UNNEST(string_split('🦆🐈🐈🦆🐈🐈🦆🐈🐈🦆🐈🐈🦆', '🐈🐈'))
+;
+🦆
+🦆
+🦆
+🦆
+🦆
+
+;
+SELECT UNNEST(string_split('', 'delim'))
+;
+(empty)
+
+;
+SELECT UNNEST(string_split('aaaaa', ''))
+;
+a
+a
+a
+a
+a
+
+;
+SELECT UNNEST(string_split('🦆🦆🦆🦆🦆', ''))
+;
+🦆
+🦆
+🦆
+🦆
+🦆
+
+;
+SELECT UNNEST(string_split('abab', 'b'))
+;
+a
+a
+(empty)
+
+;
+SELECT UNNEST(string_split('🦆b🦆b', 'b'))
+;
+🦆
+🦆
+(empty)
+
+;
+CREATE TABLE documents(s VARCHAR)
+
+;
+INSERT INTO documents VALUES ('baabbaa'), ('aabbaab'), ('ababababa'), ('b🦆🦆bb🦆🦆'), ('🦆🦆bb🦆🦆b'), ('🦆b🦆b🦆b🦆b🦆')
+
+;
+SELECT UNNEST(string_split(s, 'bb')) FROM documents WHERE 1
+;
+baa
+aa
+aa
+aab
+ababababa
+b🦆🦆
+🦆🦆
+🦆🦆
+🦆🦆b
+🦆b🦆b🦆b🦆b🦆
+
+;
+SELECT UNNEST(string_split(s, 'bb')) FROM documents WHERE s LIKE 'b%'
+;
+baa
+aa
+b🦆🦆
+🦆🦆
+
+;
+SELECT string_agg(ss, 'bb') FROM (SELECT rowid AS id, UNNEST(string_split(s, 'bb')) AS ss FROM documents) AS q GROUP BY id ORDER BY id
+;
+baabbaa
+aabbaab
+ababababa
+b🦆🦆bb🦆🦆
+🦆🦆bb🦆🦆b
+🦆b🦆b🦆b🦆b🦆
+
+;
+SELECT UNNEST(string_split_regex('a1a11a111a', '[0-9]+'))
+;
+a
+a
+a
+a
+
+;
+SELECT UNNEST(string_split_regex('aaaaa', ''))
+;
+a
+a
+a
+a
+a
+
+
+;
+SELECT UNNEST(string_split_regex('a a  a   a', '\s+'))
+;
+a
+a
+a
+a
+
+;
+SELECT UNNEST(string_split('aaaaa', NULL))
+;
+aaaaa
+
+# taken from postgres string_to_array tests
+;
+select UNNEST(string_split('1|2|3', '|'))
+;
+1
+2
+3
+
+;
+select UNNEST(string_split('1|2|3|', '|'))
+;
+1
+2
+3
+(empty)
+
+;
+select UNNEST(string_split('1||2|3||', '||'))
+;
+1
+2|3
+(empty)
+
+;
+select UNNEST(string_split('1|2|3', ''))
+;
+1
+|
+2
+|
+3
+
+;
+select UNNEST(string_split('', '|'))
+;
+(empty)
+
+;
+select UNNEST(string_split('1|2|3', NULL))
+;
+1|2|3
+
+;
+select string_split(NULL, '|') IS NULL
+;
+1
+
+;
+select UNNEST(string_split('abc', ''))
+;
+a
+b
+c
+
+;
+select UNNEST(string_split_regex('abc', '(|abc)'))
+;
+a
+b
+c
+
+;
+select UNNEST(string_split_regex('abc', '(abc|)'))
+;
+(empty)
+(empty)
+
+;
+select UNNEST(string_split('abc', ','))
+;
+abc
+
+;
+select UNNEST(string_split_regex('abc', '(,|abc)'))
+;
+(empty)
+(empty)
+
+;
+select UNNEST(string_split_regex('abc', '(abc|,)'))
+;
+(empty)
+(empty)
+
+;
+select UNNEST(string_split('1,2,3,4,,6', ','))
+;
+1
+2
+3
+4
+(empty)
+6
+
+;
+select UNNEST(string_split_regex('1,2,3,4,,6', '(,|)'))
+;
+1
+(empty)
+2
+(empty)
+3
+(empty)
+4
+(empty)
+(empty)
+6
+
+
+;
+select UNNEST(string_split_regex('1,2,3,4,,6', '(|,)'))
+;
+1
+,
+2
+,
+3
+,
+4
+,
+,
+6
+
+;
+select UNNEST(string_split_regex('1,2,3,4,*,6', '(,|\*)'))
+;
+1
+2
+3
+4
+(empty)
+(empty)
+6
+
+;
+select UNNEST(string_split_regex('1,2,3,4,*,6', '(\*|,)'))
+;
+1
+2
+3
+4
+(empty)
+(empty)
+6
+
+# test incorrect usage
+;
+select string_split()
+
+;
+select string_split('a')
+
+# incorrect regex
+;
+SELECT string_split_regex(a, '[') FROM test ORDER BY a;

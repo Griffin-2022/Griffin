@@ -1,0 +1,82 @@
+# name: test/sql/subquery/any_all/test_any_all.test
+# description: Test ANY/ALL queries
+# group: [any_all]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+INSERT INTO integers VALUES (1), (2), (3)
+
+# ANY is like EXISTS without NULL values
+;
+SELECT 2 > ANY(SELECT * FROM integers)
+;
+1
+
+;
+SELECT 1 > ANY(SELECT * FROM integers)
+;
+0
+
+;
+SELECT 4 > ALL(SELECT * FROM integers)
+;
+1
+
+;
+SELECT 1 > ALL(SELECT * FROM integers)
+;
+0
+
+# NULL input always results in NULL output
+;
+SELECT NULL > ANY(SELECT * FROM integers)
+;
+NULL
+
+;
+SELECT NULL > ALL(SELECT * FROM integers)
+;
+NULL
+
+# now with a NULL value in the input
+;
+INSERT INTO integers VALUES (NULL)
+
+# ANY returns either true or NULL
+;
+SELECT 2 > ANY(SELECT * FROM integers)
+;
+1
+
+;
+SELECT 1 > ANY(SELECT * FROM integers)
+;
+NULL
+
+# ALL returns either NULL or false
+;
+SELECT 4 > ALL(SELECT * FROM integers)
+;
+NULL
+
+;
+SELECT 1 > ALL(SELECT * FROM integers)
+;
+0
+
+# NULL input always results in NULL
+;
+SELECT NULL > ANY(SELECT * FROM integers)
+;
+NULL
+
+;
+SELECT NULL > ALL(SELECT * FROM integers)
+;
+NULL
+

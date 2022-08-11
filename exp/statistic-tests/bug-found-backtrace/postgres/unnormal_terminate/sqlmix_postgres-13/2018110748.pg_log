@@ -1,0 +1,111 @@
+	drop operator class custom_opclass using hash;
+2022-08-01 21:54:27.205 UTC [12672] WARNING:  there is no transaction in progress
+2022-08-01 21:54:27.205 UTC [12672] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 21:54:27.205 UTC [12672] STATEMENT:  DISCARD ALL;
+2022-08-01 21:54:27.205 UTC [12672] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-01 21:54:27.205 UTC [12672] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-01 21:54:27.205 UTC [12672] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-01 21:54:27.205 UTC [12672] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	CREATE TABLE parent (child TEXT, a INT PRIMARY KEY);
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	
+	DROP TABLE parent;
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  SELECT power(float8 '144', float8 'NaN');
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	CREATE TABLE id PARTITION OF parent FOR VALUES FROM ('cmdata', 1) TO ('cmdata', 10);
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  cannot execute CREATE INDEX in a read-only transaction
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	 create index grandchild on parent using hash(a);
+2022-08-01 21:54:27.210 UTC [22090] PANIC:  could not open critical system index 2662
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	ALTER TABLE j ADD COLUMN cmpart2 bigint;
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  relation "parent" does not exist at character 155
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	-- fail, no partition key update, so no attempt to move tuple,
+	-- but "child = 'child'" violates partition constraint enforced by root partition)
+	UPDATE parent set child = 'child';
+2022-08-01 21:54:27.210 UTC [12672] ERROR:  relation "parent" does not exist at character 15
+2022-08-01 21:54:27.210 UTC [12672] STATEMENT:  
+	 insert into parent (a, a)
+	 select g, 10 from generate_series(1, 10) g;
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	
+	CREATE TRIGGER a_temp_tbl
+	  AFTER UPDATE ON id REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table
+	  FOR EACH STATEMENT EXECUTE PROCEDURE trans_updatetrigfunc();
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	CREATE TRIGGER table_one BEFORE UPDATE OR INSERT ON j
+	   FOR EACH ROW EXECUTE PROCEDURE func_parted_mod_b();
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	
+	-- RLS policies with update-row-movement
+	-----------------------------------------
+	
+	ALTER TABLE event_trigger_fire2 ENABLE ROW LEVEL SECURITY;
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  role "regress_range_parted_user" does not exist
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	SET SESSION AUTHORIZATION regress_range_parted_user;
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  role "regress_range_parted_user" does not exist
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	SET SESSION AUTHORIZATION regress_range_parted_user;
+2022-08-01 21:54:27.211 UTC [12672] ERROR:  role "regress_range_parted_user" does not exist
+2022-08-01 21:54:27.211 UTC [12672] STATEMENT:  
+	SET SESSION AUTHORIZATION regress_range_parted_user;
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute REVOKE in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	REVOKE ALL ON orderedfootype, orderedfootype FROM regress_range_parted_user;
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	CREATE TRIGGER bpcharcol
+	  AFTER UPDATE ON id for each statement execute procedure trigfunc();
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	
+	-- Triggers on leaf partition pxtest3
+	CREATE TRIGGER float4col
+	  AFTER DELETE ON pxtest3 for each statement execute procedure trigfunc();
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	
+	-- Triggers on leaf partition pxtest3
+	CREATE TRIGGER datecol
+	  AFTER DELETE ON pxtest3 for each statement execute procedure trigfunc();
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	CREATE TRIGGER byteacol
+	  AFTER UPDATE ON pxtest3 for each statement execute procedure trigfunc();
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute DROP TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	DROP TRIGGER datecol ON orderedfootype;
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute DROP TRIGGER in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	DROP TRIGGER table_three ON schema_one_table_two;
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	
+	CREATE TABLE b (
+		part text,
+		c int
+	) PARTITION BY list (part);
+2022-08-01 21:54:27.212 UTC [12158] LOG:  server process (PID 22090) was terminated by signal 6: Aborted
+2022-08-01 21:54:27.212 UTC [12158] LOG:  terminating any other active server processes
+2022-08-01 21:54:27.212 UTC [12672] ERROR:  relation "parent" does not exist at character 14
+2022-08-01 21:54:27.212 UTC [12672] STATEMENT:  
+	INSERT into parent VALUES ('child', 1);
+2022-08-01 21:54:27.250 UTC [12158] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:54:27.263 UTC [22097] LOG:  database system was interrupted; last known up at 2022-08-01 21:54:26 UTC
+2022-08-01 21:54:27.264 UTC [22098] FATAL:  the database system is in recovery mode
+2022-08-01 21:54:27.266 UTC [22101] FATAL:  the database system is in recovery mode
+2022-08-01 21:54:27.268 UTC [22102] FATAL:  the database system is in recovery mode
+2022-08-01 21:54:27.275 UTC [12158] LOG:  received smart shutdown request

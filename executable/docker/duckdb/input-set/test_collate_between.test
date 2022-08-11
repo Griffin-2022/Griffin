@@ -1,0 +1,37 @@
+# name: test/sql/collate/test_collate_between.test
+# description: Test accent insensitive collation
+# group: [collate]
+
+;
+CREATE TABLE collate_test(s VARCHAR, t VARCHAR)
+
+;
+INSERT INTO collate_test VALUES ('mark', 'muhleisen')
+
+;
+SELECT COUNT(*) FROM collate_test WHERE 'mórritz' BETWEEN s AND t
+;
+0
+
+;
+SELECT COUNT(*) FROM collate_test WHERE 'mórritz' COLLATE NOACCENT BETWEEN s AND t
+;
+1
+
+;
+SELECT COUNT(*) FROM collate_test WHERE 'mórritz' BETWEEN (s COLLATE NOACCENT) AND t
+;
+1
+
+;
+SELECT COUNT(*) FROM collate_test WHERE 'mórritz' BETWEEN s AND (t COLLATE NOACCENT)
+;
+1
+
+;
+PRAGMA default_collation='NOACCENT'
+
+;
+SELECT COUNT(*) FROM collate_test WHERE 'mórritz' BETWEEN s AND t
+;
+1

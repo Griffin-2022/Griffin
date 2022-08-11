@@ -1,0 +1,98 @@
+# name: test/sql/transactions/test_multi_version.test
+# description: Test multiple versions of the same data
+# group: [transactions]
+
+;
+PRAGMA enable_verification
+
+# initialize the database
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (1), (2), (3);
+
+# we can query the database using both connections
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+# now update the database in connection 1
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE integers SET i=5 WHERE i=1;
+
+;
+SELECT SUM(i) FROM integers
+;
+10.000000
+
+# con 2 still has the same result
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+# we can update the same data point again in con 1
+;
+UPDATE integers SET i=10 WHERE i=5;
+
+;
+SELECT SUM(i) FROM integers
+;
+15.000000
+
+# con 2 still has the same result
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+# now delete it
+;
+DELETE FROM integers WHERE i>5;
+
+;
+SELECT SUM(i) FROM integers
+;
+5.000000
+
+# con 2 still has the same result
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+# insert some new data again
+;
+INSERT INTO integers VALUES (1), (2)
+
+;
+SELECT SUM(i) FROM integers
+;
+8.000000
+
+# con 2 still has the same result
+;
+SELECT SUM(i) FROM integers
+;
+6.000000
+
+# now commit
+;
+COMMIT
+
+# con 2 now has the updated results
+;
+SELECT SUM(i) FROM integers
+;
+8.000000
+

@@ -1,0 +1,228 @@
+# name: test/sql/function/string/test_substring.test
+# description: Substring test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR, off INTEGER, length INTEGER);
+
+;
+INSERT INTO strings VALUES ('hello', 1, 2), ('world', 2, 3), ('b', 1, 1), (NULL, 2, 2)
+
+# test zero length
+;
+SELECT SUBSTRING('🦆ab', 1, 0), SUBSTRING('abc', 1, 0)
+;
+(empty)	(empty)
+
+# constant offset/length
+# normal substring
+;
+SELECT substring(s from 1 for 2) FROM strings
+;
+he
+wo
+b
+NULL
+
+# substring out of range
+;
+SELECT substring(s from 2 for 2) FROM strings
+;
+el
+or
+(empty)
+NULL
+
+# variable length offset/length
+;
+SELECT substring(s from off for length) FROM strings
+;
+he
+orl
+b
+NULL
+
+;
+SELECT substring(s from off for 2) FROM strings
+;
+he
+or
+b
+NULL
+
+;
+SELECT substring(s from 1 for length) FROM strings
+;
+he
+wor
+b
+NULL
+
+;
+SELECT substring('hello' from off for length) FROM strings
+;
+he
+ell
+h
+el
+
+# test substrings with constant nulls in different places
+;
+SELECT substring(NULL from off for length) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring('hello' from NULL for length) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring('hello' from off for NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring(NULL from NULL for length) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring('hello' from NULL for NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring(NULL from off for NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT substring(NULL from NULL for NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+# fixed slice
+;
+SELECT substring(s from -2 for 2) FROM strings
+;
+lo
+ld
+b
+NULL
+
+# zero offset (this is accepted by SQLite)
+;
+SELECT substring(s from 0 for length) FROM strings
+;
+h
+wo
+(empty)
+NULL
+
+# negative length
+;
+SELECT substring(s, 2, -2) FROM strings
+;
+h
+w
+b
+NULL
+
+# negative offset and negative length
+;
+SELECT substring(s, -2, -2) FROM strings
+;
+el
+or
+(empty)
+NULL
+
+# length 0
+;
+SELECT substring(s, 2, 0) FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+# no length
+;
+SELECT substring(s, 2) FROM strings
+;
+ello
+orld
+(empty)
+NULL
+
+;
+SELECT substring(substring(s, 2), 2) FROM strings
+;
+llo
+rld
+(empty)
+NULL
+
+# very large offset and length
+;
+SELECT substring(s, 2147483647, 2147483647) FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+;
+SELECT substring(s, 2147483647, -2147483647) FROM strings
+;
+hello
+world
+b
+NULL
+
+;
+SELECT substring(s, -2147483647, 2147483647) FROM strings
+;
+hello
+world
+b
+NULL
+
+;
+SELECT substring(s, -2147483647, -2147483647) FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+# Issue #2553 - accept BIGINT arguments
+;
+SELECT SUBSTR('abc', INSTR('abc', 'b'));
+;
+bc

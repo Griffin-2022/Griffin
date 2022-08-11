@@ -1,0 +1,69 @@
+# name: test/sql/parallelism/intraquery/test_persistent_parallelism.test
+# description: Test force parallelism on small-ish tables (few thousand rows)
+# group: [intraquery]
+
+load __TEST_DIR__/test_parallelism.db
+
+;
+PRAGMA enable_profiling
+
+;
+PRAGMA profiling_output='__TEST_DIR__/test.json'
+
+;
+PRAGMA profiling_mode = detailed
+
+;
+BEGIN TRANSACTION
+
+;
+CREATE TABLE integers AS SELECT * FROM range(0, 5000) tbl(i)
+
+;
+SELECT MIN(i), MAX(i) FROM integers
+;
+0	4999
+
+;
+COMMIT
+
+;
+SELECT MIN(i), MAX(i) FROM integers
+;
+0	4999
+
+restart
+
+;
+PRAGMA enable_verification
+
+;
+PRAGMA threads=4
+
+;
+PRAGMA verify_parallelism
+
+;
+SELECT MIN(i), MAX(i) FROM integers
+;
+0	4999
+
+# add some transient data
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers SELECT * FROM range(5000, 10000)
+
+;
+SELECT MIN(i), MAX(i) FROM integers
+;
+0	9999
+
+;
+COMMIT
+
+;
+SELECT MIN(i), MAX(i) FROM integers
+;
+0	9999

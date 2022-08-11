@@ -1,0 +1,68 @@
+# name: test/sql/types/struct/struct_tables.test
+# description: Test storing structs in in-memory tables
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(b ROW(i INTEGER, j INTEGER));
+
+# insert standard struct
+;
+INSERT INTO a VALUES (STRUCT_PACK(i := 1, j:= 2));
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 1, 'j': 2}
+
+;
+INSERT INTO a VALUES (NULL);
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+NULL
+{'i': 1, 'j': 2}
+
+# unnamed struct
+;
+INSERT INTO a VALUES (ROW(2, 3));
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+NULL
+{'i': 1, 'j': 2}
+{'i': 2, 'j': 3}
+
+# null values in children
+;
+INSERT INTO a VALUES (ROW(3, NULL)), (ROW(NULL, 4));
+
+;
+SELECT * FROM a ORDER BY (b).i, (b).j;
+;
+NULL
+{'i': NULL, 'j': 4}
+{'i': 1, 'j': 2}
+{'i': 2, 'j': 3}
+{'i': 3, 'j': NULL}
+
+# incorrect number of struct entries
+;
+INSERT INTO a VALUES (ROW(1, 2, 3))
+
+;
+INSERT INTO a VALUES (ROW(1))
+
+# incorrect types
+;
+INSERT INTO a VALUES (ROW('hello', 1))
+
+;
+INSERT INTO a VALUES (ROW('hello', [1, 2]))
+
+;
+INSERT INTO a VALUES (ROW(1, ROW(1, 7)))

@@ -1,0 +1,100 @@
+2022-08-06  3:50:56 5 [ERROR] InnoDB: Column stat_value in table mysql.innodb_index_stats is BIGINT UNSIGNED but should be BIGINT UNSIGNED NOT NULL
+2022-08-06  3:51:04 5 [ERROR] InnoDB: Column stat_value in table mysql.innodb_index_stats is BIGINT UNSIGNED but should be BIGINT UNSIGNED NOT NULL
+2022-08-06  3:51:04 5 [ERROR] InnoDB: Column stat_value in table mysql.innodb_index_stats is BIGINT UNSIGNED but should be BIGINT UNSIGNED NOT NULL
+2022-08-06  3:51:04 5 [ERROR] InnoDB: Column stat_value in table mysql.innodb_index_stats is BIGINT UNSIGNED but should be BIGINT UNSIGNED NOT NULL
+2022-08-06  3:51:04 5 [ERROR] InnoDB: Unable to drop table `ppeglphe`.`FTS_0000000000000ded_BEING_DELETED`: Too many concurrent transactions
+2022-08-06 03:51:04 0x7f5801165700  InnoDB: Assertion failure in file /root/mariadb/storage/innobase/que/que0que.cc line 759
+InnoDB: Failing assertion: trx->error_state == DB_SUCCESS
+InnoDB: We intentionally generate a memory trap.
+InnoDB: Submit a detailed bug report to https://jira.mariadb.org/
+InnoDB: If you get repeated assertion failures or crashes, even
+InnoDB: immediately after the mariadbd startup, there may be
+InnoDB: corruption in the InnoDB tablespace. Please refer to
+InnoDB: https://mariadb.com/kb/en/library/innodb-recovery-modes/
+InnoDB: about forcing recovery.
+220806  3:51:04 [ERROR] mysqld got signal 6 ;
+This could be because you hit a bug. It is also possible that this binary
+or one of the libraries it was linked against is corrupt, improperly built,
+or misconfigured. This error can also be caused by malfunctioning hardware.
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=1
+max_threads=153
+thread_count=2
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00015e288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7f5801164a80 thread_stack 0x100000
+??:0(__interceptor_backtrace)[0x77602b]
+mysys/stacktrace.c:212(my_print_stacktrace)[0x3586647]
+sql/signal_handler.cc:0(handle_fatal_signal)[0x187c05b]
+??:0(__restore_rt)[0x7f5825ba5420]
+??:0(gsignal)[0x7f58257d300b]
+??:0(abort)[0x7f58257b2859]
+ut/ut0dbg.cc:40(ut_dbg_assertion_failed(char const*, char const*, unsigned int))[0x2e6501b]
+:0(que_eval_sql(pars_info_t*, char const*, trx_t*))[0x2aa212f]
+dict/drop.cc:178(trx_t::drop_table(dict_table_t const&))[0x3174d5b]
+fts/fts0fts.cc:1393(fts_drop_table(trx_t*, char const*, bool))[0x32461a5]
+fts/fts0fts.cc:1613(fts_drop_common_tables(trx_t*, fts_table_t*, bool))[0x324683d]
+dict/drop.cc:191(trx_t::drop_table(dict_table_t const&))[0x3174dd0]
+:0(ha_innobase::delete_table(char const*))[0x26db8d4]
+handler.cc:0(hton_drop_table(handlerton*, char const*))[0x1882d23]
+??:0(ha_delete_table(THD*, handlerton*, char const*, st_mysql_const_lex_string const*, st_mysql_const_lex_string const*, bool))[0x18994f9]
+??:0(mysql_rm_table_no_locks(THD*, TABLE_LIST*, st_mysql_const_lex_string const*, st_ddl_log_state*, bool, bool, bool, bool, bool, bool))[0x10b2b66]
+sql/sql_table.cc:1147(mysql_rm_table(THD*, TABLE_LIST*, bool, bool, bool, bool))[0x10aec3e]
+sql/sql_parse.cc:4954(mysql_execute_command(THD*, bool))[0xd3cc57]
+sql/sql_parse.cc:8028(mysql_parse(THD*, char*, unsigned int, Parser_state*))[0xd1155c]
+sql/sql_parse.cc:1894(dispatch_command(enum_server_command, THD*, char*, unsigned int, bool))[0xd06f4c]
+??:0(do_command(THD*, bool))[0xd137aa]
+sql/sql_connect.cc:1418(do_handle_one_connection(CONNECT*, bool))[0x131b0a3]
+sql/sql_connect.cc:0(handle_one_connection)[0x131a831]
+perfschema/pfs.cc:2203(pfs_spawn_thread)[0x23fd89f]
+??:0(start_thread)[0x7f5825b99609]
+??:0(clone)[0x7f58258af133]
+
+Trying to get some variables.
+Some pointers may be invalid and cause the dump to abort.
+Query (0x6290000e62a8): DROP TABLE t1
+
+Connection ID (thread ID): 5
+Status: NOT_KILLED
+
+Optimizer switch: index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,index_merge_sort_intersection=off,engine_condition_pushdown=off,index_condition_pushdown=on,derived_merge=on,derived_with_keys=on,firstmatch=on,loosescan=on,materialization=on,in_to_exists=on,semijoin=on,partial_match_rowid_merge=on,partial_match_table_scan=on,subquery_cache=on,mrr=off,mrr_cost_based=off,mrr_sort_keys=off,outer_join_with_cache=on,semijoin_with_cache=on,join_cache_incremental=on,join_cache_hashed=on,join_cache_bka=on,optimize_join_buffer_size=on,table_elimination=on,extended_keys=on,exists_to_in=on,orderby_uses_equalities=on,condition_pushdown_for_derived=on,split_materialized=on,condition_pushdown_for_subquery=on,rowid_filter=on,condition_pushdown_from_having=on,not_null_range_scan=off
+
+The manual page at https://mariadb.com/kb/en/how-to-produce-a-full-stack-trace-for-mysqld/ contains
+information that should help you find out what is causing the crash.
+Writing a core file...
+Working directory at /dev/shm/out/mysql_client_dir_2000
+Resource Limits:
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    0                    bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             unlimited            unlimited            processes 
+Max open files            1048576              1048576              files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       2062354              2062354              signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us        
+Core pattern: core
+

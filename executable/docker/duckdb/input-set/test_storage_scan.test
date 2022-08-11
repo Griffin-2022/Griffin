@@ -1,0 +1,85 @@
+# name: test/sql/storage/test_storage_scan.test
+# description: Test scanning of persisted storage
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/storage_scan.db
+
+;
+CREATE TABLE test (a INTEGER);
+
+;
+INSERT INTO test VALUES (11), (12), (13), (14), (15), (NULL)
+
+# perform read-only scans a few times
+
+restart
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+12
+13
+14
+15
+
+# now perform a deletion
+
+restart
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+12
+13
+14
+15
+
+;
+DELETE FROM test WHERE a=12
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+13
+14
+15
+
+# reload and perform another deletion
+restart
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+13
+14
+15
+
+;
+DELETE FROM test WHERE a=13
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+14
+15
+
+restart
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+11
+14
+15

@@ -1,0 +1,38 @@
+ATTACH DATABASE 'test.db' AS orig;
+;SELECT*FROM"orig".sqlite_master ORDER BY rowid
+;SELECT*FROM"orig".sqlite_master ORDER BY rowid
+;CREATE TRIGGER r1 AFTER INSERT ON orig.t1 BEGIN
+;CREATE TABLE t5(x,y);
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+      SELECT 'no-op';
+    END;
+;
+;DROP TRIGGER r5;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+      SELECT 'no-op' FROM orig.t1;
+    END;
+;CREATE TEMP TABLE t6(p,q,r);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='t6' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='t6' AND type!='trigger' ORDER BY rowid
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        SELECT 'no-op' FROM temp.t6;
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        SELECT 'no-op' || (SELECT * FROM temp.t6);
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        SELECT 'no-op' FROM t1 WHERE x<(SELECT min(x) FROM temp.t6);
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        SELECT 'no-op' FROM t1 GROUP BY 1 HAVING x<(SELECT min(x) FROM temp.t6);
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        SELECT max(1,x,(SELECT min(x) FROM temp.t6)) FROM t1;
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        INSERT INTO t1 VALUES((SELECT min(x) FROM temp.t6),5);
+      END;
+;CREATE TRIGGER r5 AFTER INSERT ON t5 BEGIN
+        DELETE FROM t1 WHERE x<(SELECT min(x) FROM temp.t6);
+      END;
+;

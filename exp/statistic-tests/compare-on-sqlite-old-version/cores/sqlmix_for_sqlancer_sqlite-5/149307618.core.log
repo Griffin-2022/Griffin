@@ -1,0 +1,57 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000183,sig:06,src:020630+012652,time:3356401,execs:592475,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fb745b05859 in __GI_abort () at abort.c:79
+#2  0x00007fb745b05729 in __assert_fail_base (fmt=0x7fb745c9b588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x2122b4 "pIn->nSdst==1 || pParse->nErr>0", file=0x22873d "sqlite3.c", line=127594, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fb745b16fd6 in __GI___assert_fail (assertion=0x2122b4 "pIn->nSdst==1 || pParse->nErr>0", file=0x22873d "sqlite3.c", line=127594, 
+    function=0x213784 "int generateOutputSubroutine(Parse *, Select *, SelectDest *, SelectDest *, int, int, KeyInfo *, int)") at assert.c:101
+#4  0x00000000003b5d8b in generateOutputSubroutine (pParse=0x7ffde6cc2510, p=0x19d2400, pIn=0x7ffde6cc0b90, pDest=0x7ffde6cc10e8, regReturn=15, regPrev=9, pKeyInfo=0x19db0a0, iBreak=-7) at sqlite3.c:127594
+#5  0x00000000003b4e37 in multiSelectOrderBy (pParse=0x7ffde6cc2510, p=0x19d2400, pDest=0x7ffde6cc10e8) at sqlite3.c:127921
+#6  0x00000000003a3d1c in multiSelect (pParse=0x7ffde6cc2510, p=0x19d2400, pDest=0x7ffde6cc10e8) at sqlite3.c:127207
+#7  0x00000000002fccf5 in sqlite3Select (pParse=0x7ffde6cc2510, p=0x19d2400, pDest=0x7ffde6cc10e8) at sqlite3.c:130384
+#8  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffde6cc2510, pExpr=0x19e1c70) at sqlite3.c:99820
+#9  0x0000000000350b1c in exprCodeVector (pParse=0x7ffde6cc2510, p=0x19e1c70, piFreeable=0x7ffde6cc11ac) at sqlite3.c:100296
+#10 0x000000000034fbdb in sqlite3ExprCodeIN (pParse=0x7ffde6cc2510, pExpr=0x19d3b70, destIfFalse=-3, destIfNull=-4) at sqlite3.c:99952
+#11 0x000000000034be9e in sqlite3ExprCodeTarget (pParse=0x7ffde6cc2510, pExpr=0x19d3b70, target=1) at sqlite3.c:100792
+#12 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffde6cc2510, pList=0x19d9480, target=1, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#13 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffde6cc2510, pSelect=0x19d0c90, pInfo=0x7ffde6cc1550) at sqlite3.c:125172
+#14 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffde6cc2510, p=0x19d0c90, srcTab=-1, pSort=0x0, pDistinct=0x7ffde6cc17f0, pDest=0x7ffde6cc1900, iContinue=-2, iBreak=-2) at sqlite3.c:125624
+#15 0x00000000002fe191 in sqlite3Select (pParse=0x7ffde6cc2510, p=0x19d0c90, pDest=0x7ffde6cc1900) at sqlite3.c:130743
+#16 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffde6cc1b30, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffde6cc2510) at sqlite3.c:151581
+#17 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffde6cc1b30, yymajor=1, yyminor=...) at sqlite3.c:152877
+#18 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffde6cc2510, 
+    zSql=0x19d4510 ";;SELECT (SELECT 5,6 UNION SELECT 3,4 ORDER BY 1) IN (SELECT 3,4);;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT 3,4);;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT"..., pzErrMsg=0x7ffde6cc26f0) at sqlite3.c:154013
+#19 0x00000000002a1683 in sqlite3Prepare (db=0x19be2b0, 
+    zSql=0x19c5b87 ";SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1) IN (SELECT 5,6);;SELECT (SELECT 5,6 UNION SELECT 3,4 ORDER BY 1) IN (SELECT 3,4);;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT 3,4);"..., nBytes=775, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffde6cc2828, pzTail=0x7ffde6cc2810) at sqlite3.c:124303
+#20 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x19be2b0, 
+    zSql=0x19c5b87 ";SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1) IN (SELECT 5,6);;SELECT (SELECT 5,6 UNION SELECT 3,4 ORDER BY 1) IN (SELECT 3,4);;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT 3,4);"..., nBytes=775, prepFlags=128, pOld=0x0, ppStmt=0x7ffde6cc2828, pzTail=0x7ffde6cc2810) at sqlite3.c:124403
+#21 0x000000000029247f in sqlite3_prepare_v2 (db=0x19be2b0, 
+    zSql=0x19c5b87 ";SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1) IN (SELECT 5,6);;SELECT (SELECT 5,6 UNION SELECT 3,4 ORDER BY 1) IN (SELECT 3,4);;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT 3,4);"..., nBytes=775, ppStmt=0x7ffde6cc2828, pzTail=0x7ffde6cc2810) at sqlite3.c:124487
+#22 0x0000000000256bd0 in main (argc=1, argv=0x7ffde6cc29d8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 51593] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

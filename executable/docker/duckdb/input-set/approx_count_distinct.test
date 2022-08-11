@@ -1,0 +1,98 @@
+# name: test/sql/function/list/aggregates/approx_count_distinct.test
+# description: Test the list_approx_count_distinct aggregate function
+# group: [aggregates]
+
+;
+CREATE TABLE list_ints (l INTEGER[]);
+
+;
+INSERT INTO list_ints SELECT LIST(i) FROM range(100) tbl(i);
+
+;
+select list_approx_count_distinct([10]), list_approx_count_distinct(['hello']) from list_ints;
+;
+1	1
+
+;
+select list_approx_count_distinct(l), list_approx_count_distinct(['hello']) from list_ints;
+;
+100	1
+
+;
+select list_approx_count_distinct([]) from list_ints;
+;
+0
+
+;
+INSERT INTO list_ints VALUES ([]), (NULL), ([NULL]);
+
+;
+select list_approx_count_distinct(l) from list_ints;
+;
+100
+0
+NULL
+0
+
+# dates
+;
+CREATE TABLE IF NOT EXISTS dates (t date[]);
+
+;
+INSERT INTO dates VALUES (['2008-01-01', NULL, '2007-01-01', '2008-02-01', '2008-01-02', '2008-01-01', '2008-01-01', '2008-01-01'])
+
+;
+SELECT list_count(t), list_approx_count_distinct(t) from dates
+;
+7	4
+
+# timestamps
+;
+CREATE TABLE IF NOT EXISTS timestamp (t TIMESTAMP[]);
+
+;
+INSERT INTO timestamp VALUES (['2008-01-01 00:00:01', NULL, '2007-01-01 00:00:01', '2008-02-01 00:00:01', '2008-01-02 00:00:01', '2008-01-01 10:00:00', '2008-01-01 00:10:00', '2008-01-01 00:00:10'])
+
+;
+SELECT list_count(t), list_approx_count_distinct(t) from timestamp
+;
+7	7
+
+# strings
+;
+CREATE TABLE IF NOT EXISTS names (t string[]);
+
+;
+INSERT INTO names VALUES (['Pedro', NULL, 'Pedro', 'Pedro', 'Mark', 'Mark', 'Mark', 'Hannes-Muehleisen', 'Hannes-Muehleisen'])
+
+;
+SELECT list_count(t), list_approx_count_distinct(t) from names
+;
+8	3
+
+# test approximate count on different (long) lists
+;
+CREATE TABLE list_ints_2 (a INTEGER[], b INTEGER[]);
+
+;
+INSERT INTO list_ints_2 SELECT LIST(a), LIST(mod(a, 10)) FROM range(2000) tbl(a);
+
+;
+SELECT list_count(a), list_approx_count_distinct(a), list_approx_count_distinct(b) from list_ints_2
+;
+2000	2002	10
+
+;
+DELETE FROM list_ints_2
+
+;
+INSERT INTO list_ints_2 SELECT LIST(a), NULL FROM range(2000) tbl(a, b) WHERE a % 2 = 0;
+
+;
+INSERT INTO list_ints_2 SELECT LIST(a), NULL FROM range(2000) tbl(a, b) WHERE a % 2 = 1;
+
+;
+SELECT list_approx_count_distinct(a) from list_ints_2;
+;
+998
+997

@@ -1,0 +1,63 @@
+# name: test/optimizer/statistics/statistics_try_cast.test
+# description: Statistics with try cast
+# group: [statistics]
+
+;
+PRAGMA enable_verification
+
+;
+PRAGMA explain_output = OPTIMIZED_ONLY;
+
+;
+CREATE TABLE integers AS SELECT range i FROM range(5)
+
+;
+SELECT i::TINYINT IS NULL FROM integers
+;
+False
+False
+False
+False
+False
+
+;
+SELECT TRY_CAST(i AS TINYINT) IS NULL FROM integers
+;
+False
+False
+False
+False
+False
+
+;
+EXPLAIN SELECT i::TINYINT IS NULL FROM integers
+;
+logical_opt	<!REGEX>:.*IS.*NULL.*
+
+;
+EXPLAIN SELECT (TRY_CAST(i AS TINYINT)) IS NULL FROM integers
+;
+logical_opt	<REGEX>:.*IS.*NULL.*
+
+;
+INSERT INTO integers VALUES (255)
+
+;
+SELECT TRY_CAST(i AS TINYINT) FROM integers
+;
+0
+1
+2
+3
+4
+NULL
+
+;
+SELECT TRY_CAST(i AS TINYINT) IS NULL FROM integers
+;
+False
+False
+False
+False
+False
+True

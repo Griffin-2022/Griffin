@@ -1,0 +1,121 @@
+	  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+	   FROM pg_catalog.pg_attrdef d
+	   WHERE d.adrelid = hash_split_index.attrelid AND d.adnum = hash_split_index.attnum AND hash_split_index.atthasdef),
+	  hash_split_index.attnotnull,
+	  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+	   WHERE c.oid = hash_split_index.attcollation AND t.oid = hash_split_index.atttypid AND hash_split_index.attcollation <> t.typcollation) AS attcollation,
+	  hash_split_index.attidentity,
+	  hash_split_index.attgenerated,
+	  hash_split_index.attstorage,
+	  CASE WHEN hash_split_index.attstattarget=-1 THEN NULL ELSE hash_split_index.attstattarget END AS attstattarget,
+	  pg_catalog.col_description(hash_split_index.attrelid, hash_split_index.attnum)
+	FROM pg_catalog.pg_attribute hash_split_index
+	WHERE hash_split_index.attrelid = '32625' AND hash_split_index.attnum > 0 AND NOT hash_split_index.attisdropped
+	ORDER BY hash_split_index.attnum;
+2022-08-02 06:22:26.131 UTC [125799] ERROR:  cannot execute CREATE DOMAIN in a read-only transaction
+2022-08-02 06:22:26.131 UTC [125799] STATEMENT:  create domain t1 as varchar(4);
+2022-08-02 06:22:26.131 UTC [125799] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:22:26.131 UTC [125799] STATEMENT:  drop table o;
+2022-08-02 06:22:26.131 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 06:22:26.131 UTC [125799] STATEMENT:  insert into hash_idx values (null);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  create table foo_ptbl_tens
+	           ( var_ptbl keycol
+	           , q keycol NULL  -- NOT NULL in the domain cannot be overridden
+	           , r o    NOT NULL
+	           , var_ptbl_ones o
+	           , var_ptbl_tens hash_idx CHECK (var_ptbl_tens IN ('c', 'd'))
+	           );
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  relation "foo_ptbl_tens" does not exist
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  COPY foo_ptbl_tens FROM stdin;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  insert into hash_split_index default values;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute ALTER DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  alter domain t1 set default '42';
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  select * from hash_idx;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute ALTER DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  alter domain hash_idx add constraint t check (VALUE < 34);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute ALTER DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  alter domain y set not null;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  create temp table f2(pg_roles s);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute CREATE DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  create domain a as text not null;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  create table b(t2 t1);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  drop table b;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  drop table hash_idx;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute DROP TYPE in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  drop type s;
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute ALTER DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  alter domain t1 add constraint c2 check(value >= 10);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute ALTER DOMAIN in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  alter domain y add constraint c2 check(value > 0);
+2022-08-02 06:22:26.132 UTC [125799] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 06:22:26.132 UTC [125799] STATEMENT:  create or replace function b(numeric) returns numeric as $$
+	declare
+	  x t1;
+	begin
+	  x[1] := $1;
+	  return x[1];
+	end$$ language plpgsql;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  select b(121.00);
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  create or replace function t2(int) returns int as $$
+	declare
+	  x t1 := '{1,2}';
+	begin
+	  x[2] := $1;
+	  return x[2];
+	end$$ language plpgsql;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  select t2(0);
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  create or replace function auth_tbl(int) returns a as $$
+	declare d a;
+	begin
+	  d := $1;
+	  return d;
+	end
+	$$ language plpgsql immutable;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  drop table make_some_array;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute CREATE DOMAIN in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  create domain uname as int;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute CREATE DOMAIN in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  create domain credential as int constraint unsigned check (value > 0);
+2022-08-02 06:22:26.133 UTC [125799] WARNING:  there is no transaction in progress
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  DISCARD ALL;
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:22:26.133 UTC [125799] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 06:22:26.133 UTC [125799] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:22:28.772 UTC [130785] PANIC:  could not open critical system index 2662
+2022-08-02 06:22:28.774 UTC [123266] LOG:  server process (PID 130785) was terminated by signal 6: Aborted
+2022-08-02 06:22:28.774 UTC [123266] LOG:  terminating any other active server processes
+2022-08-02 06:22:28.809 UTC [123266] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:22:28.825 UTC [130786] LOG:  database system was interrupted; last known up at 2022-08-02 06:22:25 UTC
+2022-08-02 06:22:28.837 UTC [130786] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:22:28.838 UTC [130786] LOG:  redo starts at 0/12672730
+2022-08-02 06:22:28.838 UTC [130786] LOG:  invalid record length at 0/126727E0: wanted 24, got 0
+2022-08-02 06:22:28.838 UTC [130786] LOG:  redo done at 0/12672768 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 06:22:28.849 UTC [123266] LOG:  database system is ready to accept connections
+2022-08-02 06:22:33.871 UTC [130809] PANIC:  could not open critical system index 2662
+2022-08-02 06:22:33.873 UTC [123266] LOG:  server process (PID 130809) was terminated by signal 6: Aborted
+2022-08-02 06:22:33.873 UTC [123266] LOG:  terminating any other active server processes
+2022-08-02 06:22:33.877 UTC [130813] FATAL:  the database system is in recovery mode
+2022-08-02 06:22:33.881 UTC [123266] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:22:33.890 UTC [123266] LOG:  received smart shutdown request
+2022-08-02 06:22:33.890 UTC [130819] LOG:  database system was interrupted; last known up at 2022-08-02 06:22:28 UTC
+2022-08-02 06:22:33.904 UTC [130819] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:22:33.905 UTC [130819] LOG:  invalid record length at 0/12672858: wanted 24, got 0
+2022-08-02 06:22:33.905 UTC [130819] LOG:  redo is not required
+2022-08-02 06:22:33.911 UTC [123266] LOG:  abnormal database system shutdown
+2022-08-02 06:22:33.913 UTC [123266] LOG:  database system is shut down

@@ -1,0 +1,100 @@
+2022-07-29 17:56:15 6983 [Warning] Aborted connection 6983 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:15 6985 [Warning] Aborted connection 6985 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:15 6987 [Warning] Aborted connection 6987 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:15 6989 [Warning] Aborted connection 6989 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:16 6991 [Warning] Aborted connection 6991 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:16 6993 [Warning] Aborted connection 6993 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:16 6995 [Warning] Aborted connection 6995 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+2022-07-29 17:56:16 6997 [Warning] Aborted connection 6997 to db: 'unconnected' user: 'root' host: 'localhost' (Got an error writing communication packets)
+220729 17:56:16 [ERROR] mysqld got signal 11 ;
+This could be because you hit a bug. It is also possible that this binary
+or one of the libraries it was linked against is corrupt, improperly built,
+or misconfigured. This error can also be caused by malfunctioning hardware.
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=2
+max_threads=153
+thread_count=2
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00015e288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7f13fa628c80 thread_stack 0x100000
+??:0(__interceptor_backtrace)[0x77602b]
+mysys/stacktrace.c:212(my_print_stacktrace)[0x3586647]
+sql/signal_handler.cc:0(handle_fatal_signal)[0x187c05b]
+??:0(__restore_rt)[0x7f14208f8420]
+sql/sql_analyze_stmt.h:89(Exec_time_tracker::get_loops() const)[0x185792f]
+??:0(create_sort_index(THD*, JOIN*, st_join_table*, Filesort*))[0xf82870]
+sql/sql_window.cc:3007(Window_funcs_sort::exec(JOIN*, bool))[0x15e474d]
+sql/sql_select.cc:29493(AGGR_OP::end_send())[0xf79709]
+??:0(sub_select_postjoin_aggr(JOIN*, st_join_table*, bool))[0xeeae18]
+sql/sql_select.cc:21010(sub_select(JOIN*, st_join_table*, bool))[0xe687aa]
+sql/sql_select.cc:20614(do_select(JOIN*, Procedure*))[0xeff0d0]
+sql/sql_select.cc:4514(JOIN::exec())[0xefb06c]
+sql/sql_select.cc:4995(mysql_select(THD*, TABLE_LIST*, List<Item>&, Item*, unsigned int, st_order*, st_order*, Item*, st_order*, unsigned long long, select_result*, st_select_lex_unit*, st_select_lex*))[0xe6bced]
+sql/sql_union.cc:2360(st_select_lex_unit::exec())[0x1153c2b]
+sql/sql_derived.cc:1284(mysql_derived_fill(THD*, LEX*, TABLE_LIST*))[0xbeaab0]
+??:0(mysql_handle_single_derived(LEX*, TABLE_LIST*, unsigned int))[0xbece5d]
+sql/sql_select.cc:13953(st_join_table::preread_init())[0xf3d775]
+sql/item_subselect.cc:4463(subselect_indexsubquery_engine::exec())[0x1ca0941]
+??:0(Item_subselect::exec())[0x1c6571d]
+sql/item_subselect.cc:1035(Item_in_subselect::exec())[0x1c67608]
+sql/item_subselect.cc:1965(Item_in_subselect::val_bool())[0x1c75658]
+??:0(Item_in_optimizer::val_int())[0x19b7952]
+sql/opt_range.h:1729(SQL_SELECT::skip_record(THD*))[0x119b27f]
+sql/sql_parse.cc:4406(mysql_execute_command(THD*, bool))[0xd376e5]
+sql/sql_parse.cc:8028(mysql_parse(THD*, char*, unsigned int, Parser_state*))[0xd1155c]
+sql/sql_parse.cc:1991(dispatch_command(enum_server_command, THD*, char*, unsigned int, bool))[0xd0800b]
+??:0(do_command(THD*, bool))[0xd137aa]
+sql/sql_connect.cc:1418(do_handle_one_connection(CONNECT*, bool))[0x131b0a3]
+sql/sql_connect.cc:0(handle_one_connection)[0x131a831]
+perfschema/pfs.cc:2203(pfs_spawn_thread)[0x23fd89f]
+??:0(start_thread)[0x7f14208ec609]
+??:0(clone)[0x7f1420602133]
+
+Trying to get some variables.
+Some pointers may be invalid and cause the dump to abort.
+Query (0x6290000e64a7): UPDATE v0 SET v1 = 60 WHERE v1 IN ( SELECT v1 FROM ( SELECT v1 FROM v0 UNION SELECT v1 FROM v0 ORDER BY AVG ( v1 ) OVER ( ORDER BY v1 DESC , 24 , -1 ) ) AS v2 ) 
+
+Connection ID (thread ID): 6999
+Status: NOT_KILLED
+
+Optimizer switch: index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,index_merge_sort_intersection=off,engine_condition_pushdown=off,index_condition_pushdown=on,derived_merge=on,derived_with_keys=on,firstmatch=on,loosescan=on,materialization=on,in_to_exists=on,semijoin=on,partial_match_rowid_merge=on,partial_match_table_scan=on,subquery_cache=on,mrr=off,mrr_cost_based=off,mrr_sort_keys=off,outer_join_with_cache=on,semijoin_with_cache=on,join_cache_incremental=on,join_cache_hashed=on,join_cache_bka=on,optimize_join_buffer_size=on,table_elimination=on,extended_keys=on,exists_to_in=on,orderby_uses_equalities=on,condition_pushdown_for_derived=on,split_materialized=on,condition_pushdown_for_subquery=on,rowid_filter=on,condition_pushdown_from_having=on,not_null_range_scan=off
+
+The manual page at https://mariadb.com/kb/en/how-to-produce-a-full-stack-trace-for-mysqld/ contains
+information that should help you find out what is causing the crash.
+Writing a core file...
+Working directory at /dev/shm/out/mysql_client_dir_3306
+Resource Limits:
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             unlimited            unlimited            processes 
+Max open files            1048576              1048576              files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            locks     
+Max pending signals       2062354              2062354              signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us        
+Core pattern: core
+

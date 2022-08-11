@@ -1,0 +1,111 @@
+	       acosd(x) IN (0,60,90,120,180) AS acosd_exact
+	FROM (VALUES (-1), (-0.5), (0), (0.5), (1)) AS t(x);
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute CREATE TYPE in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  create type classoid;
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  create function t2(classoid) returns cstring immutable strict
+	  language internal as 'int8out';
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute CREATE CAST in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  create cast (classoid as float8) without function;
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute CREATE CAST in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  create cast (float8 as classoid) without function;
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute DROP TYPE in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  drop type classoid cascade;
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 09:10:25.509 UTC [28695] WARNING:  there is no transaction in progress
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  DISCARD ALL;
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 09:10:25.509 UTC [28695] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 09:10:25.509 UTC [28695] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 09:10:26.803 UTC [28695] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 09:10:26.803 UTC [28695] STATEMENT:  --
+	-- BOX
+	--
+	
+	--
+	-- box logic
+	--	     o
+	-- 3	  o--|X
+	--	  |  o|
+	-- 2	+-+-+ |
+	--	| | | |
+	-- 1	| o-+-o
+	--	|   |
+	-- 0	+---+
+	--
+	--	0 1 2 3
+	--
+	
+	-- boxes are specified by two points, given by four floats x1,y1,x2,y2
+	
+	
+	CREATE TABLE test1 (a box);
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 52
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  
+	
+	-- right-or-overlap (x only)
+	SELECT b1.*
+	   FROM test1 b1
+	   WHERE b1.a &> box '(2.0,2.0,2.5,2.5)';
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  INSERT INTO test1 SELECT * FROM test1;
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  cannot execute ALTER AGGREGATE in a read-only transaction
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  
+	alter aggregate my_rank(VARIADIC "any" ORDER BY VARIADIC "any")
+	  rename to test_rank;
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 33
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  
+	
+	-- area <=
+	SELECT b.a
+	   FROM test1 b
+	   WHERE b.a <= box '(3.0,3.0,5.0,5.0)';
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  cannot execute CREATE AGGREGATE in a read-only transaction
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  
+	
+	-- serialfunc must have correct parameters
+	CREATE AGGREGATE myavg (numeric)
+	(
+		stype = internal,
+		sfunc = numeric_avg_accum,
+		serialfunc = numeric_avg_deserialize,
+		deserialfunc = numeric_avg_deserialize
+	);
+2022-08-02 09:10:26.804 UTC [28695] WARNING:  there is no transaction in progress
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  INSERT INTO test1 VALUES (7, 4, 'cccc', 'h');
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  cannot execute CREATE INDEX in a read-only transaction
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  
+	
+	CREATE INDEX b ON test1 USING spgist (a);
+2022-08-02 09:10:26.804 UTC [28695] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:10:26.804 UTC [28695] STATEMENT:  SELECT '2006-08-13 12:34:56'::timestamptz;
+2022-08-02 09:10:26.805 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 09:10:26.805 UTC [28695] STATEMENT:  INSERT INTO test1 SELECT * FROM test1;
+2022-08-02 09:10:26.805 UTC [28695] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 09:10:26.805 UTC [28695] STATEMENT:  
+	 set enable_bitmapscan=off;
+2022-08-02 09:10:26.805 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 09:10:26.805 UTC [28695] STATEMENT:  SELECT 1 AS one FROM test1 HAVING 1 > 2;
+2022-08-02 09:10:26.805 UTC [28695] ERROR:  could not find pg_class tuple for index 2662 at character 36
+2022-08-02 09:10:26.805 UTC [28695] STATEMENT:  
+	EXPLAIN (COSTS OFF) SELECT * FROM test1 WHERE a &< '(10,4.333334),(5,100)';
+2022-08-02 09:10:26.805 UTC [28695] ERROR:  SAVEPOINT can only be used in transaction blocks
+2022-08-02 09:10:26.805 UTC [28695] STATEMENT:  SAVEPOINT second_sp;
+2022-08-02 09:10:26.812 UTC [32331] PANIC:  could not open critical system index 2662
+2022-08-02 09:10:26.814 UTC [24242] LOG:  server process (PID 32331) was terminated by signal 6: Aborted
+2022-08-02 09:10:26.814 UTC [24242] LOG:  terminating any other active server processes
+2022-08-02 09:10:26.858 UTC [24242] LOG:  all server processes terminated; reinitializing
+2022-08-02 09:10:26.874 UTC [32336] LOG:  database system was interrupted; last known up at 2022-08-02 09:10:23 UTC
+2022-08-02 09:10:26.875 UTC [32337] FATAL:  the database system is in recovery mode
+2022-08-02 09:10:26.877 UTC [32340] FATAL:  the database system is in recovery mode
+2022-08-02 09:10:26.878 UTC [32341] FATAL:  the database system is in recovery mode
+2022-08-02 09:10:26.883 UTC [24242] LOG:  received smart shutdown request
+2022-08-02 09:10:26.891 UTC [32336] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 09:10:26.892 UTC [32336] LOG:  redo starts at 0/FBA0C90
+2022-08-02 09:10:26.896 UTC [24242] LOG:  abnormal database system shutdown

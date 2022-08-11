@@ -1,0 +1,88 @@
+# name: test/sql/update/test_string_update_rollback_null.test
+# description: Test rollback of string update with NULL
+# group: [update]
+
+# create a table
+;
+CREATE TABLE test (a VARCHAR);
+
+;
+INSERT INTO test VALUES ('test'), ('world')
+
+# test rollback of value -> NULL update
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a=NULL WHERE a='world';
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+test
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+ROLLBACK;
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+# test rollback of NULL -> value update
+;
+UPDATE test SET a=NULL WHERE a='world';
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+test
+
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a='world' WHERE a IS NULL;
+
+;
+SELECT * FROM test ORDER BY a
+;
+test
+world
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+test
+
+;
+ROLLBACK;
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+test
+
+;
+SELECT * FROM test ORDER BY a
+;
+NULL
+test
+

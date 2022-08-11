@@ -1,0 +1,69 @@
+CREATE TABLE t1(a, b, c);
+;CREATE INDEX i1 ON t1(a, c);
+;CREATE INDEX i2 ON t1(b, c);
+;INSERT INTO t1 VALUES(1, 2, 3);
+;CREATE TABLE t2(e, f);
+;CREATE INDEX i3 ON t2(e);
+;INSERT INTO t2 VALUES(1234567, 3);
+;CREATE TABLE empty(x);
+;CREATE TABLE not_empty(x);
+;INSERT INTO not_empty VALUES(2);
+;CREATE TABLE t4(x);
+;CREATE TABLE t5(g, h, i);
+;CREATE TRIGGER trig BEFORE INSERT ON t4 BEGIN
+    INSERT INTO t5 SELECT * FROM t1 WHERE 
+        (a IN (SELECT x FROM empty) OR b IN (SELECT x FROM not_empty)) 
+        AND c IN (SELECT f FROM t2 WHERE e=1234567);
+  END;
+;INSERT INTO t4 VALUES(0);
+;SELECT * FROM t5;
+;
+;PRAGMA recursive_triggers = 1;
+;CREATE TABLE node(
+      id int not null primary key, 
+      pid int not null default 0 references node,
+      key varchar not null, 
+      path varchar default '',
+      unique(pid, key)
+      );
+;CREATE TRIGGER node_delete_referencing AFTER DELETE ON "node"
+    BEGIN
+    DELETE FROM "node" WHERE pid = old."id";
+  END;
+;
+;INSERT INTO node(id, pid, key) VALUES(9, 0, 'test');
+;INSERT INTO node(id, pid, key) VALUES(90, 9, 'test1');
+;INSERT INTO node(id, pid, key) VALUES(900, 90, 'test2');
+;DELETE FROM node WHERE id=9;
+;SELECT * FROM node;
+;
+;CREATE TABLE   x1  (x);
+;CREATE TABLE   x2  (a, b);
+;CREATE TABLE '"x2"'(a, b);
+;INSERT INTO x2 VALUES(1, 2);
+;INSERT INTO x2 VALUES(3, 4);
+;INSERT INTO '"x2"' SELECT * FROM x2;
+;CREATE TRIGGER x1ai AFTER INSERT ON x1 BEGIN
+    INSERT INTO """x2""" VALUES('x', 'y');
+    DELETE FROM """x2""" WHERE a=1;
+    UPDATE """x2""" SET b = 11 WHERE a = 3;
+  END;
+;INSERT INTO x1 VALUES('go!');
+;
+;SELECT * FROM x2;
+;
+;SELECT * FROM """x2""";
+;
+;SELECT raise(ABORT, 'msg') FROM sqlite_master 
+  UNION SELECT 1 
+  ORDER BY raise(IGNORE);
+;SELECT count(*) FROM sqlite_master 
+  GROUP BY raise(IGNORE) 
+  HAVING raise(ABORT, 'msg');
+;CREATE TABLE xyz(x INTEGER PRIMARY KEY, y, z);
+;CREATE TRIGGER xyz_tr BEFORE INSERT ON xyz BEGIN
+    SELECT new.x;
+  END;
+;
+;INSERT INTO xyz VALUES('hello', 2, 3);
+;

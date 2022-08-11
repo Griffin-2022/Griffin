@@ -1,0 +1,107 @@
+# name: test/sql/transactions/test_multi_transaction_append.test
+# description: Test appends with multiple transactions
+# group: [transactions]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER, j INTEGER)
+
+# begin two transactions
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# append a tuple, con2 cannot see this tuple yet
+;
+INSERT INTO integers VALUES (1, 3)
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+SELECT COUNT(*) FROM integers WHERE i=1
+;
+0
+
+# after committing, con2 still cannot see this tuple
+;
+COMMIT
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+SELECT COUNT(*) FROM integers WHERE i=1
+;
+0
+
+# after con2 commits, it can see this tuple
+;
+COMMIT
+
+;
+SELECT COUNT(*) FROM integers
+;
+1
+
+;
+SELECT COUNT(*) FROM integers WHERE i=1
+;
+1
+
+# now both transactions append one tuple
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (1, 3)
+
+;
+INSERT INTO integers VALUES (1, 3)
+
+# they cannot see each others tuple yet
+;
+SELECT COUNT(*) FROM integers
+;
+2
+
+;
+SELECT COUNT(*) FROM integers
+;
+2
+
+# until they both commit
+;
+COMMIT
+
+;
+COMMIT
+
+;
+SELECT COUNT(*) FROM integers
+;
+3
+
+;
+SELECT COUNT(*) FROM integers
+;
+3
+
+;
+SELECT * FROM integers
+;
+1	3
+1	3
+1	3
+

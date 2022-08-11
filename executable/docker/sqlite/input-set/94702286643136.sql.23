@@ -1,0 +1,23 @@
+PRAGMA auto_vacuum = 1;
+;PRAGMA mmap_size = 67108864;
+;PRAGMA journal_mode = wal;
+;CREATE TABLE t1(a, b, UNIQUE(a, b));
+;INSERT INTO t1 VALUES(rblob(500), rblob(500));
+;INSERT INTO t1 SELECT rblob(500), rblob(500) FROM t1;
+;--    2
+    INSERT INTO t1 SELECT rblob(500), rblob(500) FROM t1;
+;--    4
+    INSERT INTO t1 SELECT rblob(500), rblob(500) FROM t1;
+;--    8
+    INSERT INTO t1 SELECT rblob(500), rblob(500) FROM t1;
+;--   16
+    INSERT INTO t1 SELECT rblob(500), rblob(500) FROM t1;
+;--   32
+    PRAGMA wal_checkpoint;
+;
+;PRAGMA auto_vacuum;
+;SELECT count(*) FROM t1;
+;
+;PRAGMA wal_checkpoint;
+;
+;

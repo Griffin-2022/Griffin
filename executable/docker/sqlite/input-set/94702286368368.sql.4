@@ -1,0 +1,295 @@
+ATTACH 'test.db2' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;CREATE TABLE t1(a INTEGER PRIMARY KEY, b TEXT);
+;CREATE TABLE t2(a INTEGER PRIMARY KEY, b TEXT);
+;CREATE TABLE aux.t3(a INTEGER PRIMARY KEY, b TEXT);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;INSERT INTO t1 VALUES(1, 'one'), (2, 'two'), (3, 'three');
+;INSERT INTO t2 VALUES(10, 'ten'), (11, 'eleven'), (12, 'twelve');
+;INSERT INTO t3 VALUES(20, 'twenty'), (21, 'twenty-one'), (22, 'twenty-two');
+;
+;CREATE VIRTUAL TABLE temp.uuu USING unionvtab(
+    "VALUES(NULL, 't1', 1, 9),  ('main', 't2', 10, 19), ('aux', 't3', 20, 29)"
+  );
+;SELECT*FROM"temp".sqlite_master WHERE name='uuu' AND sql='CREATE VIRTUAL TABLE uuu USING unionvtab(
+    "VALUES(NULL, ''t1'', 1, 9),  (''main'', ''t2'', 10, 19), (''aux'', ''t3'', 20, 29)"
+  )' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='uuu' AND sql='CREATE VIRTUAL TABLE uuu USING unionvtab(
+    "VALUES(NULL, ''t1'', 1, 9),  (''main'', ''t2'', 10, 19), (''aux'', ''t3'', 20, 29)"
+  )' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 't1', 1, 9),  ('main', 't2', 10, 19), ('aux', 't3', 20, 29)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='t1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='t2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'aux'.table_info='t3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('t1', ?)
+;PRAGMA table_info='t1'
+;SELECT * FROM uuu;
+;SELECT rowid, * FROM 't1' UNION ALL SELECT rowid, * FROM 'main'.'t2' UNION ALL SELECT rowid, * FROM 'aux'.'t3'
+;
+;PRAGMA table_info(uuu);
+;
+;SELECT * FROM uuu WHERE rowid = 3;
+;SELECT rowid, * FROM 't1' WHERE rowid=3
+;SELECT * FROM uuu WHERE rowid = 11;
+;SELECT rowid, * FROM 'main'.'t2' WHERE rowid=11
+;
+;SELECT * FROM uuu WHERE rowid IN (12, 10, 2);
+;SELECT rowid, * FROM 't1' WHERE rowid=2
+;SELECT rowid, * FROM 'main'.'t2' WHERE rowid=10
+;SELECT rowid, * FROM 'main'.'t2' WHERE rowid=12
+;
+;SELECT * FROM uuu WHERE rowid BETWEEN 3 AND 11;
+;SELECT rowid, * FROM 't1' WHERE rowid>=3 UNION ALL SELECT rowid, * FROM 'main'.'t2' WHERE rowid<=11
+;
+;SELECT * FROM uuu WHERE rowid BETWEEN 11 AND 15;
+;SELECT rowid, * FROM 'main'.'t2' WHERE rowid>=11 AND rowid<=15
+;
+;SELECT * FROM uuu WHERE rowid BETWEEN -46 AND 1500;
+;SELECT rowid, * FROM 't1' UNION ALL SELECT rowid, * FROM 'main'.'t2' UNION ALL SELECT rowid, * FROM 'aux'.'t3'
+;
+;CREATE TABLE src(db, tbl, min, max);
+;INSERT INTO src VALUES(NULL, 't1', 1, 9);
+;INSERT INTO src VALUES('main', 't2', 10, 19);
+;INSERT INTO src VALUES('aux', 't3', 20, 29);
+;CREATE VIRTUAL TABLE temp.opp USING unionvtab(src);
+;SELECT*FROM"temp".sqlite_master WHERE name='opp' AND sql='CREATE VIRTUAL TABLE opp USING unionvtab(src)' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='opp' AND sql='CREATE VIRTUAL TABLE opp USING unionvtab(src)' ORDER BY rowid
+;SELECT * FROM (src) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='t1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='t2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'aux'.table_info='t3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('t1', ?)
+;PRAGMA table_info='t1'
+;SELECT * FROM opp;
+;SELECT rowid, * FROM 't1' UNION ALL SELECT rowid, * FROM 'main'.'t2' UNION ALL SELECT rowid, * FROM 'aux'.'t3'
+;
+;CREATE VIRTUAL TABLE temp.qll USING unionvtab(
+    'SELECT * FROM src WHERE db!=''xyz'''
+  );
+;SELECT*FROM"temp".sqlite_master WHERE name='qll' AND sql='CREATE VIRTUAL TABLE qll USING unionvtab(
+    ''SELECT * FROM src WHERE db!=''''xyz''''''
+  )' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='qll' AND sql='CREATE VIRTUAL TABLE qll USING unionvtab(
+    ''SELECT * FROM src WHERE db!=''''xyz''''''
+  )' ORDER BY rowid
+;SELECT * FROM (SELECT * FROM src WHERE db!='xyz') ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'main'.table_info='t2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA 'aux'.table_info='t3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('t2', ?)
+;PRAGMA table_info='t2'
+;SELECT * FROM qll WHERE rowid BETWEEN 10 AND 21;
+;SELECT rowid, * FROM 'main'.'t2' UNION ALL SELECT rowid, * FROM 'aux'.'t3' WHERE rowid<=21
+;
+;CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, 't1', 1, 100)");
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE main.u1 USING unionvtab("VALUES('', 't1', 1, 100)");
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE aux.u1 USING unionvtab("VALUES('', 't1', 1, 100)");
+;SELECT*FROM"aux".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES('''', ''t1'', 1, 100)")' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES('''', ''t1'', 1, 100)")' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES(NULL, 't555', 1, 100)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 't555', 1, 100)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES('aux', 't555', 1, 100)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''aux'', ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''aux'', ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT * FROM (VALUES('aux', 't555', 1, 100)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES('xua', 't555', 1, 100)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''xua'', ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''xua'', ''t555'', 1, 100)")' ORDER BY rowid
+;SELECT * FROM (VALUES('xua', 't555', 1, 100)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE TABLE wr1(a, b, c PRIMARY KEY) WITHOUT ROWID;
+;CREATE VIEW v1 AS SELECT * FROM t1;
+;CREATE VIEW v2 AS SELECT _rowid_, * FROM t1;
+;CREATE TABLE wr2(a, _rowid_ INTEGER, c PRIMARY KEY) WITHOUT ROWID;
+;CREATE TABLE wr3(a, b, _rowid_ PRIMARY KEY) WITHOUT ROWID;
+;
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES('main', 'wr1', 1, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''main'', ''wr1'', 1, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(''main'', ''wr1'', 1, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES('main', 'wr1', 1, 2)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES(NULL, 'v1', 1, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''v1'', 1, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''v1'', 1, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 'v1', 1, 2)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES(NULL, 'v2', 1, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''v2'', 1, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''v2'', 1, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 'v2', 1, 2)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES(NULL, 'wr2', 1, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''wr2'', 1, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''wr2'', 1, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 'wr2', 1, 2)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.u1 USING unionvtab("VALUES(NULL, 'wr3', 1, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''wr3'', 1, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='u1' AND sql='CREATE VIRTUAL TABLE u1 USING unionvtab("VALUES(NULL, ''wr3'', 1, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES(NULL, 'wr3', 1, 2)) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE TABLE x1(a BLOB, b);
+;CREATE TABLE x2(a BLOB, b);
+;CREATE TEMP TABLE x3(a BLOB, b);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='x3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='x3' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE aux.y1(one, two, three INTEGER PRIMARY KEY);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='y1' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='y1' AND type!='trigger' ORDER BY rowid
+;CREATE TEMP TABLE y2(one, two, three INTEGER PRIMARY KEY);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='y2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='y2' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE y3(one, two, three INTEGER PRIMARY KEY);
+;
+;DROP TABLE IF EXISTS temp.a1;
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab("VALUES (NULL, 'x1', 0, 0),(NULL, 'x2', 1, 1),(NULL, 'x3', 2, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''x2'', 1, 1),(NULL, ''x3'', 2, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''x2'', 1, 1),(NULL, ''x3'', 2, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES (NULL, 'x1', 0, 0),(NULL, 'x2', 1, 1),(NULL, 'x3', 2, 2)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('x1', ?)
+;PRAGMA table_info='x1'
+;
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab("VALUES (NULL, 'y1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'y3', 2, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''y1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''y1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES (NULL, 'y1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'y3', 2, 2)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y3'
+;SELECT 'CREATE TABLE xyz('    || group_concat(quote(name) || ' ' || type, ', ')    || ')',max((cid+1) * (type='INTEGER' COLLATE nocase AND pk=1))-1 FROM pragma_table_info('y1', ?)
+;PRAGMA table_info='y1'
+;
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab("VALUES (NULL, 'x1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'y3', 2, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES (NULL, 'x1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'y3', 2, 2)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y2'
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab("VALUES (NULL, 'x1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'x3', 2, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''x3'', 2, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''y2'', 1, 1),(NULL, ''x3'', 2, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES (NULL, 'x1', 0, 0),(NULL, 'y2', 1, 1),(NULL, 'x3', 2, 2)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y2'
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab("VALUES (NULL, 'x1', 0, 0),(NULL, 'x2', 1, 1),(NULL, 'y3', 2, 2)");
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''x2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab("VALUES (NULL, ''x1'', 0, 0),(NULL, ''x2'', 1, 1),(NULL, ''y3'', 2, 2)")' ORDER BY rowid
+;SELECT * FROM (VALUES (NULL, 'x1', 0, 0),(NULL, 'x2', 1, 1),(NULL, 'y3', 2, 2)) ORDER BY 3
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x1'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='x2'
+;SELECT group_concat(quote(name) || '.' || quote(type)) FROM pragma_table_info(?, ?)
+;PRAGMA table_info='y3'
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.b1 USING unionvtab(
+    [SELECT 'main', 'b1', 0, 100 WHERE 0]
+  )
+
+;SELECT*FROM"temp".sqlite_master WHERE name='b1' AND sql='CREATE VIRTUAL TABLE b1 USING unionvtab(
+    [SELECT ''main'', ''b1'', 0, 100 WHERE 0]
+  )' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='b1' AND sql='CREATE VIRTUAL TABLE b1 USING unionvtab(
+    [SELECT ''main'', ''b1'', 0, 100 WHERE 0]
+  )' ORDER BY rowid
+;SELECT * FROM (SELECT 'main', 'b1', 0, 100 WHERE 0) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab(` VALUES('main', 't1', 10, 20), ('main', 't2', 30, 29) `)
+  
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab(` VALUES(''main'', ''t1'', 10, 20), (''main'', ''t2'', 30, 29) `)' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab(` VALUES(''main'', ''t1'', 10, 20), (''main'', ''t2'', 30, 29) `)' ORDER BY rowid
+;SELECT * FROM ( VALUES('main', 't1', 10, 20), ('main', 't2', 30, 29) ) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.a1 USING unionvtab(` VALUES('main', 't1', 10, 20), ('main', 't2', 15, 30) `)
+  
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab(` VALUES(''main'', ''t1'', 10, 20), (''main'', ''t2'', 15, 30) `)' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='a1' AND sql='CREATE VIRTUAL TABLE a1 USING unionvtab(` VALUES(''main'', ''t1'', 10, 20), (''main'', ''t2'', 15, 30) `)' ORDER BY rowid
+;SELECT * FROM ( VALUES('main', 't1', 10, 20), ('main', 't2', 15, 30) ) ORDER BY 3
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE VIRTUAL TABLE temp.b1 USING unionvtab(1, 2, 3, 4)
+
+;SELECT*FROM"temp".sqlite_master WHERE name='b1' AND sql='CREATE VIRTUAL TABLE b1 USING unionvtab(1, 2, 3, 4)' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='b1' AND sql='CREATE VIRTUAL TABLE b1 USING unionvtab(1, 2, 3, 4)' ORDER BY rowid
+;

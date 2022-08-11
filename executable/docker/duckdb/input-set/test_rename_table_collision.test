@@ -1,0 +1,194 @@
+# name: test/sql/alter/rename_table/test_rename_table_collision.test
+# description: Test RENAME TABLE multiple transactions with rename after drop
+# group: [rename_table]
+
+;
+CREATE TABLE t1(i INTEGER);
+
+;
+INSERT INTO t1 VALUES (1), (2), (3);
+
+;
+CREATE TABLE t2(i VARCHAR);
+
+;
+INSERT INTO t2 VALUES (4), (5), (6);
+
+;
+BEGIN TRANSACTION
+
+;
+DROP TABLE t2;
+
+;
+ALTER TABLE t1 RENAME TO t2;
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+1
+2
+3
+
+;
+SELECT i FROM t1 ORDER BY i;
+;
+1
+2
+3
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+4
+5
+6
+
+;
+COMMIT
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+1
+2
+3
+
+;
+SELECT * FROM t1
+
+
+# Now we're going to do a rollback instead of a commit
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE t2 RENAME TO t3;
+
+;
+SELECT i FROM t3 ORDER BY i
+
+;
+SELECT i FROM t2 ORDER BY i
+
+;
+SELECT i FROM t3 ORDER BY i
+;
+1
+2
+3
+
+;
+DROP TABLE t3;
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+1
+2
+3
+
+;
+CREATE TABLE t2 (i integer)
+
+;
+INSERT INTO t2 VALUES (7), (8), (9)
+
+;
+SELECT i FROM t2 ORDER BY i
+;
+7
+8
+9
+
+;
+ROLLBACK
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+1
+2
+3
+
+;
+SELECT i FROM t2 ORDER BY i;
+;
+1
+2
+3
+
+# alter/create collision
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE t2 RENAME TO t3
+
+;
+CREATE TABLE t3 (i INTEGER)
+
+;
+ROLLBACK
+
+;
+ROLLBACK
+
+# alter/alter collision
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE t2 RENAME TO t3
+
+;
+ALTER TABLE t2 RENAME TO t4
+
+;
+ROLLBACK
+
+;
+ROLLBACK
+
+# create some additional reference tables
+# for testing, outside of any transaction
+
+;
+CREATE TABLE e1 (i INTEGER)
+
+;
+CREATE TABLE e2 (i INTEGER)
+
+# crossing drops/renames
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+DROP TABLE e2
+
+;
+DROP TABLE e1
+
+;
+ALTER TABLE e1 RENAME TO e2
+
+;
+ALTER TABLE e2 RENAME TO e1
+
+;
+ROLLBACK
+
+;
+ROLLBACK

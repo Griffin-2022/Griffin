@@ -1,0 +1,28 @@
+# name: test/sql/catalog/view/test_stacked_view.test
+# description: Stacked views uh yeah
+# group: [view]
+
+;
+PRAGMA enable_verification
+
+# create a table
+;
+CREATE TABLE t1(i INTEGER)
+
+;
+INSERT INTO t1 VALUES (41), (42), (43), (44)
+
+;
+CREATE VIEW v1 (v1c1, v1c2) AS SELECT i,i+1 FROM t1 WHERE i > 41
+
+;
+CREATE VIEW v2 (v2c1, v2c2, v2c3) AS SELECT v1c1, v1c2, v1c1+v1c2 FROM v1 WHERE v1c2 > 42
+
+;
+CREATE VIEW v3 (v3c1, v3c2) AS SELECT v2c1, v2c3 FROM v2 WHERE v2c1 > 43
+
+;
+SELECT v3c2+1 FROM v3 WHERE v3c1 > 42
+;
+90
+

@@ -1,0 +1,27 @@
+PRAGMA auto_vacuum = 0 
+;PRAGMA page_size = 1024 
+;PRAGMA journal_mode = wal 
+;PRAGMA synchronous = normal 
+;PRAGMA cache_size = 10;
+;PRAGMA page_size = 1024;
+;CREATE TABLE t1(x PRIMARY KEY);
+;
+;PRAGMA wal_checkpoint 
+;INSERT INTO t1 VALUES( blob(900) ) 
+;BEGIN;
+;INSERT INTO t1 SELECT blob(900) FROM t1;
+;-- 2
+      INSERT INTO t1 SELECT blob(900) FROM t1;
+;-- 4
+      INSERT INTO t1 SELECT blob(900) FROM t1;
+;-- 8
+      INSERT INTO t1 SELECT blob(900) FROM t1;
+;-- 16
+  
+;SELECT count(*) FROM t1;
+;PRAGMA integrity_check;
+;
+;COMMIT
+;
+;PRAGMA wal_checkpoint 
+;

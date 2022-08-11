@@ -1,0 +1,145 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000203,sig:06,src:007149+001615,time:6627057,execs:643331,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;
+PRAGMA sql_trace=on;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: CREATE TABLE t1(a, b);
+SQL-trace: ;
+CREATE TABLE numbers(x INTEGER PRIMARY KEY,y);
+SQL-trace: ;
+SELECT count(a), a FROM t1 GROUP BY a ORDER BY 1
+  ;
+SQL-trace: INSERT INTO numbers DEFAULT VALUES ;
+SQL-trace: ;
+SELECT * FROM (SELECT 1)
+  ;
+SQL-trace: INSERT INTO numbers VALUES(1,'abcdefgh');
+SQL-trace: CREATE TRIGGER t2 AFTER INSERT ON t1 WHEN new.b=1 BEGIN
+       INSERT INTO t1(b) VALUES(new.b);
+     END;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: INSERT INTO numbers DEFAULT VALUES ;
+SQL-trace: ;
+PRAGMA legacy_file_format=OFF;
+SQL-trace: PRAGMA journal_mode = WAL;
+SQL-trace: ;
+CREATE TABLE t3(t4, t5);
+SQL-trace: ;
+INSERT INTO t1(a) VALUES(0);
+SQL-trace: -- TRIGGER t2
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid;
+SQL-trace: INSERT INTO t3 VALUES(0, 1);
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='numbers' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT * FROM numbers ;
+SQL-trace: INSERT INTO t1 DEFAULT VALUES ;
+SQL-trace: -- TRIGGER t2
+SQL-trace: ;
+insert into t3 values (3, 1);
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;
+insert into t1 values (8, 9);
+SQL-trace: -- TRIGGER t2
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='numbers' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT * FROM t1 ;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;
+COMMIT;
+SQL-trace: INSERT INTO t1 DEFAULT VALUES ;
+SQL-trace: -- TRIGGER t2
+SQL-trace: SELECT * FROM numbers ;
+SQL-trace: INSERT INTO numbers DEFAULT VALUES ;
+SQL-trace: ;
+PRAGMA page_size = 1024;
+SQL-trace: ;
+CREATE TABLE t6(t7 PRIMARY KEY, t8);
+SQL-trace: SELECT * FROM t6 ;
+SQL-trace: ;
+BEGIN;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE name='t1i1' AND type='index' ORDER BY rowid;
+SQL-trace: ;
+PRAGMA integrity_check;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid;
+SQL-trace: ;
+VACUUM;
+SQL-trace: -- 2 wal syncs
+    INSERT INTO t6 VALUES(1, 2);
+SQL-trace: ;
+-- 2 wal sync
+    PRAGMA wal_checkpoint;
+SQL-trace: ;
+-- 1 wal sync, 1 db sync
+    BEGIN;
+SQL-trace: ;
+INSERT INTO t3 VALUES(3, 4);
+SQL-trace: ;
+COMMIT;
+SQL-trace: PRAGMA wal_autocheckpoint = 1000 ;
+SQL-trace: INSERT INTO t1 VALUES(9, 10) ;
+SQL-trace: -- TRIGGER t2
+SQL-trace: PRAGMA auto_vacuum = 0;
+SQL-trace: ;
+PRAGMA checkpoint_fullfsync = 1 ;
+SQL-trace: PRAGMA wal_autocheckpoint = 10;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid;
+SQL-trace: -- 2 wal syncs
+    INSERT INTO numbers VALUES(1, 2);
+SQL-trace: ;
+-- 1 wal sync, 1 db sync
+    BEGIN;
+SQL-trace: ;
+INSERT INTO t6 VALUES(5, 6);
+SQL-trace: ;
+COMMIT;
+SQL-trace: ;
+-- 1 wal sync, 1 db sync
+  ;
+INSERT INTO t1 VALUES(7, zeroblob(12*4096)) ;
+SQL-trace: -- TRIGGER t2
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fa455f2f859 in __GI_abort () at abort.c:79
+#2  0x00007fa455f2f729 in __assert_fail_base (fmt=0x7fa4560c5588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", 
+    assertion=0x216480 "((p->szMalloc>0 && p->z==p->zMalloc)? 1 : 0) + ((p->flags&MEM_Dyn)!=0 ? 1 : 0) + ((p->flags&MEM_Ephem)!=0 ? 1 : 0) + ((p->flags&MEM_Static)!=0 ? 1 : 0) == 1", file=0x222c23 "sqlite3.c", line=68297, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fa455f40fd6 in __GI___assert_fail (
+    assertion=0x216480 "((p->szMalloc>0 && p->z==p->zMalloc)? 1 : 0) + ((p->flags&MEM_Dyn)!=0 ? 1 : 0) + ((p->flags&MEM_Ephem)!=0 ? 1 : 0) + ((p->flags&MEM_Static)!=0 ? 1 : 0) == 1", file=0x222c23 "sqlite3.c", line=68297, 
+    function=0x21e154 "int sqlite3VdbeCheckMemInvariants(Mem *)") at assert.c:101
+#4  0x00000000002795e3 in sqlite3VdbeCheckMemInvariants (p=0x1558bd0) at sqlite3.c:68292
+#5  0x00000000002c8632 in releaseMemArray (p=0x1558bd0, N=<optimized out>) at sqlite3.c:71417
+#6  0x00000000002e366e in sqlite3VdbeHalt (p=0x153bb90) at sqlite3.c:71458
+#7  0x00000000003e1666 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:77673
+#8  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#9  0x000000000024b5e9 in main (argc=1, argv=0x7ffdbb1e94f8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 9993] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

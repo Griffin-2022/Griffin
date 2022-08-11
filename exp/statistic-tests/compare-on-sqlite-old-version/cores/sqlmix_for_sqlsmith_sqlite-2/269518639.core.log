@@ -1,0 +1,70 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000108,sig:08,src:021053+021908,time:3430910,execs:560076,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: SELECT hex('à') AS x
+;
+SQL-trace: SELECT hex('ð') AS x
+;
+SQL-trace: SELECT hex(trim('€€€ð€€€ÿ','ÿ€')) AS x
+;
+SQL-trace: ;ANALYZE sqlite_master;
+SQL-trace: SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+SQL-trace: ;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+;
+SQL-trace: SELECT typeof(CAST('123abc' AS numeric))
+;
+SQL-trace: ;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+;
+SQL-trace: SELECT typeof(CAST(null AS REAL))
+;
+SQL-trace: ;
+;DELETE FROM sqlite_stat1;
+SQL-trace: ;
+;SELECT CAST('+0.0' AS numeric);
+SQL-trace: ;CREATE TABLE t2(x PRIMARY KEY);
+SQL-trace: ;INSERT INTO sqlite_stat1 VALUES('t2',null,'sz=0');
+SQL-trace: ;ANALYZE sqlite_master;
+SQL-trace: SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+SQL-trace: ;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+;
+
+Program received signal SIGFPE, Arithmetic exception.
+0x00000000003abde8 in whereLoopAddBtreeIndex (pBuilder=<optimized out>, pSrc=<optimized out>, pProbe=<optimized out>, nInMul=<optimized out>) at sqlite3.c:128355
+128355	    rCostIdx = pNew->nOut + 1 + (15*pProbe->szIdxRow)/pSrc->pTab->szTabRow;
+(gdb) #0  0x00000000003abde8 in whereLoopAddBtreeIndex (pBuilder=<optimized out>, pSrc=<optimized out>, pProbe=<optimized out>, nInMul=<optimized out>) at sqlite3.c:128355
+#1  0x000000000039b5ba in whereLoopAddBtree (pBuilder=<optimized out>, mPrereq=0) at sqlite3.c:128722
+#2  0x000000000038dbe4 in sqlite3WhereBegin (pParse=<optimized out>, pTabList=<optimized out>, pWhere=<optimized out>, pOrderBy=<optimized out>, pDistinctSet=0x169fac0, wctrlFlags=0, iAuxArg=320) at sqlite3.c:129185
+#3  0x0000000000328d02 in sqlite3Select (pParse=<optimized out>, p=<optimized out>, pDest=<optimized out>) at sqlite3.c:118028
+#4  0x00000000003034ae in yy_reduce (yypParser=0x16aa2e0, yyruleno=<optimized out>) at sqlite3.c:133175
+#5  0x00000000002fef8e in sqlite3Parser (yyp=0x16aa2e0, yymajor=<optimized out>, yyminor=..., pParse=<optimized out>) at sqlite3.c:134258
+#6  0x00000000002fc544 in sqlite3RunParser (pParse=0x16a0450, 
+    zSql=0x16aa0c0 "SELECT 0 FROM t2 WHERE x IN(1,2,3);SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT max(x) FROM t2 WHERE x>100\n  \n;CREATE TABLE t1(a, b, c);;CREATE INDEX t1w ON t2(x);;\n;SELECT max(x), x*x, x, x F"..., pzErrMsg=0x7ffc5dc3ef28) at sqlite3.c:135186
+#7  0x00000000002fac4e in sqlite3Prepare (db=0x168d850, 
+    zSql=0x168e708 "SELECT 0 FROM t2 WHERE x IN(1,2,3);SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT max(x) FROM t2 WHERE x>100\n  \n;CREATE TABLE t1(a, b, c);;CREATE INDEX t1w ON t2(x);;\n;SELECT max(x), x*x, x, x F"..., nBytes=<optimized out>, saveSqlFlag=1, pReprepare=<optimized out>, ppStmt=0x7ffc5dc3f058, pzTail=0x7ffc5dc3f040) at sqlite3.c:112589
+#8  0x00000000002fa0f4 in sqlite3LockAndPrepare (db=0x168d850, 
+    zSql=0x168e708 "SELECT 0 FROM t2 WHERE x IN(1,2,3);SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT max(x) FROM t2 WHERE x>100\n  \n;CREATE TABLE t1(a, b, c);;CREATE INDEX t1w ON t2(x);;\n;SELECT max(x), x*x, x, x F"..., nBytes=524, saveSqlFlag=1, pOld=0x0, ppStmt=<optimized out>, pzTail=0x7ffc5dc3f040) at sqlite3.c:112688
+#9  0x000000000028f38c in sqlite3_prepare_v2 (db=0x0, zSql=0x0, nBytes=0, ppStmt=0x7ffc5dc3f058, pzTail=<optimized out>) at sqlite3.c:112764
+#10 0x000000000024b100 in main (argc=1, argv=0x7ffc5dc3f208) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 29255] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

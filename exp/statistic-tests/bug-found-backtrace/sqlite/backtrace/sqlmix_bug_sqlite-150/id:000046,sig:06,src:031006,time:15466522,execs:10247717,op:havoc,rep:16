@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < /root/crashes/id:000046,sig:06,src:031006,time:15466522,execs:10247717,op:havoc,rep:16
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f2372342859 in __GI_abort () at abort.c:79
+#2  0x00007f2372342729 in __assert_fail_base (fmt=0x7f23724d8588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x565ea5 "pPk->tnum==pTab->tnum", file=0x549ad6 "sqlite3.c", line=124037, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f2372353fd6 in __GI___assert_fail (assertion=0x565ea5 "pPk->tnum==pTab->tnum", file=0x549ad6 "sqlite3.c", line=124037, function=0x565e2a "void sqlite3OpenTable(Parse *, int, int, Table *, int)") at assert.c:101
+#4  0x00000000004c5ecf in sqlite3OpenTable (pParse=0x7ffeeba918a8, iCur=1, iDb=0, pTab=0x16d8ac0, opcode=100) at sqlite3.c:124037
+#5  0x00000000004e6e03 in sqlite3RefillIndex (pParse=0x7ffeeba918a8, pIndex=0x16dbac0, memRootPage=1) at sqlite3.c:116785
+#6  0x00000000004ac19d in sqlite3CreateIndex (pParse=0x7ffeeba918a8, pName1=0x7ffeeba90f50, pName2=0x7ffeeba90f68, pTblName=0x16fe430, pList=0x0, onError=2, pStart=0x7ffeeba90ef0, pPIWhere=0x0, sortOrder=0, ifNotExist=0, 
+    idxType=0 '\000') at sqlite3.c:117443
+#7  0x00000000004a518d in yy_reduce (yypParser=0x7ffeeba90ea8, yyruleno=234, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffeeba918a8) at sqlite3.c:163999
+#8  0x00000000004a107e in sqlite3Parser (yyp=0x7ffeeba90ea8, yymajor=1, yyminor=...) at sqlite3.c:164670
+#9  0x000000000041f407 in sqlite3RunParser (pParse=0x7ffeeba918a8, 
+    zSql=0x1702b10 ";;PRAGMA writable_schema=on;;UPDATE sqlite_master SET\n     sql=replace(sql,'sqli\217e_','x_'),\n     name='abc',\n     tbl_name='abc'\n    ;;SELECT b FROM t1 WHERE CAST(b AS text)<='10' ORDER BY +b;;PRAGMA "..., pzErrMsg=0x7ffeeba91a40) at sqlite3.c:165966
+#10 0x0000000000494805 in sqlite3Prepare (db=0x16c6270, 
+    zSql=0x16c841f ";;CREATE UNIQUE INDEX c ON t1(CAST(a AS teWt), a, substr(b,1,3));;PRAGMA writable_schema=on;;UPDATE sqlite_master SET\n     sql=replace(sql,'sqli\217e_','x_'),\n     name='abc',\n     tbl_name='abc'\n    ;;S"..., nBytes=4119, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffeeba91b88, pzTail=0x7ffeeba91b70) at sqlite3.c:132924
+#11 0x000000000041dc7c in sqlite3LockAndPrepare (db=0x16c6270, 
+    zSql=0x16c841f ";;CREATE UNIQUE INDEX c ON t1(CAST(a AS teWt), a, substr(b,1,3));;PRAGMA writable_schema=on;;UPDATE sqlite_master SET\n     sql=replace(sql,'sqli\217e_','x_'),\n     name='abc',\n     tbl_name='abc'\n    ;;S"..., nBytes=4119, prepFlags=128, pOld=0x0, ppStmt=0x7ffeeba91b88, pzTail=0x7ffeeba91b70) at sqlite3.c:133006
+#12 0x000000000040e16f in sqlite3_prepare_v2 (db=0x16c6270, 
+    zSql=0x16c841f ";;CREATE UNIQUE INDEX c ON t1(CAST(a AS teWt), a, substr(b,1,3));;PRAGMA writable_schema=on;;UPDATE sqlite_master SET\n     sql=replace(sql,'sqli\217e_','x_'),\n     name='abc',\n     tbl_name='abc'\n    ;;S"..., nBytes=4119, ppStmt=0x7ffeeba91b88, pzTail=0x7ffeeba91b70) at sqlite3.c:133091
+#13 0x0000000000404ed9 in main (argc=1, argv=0x7ffeeba91d38) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 33828] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

@@ -1,0 +1,129 @@
+# name: test/sql/storage/types/list/persistent_list_storage.test
+# description: Test lists with persistent storage
+# group: [list]
+
+load __TEST_DIR__/list_storage_test.db
+
+;
+CREATE TABLE a(b INTEGER[]);
+
+restart
+
+;
+SELECT * FROM a
+;
+
+;
+INSERT INTO a VALUES ([1, 2]), (NULL), ([3, 4, 5, 6]), ([NULL, 7]);
+
+;
+SELECT * FROM a
+;
+[1, 2]
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+restart
+
+;
+SELECT * FROM a
+;
+[1, 2]
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+# delete
+
+;
+DELETE FROM a WHERE b[1]=1
+;
+1
+
+;
+SELECT * FROM a
+;
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+restart
+
+;
+SELECT * FROM a
+;
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+# nested lists
+;
+CREATE TABLE b(b INTEGER[][]);
+
+;
+INSERT INTO b VALUES ([[1, 2], [3, 4]]), (NULL), ([NULL, [7, 8, NULL], [2, 3]]), ([[NULL, 6], NULL, [1, 2, NULL]]);
+
+;
+SELECT * FROM b
+;
+[[1, 2], [3, 4]]
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+restart
+
+;
+SELECT * FROM b
+;
+[[1, 2], [3, 4]]
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+;
+DELETE FROM b WHERE b[1][1]=1
+;
+1
+
+;
+SELECT * FROM b
+;
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+restart
+
+;
+SELECT * FROM b
+;
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+# strings
+;
+CREATE TABLE c(b VARCHAR[]);
+
+;
+INSERT INTO c VALUES (['hello', 'world']), (NULL), (['fejwfoaejwfoijwafew', 'b', 'c']), ([NULL, 'XXXXXXXXXXXXXXXXXXXXXXXX']);
+
+;
+SELECT * FROM c
+;
+[hello, world]
+NULL
+[fejwfoaejwfoijwafew, b, c]
+[NULL, XXXXXXXXXXXXXXXXXXXXXXXX]
+
+restart
+
+;
+SELECT * FROM c
+;
+[hello, world]
+NULL
+[fejwfoaejwfoijwafew, b, c]
+[NULL, XXXXXXXXXXXXXXXXXXXXXXXX]

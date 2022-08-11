@@ -1,0 +1,127 @@
+# name: test/sql/update/test_string_update_many_strings.test
+# description: Test string updates with many strings
+# group: [update]
+
+# create a table
+;
+CREATE TABLE test (a VARCHAR);
+
+;
+INSERT INTO test VALUES ('a'), ('b'), ('c'), (NULL)
+
+# insert the same strings many times
+# 16 -> 64
+;
+INSERT INTO test SELECT * FROM test
+
+# 64 -> 256
+;
+INSERT INTO test SELECT * FROM test
+
+# 256 -> 1024
+;
+INSERT INTO test SELECT * FROM test
+
+# 1024 -> 4096
+;
+INSERT INTO test SELECT * FROM test
+
+# 4096 -> 16384
+;
+INSERT INTO test SELECT * FROM test
+
+# 16384 -> 65536
+;
+INSERT INTO test SELECT * FROM test
+
+# 65536 -> 262144
+;
+INSERT INTO test SELECT * FROM test
+
+# 262144 -> 1048576
+;
+INSERT INTO test SELECT * FROM test
+
+# verify that the distinct values are correct
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+a
+b
+c
+
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+a
+b
+c
+
+# test update of string column in another transaction
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a='aa' WHERE a='a';
+
+# verify that the values were updated
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+aa
+b
+c
+
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+a
+b
+c
+
+# now roll it back
+;
+ROLLBACK;
+
+# the values should be back to normal
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+a
+b
+c
+
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+a
+b
+c
+
+# this time do the same but commit it
+;
+UPDATE test SET a='aa' WHERE a='a';
+
+# now both connections have the updated value
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+aa
+b
+c
+
+;
+SELECT DISTINCT a FROM test ORDER BY a
+;
+NULL
+aa
+b
+c
+

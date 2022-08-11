@@ -1,0 +1,111 @@
+2022-08-01 21:29:15.384 UTC [122564] ERROR:  table "ec1_expr2" does not exist
+2022-08-01 21:29:15.384 UTC [122564] STATEMENT:  drop table ec1_expr2;
+2022-08-01 21:29:15.385 UTC [122564] WARNING:  there is no transaction in progress
+2022-08-01 21:29:15.390 UTC [122564] ERROR:  relation "ec1_expr4" does not exist
+2022-08-01 21:29:15.390 UTC [122564] STATEMENT:  create temp table _return ()
+	  inherits(ec1_expr4) on commit drop;
+2022-08-01 21:29:15.390 UTC [122564] WARNING:  there is no transaction in progress
+2022-08-01 21:29:15.413 UTC [122564] ERROR:  schema "testns" does not exist
+2022-08-01 21:29:15.413 UTC [122564] STATEMENT:  ALTER DEFAULT PRIVILEGES IN SCHEMA testns,testns GRANT SELECT ON TABLES TO public,public;
+2022-08-01 21:29:15.423 UTC [122564] ERROR:  relation "tt1" does not exist
+2022-08-01 21:29:15.423 UTC [122564] STATEMENT:  VACUUM (FULL) tt1;
+2022-08-01 21:29:15.425 UTC [122564] ERROR:  relation "onek" does not exist at character 67
+2022-08-01 21:29:15.425 UTC [122564] STATEMENT:  		-- fails
+	CREATE VIEW limit_thousand_v_3 AS SELECT thousand FROM onek WHERE thousand < 995
+			ORDER BY thousand FETCH FIRST (NULL+1) ROWS WITH TIES;
+2022-08-01 21:29:15.425 UTC [122564] ERROR:  no partition of relation "int8alias1" found for row
+2022-08-01 21:29:15.425 UTC [122564] STATEMENT:  
+	INSERT INTO int8alias1 VALUES (1), (6);
+2022-08-01 21:29:15.428 UTC [122564] ERROR:  relation "ec1_expr3" does not exist
+2022-08-01 21:29:15.428 UTC [122564] STATEMENT:  
+	ALTER TABLE ec1_expr3 VALIDATE CONSTRAINT chk;
+2022-08-01 21:29:15.429 UTC [122564] ERROR:  relation "current_check_1" does not exist
+2022-08-01 21:29:15.429 UTC [122564] STATEMENT:  
+	ALTER TABLE int8alias1out INHERIT current_check_1;
+2022-08-01 21:29:15.430 UTC [122564] ERROR:  function gtest_trigger_func() does not exist
+2022-08-01 21:29:15.430 UTC [122564] STATEMENT:  
+	
+	CREATE TRIGGER noabort_increasing BEFORE UPDATE ON int8alias1
+	  FOR EACH ROW
+	  EXECUTE PROCEDURE gtest_trigger_func();
+2022-08-01 21:29:15.433 UTC [122564] ERROR:  column "int8alias1lt" of relation "ff" does not exist
+2022-08-01 21:29:15.433 UTC [122564] STATEMENT:  
+	ALTER TABLE ff ALTER COLUMN int8alias1lt DROP EXPRESSION;
+2022-08-01 21:29:15.434 UTC [122564] ERROR:  relation "gtest30" does not exist
+2022-08-01 21:29:15.434 UTC [122564] STATEMENT:  
+	CREATE TABLE gtest30_1 () INHERITS (gtest30);
+2022-08-01 21:29:15.434 UTC [122564] ERROR:  BEFORE trigger's WHEN condition cannot reference NEW generated columns at character 90
+2022-08-01 21:29:15.434 UTC [122564] STATEMENT:  
+	
+	CREATE TRIGGER gtest2b BEFORE INSERT OR UPDATE ON int8alias1out
+	  FOR EACH ROW
+	  WHEN (NEW.* IS NOT NULL)  -- error
+	  EXECUTE PROCEDURE gtest_trigger_func();
+2022-08-01 21:29:15.434 UTC [122564] WARNING:  there is no transaction in progress
+=================================================================
+==122564==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd5cdd18d0 sp 0x7ffd5cdd18c8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fe21c81a082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==122564==ABORTING
+2022-08-01 21:29:15.475 UTC [122057] LOG:  server process (PID 122564) was terminated by signal 6: Aborted
+2022-08-01 21:29:15.475 UTC [122057] LOG:  terminating any other active server processes
+2022-08-01 21:29:15.480 UTC [126086] FATAL:  the database system is in recovery mode
+2022-08-01 21:29:15.482 UTC [126091] FATAL:  the database system is in recovery mode
+2022-08-01 21:29:15.487 UTC [122057] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:29:15.499 UTC [126094] LOG:  database system was interrupted; last known up at 2022-08-01 21:29:10 UTC
+2022-08-01 21:29:15.499 UTC [126095] FATAL:  the database system is in recovery mode
+2022-08-01 21:29:15.506 UTC [122057] LOG:  received smart shutdown request
+2022-08-01 21:29:15.517 UTC [126094] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 21:29:15.518 UTC [126094] LOG:  redo starts at 0/31BB298
+2022-08-01 21:29:15.522 UTC [122057] LOG:  abnormal database system shutdown

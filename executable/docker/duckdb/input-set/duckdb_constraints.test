@@ -1,0 +1,31 @@
+# name: test/sql/table_function/duckdb_constraints.test
+# description: Test duckdb_constraints function
+# group: [table_function]
+
+;
+create table integers(i int primary key, check (i < 10));
+
+;
+create table test(i varchar unique, k varchar, check(len(i || k) < 10));
+
+;
+create table fk_integers(j int, foreign key (j) references integers(i));
+
+;
+SELECT * FROM duckdb_constraints();
+
+;
+SELECT * FROM duckdb_constraints;
+
+;
+SELECT table_name, constraint_index, constraint_type, UNNEST(constraint_column_names) col_name FROM duckdb_constraints ORDER BY table_name, constraint_index, col_name
+;
+fk_integers	0	FOREIGN KEY	j
+integers	0	PRIMARY KEY	i
+integers	1	CHECK	i
+integers	2	NOT NULL	i
+integers	3	FOREIGN KEY	i
+integers	4	NOT NULL	i
+test	0	UNIQUE	i
+test	1	CHECK	i
+test	1	CHECK	k

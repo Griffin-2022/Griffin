@@ -1,0 +1,56 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000302,sig:06,src:021887+023966,time:15118191,execs:4182255,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fcb42d81859 in __GI_abort () at abort.c:79
+#2  0x00007fcb42d81729 in __assert_fail_base (fmt=0x7fcb42f17588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x20f1ce "op==TK_CASE", file=0x2291f4 "sqlite3.c", line=101629, function=<optimized out>)
+    at assert.c:92
+#3  0x00007fcb42d92fd6 in __GI___assert_fail (assertion=0x20f1ce "op==TK_CASE", file=0x2291f4 "sqlite3.c", line=101629, function=0x21eb13 "int sqlite3ExprCodeTarget(Parse *, Expr *, int)") at assert.c:101
+#4  0x0000000000351f47 in sqlite3ExprCodeTarget (pParse=0x103f950, pExpr=0x104a130, target=6) at sqlite3.c:101629
+#5  0x0000000000353c63 in sqlite3ExprCodeTemp (pParse=0x103f950, pExpr=0x104a130, pReg=0x7fff3c4e58c0) at sqlite3.c:101787
+#6  0x00000000003581a9 in sqlite3ExprIfTrue (pParse=0x103f950, pExpr=0x1068970, dest=-6, jumpIfNull=16) at sqlite3.c:102103
+#7  0x000000000036a864 in sqlite3GenerateConstraintChecks (pParse=0x103f950, pTab=0x10692e0, aRegIdx=0x106912c, iDataCur=0, iIdxCur=1, regNewData=2, regOldData=2, pkChng=0 '\000', overrideError=11 '\v', ignoreDest=-5, 
+    pbMayReplace=0x7fff3c4e5ba4, aiChng=0x1069120, pUpsert=0x0) at sqlite3.c:118829
+#8  0x000000000030bfb2 in sqlite3Update (pParse=0x103f950, pTabList=0x103d3d0, pChanges=0x102e4c0, pWhere=0x104bc00, onError=11, pOrderBy=0x0, pLimit=0x0, pUpsert=0x0) at sqlite3.c:134457
+#9  0x000000000039c13c in codeTriggerProgram (pParse=0x103f950, pStepList=0x1052080, orconf=11) at sqlite3.c:133340
+#10 0x000000000039ba29 in codeRowTrigger (pParse=0x7fff3c4e6cf0, pTrigger=0x1069140, pTab=0x10692e0, orconf=11) at sqlite3.c:133502
+#11 0x000000000039b15d in getRowTrigger (pParse=0x7fff3c4e6cf0, pTrigger=0x1069140, pTab=0x10692e0, orconf=11) at sqlite3.c:133559
+#12 0x000000000039ac73 in sqlite3CodeRowTriggerDirect (pParse=0x7fff3c4e6cf0, p=0x1069140, pTab=0x10692e0, reg=18, orconf=11, ignoreJump=-13) at sqlite3.c:133581
+#13 0x0000000000369ad5 in sqlite3CodeRowTrigger (pParse=0x7fff3c4e6cf0, pTrigger=0x1069140, op=123, pChanges=0x0, tr_tm=1, pTab=0x10692e0, reg=18, orconf=11, ignoreJump=-13) at sqlite3.c:133675
+#14 0x000000000030ee8c in sqlite3Insert (pParse=0x7fff3c4e6cf0, pTabList=0x1037610, pSelect=0x102d6b0, pColumn=0x1041ed0, onError=11, pUpsert=0x0) at sqlite3.c:118344
+#15 0x00000000002f20e7 in yy_reduce (yypParser=0x7fff3c4e6310, yyruleno=154, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff3c4e6cf0) at sqlite3.c:153570
+#16 0x00000000002eca18 in sqlite3Parser (yyp=0x7fff3c4e6310, yymajor=1, yyminor=...) at sqlite3.c:154496
+#17 0x00000000002a9df3 in sqlite3RunParser (pParse=0x7fff3c4e6cf0, 
+    zSql=0x1038e1a ";;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;;CREATE TABLE c0(v0,a,b);;CREATE INDEX value ON blue(+t1);;CREATE INDEX c ON x(foo+t2);;\n;DROP TABLE IF EXISTS t8;;INSERT INTO x(foo,t0) VALUES(1,'Alice"..., pzErrMsg=0x7fff3c4e6ed0) at sqlite3.c:155636
+#18 0x00000000002a77e3 in sqlite3Prepare (db=0x10298b0, 
+    zSql=0x102a75d ";WITH RECURSIVE t1(x) AS (VALUES(1) UNION SELECT x+1 FROM t1 WHERE x<30)\n  INSERT INTO blue(t1,t1,t1)\n    SELECT x, printf('ab%04xyz',x), random() FROM t1;;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1"..., nBytes=1183, prepFlags=128, pReprepare=0x0, ppStmt=0x7fff3c4e7008, pzTail=0x7fff3c4e6ff0) at sqlite3.c:125299
+#19 0x00000000002a6eae in sqlite3LockAndPrepare (db=0x10298b0, 
+    zSql=0x102a75d ";WITH RECURSIVE t1(x) AS (VALUES(1) UNION SELECT x+1 FROM t1 WHERE x<30)\n  INSERT INTO blue(t1,t1,t1)\n    SELECT x, printf('ab%04xyz',x), random() FROM t1;;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1"..., nBytes=1183, prepFlags=128, pOld=0x0, ppStmt=0x7fff3c4e7008, pzTail=0x7fff3c4e6ff0) at sqlite3.c:125402
+#20 0x0000000000294f4f in sqlite3_prepare_v2 (db=0x10298b0, 
+    zSql=0x102a75d ";WITH RECURSIVE t1(x) AS (VALUES(1) UNION SELECT x+1 FROM t1 WHERE x<30)\n  INSERT INTO blue(t1,t1,t1)\n    SELECT x, printf('ab%04xyz',x), random() FROM t1;;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1"..., nBytes=1183, ppStmt=0x7fff3c4e7008, pzTail=0x7fff3c4e6ff0) at sqlite3.c:125486
+#21 0x0000000000258550 in main (argc=1, argv=0x7fff3c4e71b8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 45895] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

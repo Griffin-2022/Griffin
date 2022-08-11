@@ -1,0 +1,269 @@
+pragma temp_store=file
+;DROP TABLE t1;
+;CREATE TABLE t1(a,b,c, PRIMARY KEY(a) ) WITHOUT rowid;
+;INSERT INTO t1 SELECT * FROM t2;
+;UPDATE t3 SET x=0;
+;BEGIN;
+;UPDATE OR ROLLBACK t3 SET x=1;
+;UPDATE OR ROLLBACK t1 SET b=b*2;
+;UPDATE OR ROLLBACK t1 SET a=c+5;
+;COMMIT
+;SELECT x FROM t3
+;DROP TABLE t1;
+;DROP TABLE t2;
+;DROP TABLE t3;
+;CREATE TABLE t1(a PRIMARY KEY, b) without rowid;
+;
+;INSERT into t1 values(1,2);
+;INSERT into t1 values(2,3);
+;INSERT into t1 values(3,4);
+;INSERT into t1 values(4,5);
+;INSERT into t1 values(5,6);
+;INSERT into t1 values(6,7);
+;INSERT into t1 values(7,8);
+;INSERT into t1 values(8,9);
+;INSERT into t1 values(9,10);
+;INSERT into t1 values(10,11);
+;INSERT into t1 values(11,12);
+;INSERT into t1 values(12,13);
+;INSERT into t1 values(13,14);
+;INSERT into t1 values(14,15);
+;INSERT into t1 values(15,16);
+;INSERT into t1 values(16,17);
+;INSERT into t1 values(17,18);
+;INSERT into t1 values(18,19);
+;INSERT into t1 values(19,20);
+;INSERT into t1 values(20,21);
+;INSERT into t1 values(21,22);
+;INSERT into t1 values(22,23);
+;INSERT into t1 values(23,24);
+;INSERT into t1 values(24,25);
+;INSERT into t1 values(25,26);
+;INSERT into t1 values(26,27);
+;INSERT into t1 values(27,28);
+;INSERT into t1 values(28,29);
+;INSERT into t1 values(29,30);
+;INSERT into t1 values(30,31);
+;INSERT into t1 values(31,32);
+;INSERT into t1 values(32,33);
+;INSERT into t1 values(33,34);
+;INSERT into t1 values(34,35);
+;INSERT into t1 values(35,36);
+;INSERT into t1 values(36,37);
+;INSERT into t1 values(37,38);
+;INSERT into t1 values(38,39);
+;INSERT into t1 values(39,40);
+;INSERT into t1 values(40,41);
+;INSERT into t1 values(41,42);
+;INSERT into t1 values(42,43);
+;INSERT into t1 values(43,44);
+;INSERT into t1 values(44,45);
+;INSERT into t1 values(45,46);
+;INSERT into t1 values(46,47);
+;INSERT into t1 values(47,48);
+;INSERT into t1 values(48,49);
+;INSERT into t1 values(49,50);
+;INSERT into t1 values(50,51);
+;SELECT count(*), min(a), max(b) FROM t1;
+;
+;PRAGMA count_changes=on;
+;UPDATE OR IGNORE t1 SET a=1000;
+;
+;SELECT b FROM t1 WHERE a=1000;
+;
+;SELECT count(*) FROM t1;
+;
+;PRAGMA count_changes=on;
+;UPDATE OR REPLACE t1 SET a=1001;
+;
+;
+;DELETE FROM t1;
+;INSERT INTO t1 VALUES(1,2);
+;
+;INSERT OR IGNORE INTO t1 VALUES(2,3);
+;
+;INSERT OR IGNORE INTO t1 VALUES(2,4);
+;
+;INSERT OR REPLACE INTO t1 VALUES(2,4);
+;
+;INSERT OR IGNORE INTO t1 SELECT * FROM t1;
+;
+;INSERT OR IGNORE INTO t1 SELECT a+2,b+2 FROM t1;
+;
+;INSERT OR IGNORE INTO t1 SELECT a+3,b+3 FROM t1;
+;
+;PRAGMA integrity_check
+;PRAGMA count_changes=0;
+;CREATE TABLE t2(
+      a INTEGER PRIMARY KEY ON CONFLICT IGNORE,
+      b INTEGER UNIQUE ON CONFLICT FAIL,
+      c INTEGER UNIQUE ON CONFLICT REPLACE,
+      d INTEGER UNIQUE ON CONFLICT ABORT,
+      e INTEGER UNIQUE ON CONFLICT ROLLBACK
+    ) WITHOUT rowid;
+;CREATE TABLE t3(x);
+;INSERT INTO t3 VALUES(1);
+;SELECT * FROM t3;
+;
+;INSERT INTO t2 VALUES(1,1,1,1,1);
+;INSERT INTO t2 VALUES(2,2,2,2,2);
+;SELECT * FROM t2;
+;
+;INSERT INTO t2 VALUES(1,3,3,3,3);
+;
+;UPDATE t2 SET a=a+1 WHERE a=1;
+;
+;INSERT INTO t2 VALUES(3,1,3,3,3);
+;UPDATE t2 SET b=b+1 WHERE b=1;
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;INSERT INTO t2 VALUES(3,1,3,3,3);
+;COMMIT
+;SELECT * FROM t3
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;UPDATE t2 SET b=b+1 WHERE b=1;
+;COMMIT
+;SELECT * FROM t3
+;INSERT INTO t2 VALUES(3,3,3,1,3);
+;UPDATE t2 SET d=d+1 WHERE d=1;
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;INSERT INTO t2 VALUES(3,3,3,1,3);
+;COMMIT
+;SELECT * FROM t3
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;UPDATE t2 SET d=d+1 WHERE d=1;
+;COMMIT
+;SELECT * FROM t3
+;INSERT INTO t2 VALUES(3,3,3,3,1);
+;UPDATE t2 SET e=e+1 WHERE e=1;
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;INSERT INTO t2 VALUES(3,3,3,3,1);
+;COMMIT
+;UPDATE t2 SET e=e+1 WHERE e=1;
+;COMMIT
+;INSERT INTO t2 VALUES(3,3,1,3,3);
+;SELECT * FROM t2;
+;
+;UPDATE t2 SET c=c-1 WHERE c=2;
+;
+;BEGIN;
+;UPDATE t3 SET x=x+1;
+;INSERT INTO t2 VALUES(3,3,1,3,3);
+;SELECT * FROM t2;
+;
+;COMMIT
+;SELECT * FROM t3
+;DELETE FROM t1;
+;BEGIN;
+;INSERT OR ROLLBACK INTO t1 VALUES(1,2);
+;INSERT OR ROLLBACK INTO t1 VALUES(1,3);
+;SELECT * FROM t1
+;CREATE TABLE t4(x);
+;CREATE UNIQUE INDEX t4x ON t4(x);
+;BEGIN;
+;INSERT OR ROLLBACK INTO t4 VALUES(1);
+;SELECT * FROM t4
+;-- Create a database object (pages 2, 3 of the file)
+    BEGIN;
+;CREATE TABLE abc(a PRIMARY KEY, b, c) WITHOUT rowid;
+;INSERT INTO abc VALUES(1, 2, 3);
+;INSERT INTO abc VALUES(4, 5, 6);
+;INSERT INTO abc VALUES(7, 8, 9);
+;COMMIT;
+;
+;PRAGMA cache_size = 10;
+;
+;BEGIN;
+;-- Make sure the pager is in EXCLUSIVE state.
+      CREATE TABLE def(d, e, f);
+;INSERT INTO def VALUES
+          ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
+;INSERT INTO def SELECT * FROM def;
+;DELETE FROM abc WHERE a = 4;
+;
+;INSERT INTO abc SELECT 10, 20, 30 FROM def;
+;ROLLBACK;
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT * FROM abc;
+;
+;PRAGMA integrity_check
+;BEGIN;
+;-- Make sure the pager is in EXCLUSIVE state.
+      UPDATE abc SET a=a+1;
+;CREATE TABLE def(d, e, f);
+;INSERT INTO def VALUES
+          ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
+;INSERT INTO def SELECT * FROM def;
+;DELETE FROM abc WHERE a = 4;
+;
+;INSERT INTO abc SELECT 10, 20, 30 FROM def;
+;ROLLBACK;
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT * FROM abc;
+;
+;BEGIN;
+;-- Make sure the pager is in EXCLUSIVE state.
+      CREATE TABLE def(d, e, f);
+;INSERT INTO def VALUES
+          ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
+;INSERT INTO def SELECT * FROM def;
+;DELETE FROM abc WHERE a = 4;
+;
+;INSERT INTO abc SELECT 10, 20, 30 FROM def;
+;COMMIT;
+;SELECT * FROM abc;
+;
+;PRAGMA integrity_check
+;CREATE TABLE t5(a INTEGER PRIMARY KEY, b text) WITHOUT rowid;
+;INSERT INTO t5 VALUES(1,'one');
+;INSERT INTO t5 VALUES(2,'two');
+;SELECT * FROM t5
+  
+;UPDATE OR IGNORE t5 SET a=a+1 WHERE a=1;
+;SELECT * FROM t5;
+;
+;UPDATE t5 SET a=a+1 WHERE a=1;
+;UPDATE OR REPLACE t5 SET a=a+1 WHERE a=1;
+;
+;CREATE TABLE t13(a PRIMARY KEY CHECK(a!=2)) WITHOUT rowid;
+;BEGIN;
+;REPLACE INTO t13 VALUES(1);
+;
+;REPLACE INTO t13 VALUES(2);
+;REPLACE INTO t13 VALUES(3);
+;COMMIT;
+;SELECT * FROM t13;
+;
+;DROP TABLE IF EXISTS t1;
+;CREATE TABLE t1(
+    x TEXT PRIMARY KEY NOT NULL, 
+    y TEXT NOT NULL,
+    z INTEGER
+  );
+;INSERT INTO t1 VALUES('alpha','beta',1);
+;CREATE UNIQUE INDEX t1xy ON t1(x,y);
+;REPLACE INTO t1(x,y,z) VALUES('alpha','gamma',1);
+;PRAGMA integrity_check;
+;SELECT x,y FROM t1 INDEXED BY t1xy;
+;SELECT x,y,z FROM t1 NOT INDEXED;
+;
+;DROP TABLE IF EXISTS t1;
+;CREATE TABLE t1(
+    x TEXT PRIMARY KEY NOT NULL, 
+    y TEXT NOT NULL,
+    z INTEGER
+  ) WITHOUT ROWID;
+;INSERT INTO t1 VALUES('alpha','beta',1);
+;CREATE UNIQUE INDEX t1xy ON t1(x,y);
+;REPLACE INTO t1(x,y,z) VALUES('alpha','gamma',1);
+;PRAGMA integrity_check;
+;SELECT x,y FROM t1 INDEXED BY t1xy;
+;SELECT x,y,z FROM t1 NOT INDEXED;
+;
+;

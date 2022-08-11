@@ -1,0 +1,223 @@
+	  VALUES
+	  ('15 days'),
+	  ('2 hours'),
+	  ('1 hour 30 minutes'),
+	  ('15 minutes'),
+	  ('10 seconds'),
+	  ('100 milliseconds'),
+	  ('250 microseconds')
+	) intervals (interval),
+	(VALUES (timestamp '2020-02-11 15:44:17.71393')) ts (ts),
+	(VALUES (timestamp '2001-01-01')) origin (origin);
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  SELECT date_bin('5 min'::interval, timestamp '2020-02-01 01:01:01', timestamp '2020-02-01 00:02:30');
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  SELECT date_bin('5 months'::interval, timestamp '2020-02-01 01:01:01', timestamp '2001-01-01');
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  SELECT date_bin('0 days'::interval, timestamp '1970-01-01 01:00:00' , timestamp '1970-01-01 00:00:00');
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  SELECT extract(epoch from '5000-01-01 00:00:00'::timestamp);
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  select make_timestamp(0, 7, 15, 12, 30, 15);
+2022-08-02 02:21:27.708 UTC [111916] WARNING:  there is no transaction in progress
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  DISCARD ALL;
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 02:21:27.708 UTC [111916] ERROR:  schema "public" already exists
+2022-08-02 02:21:27.708 UTC [111916] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 02:21:27.710 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 39
+2022-08-02 02:21:27.710 UTC [111916] STATEMENT:  SELECT pg_relation_filepath(oid) FROM pg_class
+		   WHERE reltablespace = 0 AND relpersistence <> 't' AND
+		   pg_relation_filepath(oid) IS NOT NULL;
+2022-08-02 02:21:27.710 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 02:21:27.710 UTC [111916] STATEMENT:  SELECT t.int_nn FROM var_record AS t TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+2022-08-02 02:21:27.710 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 20
+2022-08-02 02:21:27.710 UTC [111916] STATEMENT:  SELECT int_nn FROM var_record TABLESAMPLE SYSTEM (100.0/11) REPEATABLE (0);
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  SELECT count(*) FROM var_record TABLESAMPLE SYSTEM (100) REPEATABLE (1+2);
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 54
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  CREATE VIEW var_record_colnn AS
+	  SELECT newavg FROM var_record TABLESAMPLE SYSTEM (10*2) REPEATABLE (2);
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  SELECT pg_catalog.pg_get_viewdef('25183'::pg_catalog.oid, true);
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 45
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  SELECT c.oid,
+	  n.nspname,
+	  c.relname
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relname OPERATOR(pg_catalog.~) '^(var_record_colnn)$' COLLATE pg_catalog.default
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY 2, 3;
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 541
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  SELECT a.attname,
+	  pg_catalog.format_type(a.atttypid, a.atttypmod),
+	  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+	   FROM pg_catalog.pg_attrdef d
+	   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+	  a.attnotnull,
+	  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+	   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+	  a.attidentity,
+	  a.attgenerated,
+	  a.attstorage,
+	  pg_catalog.col_description(a.attrelid, a.attnum)
+	FROM pg_catalog.pg_attribute a
+	WHERE a.attrelid = '25203' AND a.attnum > 0 AND NOT a.attisdropped
+	ORDER BY a.attnum;
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  SELECT pg_catalog.pg_get_viewdef('25203'::pg_catalog.oid, true);
+2022-08-02 02:21:27.711 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 64
+2022-08-02 02:21:27.711 UTC [111916] STATEMENT:  DECLARE tablesample_cur SCROLL CURSOR FOR
+	  SELECT int_nn FROM var_record TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  SELECT int_nn FROM var_record TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  FETCH NEXT FROM tablesample_cur;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  FETCH NEXT FROM tablesample_cur;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  FETCH NEXT FROM tablesample_cur;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  CLOSE tablesample_cur;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  SELECT int_nn FROM var_record TABLESAMPLE SYSTEM (NULL);
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  create table newavg (newsum int) partition by list (newsum);
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  DISCARD ALL;
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 02:21:27.712 UTC [111916] ERROR:  schema "public" already exists
+2022-08-02 02:21:27.712 UTC [111916] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 02:21:29.990 UTC [120027] PANIC:  could not open critical system index 2662
+2022-08-02 02:21:29.992 UTC [111460] LOG:  server process (PID 120027) was terminated by signal 6: Aborted
+2022-08-02 02:21:29.992 UTC [111460] LOG:  terminating any other active server processes
+2022-08-02 02:21:30.032 UTC [111460] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:21:30.045 UTC [120028] LOG:  database system was interrupted; last known up at 2022-08-02 02:21:27 UTC
+2022-08-02 02:21:30.060 UTC [120028] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 02:21:30.060 UTC [120028] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:21:30.060 UTC [120028] LOG:  redo starts at 0/1784B418
+2022-08-02 02:21:30.060 UTC [120028] LOG:  invalid record length at 0/1784B4F0: wanted 24, got 0
+2022-08-02 02:21:30.060 UTC [120028] LOG:  redo done at 0/1784B4C8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 02:21:30.073 UTC [111460] LOG:  database system is ready to accept connections
+2022-08-02 02:21:31.439 UTC [120234] WARNING:  there is no transaction in progress
+--
+	CREATE FUNCTION perl2int(int) RETURNS bool
+	LANGUAGE plperl
+	TRANSFORM FOR TYPE bool
+	AS $$
+	return shift;
+	$$;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  				-- OK
+	SELECT '9223372036854775808'::jsonb;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  		-- ERROR
+	
+	-- Arrays.
+	SELECT '[]'::jsonb;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  		-- ERROR, another wrong separator
+	SELECT '{"abc":1,"def":2,"ghi":[3,4],"hij":{"klm":5,"nop":[6]}}'::jsonb;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  			-- OK
+	SELECT 'false'::jsonb;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  			-- OK
+	SELECT ' true '::jsonb;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  
+	
+	select to_jsonb(date 'Infinity');
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  
+	select '"foo"'::jsonb -> 1;
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  
+	select '{"a": "c", "b": null}'::jsonb ->> 'b';
+2022-08-02 02:22:53.022 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.022 UTC [120238] STATEMENT:  
+	SELECT '{"a":"b", "b":1, "c":null}'::jsonb @> '{"a":"b"}';
+2022-08-02 02:22:53.023 UTC [129348] PANIC:  could not open critical system index 2662
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT '{"a":"b", "b":1, "c":null}'::jsonb @> '{"a":"c"}';
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT '[1,2,2]'::jsonb <@ '[1,2]'::jsonb;
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT jsonb_each_text('{"a":{"b":"c","c":"b","1":"first"},"b":[1,2],"c":"cc","1":"first","n":null}'::jsonb) AS q;
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT jsonb_exists('{"a":null, "b":"qq"}', 'b');
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT jsonb '{"a":null, "b":"qq"}' ?| ARRAY['a','b'];
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT jsonb_typeof('[]') AS array;
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:   -- error
+	SELECT jsonb_build_object('{a,b,c}'::text[], '{d,e,f}'::text[]);
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 38
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:   -- error, key cannot be NULL
+	SELECT jsonb_build_object('a', NULL);
+2022-08-02 02:22:53.023 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:22:53.023 UTC [120238] STATEMENT:  
+	SELECT jsonb_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}','f2');
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 32
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	
+	-- extract_path nulls
+	SELECT jsonb_extract_path('{"f2":{"f3":1},"f4":{"f5":null,"f6":"stringy"}}','f4','f5') IS NULL AS expect_false;
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	SELECT jsonb_extract_path_text('{"f2":{"f3":1},"f4":{"f5":null,"f6":"stringy"}}','f4','f5') IS NULL AS expect_true;
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	SELECT jsonb_extract_path('{"f2":{"f3":1},"f4":[0,1,2,null]}','f4','3') IS NULL AS expect_false;
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	
+	-- extract_path operators
+	SELECT '{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}'::jsonb#>array['f4','f6'];
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	
+	SELECT '{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}'::jsonb#>>array['f4','f6'];
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	select '42'::jsonb #> '{}';
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	select '{"a": [{"b": "c"}, {"b": "cc"}]}'::jsonb #>> array['a','z','b'];
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	select '42'::jsonb #>> array['f2'];
+2022-08-02 02:22:53.024 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.024 UTC [120238] STATEMENT:  
+	CREATE DOMAIN var_record  AS int[][] CHECK(array_length(VALUE, 2) = 3);
+2022-08-02 02:22:53.025 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.025 UTC [120238] STATEMENT:  
+	
+	create type int_nn as (var_record int, var_record int);
+2022-08-02 02:22:53.025 UTC [111460] LOG:  server process (PID 129348) was terminated by signal 6: Aborted
+2022-08-02 02:22:53.025 UTC [120238] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:22:53.025 UTC [120238] STATEMENT:  
+	
+	-- populate_recordset
+	SELECT * FROM jsonb_populate_recordset(NULL::int_nn,'[{"a":"blurfl","var_record":43.2},{"b":3,"c":"2012-01-20 10:42:53"}]') q;
+2022-08-02 02:22:53.025 UTC [111460] LOG:  terminating any other active server processes
+2022-08-02 02:22:53.071 UTC [111460] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:22:53.084 UTC [129357] LOG:  database system was interrupted; last known up at 2022-08-02 02:21:56 UTC
+2022-08-02 02:22:53.085 UTC [129358] FATAL:  the database system is in recovery mode
+2022-08-02 02:22:53.087 UTC [129361] FATAL:  the database system is in recovery mode

@@ -1,0 +1,111 @@
+	 * 3.3 Test ALTER TABLE SET STATISTICS
+	 */
+	CREATE TABLE sqlsim0 (sqlsim1 int, sqlsim2 int);
+2022-08-02 04:17:25.772 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.772 UTC [24517] STATEMENT:  CREATE OR REPLACE RULE y_rule AS ON INSERT TO test1_a_idx
+	  DO INSTEAD (NOTIFY sqlsim0; NOTIFY bar);
+2022-08-02 04:17:25.772 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.772 UTC [24517] STATEMENT:  CREATE UNIQUE INDEX CONCURRENTLY on sqlsim1 (sqlsim4, sqlsim2) INCLUDE (sqlsim2, sqlsim5);
+2022-08-02 04:17:25.772 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.772 UTC [24517] STATEMENT:  DROP TABLE sqlsim0;
+2022-08-02 04:17:25.772 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.772 UTC [24517] STATEMENT:  SELECT indexdef FROM pg_indexes WHERE tablename = 't' ORDER BY indexname;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  CREATE INDEX on sqlsim1 USING gin(sqlsim2, sqlsim2) INCLUDE (sqlsim5, sqlsim5);
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  CREATE INDEX on t USING btree(balance, id) INCLUDE (bank_account_pkey, bank_account_pkey);
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  ALTER TABLE sqlsim1 ALTER sqlsim15 TYPE bigint;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  ALTER TABLE t ALTER sqlsim16 TYPE bigint;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  SELECT a.attname,
+	  pg_catalog.format_type(a.atttypid, a.atttypmod),
+	  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+	   FROM pg_catalog.pg_attrdef d
+	   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+	  a.attnotnull,
+	  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+	   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+	  a.attidentity,
+	  a.attgenerated
+	FROM pg_catalog.pg_attribute a
+	WHERE a.attrelid = '19720' AND a.attnum > 0 AND NOT a.attisdropped
+	ORDER BY a.attnum;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  SELECT c2.relname, i.indisprimary, i.indisunique, i.indisclustered, i.indisvalid, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true),
+	  pg_catalog.pg_get_constraintdef(con.oid, true), contype, condeferrable, condeferred, i.indisreplident, c2.reltablespace
+	FROM pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_index i
+	  LEFT JOIN pg_catalog.pg_constraint con ON (conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x'))
+	WHERE c.oid = '19720' AND c.oid = i.indrelid AND i.indexrelid = c2.oid
+	ORDER BY i.indisprimary DESC, c2.relname;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  DROP TABLE t;
+2022-08-02 04:17:25.773 UTC [24517] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:17:25.773 UTC [24517] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 04:17:25.788 UTC [24517] ERROR:  role "regress_dummy_seclabel_user1" does not exist
+2022-08-02 04:17:25.788 UTC [24517] STATEMENT:  			-- OK
+	
+	--
+	-- Test for shared database object
+	--
+	SET SESSION AUTHORIZATION regress_dummy_seclabel_user1;
+2022-08-02 04:17:25.809 UTC [24517] ERROR:  function event_trigger_test() does not exist
+2022-08-02 04:17:25.809 UTC [24517] STATEMENT:  
+	
+	CREATE EVENT TRIGGER always_rewrite ON table_rewrite
+	EXECUTE PROCEDURE event_trigger_test();
+2022-08-02 04:17:25.809 UTC [24517] ERROR:  relation "sqlsim12" does not exist
+2022-08-02 04:17:25.809 UTC [24517] STATEMENT:  ALTER TABLE sqlsim12 DROP COLUMN sqlsim14;
+2022-08-02 04:17:25.811 UTC [24517] ERROR:  relation "sqlsim21" does not exist
+2022-08-02 04:17:25.811 UTC [24517] STATEMENT:  CREATE INDEX on sqlsim21 USING hash(sqlsim22, sqlsim23) INCLUDE (sqlsim25, sqlsim25);
+2022-08-02 04:17:25.811 UTC [24517] ERROR:  duplicate key value violates unique constraint "d4_primary_d4_primary_pkey_a_d4_primary1_d4_primary1_pkey_key"
+2022-08-02 04:17:25.811 UTC [24517] STATEMENT:  INSERT INTO d4_primary SELECT 1, 2, 3*x, box('4,4,4,4') FROM generate_series(1,10) AS x;
+2022-08-02 04:17:25.815 UTC [24517] ERROR:  null value in column "balance" of relation "t" violates not-null constraint
+2022-08-02 04:17:25.815 UTC [24517] STATEMENT:  INSERT INTO t SELECT x, 2*x, NULL, NULL FROM generate_series(1,10) AS x;
+2022-08-02 04:17:25.816 UTC [24517] ERROR:  null value in column "balance" of relation "t" violates not-null constraint
+2022-08-02 04:17:25.816 UTC [24517] STATEMENT:  INSERT INTO t SELECT x, 2*x, NULL, NULL FROM generate_series(1,10) AS x;
+2022-08-02 04:17:25.818 UTC [24517] ERROR:  relation "d4_primary2_pkey" does not exist
+2022-08-02 04:17:25.818 UTC [24517] STATEMENT:  ALTER TABLE d4_primary2_pkey DROP COLUMN pid;
+2022-08-02 04:17:25.821 UTC [24517] ERROR:  relation "sqlsim1" does not exist
+2022-08-02 04:17:25.821 UTC [24517] STATEMENT:  CREATE INDEX on sqlsim1 USING gist(sqlsim5) INCLUDE (sqlsim2, sqlsim5);
+2022-08-02 04:17:25.821 UTC [24517] ERROR:  relation "d4_primary" does not exist
+2022-08-02 04:17:25.821 UTC [24517] STATEMENT:  CREATE INDEX on d4_primary USING btree(d4_primary1, a) INCLUDE (d4_primary1_pkey, d4_primary1_pkey);
+2022-08-02 04:17:25.822 UTC [24517] ERROR:  relation "sqlsim1" does not exist
+2022-08-02 04:17:25.822 UTC [24517] STATEMENT:  ALTER TABLE sqlsim1 ALTER sqlsim15 TYPE bigint;
+2022-08-02 04:17:25.825 UTC [24517] WARNING:  there is no transaction in progress
+2022-08-02 04:17:25.843 UTC [24517] ERROR:  relation "sqlsim1" does not exist
+2022-08-02 04:17:25.843 UTC [24517] STATEMENT:  CREATE UNIQUE INDEX CONCURRENTLY on sqlsim1 (sqlsim4, sqlsim2) INCLUDE (sqlsim2, sqlsim5);
+2022-08-02 04:17:25.847 UTC [24517] ERROR:  column "sqlsim16" of relation "sqlsim0" does not exist
+2022-08-02 04:17:25.847 UTC [24517] STATEMENT:  ALTER TABLE sqlsim0 ALTER sqlsim16 TYPE bigint;
+2022-08-02 04:17:25.849 UTC [24517] WARNING:  there is no transaction in progress
+2022-08-02 04:17:25.863 UTC [24517] ERROR:  column "bank_account" appears twice in primary key constraint at character 19
+2022-08-02 04:17:25.863 UTC [24517] STATEMENT:  ALTER TABLE t add PRIMARY KEY (bank_account, bank_account) INCLUDE (balance, bank_account_pkey);
+2022-08-02 04:17:25.864 UTC [24517] ERROR:  column "bank_account" appears twice in primary key constraint at character 19
+2022-08-02 04:17:25.864 UTC [24517] STATEMENT:  ALTER TABLE t add PRIMARY KEY (bank_account, bank_account) INCLUDE (bank_account, bank_account_pkey);
+2022-08-02 04:17:25.882 UTC [24517] ERROR:  relation "tbl_c1_c2_c3_c4_key" does not exist
+2022-08-02 04:17:25.882 UTC [24517] STATEMENT:  REINDEX INDEX tbl_c1_c2_c3_c4_key;
+2022-08-02 04:17:25.884 UTC [24517] ERROR:  column "sqlsim5" does not exist
+2022-08-02 04:17:25.884 UTC [24517] STATEMENT:  CREATE INDEX on sqlsim1 USING gist(sqlsim5) INCLUDE (sqlsim2, sqlsim5);
+2022-08-02 04:17:25.884 UTC [24517] ERROR:  access method "gin" does not support included columns
+2022-08-02 04:17:25.884 UTC [24517] STATEMENT:  CREATE INDEX on sqlsim1 USING gin(sqlsim2, sqlsim2) INCLUDE (sqlsim5, sqlsim5);
+2022-08-02 04:17:25.884 UTC [24517] ERROR:  relation "d4_primary2_pkey" does not exist
+2022-08-02 04:17:25.884 UTC [24517] STATEMENT:  CREATE INDEX on d4_primary2_pkey USING btree(d4_pid, pid) INCLUDE (sqlsim0, sqlsim0);
+2022-08-02 04:17:25.899 UTC [24517] WARNING:  there is no transaction in progress
+2022-08-02 04:17:25.908 UTC [24517] ERROR:  "foo" is not a table
+2022-08-02 04:17:25.908 UTC [24517] STATEMENT:  
+	  DROP TABLE IF EXISTS foo;
+2022-08-02 04:17:25.922 UTC [24517] PANIC:  could not write to file "pg_wal/xlogtemp.24517": No space left on device
+2022-08-02 04:17:25.922 UTC [24517] STATEMENT:  CREATE TABLE t (bank_account int,id int, balance int, bank_account_pkey box,
+					UNIQUE(bank_account,id) INCLUDE(balance,bank_account_pkey));
+2022-08-02 04:17:25.949 UTC [22124] LOG:  server process (PID 24517) was terminated by signal 6: Aborted
+2022-08-02 04:17:25.949 UTC [22124] LOG:  terminating any other active server processes
+2022-08-02 04:17:25.954 UTC [22124] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:17:25.970 UTC [26682] LOG:  database system was interrupted; last known up at 2022-08-02 04:17:24 UTC
+2022-08-02 04:17:25.971 UTC [26683] LOG:  connection received: host=127.0.0.1 port=57882
+2022-08-02 04:17:25.971 UTC [26683] FATAL:  the database system is in recovery mode
+2022-08-02 04:17:25.973 UTC [26686] LOG:  connection received: host=127.0.0.1 port=57884
+2022-08-02 04:17:25.973 UTC [26686] FATAL:  the database system is in recovery mode
+2022-08-02 04:17:25.974 UTC [26687] LOG:  connection received: host=127.0.0.1 port=57886
+2022-08-02 04:17:25.975 UTC [26687] FATAL:  the database system is in recovery mode
+2022-08-02 04:17:25.979 UTC [22124] LOG:  received smart shutdown request

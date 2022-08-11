@@ -1,0 +1,111 @@
+# name: test/sql/storage/wal/wal_store_alter_type.test
+# description: Remove column from persistent table
+# group: [wal]
+
+load __TEST_DIR__/test_store_alter_type.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a table and add a column to it
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+ALTER TABLE test ALTER b TYPE VARCHAR
+
+;
+SELECT * FROM test ORDER BY 1
+;
+11	22
+12	21
+13	22
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM test ORDER BY 1
+;
+11	22
+12	21
+13	22
+
+;
+INSERT INTO test VALUES (10, 'hello')
+
+;
+SELECT * FROM test ORDER BY 1
+;
+10	hello
+11	22
+12	21
+13	22
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM test ORDER BY 1
+;
+10	hello
+11	22
+12	21
+13	22
+
+;
+DELETE FROM test WHERE b='hello'
+
+restart
+
+;
+SELECT * FROM test ORDER BY 1
+;
+11	22
+12	21
+13	22
+
+;
+INSERT INTO test VALUES (10, 'hello')
+
+;
+SELECT * FROM test ORDER BY 1
+;
+10	hello
+11	22
+12	21
+13	22
+
+restart
+
+;
+SELECT * FROM test ORDER BY 1
+;
+10	hello
+11	22
+12	21
+13	22

@@ -1,0 +1,112 @@
+SAVEPOINT sp1;
+;SAVEPOINT sp2;
+;RELEASE sp1;
+;
+;RELEASE sp2;
+;
+;RELEASE sp1 
+;SAVEPOINT sp1;
+;SAVEPOINT sp2;
+;ROLLBACK TO sp1;
+;
+;RELEASE SAVEPOINT sp1 
+;SAVEPOINT sp1;
+;SAVEPOINT sp2;
+;SAVEPOINT sp3;
+;ROLLBACK TO SAVEPOINT sp3;
+;ROLLBACK TRANSACTION TO sp2;
+;ROLLBACK TRANSACTION TO SAVEPOINT sp1;
+;
+;RELEASE SAVEPOINT SP1 
+;SAVEPOINT sp1;
+;ROLLBACK TO sp1;
+;
+;COMMIT
+;CREATE TABLE t1(a, b, c);
+;BEGIN;
+;INSERT INTO t1 VALUES(1, 2, 3);
+;SAVEPOINT one;
+;UPDATE t1 SET a = 2, b = 3, c = 4;
+;
+;SELECT * FROM t1 
+;ROLLBACK TO one;
+;
+;INSERT INTO t1 VALUES(4, 5, 6);
+;
+;
+;INSERT INTO t1 VALUES(7, 8, 9);
+;SAVEPOINT two;
+;INSERT INTO t1 VALUES(10, 11, 12);
+;
+;SELECT * FROM t1 
+;ROLLBACK TO two;
+;
+;
+;ROLLBACK TO one;
+;
+;INSERT INTO t1 VALUES('a', 'b', 'c');
+;SAVEPOINT two;
+;INSERT INTO t1 VALUES('d', 'e', 'f');
+;
+;SELECT * FROM t1 
+;RELEASE two;
+;
+;ROLLBACK;
+;
+;SAVEPOINT "transaction" 
+;PRAGMA lock_status 
+;INSERT INTO t1 VALUES(1, 2, 3) 
+;ROLLBACK TO "transaction" 
+;RELEASE "transaction" 
+;CREATE TABLE t2(d, e, f);
+;SELECT sql FROM sqlite_master;
+;
+;BEGIN;
+;CREATE TABLE t3(g,h);
+;INSERT INTO t3 VALUES('I', 'II');
+;SAVEPOINT one;
+;DROP TABLE t3;
+;
+;CREATE TABLE t3(g, h, i);
+;INSERT INTO t3 VALUES('III', 'IV', 'V');
+;
+;SELECT * FROM t3
+;ROLLBACK TO one;
+;
+;ROLLBACK;
+;SELECT sql FROM sqlite_master;
+;
+;BEGIN;
+;INSERT INTO t1 VALUES('o', 't', 't');
+;SAVEPOINT sp1;
+;CREATE TABLE t3(a, b, c);
+;INSERT INTO t3 VALUES('z', 'y', 'x');
+;
+;SELECT * FROM t3
+;ROLLBACK TO sp1;
+;CREATE TABLE t3(a);
+;INSERT INTO t3 VALUES('value');
+;
+;SELECT * FROM t3
+;COMMIT
+;CREATE TABLE blobs(x);
+;INSERT INTO blobs VALUES('a twentyeight character blob');
+;
+;SAVEPOINT abc
+;SAVEPOINT abc
+;RELEASE abc
+;ROLLBACK TO def
+;SAVEPOINT def
+;ROLLBACK TO def
+;RELEASE def
+;savepoint def
+;release def
+;release abc
+;SAVEPOINT main;
+;INSERT INTO blobs VALUES('another blob');
+;
+;RELEASE main 
+;RELEASE main 
+;SELECT x FROM blobs WHERE rowid = 2 
+;SELECT count(*) FROM blobs 
+;

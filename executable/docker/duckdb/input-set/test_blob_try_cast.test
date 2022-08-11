@@ -1,0 +1,64 @@
+# name: test/sql/types/blob/test_blob_try_cast.test
+# description: Try cast BLOB values
+# group: [blob]
+
+# unterminated escape
+;
+SELECT TRY_CAST('\\' AS BLOB)
+;
+NULL
+
+;
+SELECT TRY_CAST('\\x3' AS BLOB)
+;
+NULL
+
+# invalid hex escape
+;
+SELECT TRY_CAST('\\b12' AS BLOB)
+;
+NULL
+
+;
+SELECT TRY_CAST('\\xx2' AS BLOB)
+;
+NULL
+
+;
+SELECT TRY_CAST('\\x2x' AS BLOB)
+;
+NULL
+
+# unescaped ascii
+;
+SELECT TRY_CAST('ü' AS BLOB)
+;
+NULL
+
+;
+SELECT TRY_CAST('\x12' AS BLOB)
+;
+\x12
+
+;
+SELECT '\\'::BLOB
+
+;
+SELECT '\\x3'::BLOB
+
+;
+SELECT '\\b12'::BLOB
+
+;
+SELECT '\\xx2'::BLOB
+
+;
+SELECT '\\x2x'::BLOB
+
+;
+SELECT 'ü'::BLOB
+
+;
+SELECT CAST('\x12' AS BLOB)
+;
+\x12

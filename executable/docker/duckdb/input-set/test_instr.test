@@ -1,0 +1,127 @@
+# name: test/sql/function/string/test_instr.test
+# description: Instr test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR, off INTEGER, length INTEGER);
+
+;
+INSERT INTO strings VALUES ('hello', 1, 2), ('world', 2, 3), ('b', 1, 1), (NULL, 2, 2)
+
+# Test first letter
+;
+SELECT instr(s,'h') FROM strings
+;
+1
+0
+0
+NULL
+
+# position is an alias for instr
+;
+SELECT position('h' in s) FROM strings
+;
+1
+0
+0
+NULL
+
+# Test second letter
+;
+SELECT instr(s,'e') FROM strings
+;
+2
+0
+0
+NULL
+
+# Test last letter
+;
+SELECT instr(s,'d') FROM strings
+;
+0
+5
+0
+NULL
+
+# Test multiple letters
+;
+SELECT instr(s,'he') FROM strings
+;
+1
+0
+0
+NULL
+
+;
+SELECT position('he' in s) FROM strings
+;
+1
+0
+0
+NULL
+
+# Test multiple letters in the middle
+;
+SELECT instr(s,'ello') FROM strings
+;
+2
+0
+0
+NULL
+
+# Test multiple letters at the end
+;
+SELECT instr(s,'lo') FROM strings
+;
+4
+0
+0
+NULL
+
+# Test no match
+;
+SELECT instr(s,'he-man') FROM strings
+;
+0
+0
+0
+NULL
+
+# Test matching needle in multiple rows
+;
+SELECT instr(s,'o'),s FROM strings
+;
+5	hello
+2	world
+0	b
+NULL	NULL
+
+# Test NULL constant in different places
+;
+SELECT instr(NULL,'o') FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT instr(s,NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT instr(NULL,NULL) FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+

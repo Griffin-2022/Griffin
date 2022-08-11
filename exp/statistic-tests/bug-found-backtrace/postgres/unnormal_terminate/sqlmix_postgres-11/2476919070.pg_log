@@ -1,0 +1,111 @@
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  SELECT unistr('wrong: \db99');
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	
+	-- anonymous record type
+	SELECT jsonb_populate_record(null::record, '{"hash_split_heap": 0, "keycol": 1}');
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	SELECT jsonb_populate_recordset(row(1,2), '[{"f1": 0, "f2": 1}]');
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	
+	CREATE INDEX jidx ON testjsonb USING gin (j);
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	
+	RESET enable_seqscan;
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	SELECT '{"a":{"1":2},"c":"b"}'::jsonb @> '{"a":{"1":2}}';
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	SELECT '["a","b","c",[1,2]]'::jsonb @> '["a",[1,2]]';
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	SELECT '{"a":"b","c":[1,2,3]}'::jsonb #> '{c,-4}';
+2022-08-02 08:16:48.715 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 08:16:48.715 UTC [7744] STATEMENT:  
+	
+	select jsonb_strip_nulls('1');
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	
+	select jsonb_strip_nulls('null');
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select '{"aa":1 , "b":2, "cq":3}'::jsonb || '{"aa":"l"}';
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select '["a", "b"]'::jsonb || '["c", "d"]';
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	
+	select '["a", "b"]'::jsonb || '{"c":1}';
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	
+	select pg_column_size('{}'::jsonb || '{}'::jsonb) = pg_column_size('{}'::jsonb);
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select jsonb_delete_path('{"n":null, "a":1, "b":[1,2], "c":{"1":2}, "d":{"1":[2,3]}}', '{b,-1}');
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select '[]'::jsonb - 'a';
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 72
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	
+	-- jsonb_set adding instead of replacing
+	
+	-- prepend to array
+	select jsonb_set('{"a":1,"b":[0,1,2],"c":{"d":4}}','{b,-33}','{"hash_split_heap":123}');
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select jsonb_set('[]','{99}','{"hash_split_heap":123}');
+2022-08-02 08:16:48.716 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.716 UTC [7744] STATEMENT:  
+	select ('[1, "2", null]'::jsonb)[0];
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	select ('{"a": {"a1": {"a2": "aaa"}}, "b": "bbb", "c": "ccc"}'::jsonb)['a']['a1'];
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	
+	-- jsonb to tsvector with stop words
+	select to_tsvector('english', '{"a": "aaa in bbb ddd ccc", "b": ["the eee fff ggg"], "c": {"d": "hhh. iii"}}'::jsonb);
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	select jsonb_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::jsonb, '[]');
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 25
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	select '12345'::jsonb::numeric;
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 72
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	select '12345.0000000000000000000000000000000000000000000005'::jsonb::numeric;
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  
+	select '12345.0000000000000000000000000000000000000000000005'::jsonb::int2;
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:16:48.717 UTC [7744] WARNING:  there is no transaction in progress
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  DISCARD ALL;
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 08:16:48.717 UTC [7744] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 08:16:48.717 UTC [7744] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 08:16:50.586 UTC [13635] PANIC:  could not open critical system index 2662
+2022-08-02 08:16:50.587 UTC [6683] LOG:  server process (PID 13635) was terminated by signal 6: Aborted
+2022-08-02 08:16:50.587 UTC [6683] LOG:  terminating any other active server processes
+2022-08-02 08:16:50.619 UTC [6683] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:16:50.632 UTC [13636] LOG:  database system was interrupted; last known up at 2022-08-02 08:16:11 UTC
+2022-08-02 08:16:50.650 UTC [13636] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 08:16:50.650 UTC [13636] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:16:50.651 UTC [13636] LOG:  redo starts at 0/89C0B20
+2022-08-02 08:16:50.651 UTC [13636] WARNING:  could not open directory "base/39918": No such file or directory
+2022-08-02 08:16:50.651 UTC [13636] WARNING:  some useless files may be left behind in old database directory "base/39918"
+2022-08-02 08:16:50.829 UTC [13636] LOG:  invalid record length at 0/942E090: wanted 24, got 0
+2022-08-02 08:16:50.829 UTC [13636] LOG:  redo done at 0/942E068 system usage: CPU: user: 0.14 s, system: 0.02 s, elapsed: 0.17 s

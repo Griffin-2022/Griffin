@@ -1,0 +1,78 @@
+# name: test/sql/storage/catalog/test_store_rename_column.test
+# description: Test storage of alter table rename column
+# group: [catalog]
+
+# load the DB from disk
+load __TEST_DIR__/test_rename_column.db
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
+
+# rename the column and rollback the transaction
+;
+BEGIN TRANSACTION
+
+;
+SELECT a FROM test ORDER BY a
+;
+11
+12
+13
+
+;
+ALTER TABLE test RENAME COLUMN a TO k
+
+;
+SELECT k FROM test ORDER BY k
+;
+11
+12
+13
+
+;
+ROLLBACK
+
+# reload
+restart
+
+;
+BEGIN TRANSACTION
+
+# verify that the column is not renamed
+;
+SELECT a FROM test ORDER BY a
+;
+11
+12
+13
+
+# now repeat the process but this time commit
+;
+ALTER TABLE test RENAME COLUMN a TO k
+
+;
+SELECT k FROM test ORDER BY k
+;
+11
+12
+13
+
+;
+COMMIT
+
+# reload the database
+restart
+
+# verify that the column is still renamed
+;
+SELECT k FROM test ORDER BY k
+;
+11
+12
+13
+
+;
+SELECT a FROM test

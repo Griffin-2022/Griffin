@@ -1,0 +1,111 @@
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  ALTER TABLE case_tbl ADD COLUMN aggfns int NOT NULL DEFAULT 4;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  DROP TABLE alter_op_test_fn;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  CREATE TABLE f1 (text_w_default serial PRIMARY KEY, shell int, myshell int, int42 int);
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  ALTER TABLE x ADD COLUMN int42_in int;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  SELECT * FROM case_tbl;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  SELECT * FROM case_tbl;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  SELECT * FROM case_tbl;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  CREATE FOREIGN TABLE ft1 (c1 integer NOT NULL) SERVER s0;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  SELECT count(*)
+	  FROM pg_attribute
+	  WHERE attrelid = 'ft1'::regclass AND
+	    (attmissingval IS NOT NULL OR atthasmissing);
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  DROP FOREIGN TABLE ft1;
+2022-08-02 06:07:15.939 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.939 UTC [104951] STATEMENT:  DROP FOREIGN DATA WRAPPER dummy;
+2022-08-02 06:07:15.940 UTC [104951] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:07:15.940 UTC [104951] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:07:15.950 UTC [104951] ERROR:  recovery is not in progress
+2022-08-02 06:07:15.950 UTC [104951] STATEMENT:  SELECT pg_promote(wait_seconds => 300)
+	;
+2022-08-02 06:07:15.953 UTC [104951] ERROR:  schema "fast_default" already exists
+2022-08-02 06:07:15.953 UTC [104951] STATEMENT:  CREATE SCHEMA fast_default;
+2022-08-02 06:07:15.955 UTC [104951] ERROR:  function log_rewrite() does not exist
+2022-08-02 06:07:15.955 UTC [104951] STATEMENT:  CREATE EVENT TRIGGER has_volatile_rewrite
+	                  ON table_rewrite
+	   EXECUTE PROCEDURE log_rewrite();
+=================================================================
+==104951==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffc1b8ce364 at pc 0x00000057bc7d bp 0x7ffc1b8ce090 sp 0x7ffc1b8ce088
+READ of size 1 at 0x7ffc1b8ce364 thread T0
+    #0 0x57bc7c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c)
+    #1 0x99eb2f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99eb2f)
+    #2 0x99deb6  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99deb6)
+    #3 0x119309b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x119309b)
+    #4 0x118f991  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118f991)
+    #5 0x118e3f3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118e3f3)
+    #6 0x118d660  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118d660)
+    #7 0x118b88d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b88d)
+    #8 0x118a128  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a128)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fc35f82a082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+Address 0x7ffc1b8ce364 is located in stack of thread T0 at offset 388 in frame
+    #0 0x99e66f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99e66f)
+
+  This frame has 4 object(s):
+    [32, 248) 'skey' (line 145)
+    [320, 352) 'values' (line 149)
+    [384, 388) 'nulls' (line 150) <== Memory access at offset 388 overflows this variable
+    [400, 404) 'replaces' (line 151)
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c) 
+Shadow bytes around the buggy address:
+  0x100003711c10: 00 00 00 00 f1 f1 f1 f1 f8 f2 f2 f2 f8 f2 f2 f2
+  0x100003711c20: f8 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x100003711c30: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  0x100003711c40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x100003711c50: 00 00 00 00 00 00 00 00 00 00 00 f2 f2 f2 f2 f2
+=>0x100003711c60: f2 f2 f2 f2 00 00 00 00 f2 f2 f2 f2[04]f2 04 f3
+  0x100003711c70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x100003711c80: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 00 f3 f3 f3
+  0x100003711c90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x100003711ca0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x100003711cb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==104951==ABORTING
+2022-08-02 06:07:15.988 UTC [103788] LOG:  server process (PID 104951) was terminated by signal 6: Aborted
+2022-08-02 06:07:15.988 UTC [103788] LOG:  terminating any other active server processes
+2022-08-02 06:07:15.994 UTC [103788] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:07:16.006 UTC [106313] LOG:  database system was interrupted; last known up at 2022-08-02 06:07:09 UTC
+2022-08-02 06:07:16.007 UTC [106314] FATAL:  the database system is in recovery mode
+2022-08-02 06:07:16.009 UTC [106317] FATAL:  the database system is in recovery mode
+2022-08-02 06:07:16.011 UTC [106318] FATAL:  the database system is in recovery mode
+2022-08-02 06:07:16.017 UTC [103788] LOG:  received smart shutdown request
+2022-08-02 06:07:16.027 UTC [106313] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 06:07:16.027 UTC [106313] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:07:16.028 UTC [106313] LOG:  redo starts at 0/70162B8

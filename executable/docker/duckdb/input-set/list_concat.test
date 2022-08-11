@@ -1,0 +1,186 @@
+# name: test/sql/function/list/list_concat.test
+# description: Test list_concat function
+# group: [list]
+
+;
+PRAGMA enable_verification
+
+# basic functionality
+;
+SELECT list_concat([1, 2], [3, 4])
+;
+[1, 2, 3, 4]
+
+;
+SELECT array_cat([1, 2], [3, 4])
+;
+[1, 2, 3, 4]
+
+;
+SELECT list_concat(NULL, [3, 4])
+;
+[3, 4]
+
+;
+SELECT list_concat([1, 2], NULL)
+;
+[1, 2]
+
+;
+SELECT list_concat([], [])
+;
+[]
+
+;
+SELECT list_concat([], [3, 4])
+;
+[3, 4]
+
+;
+SELECT list_concat([1, 2], [])
+;
+[1, 2]
+
+;
+SELECT list_concat([1, 2], 3)
+
+# operators
+;
+SELECT [1, 2] || [3, 4]
+;
+[1, 2, 3, 4]
+
+;
+SELECT [1, 2] + [3, 4]
+;
+[1, 2, 3, 4]
+
+# type casting
+foreach type_a <integral> varchar
+
+foreach type_b <integral> varchar
+
+;
+SELECT list_concat([1, 2]::${type_a}[], [3, 4]::${type_b}[])
+;
+[1, 2, 3, 4]
+
+endloop
+
+endloop
+
+;
+SELECT list_concat([1.000000, 2.000000]::float[], [3.000000, 4.000000]::double[])
+;
+[1.000000, 2.000000, 3.000000, 4.000000]
+
+;
+SELECT list_concat([1.000000, 2.000000]::double[], [3.000000, 4.000000]::float[])
+;
+[1.000000, 2.000000, 3.000000, 4.000000]
+
+# nulls
+;
+SELECT list_concat([NULL], [NULL])
+;
+[NULL, NULL]
+
+;
+SELECT list_concat([1, 2], [NULL])
+;
+[1, 2, NULL]
+
+;
+SELECT list_concat([NULL], [3, 4])
+;
+[NULL, 3, 4]
+
+;
+SELECT list_concat([[1, 2]], [[3, 4]])
+;
+[[1, 2], [3, 4]]
+
+# nested types
+;
+SELECT list_concat([{a: 1}, {a: 2}], [{a: 3}, {a: 4}])
+;
+[{'a': 1}, {'a': 2}, {'a': 3}, {'a': 4}]
+
+;
+SELECT list_concat([[[1], [2]], [[3], [4]]], [[[5], [6]], [[7], [8]]])
+;
+[[[1], [2]], [[3], [4]], [[5], [6]], [[7], [8]]]
+
+;
+CREATE TABLE test AS SELECT range % 4 i, range j, range k FROM range(16)
+
+;
+CREATE TABLE lists AS SELECT i, list(j) j, list(k) k FROM test GROUP BY i
+
+;
+SELECT i, list_concat(j, k) FROM lists
+;
+0	[0, 4, 8, 12, 0, 4, 8, 12]
+1	[1, 5, 9, 13, 1, 5, 9, 13]
+2	[2, 6, 10, 14, 2, 6, 10, 14]
+3	[3, 7, 11, 15, 3, 7, 11, 15]
+
+;
+SELECT i, list_concat(j, cast(k AS VARCHAR)) FROM lists
+
+# list_append(l, e) is an alias for list_concat(l, list_value(e))
+;
+SELECT list_append([1, 2], 3)
+;
+[1, 2, 3]
+
+;
+SELECT list_append([1, 2], NULL)
+;
+[1, 2, NULL]
+
+;
+SELECT list_append(NULL, 3)
+;
+[3]
+
+;
+SELECT i, list_append(list_concat(j, k), i) FROM lists
+;
+0	[0, 4, 8, 12, 0, 4, 8, 12, 0]
+1	[1, 5, 9, 13, 1, 5, 9, 13, 1]
+2	[2, 6, 10, 14, 2, 6, 10, 14, 2]
+3	[3, 7, 11, 15, 3, 7, 11, 15, 3]
+
+# prepend macro
+;
+SELECT list_prepend(1, [2, 3])
+;
+[1, 2, 3]
+
+;
+SELECT array_prepend(1, [2, 3])
+;
+[1, 2, 3]
+
+# push back
+;
+SELECT array_push_back([1, 2], 3);
+;
+[1, 2, 3]
+
+;
+SELECT array_push_back(NULL, 3);
+;
+[3]
+
+# push front
+;
+SELECT array_push_front([2, 3], 1);
+;
+[1, 2, 3]
+
+;
+SELECT array_push_front(NULL, 1);
+;
+[1]

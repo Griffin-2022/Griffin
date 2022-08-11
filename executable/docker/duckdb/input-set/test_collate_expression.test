@@ -1,0 +1,55 @@
+# name: test/sql/collate/test_collate_expression.test
+# description: Test COLLATE in individual expressions
+# group: [collate]
+
+;
+CREATE TABLE collate_test(s VARCHAR)
+
+;
+INSERT INTO collate_test VALUES ('hEllO'), ('WöRlD'), ('wozld')
+
+;
+SELECT 'hëllo' COLLATE NOACCENT='hello'
+;
+1
+
+;
+SELECT 'hëllo' COLLATE POSIX='hello'
+;
+0
+
+;
+SELECT 'hëllo' COLLATE C='hello'
+;
+0
+
+;
+SELECT * FROM collate_test WHERE s='hello'
+
+;
+SELECT * FROM collate_test WHERE s='hello' COLLATE NOCASE
+;
+hEllO
+
+;
+SELECT * FROM collate_test WHERE s COLLATE NOCASE='hello'
+;
+hEllO
+
+;
+SELECT * FROM collate_test WHERE s COLLATE NOCASE='hello' COLLATE NOACCENT
+
+;
+SELECT * FROM collate_test ORDER BY s COLLATE NOCASE
+;
+hEllO
+wozld
+WöRlD
+
+;
+SELECT * FROM collate_test ORDER BY s COLLATE NOCASE.NOACCENT
+;
+hEllO
+WöRlD
+wozld
+

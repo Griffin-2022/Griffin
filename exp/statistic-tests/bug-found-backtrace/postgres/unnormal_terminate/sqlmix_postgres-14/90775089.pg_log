@@ -1,0 +1,111 @@
+	
+	CREATE FUNCTION t1(text, anyelement) RETURNS text AS
+	$$ SELECT $1 || '-' || quote_nullable($2) $$
+	LANGUAGE SQL STRICT IMMUTABLE;
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  
+	
+	-- test mutator (fails when inlined if expressions are not mutated)
+	CREATE FUNCTION pg_temp.f(group_size BIGINT) RETURNS SETOF integer[]
+	AS $$
+	    SELECT array_agg(s) OVER w
+	      FROM generate_series(1,5) s
+	    WINDOW w AS (ORDER BY s ROWS BETWEEN CURRENT ROW AND GROUP_SIZE FOLLOWING)
+	$$ LANGUAGE SQL STABLE;
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT SUBSTRING('abcdefg' SIMILAR '%' ESCAPE NULL) IS NULL AS "True";
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\&Y', 'g');
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\\\Y', 'g');
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', $re$\s*$re$);
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT regexp_split_to_array('123456','.');
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT OVERLAY('abcdef' PLACING '45' FROM 4) AS "abc45f";
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT OVERLAY('yabadoo' PLACING 'daba' FROM 5 FOR 0) AS "yabadabadoo";
+2022-08-02 04:57:49.646 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.646 UTC [66342] STATEMENT:  SELECT 'hawkeye' LIKE 'indio%' AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'indio' LIKE 'in__o' AS "true";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'indio' NOT LIKE 'in__o' AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'indio' NOT LIKE 'in_o' AS "true";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'abc'::bytea NOT LIKE '_b_'::bytea AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 18
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'hawkeye' NOT LIKE 'h%' ESCAPE '#' AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'h%' LIKE 'h#%' ESCAPE '#' AS "true";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'indio' NOT LIKE '_ndio' ESCAPE '$' AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'i_dio' NOT LIKE 'i$_d%o' ESCAPE '$' AS "false";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'be_r' LIKE 'b_e__r' ESCAPE '_' AS "true";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT 'foo' LIKE '_%' as t, 'f' LIKE '_%' as t, '' LIKE '_%' as f;
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  SELECT char(20) 'characters' || ' and text' AS "Concat char to unknown type";
+2022-08-02 04:57:49.647 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 04:57:49.647 UTC [66342] STATEMENT:  CREATE TABLE foo(c text);
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  insert into foo values(decode(repeat('1234567890',10000),'escape'));
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  SELECT replace('yabadabadoo', 'ba', '123') AS "ya123da123doo";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select split_part('joeuser@mydatabase','',1) AS "joeuser@mydatabase";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select split_part('joeuser@mydatabase','',-2) AS "empty string";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select to_hex(256*256*256 - 1) AS "ffffff";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 20
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select to_hex(256::bigint*256::bigint*256::bigint*256::bigint - 1) AS "ffffffff";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select md5('abcdefghijklmnopqrstuvwxyz') = 'c3fcd3d76192e4007dfb496cca67e13b' AS "TRUE";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  select md5('12345678901234567890123456789012345678901234567890123456789012345678901234567890'::bytea) = '57edf4a22be3c955ac49da2e2107b67a' AS "TRUE";
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  SELECT sha384('');
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  SELECT encode('\x1234567890abcdef00', 'hex');
+2022-08-02 04:57:49.648 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.648 UTC [66342] STATEMENT:  SELECT encode(('\x' || repeat('1234567890abcdef0001', 7))::bytea, 'base64');
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT rpad('hi', -5, 'xy');
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT chr(0);
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT SUBSTRING('1234567890'::bytea FROM 3) "34567890";
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT btrim(E'\\000trim\\000'::bytea, ''::bytea);
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT unistr('wrong: \db99');
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT unistr('wrong: \+00db99\+000061');
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 04:57:49.649 UTC [66342] WARNING:  there is no transaction in progress
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  DISCARD ALL;
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 04:57:49.649 UTC [66342] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:57:49.649 UTC [66342] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 04:57:49.830 UTC [72727] PANIC:  could not open critical system index 2662
+2022-08-02 04:57:49.832 UTC [65471] LOG:  server process (PID 72727) was terminated by signal 6: Aborted
+2022-08-02 04:57:49.832 UTC [65471] LOG:  terminating any other active server processes
+2022-08-02 04:57:49.871 UTC [65471] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:57:49.884 UTC [72729] LOG:  database system was interrupted; last known up at 2022-08-02 04:56:45 UTC
+2022-08-02 04:57:49.896 UTC [72729] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:57:49.897 UTC [72729] LOG:  redo starts at 0/27E00C8
+2022-08-02 04:57:49.897 UTC [72729] LOG:  invalid record length at 0/27E0528: wanted 24, got 0
+2022-08-02 04:57:49.897 UTC [72729] LOG:  redo done at 0/27E0500 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 04:57:49.907 UTC [65471] LOG:  database system is ready to accept connections
+2022-08-02 04:57:53.503 UTC [73043] WARNING:  there is no transaction in progress
+2022-08-02 04:57:53.506 UTC [73043] ERROR:  syntax error at or near "CURRENT_SCHEMA" at character 23

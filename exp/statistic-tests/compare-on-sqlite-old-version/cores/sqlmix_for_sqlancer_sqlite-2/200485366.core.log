@@ -1,0 +1,233 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000299,sig:06,src:022969+020003,time:5338262,execs:943143,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+;pragma vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;SELECT coalesce(
+      CASE WHEN c0=2 THEN 123 END,
+      CASE WHEN c0=3 THEN 234 END,
+      CASE WHEN c0=3 THEN 345 WHEN c0=33 THEN 456 END,
+      c0
+    )
+    FROM t0 ORDER BY c0;]
+VDBE Program Listing:
+   0 Init             0   40    0               00 Start at 40
+   1 SorterOpen       1    3    0 k(1,B)        00 
+   2 OpenRead         0    2    1 1             00 root=2 iDb=1; t0
+   3 Explain          3    0    0 SCAN TABLE t0 00 
+   4 Rewind           0   32    0               00 
+   5 Column           0    0    3               00 r[3]=t0.c0
+   6 Ne               4    9    3 (BINARY)      51 if r[3]!=r[4] goto 9
+   7 Integer        123    2    0               00 r[2]=123
+   8 Goto             0   10    0               00 
+   9 Null             0    2    0               00 r[2]=NULL
+  10 NotNull          2   28    0               00 if r[2]!=NULL goto 28
+  11 Column           0    0    3               00 r[3]=t0.c0
+  12 Ne               5   15    3 (BINARY)      51 if r[3]!=r[5] goto 15
+  13 Integer        234    2    0               00 r[2]=234
+  14 Goto             0   16    0               00 
+  15 Null             0    2    0               00 r[2]=NULL
+  16 NotNull          2   28    0               00 if r[2]!=NULL goto 28
+  17 Column           0    0    3               00 r[3]=t0.c0
+  18 Ne               5   21    3 (BINARY)      51 if r[3]!=r[5] goto 21
+  19 Integer        345    2    0               00 r[2]=345
+  20 Goto             0   26    0               00 
+  21 Column           0    0    3               00 r[3]=t0.c0
+  22 Ne               6   25    3 (BINARY)      51 if r[3]!=r[6] goto 25
+  23 Integer        456    2    0               00 r[2]=456
+  24 Goto             0   26    0               00 
+  25 Null             0    2    0               00 r[2]=NULL
+  26 NotNull          2   28    0               00 if r[2]!=NULL goto 28
+  27 Column           0    0    2               00 r[2]=t0.c0
+  28 Column           0    0    1               00 r[1]=t0.c0
+  29 MakeRecord       1    2    7               00 r[7]=mkrec(r[1..2])
+  30 SorterInsert     1    7    1 2             00 key=r[7]
+  31 Next             0    5    0               01 
+  32 Explain         32    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+  33 OpenPseudo       2    8    3               00 3 columns in r[8]
+  34 SorterSort       1   39    0               00 
+  35 SorterData       1    8    2               00 r[8]=data
+  36 Column           2    1    2               00 r[2]=coalesce(
+      CASE WHEN c0=2 THEN 123 END,
+      CASE WHEN c0=3 THEN 234 END,
+      CASE WHE
+  37 ResultRow        2    1    0               00 output=r[2]
+  38 SorterNext       1   35    0               00 
+  39 Halt             0    0    0               00 
+  40 Transaction      1    0    2 0             01 usesStmtJournal=0
+  41 Integer          2    4    0               00 r[4]=2
+  42 Integer          3    5    0               00 r[5]=3
+  43 Integer         33    6    0               00 r[6]=33
+  44 Goto             0    1    0               00 
+SQL: [SELECT*FROM"temp".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;]
+VDBE Program Listing:
+   0 Init             0   17    0               00 Start at 17
+   1 Noop             1    7    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   16    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_temp_master.tbl_name
+   6 Ne               2   15    1 (BINARY)      52 if r[1]!=r[2] goto 15
+   7 Column           0    0    1               00 r[1]=sqlite_temp_master.type
+   8 Eq               3   15    1 (BINARY)      52 if r[1]==r[3] goto 15
+   9 Column           0    0    4               00 r[4]=sqlite_temp_master.type
+  10 Column           0    1    5               00 r[5]=sqlite_temp_master.name
+  11 Column           0    2    6               00 r[6]=sqlite_temp_master.tbl_name
+  12 Column           0    3    7               00 r[7]=sqlite_temp_master.rootpage
+  13 Column           0    4    8               00 r[8]=sqlite_temp_master.sql
+  14 ResultRow        4    5    0               00 output=r[4..8]
+  15 Next             0    5    0               01 
+  16 Halt             0    0    0               00 
+  17 Transaction      1    0    2 0             01 usesStmtJournal=0
+  18 String8          0    2    0 t1            00 r[2]='t1'
+  19 String8          0    3    0 trigger       00 r[3]='trigger'
+  20 Goto             0    1    0               00 
+SQL: [;ALTER TABLE t0 RENAME c0 TO c0;]
+VDBE Program Listing:
+   0 Init             0   77    0               00 Start at 77
+   1 Null             0    1    2               00 r[1..2]=NULL
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   18    0               00 
+   5 Column           0    1   10               00 r[10]=sqlite_temp_master.name
+   6 Function0        1    9    8 like(2)       02 r[8]=func(r[9..10])
+   7 If               8   17    1               00 
+   8 Column           0    0    8               00 r[8]=sqlite_temp_master.type
+   9 Ne              11   12    8 (BINARY)      42 if r[8]!=r[11] goto 12
+  10 Column           0    2    8               00 r[8]=sqlite_temp_master.tbl_name
+  11 Ne              12   17    8 (BINARY)      52 if r[8]!=r[12] goto 17
+  12 Column           0    4   14               00 r[14]=sqlite_temp_master.sql
+  13 Function0        1   13    8 like(2)       02 r[8]=func(r[13..14])
+  14 If               8   17    1               00 
+  15 Rowid            0    2    0               00 r[2]=rowid
+  16 RowSetAdd        1    2    0               00 rowset(1)=r[2]
+  17 Next             0    5    0               01 
+  18 OpenWrite        0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+  19 RowSetRead       1   32    2               00 r[2]=rowset(1)
+  20 NotExists        0   19    2               00 intkey=r[2]
+  21 Column           0    0    3               00 r[3]=sqlite_temp_master.type
+  22 Column           0    1    4               00 r[4]=sqlite_temp_master.name
+  23 Column           0    2    5               00 r[5]=sqlite_temp_master.tbl_name
+  24 Column           0    3    6               00 r[6]=sqlite_temp_master.rootpage
+  25 Column           0    4   15               00 r[15]=sqlite_temp_master.sql
+  26 Column           0    0   16               00 r[16]=sqlite_temp_master.type
+  27 Column           0    1   17               00 r[17]=sqlite_temp_master.name
+  28 Function0      504   15    7 sqlite_rename_column(9) 09 r[7]=func(r[15..23])
+  29 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+  30 Insert           0    8    2               00 intkey=r[2] data=r[8]
+  31 Goto             0   19    0               00 
+  32 Null             0   24   25               00 r[24..25]=NULL
+  33 OpenRead         1    1    1 1             00 root=1 iDb=1; sqlite_temp_master
+  34 Explain         34    0    0 SCAN TABLE sqlite_master 00 
+  35 Rewind           1   43    0               00 
+  36 Noop             0    0    0               00 begin IN expr
+  37 Column           1    0   31               00 r[31]=sqlite_temp_master.type
+  38 Eq              31   40   32 (BINARY)      42 if r[32]==r[31] goto 40
+  39 Ne              31   42   33 (BINARY)      52 if r[33]!=r[31] goto 42; end IN expr
+  40 Rowid            1   25    0               00 r[25]=rowid
+  41 RowSetAdd       24   25    0               00 rowset(24)=r[25]
+  42 Next             1   36    0               01 
+  43 OpenWrite        1    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+  44 RowSetRead      24   57   25               00 r[25]=rowset(24)
+  45 NotExists        1   44   25               00 intkey=r[25]
+  46 Column           1    0   26               00 r[26]=sqlite_temp_master.type
+  47 Column           1    1   27               00 r[27]=sqlite_temp_master.name
+  48 Column           1    2   28               00 r[28]=sqlite_temp_master.tbl_name
+  49 Column           1    3   29               00 r[29]=sqlite_temp_master.rootpage
+  50 Column           1    4   34               00 r[34]=sqlite_temp_master.sql
+  51 Column           1    0   35               00 r[35]=sqlite_temp_master.type
+  52 Column           1    1   36               00 r[36]=sqlite_temp_master.name
+  53 Function0      504   34   30 sqlite_rename_column(9) 09 r[30]=func(r[34..42])
+  54 MakeRecord      26    5   43 BBBDB         00 r[43]=mkrec(r[26..30])
+  55 Insert           1   43   25               00 intkey=r[25] data=r[43]
+  56 Goto             0   44    0               00 
+  57 SetCookie        1    1    3               00 
+  58 ParseSchema      1    0    0               00 
+  59 OpenRead         3    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+  60 Explain         60    0    0 SCAN TABLE sqlite_master 00 
+  61 Rewind           3   76    0               00 
+  62 Column           3    1   46               00 r[46]=sqlite_temp_master.name
+  63 Function0        1   45   44 like(2)       02 r[44]=func(r[45..46])
+  64 If              44   75    1               00 
+  65 Column           3    4   48               00 r[48]=sqlite_temp_master.sql
+  66 Function0        1   47   44 like(2)       02 r[44]=func(r[47..48])
+  67 If              44   75    1               00 
+  68 Column           3    4   50               00 r[50]=sqlite_temp_master.sql
+  69 Column           3    0   51               00 r[51]=sqlite_temp_master.type
+  70 Column           3    1   52               00 r[52]=sqlite_temp_master.name
+  71 Function0       17   49   44 sqlite_rename_test(5) 05 r[44]=func(r[49..53])
+  72 Ne              54   75   44               51 if r[44]!=r[54] goto 75
+  73 Integer          1   55    0               00 r[55]=1
+  74 ResultRow       55    1    0               00 output=r[55]
+  75 Next             3   62    0               01 
+  76 Halt             0    0    0               00 
+  77 Transaction      1    1    2 0             01 usesStmtJournal=1
+  78 String8          0    9    0 sqlite_%      00 r[9]='sqlite_%'
+  79 String8          0   11    0 index         00 r[11]='index'
+  80 String8          0   12    0 t0            00 r[12]='t0'
+  81 String8          0   13    0 create virtual% 00 r[13]='create virtual%'
+  82 String8          0   18    0 temp          00 r[18]='temp'
+  83 String8          0   19    0 t0            00 r[19]='t0'
+  84 Integer          0   20    0               00 r[20]=0
+  85 String8          0   21    0 c0            00 r[21]='c0'
+  86 Integer          0   22    0               00 r[22]=0
+  87 Integer          1   23    0               00 r[23]=1
+  88 String8          0   32    0 trigger       00 r[32]='trigger'
+  89 String8          0   33    0 view          00 r[33]='view'
+  90 String8          0   37    0 temp          00 r[37]='temp'
+  91 String8          0   38    0 t0            00 r[38]='t0'
+  92 Integer          0   39    0               00 r[39]=0
+  93 String8          0   40    0 c0            00 r[40]='c0'
+  94 Integer          0   41    0               00 r[41]=0
+  95 Integer          1   42    0               00 r[42]=1
+  96 String8          0   45    0 sqlite_%      00 r[45]='sqlite_%'
+  97 String8          0   47    0 create virtual% 00 r[47]='create virtual%'
+  98 String8          0   49    0 temp          00 r[49]='temp'
+  99 Integer          1   53    0               00 r[53]=1
+ 100 Null             0   54    0               00 r[54]=NULL
+ 101 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fabe0150859 in __GI_abort () at abort.c:79
+#2  0x00007fabe0150729 in __assert_fail_base (fmt=0x7fabe02e6588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x2079ee "rc==WRC_Continue", file=0x22873d "sqlite3.c", line=95040, function=<optimized out>)
+    at assert.c:92
+#3  0x00007fabe0161fd6 in __GI___assert_fail (assertion=0x2079ee "rc==WRC_Continue", file=0x22873d "sqlite3.c", line=95040, function=0x2279cf "int sqlite3WalkSelectExpr(Walker *, Select *)") at assert.c:101
+#4  0x000000000031bd8f in sqlite3WalkSelectExpr (pWalker=0x7ffc74d19800, p=0x2701700) at sqlite3.c:95040
+#5  0x000000000031b72e in sqlite3WalkSelect (pWalker=0x7ffc74d19800, p=0x2701700) at sqlite3.c:95099
+#6  0x000000000032ef96 in sqlite3SelectExpand (pParse=0x7ffc74d199a8, pSelect=0x2701700) at sqlite3.c:129771
+#7  0x000000000032edb0 in sqlite3SelectPrep (pParse=0x7ffc74d199a8, p=0x2701700, pOuterNC=0x7ffc74d19908) at sqlite3.c:129855
+#8  0x000000000041be4e in renameResolveTrigger (pParse=0x7ffc74d199a8, zDb=0x0) at sqlite3.c:103453
+#9  0x000000000041a3cf in renameColumnFunc (context=0x26c8cf0, NotUsed=9, argv=0x26c8d20) at sqlite3.c:103674
+#10 0x00000000003df844 in sqlite3VdbeExec (p=0x26d0b80) at sqlite3.c:90923
+#11 0x0000000000411104 in sqlite3Step (p=0x26d0b80) at sqlite3.c:81930
+#12 0x000000000029128d in sqlite3_step (pStmt=0x26d0b80) at sqlite3.c:81995
+#13 0x00000000002570b9 in main (argc=1, argv=0x7ffc74d1a818) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 57361] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

@@ -1,0 +1,31 @@
+# name: test/sql/alter/add_col/test_add_col_stats.test
+# description: Test correct stats on adding a new column
+# group: [add_col]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+;
+CREATE SEQUENCE seq
+
+;
+ALTER TABLE test ADD COLUMN m INTEGER DEFAULT nextval('seq')
+
+;
+SELECT * FROM test
+;
+1	1	1
+2	2	2
+
+;
+SELECT * FROM test WHERE m=2
+;
+2	2	2
+
+;
+SELECT stats(m) FROM test LIMIT 1
+;
+<REGEX>:.*1.*2.*

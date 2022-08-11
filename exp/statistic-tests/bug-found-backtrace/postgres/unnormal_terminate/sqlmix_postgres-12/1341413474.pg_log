@@ -1,0 +1,111 @@
+2022-08-01 22:30:05.696 UTC [70750] STATEMENT:    -- ok now
+	ALTER SEQUENCE sequence_test9 AS smallint;
+2022-08-01 22:30:05.696 UTC [70750] ERROR:  relation "sequence_test12" does not exist
+2022-08-01 22:30:05.696 UTC [70750] STATEMENT:    -- max will be adjusted
+	ALTER SEQUENCE sequence_test12 AS int;
+2022-08-01 22:30:05.703 UTC [70750] ERROR:  smallint out of range
+2022-08-01 22:30:05.703 UTC [70750] STATEMENT:  
+	
+	INSERT INTO ucview (currentid, nochange)
+	  VALUES ('bogus', -32769);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  bigint out of range
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	
+	INSERT INTO ucview (currentid, current_check_1)
+	  VALUES ('bogus', 9223372036854775808);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	
+	SELECT nextval('sequence_test'::text);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist at character 17
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	SELECT nextval('sequence_test'::regclass);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	SELECT currval('sequence_test'::text);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	SELECT setval('sequence_test'::text, 99, false);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	SELECT nextval('sequence_test'::text);
+2022-08-01 22:30:05.704 UTC [70750] ERROR:  relation "sequence_test" does not exist at character 16
+2022-08-01 22:30:05.704 UTC [70750] STATEMENT:  
+	SELECT setval('sequence_test'::regclass, 99, false);
+2022-08-01 22:30:05.705 UTC [70750] ERROR:  relation "sequence_test" does not exist
+2022-08-01 22:30:05.705 UTC [70750] STATEMENT:  
+	SELECT nextval('sequence_test'::text);
+2022-08-01 22:30:05.705 UTC [70750] ERROR:  sequence "sequence_test" does not exist
+2022-08-01 22:30:05.705 UTC [70750] STATEMENT:  
+	
+	DROP SEQUENCE sequence_test;
+2022-08-01 22:30:05.706 UTC [70750] ERROR:  relation "serialtest1_f2_seq" does not exist
+2022-08-01 22:30:05.706 UTC [70750] STATEMENT:  
+	
+	-- renaming serial sequences
+	ALTER TABLE serialtest1_f2_seq RENAME TO serialtest1_f2_foo;
+2022-08-01 22:30:05.706 UTC [70750] ERROR:  sequence "t1_f1_seq" does not exist
+2022-08-01 22:30:05.706 UTC [70750] STATEMENT:  
+	-- Both drops should fail, but with different error messages:
+	DROP SEQUENCE t1_f1_seq;
+2022-08-01 22:30:05.706 UTC [70750] ERROR:  sequence "myseq3" does not exist
+2022-08-01 22:30:05.706 UTC [70750] STATEMENT:  
+	-- This however will work:
+	DROP SEQUENCE myseq3;
+2022-08-01 22:30:05.708 UTC [70750] ERROR:  RESTART value (40) cannot be greater than MAXVALUE (-1)
+2022-08-01 22:30:05.708 UTC [70750] STATEMENT:    -- error
+	ALTER SEQUENCE sequence_test4 RESTART WITH 40;
+2022-08-01 22:30:05.709 UTC [70750] ERROR:  RESTART value (-24) cannot be less than MINVALUE (5)
+2022-08-01 22:30:05.709 UTC [70750] STATEMENT:    -- cycled
+	
+	ALTER SEQUENCE sequence_test2 RESTART WITH -24
+	  NO CYCLE;
+2022-08-01 22:30:05.709 UTC [70750] ERROR:  setval: value 100 is out of bounds for sequence "sequence_test2" (5..36)
+2022-08-01 22:30:05.709 UTC [70750] STATEMENT:    -- error
+	SELECT setval('sequence_test2', 100);
+2022-08-01 22:30:05.726 UTC [70750] ERROR:  relation "seq" does not exist at character 16
+2022-08-01 22:30:05.726 UTC [70750] STATEMENT:  
+	SELECT setval('seq', 99);
+2022-08-01 22:30:05.727 UTC [70750] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	SET LOCAL SESSION AUTHORIZATION regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	REVOKE ALL ON seq3 FROM regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	SET LOCAL SESSION AUTHORIZATION regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	REVOKE ALL ON seq3 FROM regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  relation "seq3" already exists
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	CREATE SEQUENCE seq3;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  relation "seq3" already exists
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	CREATE SEQUENCE seq3;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	GRANT USAGE ON seq3 TO regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  role "regress_seq_user" does not exist
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  
+	SET LOCAL SESSION AUTHORIZATION regress_seq_user;
+2022-08-01 22:30:05.728 UTC [70750] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 22:30:05.728 UTC [70750] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-01 22:30:06.265 UTC [70750] PANIC:  could not write to file "pg_wal/xlogtemp.70750": No space left on device
+2022-08-01 22:30:06.265 UTC [70750] STATEMENT:  
+	
+	CREATE INDEX uctest ON tab_int(a);
+2022-08-01 22:30:06.288 UTC [70086] LOG:  server process (PID 70750) was terminated by signal 6: Aborted
+2022-08-01 22:30:06.288 UTC [70086] LOG:  terminating any other active server processes
+2022-08-01 22:30:06.294 UTC [70086] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:30:06.309 UTC [71289] LOG:  database system was interrupted; last known up at 2022-08-01 22:30:01 UTC
+2022-08-01 22:30:06.310 UTC [71290] FATAL:  the database system is in recovery mode
+2022-08-01 22:30:06.313 UTC [71293] FATAL:  the database system is in recovery mode
+2022-08-01 22:30:06.315 UTC [71294] FATAL:  the database system is in recovery mode
+2022-08-01 22:30:06.321 UTC [70086] LOG:  received smart shutdown request
+2022-08-01 22:30:06.324 UTC [71289] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:30:06.324 UTC [71289] LOG:  redo starts at 0/167D7A8
+2022-08-01 22:30:06.411 UTC [70086] LOG:  abnormal database system shutdown

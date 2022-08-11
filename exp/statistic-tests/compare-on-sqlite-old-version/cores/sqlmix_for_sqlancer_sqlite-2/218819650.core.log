@@ -1,0 +1,918 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000028,sig:11,src:019905+009052,time:1117909,execs:126072,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;
+;WITH t5(t5col1) AS (
+    SELECT (
+      WITH t3(t3col1) AS (
+        WITH t2 AS (
+          WITH c0 AS (SELECT 1 AS c1 GROUP BY 1) 
+          SELECT a.c1 FROM c0 AS a, c0 AS b
+          WHERE anoncol1 = 1
+        )
+        SELECT (SELECT 1 FROM t2) FROM t2
+      ) 
+      SELECT t3col1 FROM t3 WHERE t3col1
+    ) FROM (SELECT 1 AS anoncol1)
+  )
+  SELECT t5col1, t5col1 FROM t5
+
+;]
+VDBE Program Listing:
+   0 Init             0  367    0               00 Start at 367
+   1 InitCoroutine    1    7    2               00 subquery_6
+   2 Explain          2    0    0 CO-ROUTINE 6  00 
+   3 Explain          3    2    0 SCAN CONSTANT ROW 00 
+   4 Integer          1    2    0               00 r[2]=1
+   5 Yield            1    0    0               00 
+   6 EndCoroutine     1    0    0               00 
+   7 Explain          7    0    0 SCAN SUBQUERY 6 00 
+   8 InitCoroutine    1    0    2               00 
+   9 Yield            1  366    0               00 next row of subquery_6
+  10 Explain         10    0    0 CORRELATED SCALAR SUBQUERY 5 00 
+  11 Null             0    5    5               00 r[5..5]=NULL; Init subquery result
+  12 Integer         42    6    0               00 r[6]=42
+  13 Once             0   42    0               00 materialize "c0"
+  14 Explain         14   10    0 MATERIALIZE 1 00 
+  15 OpenEphemeral    4    1    0               00 nColumn=1
+  16 Noop             9    1    0               00 
+  17 Integer          0    8    0               00 r[8]=0; clear abort flag
+  18 Null             0   11   11               00 r[11..11]=NULL
+  19 Gosub           10   40    0               00 
+  20 Explain         20   14    0 SCAN CONSTANT ROW 00 
+  21 Integer          1   12    0               00 r[12]=1
+  22 Compare         11   12    1 k(1,B)        00 r[11] <-> r[12]
+  23 Jump            24   28   24               00 
+  24 Move            12   11    1               00 r[11]=r[12]
+  25 Gosub            9   33    0               00 output one row
+  26 IfPos            8   42    0               00 if r[8]>0 then r[8]-=0, goto 42; check abort flag
+  27 Gosub           10   40    0               00 reset accumulator
+  28 Integer          1    7    0               00 r[7]=1; indicate data in accumulator
+  29 Gosub            9   33    0               00 output final row
+  30 Goto             0   42    0               00 
+  31 Integer          1    8    0               00 r[8]=1; set abort flag
+  32 Return           9    0    0               00 
+  33 IfPos            7   35    0               00 if r[7]>0 then r[7]-=0, goto 35; Groupby result generator entry point
+  34 Return           9    0    0               00 
+  35 Integer          1   13    0               00 r[13]=1
+  36 MakeRecord      13    1   14               00 r[14]=mkrec(r[13])
+  37 NewRowid         4   15    0               00 r[15]=rowid
+  38 Insert           4   14   15               08 intkey=r[15] data=r[14]
+  39 Return           9    0    0               00 end groupby result generator
+  40 Integer          0    7    0               00 r[7]=0; indicate accumulator empty
+  41 Return          10    0    0               00 
+  42 Return           6    0    0               00 end c0
+  43 Integer         46   16    0               00 r[16]=46
+  44 Once             0   46    0               00 materialize "c0"
+  45 OpenDup          5    4    0               00 
+  46 Return          16    0    0               00 end c0
+  47 Integer          1   17    0               00 r[17]=1; LIMIT counter
+  48 Copy             2   18    0               00 r[18]=r[2]; subquery_6.anoncol1
+  49 Ne              19  186   18 (BINARY)      51 if r[18]!=r[19] goto 186
+  50 Explain         50   10    0 SCAN SUBQUERY 1 AS a 00 
+  51 Rewind           4  186    0               00 
+  52 Explain         52   10    0 CORRELATED SCALAR SUBQUERY 3 00 
+  53 Null             0   20   20               00 r[20..20]=NULL; Init subquery result
+  54 Integer         86   21    0               00 r[21]=86
+  55 Once             0   86    0               00 materialize "c0"
+  56 Explain         56   52    0 MATERIALIZE 1 00 
+  57 OpenEphemeral    7    1    0               00 nColumn=1
+  58 Noop            10    1    0               00 
+  59 Integer          0   23    0               00 r[23]=0; clear abort flag
+  60 Null             0   26   26               00 r[26..26]=NULL
+  61 Gosub           25   84    0               00 
+  62 Explain         62   56    0 SCAN CONSTANT ROW 00 
+  63 Integer          1   28    0               00 r[28]=1
+  64 Ne              19   73   28 (BINARY)      51 if r[28]!=r[19] goto 73
+  65 Integer          1   27    0               00 r[27]=1
+  66 Compare         26   27    1 k(1,B)        00 r[26] <-> r[27]
+  67 Jump            68   72   68               00 
+  68 Move            27   26    1               00 r[26]=r[27]
+  69 Gosub           24   77    0               00 output one row
+  70 IfPos           23   86    0               00 if r[23]>0 then r[23]-=0, goto 86; check abort flag
+  71 Gosub           25   84    0               00 reset accumulator
+  72 Integer          1   22    0               00 r[22]=1; indicate data in accumulator
+  73 Gosub           24   77    0               00 output final row
+  74 Goto             0   86    0               00 
+  75 Integer          1   23    0               00 r[23]=1; set abort flag
+  76 Return          24    0    0               00 
+  77 IfPos           22   79    0               00 if r[22]>0 then r[22]-=0, goto 79; Groupby result generator entry point
+  78 Return          24    0    0               00 
+  79 Integer          1   29    0               00 r[29]=1
+  80 MakeRecord      29    1   28               00 r[28]=mkrec(r[29])
+  81 NewRowid         7   30    0               00 r[30]=rowid
+  82 Insert           7   28   30               08 intkey=r[30] data=r[28]
+  83 Return          24    0    0               00 end groupby result generator
+  84 Integer          0   22    0               00 r[22]=0; indicate accumulator empty
+  85 Return          25    0    0               00 
+  86 Return          21    0    0               00 end c0
+  87 Integer        119   31    0               00 r[31]=119
+  88 Once             0  119    0               00 materialize "c0"
+  89 Explain         89   52    0 MATERIALIZE 1 00 
+  90 OpenEphemeral    8    1    0               00 nColumn=1
+  91 Noop            11    1    0               00 
+  92 Integer          0   33    0               00 r[33]=0; clear abort flag
+  93 Null             0   36   36               00 r[36..36]=NULL
+  94 Gosub           35  117    0               00 
+  95 Explain         95   89    0 SCAN CONSTANT ROW 00 
+  96 Integer          1   38    0               00 r[38]=1
+  97 Ne              19  106   38 (BINARY)      51 if r[38]!=r[19] goto 106
+  98 Integer          1   37    0               00 r[37]=1
+  99 Compare         36   37    1 k(1,B)        00 r[36] <-> r[37]
+ 100 Jump           101  105  101               00 
+ 101 Move            37   36    1               00 r[36]=r[37]
+ 102 Gosub           34  110    0               00 output one row
+ 103 IfPos           33  119    0               00 if r[33]>0 then r[33]-=0, goto 119; check abort flag
+ 104 Gosub           35  117    0               00 reset accumulator
+ 105 Integer          1   32    0               00 r[32]=1; indicate data in accumulator
+ 106 Gosub           34  110    0               00 output final row
+ 107 Goto             0  119    0               00 
+ 108 Integer          1   33    0               00 r[33]=1; set abort flag
+ 109 Return          34    0    0               00 
+ 110 IfPos           32  112    0               00 if r[32]>0 then r[32]-=0, goto 112; Groupby result generator entry point
+ 111 Return          34    0    0               00 
+ 112 Integer          1   39    0               00 r[39]=1
+ 113 MakeRecord      39    1   38               00 r[38]=mkrec(r[39])
+ 114 NewRowid         8   40    0               00 r[40]=rowid
+ 115 Insert           8   38   40               08 intkey=r[40] data=r[38]
+ 116 Return          34    0    0               00 end groupby result generator
+ 117 Integer          0   32    0               00 r[32]=0; indicate accumulator empty
+ 118 Return          35    0    0               00 
+ 119 Return          31    0    0               00 end c0
+ 120 Integer          1   41    0               00 r[41]=1; LIMIT counter
+ 121 Integer          1   42    0               00 r[42]=1
+ 122 Ne              19  131   42 (BINARY)      51 if r[42]!=r[19] goto 131
+ 123 Explain        123   52    0 SCAN SUBQUERY 1 AS a 00 
+ 124 Rewind           7  131    0               00 
+ 125 Explain        125   52    0 SCAN SUBQUERY 1 AS b 00 
+ 126 Rewind           8  131    0               00 
+ 127 Integer          1   20    0               00 r[20]=1
+ 128 DecrJumpZero    41  131    0               00 if (--r[41])==0 goto 131
+ 129 Next             8  127    0               01 
+ 130 Next             7  125    0               01 
+ 131 IfNot           20  185    1               00 
+ 132 Explain        132   10    0 SCAN SUBQUERY 1 AS b 00 
+ 133 Rewind           5  186    0               00 
+ 134 Explain        134   10    0 CORRELATED SCALAR SUBQUERY 3 00 
+ 135 Null             0   43   43               00 r[43..43]=NULL; Init subquery result
+ 136 Integer        166   44    0               00 r[44]=166
+ 137 Once             0  166    0               00 materialize "c0"
+ 138 Explain        138  134    0 MATERIALIZE 1 00 
+ 139 OpenEphemeral    7    1    0               00 nColumn=1
+ 140 Noop            12    1    0               00 
+ 141 Integer          0   46    0               00 r[46]=0; clear abort flag
+ 142 Null             0   49   49               00 r[49..49]=NULL
+ 143 Gosub           48  164    0               00 
+ 144 Explain        144  138    0 SCAN CONSTANT ROW 00 
+ 145 Integer          1   50    0               00 r[50]=1
+ 146 Compare         49   50    1 k(1,B)        00 r[49] <-> r[50]
+ 147 Jump           148  152  148               00 
+ 148 Move            50   49    1               00 r[49]=r[50]
+ 149 Gosub           47  157    0               00 output one row
+ 150 IfPos           46  166    0               00 if r[46]>0 then r[46]-=0, goto 166; check abort flag
+ 151 Gosub           48  164    0               00 reset accumulator
+ 152 Integer          1   45    0               00 r[45]=1; indicate data in accumulator
+ 153 Gosub           47  157    0               00 output final row
+ 154 Goto             0  166    0               00 
+ 155 Integer          1   46    0               00 r[46]=1; set abort flag
+ 156 Return          47    0    0               00 
+ 157 IfPos           45  159    0               00 if r[45]>0 then r[45]-=0, goto 159; Groupby result generator entry point
+ 158 Return          47    0    0               00 
+ 159 Integer          1   51    0               00 r[51]=1
+ 160 MakeRecord      51    1   18               00 r[18]=mkrec(r[51])
+ 161 NewRowid         7   42    0               00 r[42]=rowid
+ 162 Insert           7   18   42               08 intkey=r[42] data=r[18]
+ 163 Return          47    0    0               00 end groupby result generator
+ 164 Integer          0   45    0               00 r[45]=0; indicate accumulator empty
+ 165 Return          48    0    0               00 
+ 166 Return          44    0    0               00 end c0
+ 167 Integer        170   52    0               00 r[52]=170
+ 168 Once             0  170    0               00 materialize "c0"
+ 169 OpenDup          8    7    0               00 
+ 170 Return          52    0    0               00 end c0
+ 171 Integer          1   53    0               00 r[53]=1; LIMIT counter
+ 172 Copy             2   54    0               00 r[54]=r[2]; subquery_6.anoncol1
+ 173 Ne              19  182   54 (BINARY)      51 if r[54]!=r[19] goto 182
+ 174 Explain        174  134    0 SCAN SUBQUERY 1 AS a 00 
+ 175 Rewind           7  182    0               00 
+ 176 Explain        176  134    0 SCAN SUBQUERY 1 AS b 00 
+ 177 Rewind           8  182    0               00 
+ 178 Integer          1   43    0               00 r[43]=1
+ 179 DecrJumpZero    53  182    0               00 if (--r[53])==0 goto 182
+ 180 Next             8  178    0               01 
+ 181 Next             7  176    0               01 
+ 182 Copy            43    5    0               00 r[5]=r[43]
+ 183 DecrJumpZero    17  186    0               00 if (--r[17])==0 goto 186
+ 184 Next             5  134    0               01 
+ 185 Next             4   52    0               01 
+ 186 Copy             5    3    0               00 r[3]=r[5]
+ 187 Explain        187    0    0 CORRELATED SCALAR SUBQUERY 5 00 
+ 188 Null             0   55   55               00 r[55..55]=NULL; Init subquery result
+ 189 Integer        219   56    0               00 r[56]=219
+ 190 Once             0  219    0               00 materialize "c0"
+ 191 Explain        191  187    0 MATERIALIZE 1 00 
+ 192 OpenEphemeral    4    1    0               00 nColumn=1
+ 193 Noop            13    1    0               00 
+ 194 Integer          0   58    0               00 r[58]=0; clear abort flag
+ 195 Null             0   61   61               00 r[61..61]=NULL
+ 196 Gosub           60  217    0               00 
+ 197 Explain        197  191    0 SCAN CONSTANT ROW 00 
+ 198 Integer          1   62    0               00 r[62]=1
+ 199 Compare         61   62    1 k(1,B)        00 r[61] <-> r[62]
+ 200 Jump           201  205  201               00 
+ 201 Move            62   61    1               00 r[61]=r[62]
+ 202 Gosub           59  210    0               00 output one row
+ 203 IfPos           58  219    0               00 if r[58]>0 then r[58]-=0, goto 219; check abort flag
+ 204 Gosub           60  217    0               00 reset accumulator
+ 205 Integer          1   57    0               00 r[57]=1; indicate data in accumulator
+ 206 Gosub           59  210    0               00 output final row
+ 207 Goto             0  219    0               00 
+ 208 Integer          1   58    0               00 r[58]=1; set abort flag
+ 209 Return          59    0    0               00 
+ 210 IfPos           57  212    0               00 if r[57]>0 then r[57]-=0, goto 212; Groupby result generator entry point
+ 211 Return          59    0    0               00 
+ 212 Integer          1   63    0               00 r[63]=1
+ 213 MakeRecord      63    1   54               00 r[54]=mkrec(r[63])
+ 214 NewRowid         4   64    0               00 r[64]=rowid
+ 215 Insert           4   54   64               08 intkey=r[64] data=r[54]
+ 216 Return          59    0    0               00 end groupby result generator
+ 217 Integer          0   57    0               00 r[57]=0; indicate accumulator empty
+ 218 Return          60    0    0               00 
+ 219 Return          56    0    0               00 end c0
+ 220 Integer        223   65    0               00 r[65]=223
+ 221 Once             0  223    0               00 materialize "c0"
+ 222 OpenDup          5    4    0               00 
+ 223 Return          65    0    0               00 end c0
+ 224 Integer          1   66    0               00 r[66]=1; LIMIT counter
+ 225 Copy             2   67    0               00 r[67]=r[2]; subquery_6.anoncol1
+ 226 Ne              19  363   67 (BINARY)      51 if r[67]!=r[19] goto 363
+ 227 Explain        227  187    0 SCAN SUBQUERY 1 AS a 00 
+ 228 Rewind           4  363    0               00 
+ 229 Explain        229  187    0 CORRELATED SCALAR SUBQUERY 3 00 
+ 230 Null             0   68   68               00 r[68..68]=NULL; Init subquery result
+ 231 Integer        263   69    0               00 r[69]=263
+ 232 Once             0  263    0               00 materialize "c0"
+ 233 Explain        233  229    0 MATERIALIZE 1 00 
+ 234 OpenEphemeral    7    1    0               00 nColumn=1
+ 235 Noop            14    1    0               00 
+ 236 Integer          0   71    0               00 r[71]=0; clear abort flag
+ 237 Null             0   74   74               00 r[74..74]=NULL
+ 238 Gosub           73  261    0               00 
+ 239 Explain        239  233    0 SCAN CONSTANT ROW 00 
+ 240 Integer          1   76    0               00 r[76]=1
+ 241 Ne              19  250   76 (BINARY)      51 if r[76]!=r[19] goto 250
+ 242 Integer          1   75    0               00 r[75]=1
+ 243 Compare         74   75    1 k(1,B)        00 r[74] <-> r[75]
+ 244 Jump           245  249  245               00 
+ 245 Move            75   74    1               00 r[74]=r[75]
+ 246 Gosub           72  254    0               00 output one row
+ 247 IfPos           71  263    0               00 if r[71]>0 then r[71]-=0, goto 263; check abort flag
+ 248 Gosub           73  261    0               00 reset accumulator
+ 249 Integer          1   70    0               00 r[70]=1; indicate data in accumulator
+ 250 Gosub           72  254    0               00 output final row
+ 251 Goto             0  263    0               00 
+ 252 Integer          1   71    0               00 r[71]=1; set abort flag
+ 253 Return          72    0    0               00 
+ 254 IfPos           70  256    0               00 if r[70]>0 then r[70]-=0, goto 256; Groupby result generator entry point
+ 255 Return          72    0    0               00 
+ 256 Integer          1   77    0               00 r[77]=1
+ 257 MakeRecord      77    1   76               00 r[76]=mkrec(r[77])
+ 258 NewRowid         7   78    0               00 r[78]=rowid
+ 259 Insert           7   76   78               08 intkey=r[78] data=r[76]
+ 260 Return          72    0    0               00 end groupby result generator
+ 261 Integer          0   70    0               00 r[70]=0; indicate accumulator empty
+ 262 Return          73    0    0               00 
+ 263 Return          69    0    0               00 end c0
+ 264 Integer        296   79    0               00 r[79]=296
+ 265 Once             0  296    0               00 materialize "c0"
+ 266 Explain        266  229    0 MATERIALIZE 1 00 
+ 267 OpenEphemeral    8    1    0               00 nColumn=1
+ 268 Noop            15    1    0               00 
+ 269 Integer          0   81    0               00 r[81]=0; clear abort flag
+ 270 Null             0   84   84               00 r[84..84]=NULL
+ 271 Gosub           83  294    0               00 
+ 272 Explain        272  266    0 SCAN CONSTANT ROW 00 
+ 273 Integer          1   86    0               00 r[86]=1
+ 274 Ne              19  283   86 (BINARY)      51 if r[86]!=r[19] goto 283
+ 275 Integer          1   85    0               00 r[85]=1
+ 276 Compare         84   85    1 k(1,B)        00 r[84] <-> r[85]
+ 277 Jump           278  282  278               00 
+ 278 Move            85   84    1               00 r[84]=r[85]
+ 279 Gosub           82  287    0               00 output one row
+ 280 IfPos           81  296    0               00 if r[81]>0 then r[81]-=0, goto 296; check abort flag
+ 281 Gosub           83  294    0               00 reset accumulator
+ 282 Integer          1   80    0               00 r[80]=1; indicate data in accumulator
+ 283 Gosub           82  287    0               00 output final row
+ 284 Goto             0  296    0               00 
+ 285 Integer          1   81    0               00 r[81]=1; set abort flag
+ 286 Return          82    0    0               00 
+ 287 IfPos           80  289    0               00 if r[80]>0 then r[80]-=0, goto 289; Groupby result generator entry point
+ 288 Return          82    0    0               00 
+ 289 Integer          1   87    0               00 r[87]=1
+ 290 MakeRecord      87    1   86               00 r[86]=mkrec(r[87])
+ 291 NewRowid         8   88    0               00 r[88]=rowid
+ 292 Insert           8   86   88               08 intkey=r[88] data=r[86]
+ 293 Return          82    0    0               00 end groupby result generator
+ 294 Integer          0   80    0               00 r[80]=0; indicate accumulator empty
+ 295 Return          83    0    0               00 
+ 296 Return          79    0    0               00 end c0
+ 297 Integer          1   89    0               00 r[89]=1; LIMIT counter
+ 298 Integer          1   90    0               00 r[90]=1
+ 299 Ne              19  308   90 (BINARY)      51 if r[90]!=r[19] goto 308
+ 300 Explain        300  229    0 SCAN SUBQUERY 1 AS a 00 
+ 301 Rewind           7  308    0               00 
+ 302 Explain        302  229    0 SCAN SUBQUERY 1 AS b 00 
+ 303 Rewind           8  308    0               00 
+ 304 Integer          1   68    0               00 r[68]=1
+ 305 DecrJumpZero    89  308    0               00 if (--r[89])==0 goto 308
+ 306 Next             8  304    0               01 
+ 307 Next             7  302    0               01 
+ 308 IfNot           68  362    1               00 
+ 309 Explain        309  187    0 SCAN SUBQUERY 1 AS b 00 
+ 310 Rewind           5  363    0               00 
+ 311 Explain        311  187    0 CORRELATED SCALAR SUBQUERY 3 00 
+ 312 Null             0   91   91               00 r[91..91]=NULL; Init subquery result
+ 313 Integer        343   92    0               00 r[92]=343
+ 314 Once             0  343    0               00 materialize "c0"
+ 315 Explain        315  311    0 MATERIALIZE 1 00 
+ 316 OpenEphemeral    7    1    0               00 nColumn=1
+ 317 Noop            16    1    0               00 
+ 318 Integer          0   94    0               00 r[94]=0; clear abort flag
+ 319 Null             0   97   97               00 r[97..97]=NULL
+ 320 Gosub           96  341    0               00 
+ 321 Explain        321  315    0 SCAN CONSTANT ROW 00 
+ 322 Integer          1   98    0               00 r[98]=1
+ 323 Compare         97   98    1 k(1,B)        00 r[97] <-> r[98]
+ 324 Jump           325  329  325               00 
+ 325 Move            98   97    1               00 r[97]=r[98]
+ 326 Gosub           95  334    0               00 output one row
+ 327 IfPos           94  343    0               00 if r[94]>0 then r[94]-=0, goto 343; check abort flag
+ 328 Gosub           96  341    0               00 reset accumulator
+ 329 Integer          1   93    0               00 r[93]=1; indicate data in accumulator
+ 330 Gosub           95  334    0               00 output final row
+ 331 Goto             0  343    0               00 
+ 332 Integer          1   94    0               00 r[94]=1; set abort flag
+ 333 Return          95    0    0               00 
+ 334 IfPos           93  336    0               00 if r[93]>0 then r[93]-=0, goto 336; Groupby result generator entry point
+ 335 Return          95    0    0               00 
+ 336 Integer          1   99    0               00 r[99]=1
+ 337 MakeRecord      99    1   67               00 r[67]=mkrec(r[99])
+ 338 NewRowid         7   90    0               00 r[90]=rowid
+ 339 Insert           7   67   90               08 intkey=r[90] data=r[67]
+ 340 Return          95    0    0               00 end groupby result generator
+ 341 Integer          0   93    0               00 r[93]=0; indicate accumulator empty
+ 342 Return          96    0    0               00 
+ 343 Return          92    0    0               00 end c0
+ 344 Integer        347  100    0               00 r[100]=347
+ 345 Once             0  347    0               00 materialize "c0"
+ 346 OpenDup          8    7    0               00 
+ 347 Return         100    0    0               00 end c0
+ 348 Integer          1  101    0               00 r[101]=1; LIMIT counter
+ 349 Copy             2  102    0               00 r[102]=r[2]; subquery_6.anoncol1
+ 350 Ne              19  359  102 (BINARY)      51 if r[102]!=r[19] goto 359
+ 351 Explain        351  311    0 SCAN SUBQUERY 1 AS a 00 
+ 352 Rewind           7  359    0               00 
+ 353 Explain        353  311    0 SCAN SUBQUERY 1 AS b 00 
+ 354 Rewind           8  359    0               00 
+ 355 Integer          1   91    0               00 r[91]=1
+ 356 DecrJumpZero   101  359    0               00 if (--r[101])==0 goto 359
+ 357 Next             8  355    0               01 
+ 358 Next             7  353    0               01 
+ 359 Copy            91   55    0               00 r[55]=r[91]
+ 360 DecrJumpZero    66  363    0               00 if (--r[66])==0 goto 363
+ 361 Next             5  311    0               01 
+ 362 Next             4  229    0               01 
+ 363 Copy            55    4    0               00 r[4]=r[55]
+ 364 ResultRow        3    2    0               00 output=r[3..4]
+ 365 Goto             0    9    0               00 
+ 366 Halt             0    0    0               00 
+ 367 Integer          1   19    0               00 r[19]=1
+ 368 Goto             0    1    0               00 
+VDBE Trace:
+   0 Init             0  367    0               00 Start at 367
+ 367 Integer          1   19    0               00 r[19]=1
+REG[19] =  i:1
+ 368 Goto             0    1    0               00 
+   1 InitCoroutine    1    7    2               00 subquery_6
+   7 Explain          7    0    0 SCAN SUBQUERY 6 00 
+   8 InitCoroutine    1    0    2               00 
+   9 Yield            1  366    0               00 next row of subquery_6
+REG[1] =  i:1
+REG[1] =  i:9
+   2 Explain          2    0    0 CO-ROUTINE 6  00 
+   3 Explain          3    2    0 SCAN CONSTANT ROW 00 
+   4 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+   5 Yield            1    0    0               00 
+REG[1] =  i:9
+REG[1] =  i:5
+  10 Explain         10    0    0 CORRELATED SCALAR SUBQUERY 5 00 
+  11 Null             0    5    5               00 r[5..5]=NULL; Init subquery result
+REG[5] =  NULL
+  12 Integer         42    6    0               00 r[6]=42
+REG[6] =  i:42
+  13 Once             0   42    0               00 materialize "c0"
+  14 Explain         14   10    0 MATERIALIZE 1 00 
+  15 OpenEphemeral    4    1    0               00 nColumn=1
+  16 Noop             9    1    0               00 
+  17 Integer          0    8    0               00 r[8]=0; clear abort flag
+REG[8] =  i:0
+  18 Null             0   11   11               00 r[11..11]=NULL
+REG[11] =  NULL
+  19 Gosub           10   40    0               00 
+REG[10] =  i:19
+  40 Integer          0    7    0               00 r[7]=0; indicate accumulator empty
+REG[7] =  i:0
+  41 Return          10    0    0               00 
+REG[10] =  i:19
+  20 Explain         20   14    0 SCAN CONSTANT ROW 00 
+  21 Integer          1   12    0               00 r[12]=1
+REG[12] =  i:1
+  22 Compare         11   12    1 k(1,B)        00 r[11] <-> r[12]
+REG[11] =  NULL
+REG[12] =  i:1
+  23 Jump            24   28   24               00 
+  24 Move            12   11    1               00 r[11]=r[12]
+REG[11] =  i:1
+  25 Gosub            9   33    0               00 output one row
+REG[9] =  i:25
+  33 IfPos            7   35    0               00 if r[7]>0 then r[7]-=0, goto 35; Groupby result generator entry point
+REG[7] =  i:0
+  34 Return           9    0    0               00 
+REG[9] =  i:25
+  26 IfPos            8   42    0               00 if r[8]>0 then r[8]-=0, goto 42; check abort flag
+REG[8] =  i:0
+  27 Gosub           10   40    0               00 reset accumulator
+REG[10] =  i:27
+  40 Integer          0    7    0               00 r[7]=0; indicate accumulator empty
+REG[7] =  i:0
+  41 Return          10    0    0               00 
+REG[10] =  i:27
+  28 Integer          1    7    0               00 r[7]=1; indicate data in accumulator
+REG[7] =  i:1
+  29 Gosub            9   33    0               00 output final row
+REG[9] =  i:29
+  33 IfPos            7   35    0               00 if r[7]>0 then r[7]-=0, goto 35; Groupby result generator entry point
+REG[7] =  i:1
+  35 Integer          1   13    0               00 r[13]=1
+REG[13] =  i:1
+  36 MakeRecord      13    1   14               00 r[14]=mkrec(r[13])
+REG[14] =  s2[0209..]
+  37 NewRowid         4   15    0               00 r[15]=rowid
+REG[15] =  i:1
+  38 Insert           4   14   15               08 intkey=r[15] data=r[14]
+REG[14] =  s2[0209..]
+REG[15] =  i:1
+  39 Return           9    0    0               00 end groupby result generator
+REG[9] =  i:29
+  30 Goto             0   42    0               00 
+  42 Return           6    0    0               00 end c0
+REG[6] =  i:42
+  43 Integer         46   16    0               00 r[16]=46
+REG[16] =  i:46
+  44 Once             0   46    0               00 materialize "c0"
+  45 OpenDup          5    4    0               00 
+  46 Return          16    0    0               00 end c0
+REG[16] =  i:46
+  47 Integer          1   17    0               00 r[17]=1; LIMIT counter
+REG[17] =  i:1
+  48 Copy             2   18    0               00 r[18]=r[2]; subquery_6.anoncol1
+REG[18] =  i:1
+  49 Ne              19  186   18 (BINARY)      51 if r[18]!=r[19] goto 186
+REG[19] =  i:1
+REG[18] =  i:1
+  50 Explain         50   10    0 SCAN SUBQUERY 1 AS a 00 
+  51 Rewind           4  186    0               00 
+  52 Explain         52   10    0 CORRELATED SCALAR SUBQUERY 3 00 
+  53 Null             0   20   20               00 r[20..20]=NULL; Init subquery result
+REG[20] =  NULL
+  54 Integer         86   21    0               00 r[21]=86
+REG[21] =  i:86
+  55 Once             0   86    0               00 materialize "c0"
+  56 Explain         56   52    0 MATERIALIZE 1 00 
+  57 OpenEphemeral    7    1    0               00 nColumn=1
+  58 Noop            10    1    0               00 
+  59 Integer          0   23    0               00 r[23]=0; clear abort flag
+REG[23] =  i:0
+  60 Null             0   26   26               00 r[26..26]=NULL
+REG[26] =  NULL
+  61 Gosub           25   84    0               00 
+REG[25] =  i:61
+  84 Integer          0   22    0               00 r[22]=0; indicate accumulator empty
+REG[22] =  i:0
+  85 Return          25    0    0               00 
+REG[25] =  i:61
+  62 Explain         62   56    0 SCAN CONSTANT ROW 00 
+  63 Integer          1   28    0               00 r[28]=1
+REG[28] =  i:1
+  64 Ne              19   73   28 (BINARY)      51 if r[28]!=r[19] goto 73
+REG[19] =  i:1
+REG[28] =  i:1
+  65 Integer          1   27    0               00 r[27]=1
+REG[27] =  i:1
+  66 Compare         26   27    1 k(1,B)        00 r[26] <-> r[27]
+REG[26] =  NULL
+REG[27] =  i:1
+  67 Jump            68   72   68               00 
+  68 Move            27   26    1               00 r[26]=r[27]
+REG[26] =  i:1
+  69 Gosub           24   77    0               00 output one row
+REG[24] =  i:69
+  77 IfPos           22   79    0               00 if r[22]>0 then r[22]-=0, goto 79; Groupby result generator entry point
+REG[22] =  i:0
+  78 Return          24    0    0               00 
+REG[24] =  i:69
+  70 IfPos           23   86    0               00 if r[23]>0 then r[23]-=0, goto 86; check abort flag
+REG[23] =  i:0
+  71 Gosub           25   84    0               00 reset accumulator
+REG[25] =  i:71
+  84 Integer          0   22    0               00 r[22]=0; indicate accumulator empty
+REG[22] =  i:0
+  85 Return          25    0    0               00 
+REG[25] =  i:71
+  72 Integer          1   22    0               00 r[22]=1; indicate data in accumulator
+REG[22] =  i:1
+  73 Gosub           24   77    0               00 output final row
+REG[24] =  i:73
+  77 IfPos           22   79    0               00 if r[22]>0 then r[22]-=0, goto 79; Groupby result generator entry point
+REG[22] =  i:1
+  79 Integer          1   29    0               00 r[29]=1
+REG[29] =  i:1
+  80 MakeRecord      29    1   28               00 r[28]=mkrec(r[29])
+REG[28] =  s2[0209..]
+  81 NewRowid         7   30    0               00 r[30]=rowid
+REG[30] =  i:1
+  82 Insert           7   28   30               08 intkey=r[30] data=r[28]
+REG[28] =  s2[0209..]
+REG[30] =  i:1
+  83 Return          24    0    0               00 end groupby result generator
+REG[24] =  i:73
+  74 Goto             0   86    0               00 
+  86 Return          21    0    0               00 end c0
+REG[21] =  i:86
+  87 Integer        119   31    0               00 r[31]=119
+REG[31] =  i:119
+  88 Once             0  119    0               00 materialize "c0"
+  89 Explain         89   52    0 MATERIALIZE 1 00 
+  90 OpenEphemeral    8    1    0               00 nColumn=1
+  91 Noop            11    1    0               00 
+  92 Integer          0   33    0               00 r[33]=0; clear abort flag
+REG[33] =  i:0
+  93 Null             0   36   36               00 r[36..36]=NULL
+REG[36] =  NULL
+  94 Gosub           35  117    0               00 
+REG[35] =  i:94
+ 117 Integer          0   32    0               00 r[32]=0; indicate accumulator empty
+REG[32] =  i:0
+ 118 Return          35    0    0               00 
+REG[35] =  i:94
+  95 Explain         95   89    0 SCAN CONSTANT ROW 00 
+  96 Integer          1   38    0               00 r[38]=1
+REG[38] =  i:1
+  97 Ne              19  106   38 (BINARY)      51 if r[38]!=r[19] goto 106
+REG[19] =  i:1
+REG[38] =  i:1
+  98 Integer          1   37    0               00 r[37]=1
+REG[37] =  i:1
+  99 Compare         36   37    1 k(1,B)        00 r[36] <-> r[37]
+REG[36] =  NULL
+REG[37] =  i:1
+ 100 Jump           101  105  101               00 
+ 101 Move            37   36    1               00 r[36]=r[37]
+REG[36] =  i:1
+ 102 Gosub           34  110    0               00 output one row
+REG[34] =  i:102
+ 110 IfPos           32  112    0               00 if r[32]>0 then r[32]-=0, goto 112; Groupby result generator entry point
+REG[32] =  i:0
+ 111 Return          34    0    0               00 
+REG[34] =  i:102
+ 103 IfPos           33  119    0               00 if r[33]>0 then r[33]-=0, goto 119; check abort flag
+REG[33] =  i:0
+ 104 Gosub           35  117    0               00 reset accumulator
+REG[35] =  i:104
+ 117 Integer          0   32    0               00 r[32]=0; indicate accumulator empty
+REG[32] =  i:0
+ 118 Return          35    0    0               00 
+REG[35] =  i:104
+ 105 Integer          1   32    0               00 r[32]=1; indicate data in accumulator
+REG[32] =  i:1
+ 106 Gosub           34  110    0               00 output final row
+REG[34] =  i:106
+ 110 IfPos           32  112    0               00 if r[32]>0 then r[32]-=0, goto 112; Groupby result generator entry point
+REG[32] =  i:1
+ 112 Integer          1   39    0               00 r[39]=1
+REG[39] =  i:1
+ 113 MakeRecord      39    1   38               00 r[38]=mkrec(r[39])
+REG[38] =  s2[0209..]
+ 114 NewRowid         8   40    0               00 r[40]=rowid
+REG[40] =  i:1
+ 115 Insert           8   38   40               08 intkey=r[40] data=r[38]
+REG[38] =  s2[0209..]
+REG[40] =  i:1
+ 116 Return          34    0    0               00 end groupby result generator
+REG[34] =  i:106
+ 107 Goto             0  119    0               00 
+ 119 Return          31    0    0               00 end c0
+REG[31] =  i:119
+ 120 Integer          1   41    0               00 r[41]=1; LIMIT counter
+REG[41] =  i:1
+ 121 Integer          1   42    0               00 r[42]=1
+REG[42] =  i:1
+ 122 Ne              19  131   42 (BINARY)      51 if r[42]!=r[19] goto 131
+REG[19] =  i:1
+REG[42] =  i:1
+ 123 Explain        123   52    0 SCAN SUBQUERY 1 AS a 00 
+ 124 Rewind           7  131    0               00 
+ 125 Explain        125   52    0 SCAN SUBQUERY 1 AS b 00 
+ 126 Rewind           8  131    0               00 
+ 127 Integer          1   20    0               00 r[20]=1
+REG[20] =  i:1
+ 128 DecrJumpZero    41  131    0               00 if (--r[41])==0 goto 131
+REG[41] =  i:1
+ 131 IfNot           20  185    1               00 
+REG[20] =  i:1
+ 132 Explain        132   10    0 SCAN SUBQUERY 1 AS b 00 
+ 133 Rewind           5  186    0               00 
+ 134 Explain        134   10    0 CORRELATED SCALAR SUBQUERY 3 00 
+ 135 Null             0   43   43               00 r[43..43]=NULL; Init subquery result
+REG[43] =  NULL
+ 136 Integer        166   44    0               00 r[44]=166
+REG[44] =  i:166
+ 137 Once             0  166    0               00 materialize "c0"
+ 138 Explain        138  134    0 MATERIALIZE 1 00 
+ 139 OpenEphemeral    7    1    0               00 nColumn=1
+ 140 Noop            12    1    0               00 
+ 141 Integer          0   46    0               00 r[46]=0; clear abort flag
+REG[46] =  i:0
+ 142 Null             0   49   49               00 r[49..49]=NULL
+REG[49] =  NULL
+ 143 Gosub           48  164    0               00 
+REG[48] =  i:143
+ 164 Integer          0   45    0               00 r[45]=0; indicate accumulator empty
+REG[45] =  i:0
+ 165 Return          48    0    0               00 
+REG[48] =  i:143
+ 144 Explain        144  138    0 SCAN CONSTANT ROW 00 
+ 145 Integer          1   50    0               00 r[50]=1
+REG[50] =  i:1
+ 146 Compare         49   50    1 k(1,B)        00 r[49] <-> r[50]
+REG[49] =  NULL
+REG[50] =  i:1
+ 147 Jump           148  152  148               00 
+ 148 Move            50   49    1               00 r[49]=r[50]
+REG[49] =  i:1
+ 149 Gosub           47  157    0               00 output one row
+REG[47] =  i:149
+ 157 IfPos           45  159    0               00 if r[45]>0 then r[45]-=0, goto 159; Groupby result generator entry point
+REG[45] =  i:0
+ 158 Return          47    0    0               00 
+REG[47] =  i:149
+ 150 IfPos           46  166    0               00 if r[46]>0 then r[46]-=0, goto 166; check abort flag
+REG[46] =  i:0
+ 151 Gosub           48  164    0               00 reset accumulator
+REG[48] =  i:151
+ 164 Integer          0   45    0               00 r[45]=0; indicate accumulator empty
+REG[45] =  i:0
+ 165 Return          48    0    0               00 
+REG[48] =  i:151
+ 152 Integer          1   45    0               00 r[45]=1; indicate data in accumulator
+REG[45] =  i:1
+ 153 Gosub           47  157    0               00 output final row
+REG[47] =  i:153
+ 157 IfPos           45  159    0               00 if r[45]>0 then r[45]-=0, goto 159; Groupby result generator entry point
+REG[45] =  i:1
+ 159 Integer          1   51    0               00 r[51]=1
+REG[51] =  i:1
+ 160 MakeRecord      51    1   18               00 r[18]=mkrec(r[51])
+REG[18] =  s2[0209..]
+ 161 NewRowid         7   42    0               00 r[42]=rowid
+REG[42] =  i:1
+ 162 Insert           7   18   42               08 intkey=r[42] data=r[18]
+REG[18] =  s2[0209..]
+REG[42] =  i:1
+ 163 Return          47    0    0               00 end groupby result generator
+REG[47] =  i:153
+ 154 Goto             0  166    0               00 
+ 166 Return          44    0    0               00 end c0
+REG[44] =  i:166
+ 167 Integer        170   52    0               00 r[52]=170
+REG[52] =  i:170
+ 168 Once             0  170    0               00 materialize "c0"
+ 169 OpenDup          8    7    0               00 
+ 170 Return          52    0    0               00 end c0
+REG[52] =  i:170
+ 171 Integer          1   53    0               00 r[53]=1; LIMIT counter
+REG[53] =  i:1
+ 172 Copy             2   54    0               00 r[54]=r[2]; subquery_6.anoncol1
+REG[54] =  i:1
+ 173 Ne              19  182   54 (BINARY)      51 if r[54]!=r[19] goto 182
+REG[19] =  i:1
+REG[54] =  i:1
+ 174 Explain        174  134    0 SCAN SUBQUERY 1 AS a 00 
+ 175 Rewind           7  182    0               00 
+ 176 Explain        176  134    0 SCAN SUBQUERY 1 AS b 00 
+ 177 Rewind           8  182    0               00 
+ 178 Integer          1   43    0               00 r[43]=1
+REG[43] =  i:1
+ 179 DecrJumpZero    53  182    0               00 if (--r[53])==0 goto 182
+REG[53] =  i:1
+ 182 Copy            43    5    0               00 r[5]=r[43]
+REG[5] =  i:1
+ 183 DecrJumpZero    17  186    0               00 if (--r[17])==0 goto 186
+REG[17] =  i:1
+ 186 Copy             5    3    0               00 r[3]=r[5]
+REG[3] =  i:1
+ 187 Explain        187    0    0 CORRELATED SCALAR SUBQUERY 5 00 
+ 188 Null             0   55   55               00 r[55..55]=NULL; Init subquery result
+REG[55] =  NULL
+ 189 Integer        219   56    0               00 r[56]=219
+REG[56] =  i:219
+ 190 Once             0  219    0               00 materialize "c0"
+ 191 Explain        191  187    0 MATERIALIZE 1 00 
+ 192 OpenEphemeral    4    1    0               00 nColumn=1
+ 193 Noop            13    1    0               00 
+ 194 Integer          0   58    0               00 r[58]=0; clear abort flag
+REG[58] =  i:0
+ 195 Null             0   61   61               00 r[61..61]=NULL
+REG[61] =  NULL
+ 196 Gosub           60  217    0               00 
+REG[60] =  i:196
+ 217 Integer          0   57    0               00 r[57]=0; indicate accumulator empty
+REG[57] =  i:0
+ 218 Return          60    0    0               00 
+REG[60] =  i:196
+ 197 Explain        197  191    0 SCAN CONSTANT ROW 00 
+ 198 Integer          1   62    0               00 r[62]=1
+REG[62] =  i:1
+ 199 Compare         61   62    1 k(1,B)        00 r[61] <-> r[62]
+REG[61] =  NULL
+REG[62] =  i:1
+ 200 Jump           201  205  201               00 
+ 201 Move            62   61    1               00 r[61]=r[62]
+REG[61] =  i:1
+ 202 Gosub           59  210    0               00 output one row
+REG[59] =  i:202
+ 210 IfPos           57  212    0               00 if r[57]>0 then r[57]-=0, goto 212; Groupby result generator entry point
+REG[57] =  i:0
+ 211 Return          59    0    0               00 
+REG[59] =  i:202
+ 203 IfPos           58  219    0               00 if r[58]>0 then r[58]-=0, goto 219; check abort flag
+REG[58] =  i:0
+ 204 Gosub           60  217    0               00 reset accumulator
+REG[60] =  i:204
+ 217 Integer          0   57    0               00 r[57]=0; indicate accumulator empty
+REG[57] =  i:0
+ 218 Return          60    0    0               00 
+REG[60] =  i:204
+ 205 Integer          1   57    0               00 r[57]=1; indicate data in accumulator
+REG[57] =  i:1
+ 206 Gosub           59  210    0               00 output final row
+REG[59] =  i:206
+ 210 IfPos           57  212    0               00 if r[57]>0 then r[57]-=0, goto 212; Groupby result generator entry point
+REG[57] =  i:1
+ 212 Integer          1   63    0               00 r[63]=1
+REG[63] =  i:1
+ 213 MakeRecord      63    1   54               00 r[54]=mkrec(r[63])
+REG[54] =  s2[0209..]
+ 214 NewRowid         4   64    0               00 r[64]=rowid
+REG[64] =  i:1
+ 215 Insert           4   54   64               08 intkey=r[64] data=r[54]
+REG[54] =  s2[0209..]
+REG[64] =  i:1
+ 216 Return          59    0    0               00 end groupby result generator
+REG[59] =  i:206
+ 207 Goto             0  219    0               00 
+ 219 Return          56    0    0               00 end c0
+REG[56] =  i:219
+ 220 Integer        223   65    0               00 r[65]=223
+REG[65] =  i:223
+ 221 Once             0  223    0               00 materialize "c0"
+ 222 OpenDup          5    4    0               00 
+ 223 Return          65    0    0               00 end c0
+REG[65] =  i:223
+ 224 Integer          1   66    0               00 r[66]=1; LIMIT counter
+REG[66] =  i:1
+ 225 Copy             2   67    0               00 r[67]=r[2]; subquery_6.anoncol1
+REG[67] =  i:1
+ 226 Ne              19  363   67 (BINARY)      51 if r[67]!=r[19] goto 363
+REG[19] =  i:1
+REG[67] =  i:1
+ 227 Explain        227  187    0 SCAN SUBQUERY 1 AS a 00 
+ 228 Rewind           4  363    0               00 
+ 229 Explain        229  187    0 CORRELATED SCALAR SUBQUERY 3 00 
+ 230 Null             0   68   68               00 r[68..68]=NULL; Init subquery result
+REG[68] =  NULL
+ 231 Integer        263   69    0               00 r[69]=263
+REG[69] =  i:263
+ 232 Once             0  263    0               00 materialize "c0"
+ 233 Explain        233  229    0 MATERIALIZE 1 00 
+ 234 OpenEphemeral    7    1    0               00 nColumn=1
+ 235 Noop            14    1    0               00 
+ 236 Integer          0   71    0               00 r[71]=0; clear abort flag
+REG[71] =  i:0
+ 237 Null             0   74   74               00 r[74..74]=NULL
+REG[74] =  NULL
+ 238 Gosub           73  261    0               00 
+REG[73] =  i:238
+ 261 Integer          0   70    0               00 r[70]=0; indicate accumulator empty
+REG[70] =  i:0
+ 262 Return          73    0    0               00 
+REG[73] =  i:238
+ 239 Explain        239  233    0 SCAN CONSTANT ROW 00 
+ 240 Integer          1   76    0               00 r[76]=1
+REG[76] =  i:1
+ 241 Ne              19  250   76 (BINARY)      51 if r[76]!=r[19] goto 250
+REG[19] =  i:1
+REG[76] =  i:1
+ 242 Integer          1   75    0               00 r[75]=1
+REG[75] =  i:1
+ 243 Compare         74   75    1 k(1,B)        00 r[74] <-> r[75]
+REG[74] =  NULL
+REG[75] =  i:1
+ 244 Jump           245  249  245               00 
+ 245 Move            75   74    1               00 r[74]=r[75]
+REG[74] =  i:1
+ 246 Gosub           72  254    0               00 output one row
+REG[72] =  i:246
+ 254 IfPos           70  256    0               00 if r[70]>0 then r[70]-=0, goto 256; Groupby result generator entry point
+REG[70] =  i:0
+ 255 Return          72    0    0               00 
+REG[72] =  i:246
+ 247 IfPos           71  263    0               00 if r[71]>0 then r[71]-=0, goto 263; check abort flag
+REG[71] =  i:0
+ 248 Gosub           73  261    0               00 reset accumulator
+REG[73] =  i:248
+ 261 Integer          0   70    0               00 r[70]=0; indicate accumulator empty
+REG[70] =  i:0
+ 262 Return          73    0    0               00 
+REG[73] =  i:248
+ 249 Integer          1   70    0               00 r[70]=1; indicate data in accumulator
+REG[70] =  i:1
+ 250 Gosub           72  254    0               00 output final row
+REG[72] =  i:250
+ 254 IfPos           70  256    0               00 if r[70]>0 then r[70]-=0, goto 256; Groupby result generator entry point
+REG[70] =  i:1
+ 256 Integer          1   77    0               00 r[77]=1
+REG[77] =  i:1
+ 257 MakeRecord      77    1   76               00 r[76]=mkrec(r[77])
+REG[76] =  s2[0209..]
+ 258 NewRowid         7   78    0               00 r[78]=rowid
+REG[78] =  i:1
+ 259 Insert           7   76   78               08 intkey=r[78] data=r[76]
+REG[76] =  s2[0209..]
+REG[78] =  i:1
+ 260 Return          72    0    0               00 end groupby result generator
+REG[72] =  i:250
+ 251 Goto             0  263    0               00 
+ 263 Return          69    0    0               00 end c0
+REG[69] =  i:263
+ 264 Integer        296   79    0               00 r[79]=296
+REG[79] =  i:296
+ 265 Once             0  296    0               00 materialize "c0"
+ 266 Explain        266  229    0 MATERIALIZE 1 00 
+ 267 OpenEphemeral    8    1    0               00 nColumn=1
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003e3e37 in sqlite3BtreeClearTable (p=0x0, iTable=1, pnChange=0x0) at sqlite3.c:72398
+72398	  BtShared *pBt = p->pBt;
+(gdb) #0  0x00000000003e3e37 in sqlite3BtreeClearTable (p=0x0, iTable=1, pnChange=0x0) at sqlite3.c:72398
+#1  0x00000000003cdd4e in sqlite3VdbeExec (p=0x1721a40) at sqlite3.c:87261
+#2  0x0000000000411104 in sqlite3Step (p=0x1721a40) at sqlite3.c:81930
+#3  0x000000000029128d in sqlite3_step (pStmt=0x1721a40) at sqlite3.c:81995
+#4  0x00000000002570b9 in main (argc=1, argv=0x7ffdc7859218) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 55062] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

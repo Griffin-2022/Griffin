@@ -1,0 +1,56 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000017,sig:06,src:019256+011022,time:933857,execs:108179,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f4140061859 in __GI_abort () at abort.c:79
+#2  0x00007f4140061729 in __assert_fail_base (fmt=0x7f41401f7588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007f4140072fd6 in __GI___assert_fail (assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d160 in sqlite3ColumnsFromExprList (pParse=0x7ffcbef3c150, pEList=0xdef3e0, pnCol=0xdfe7e6, paCol=0xdfe7a8) at sqlite3.c:126590
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7ffcbef3c150, pFrom=0xdf51a8) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7ffcbef3c150, p=0xdf7bd0) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7ffcbef3c150, p=0xdf7bd0, pDest=0x7ffcbef3a9c0) at sqlite3.c:130281
+#8  0x00000000003a45ed in multiSelect (pParse=0x7ffcbef3c150, p=0xdf7bd0, pDest=0x7ffcbef3adc8) at sqlite3.c:127314
+#9  0x00000000002fccf5 in sqlite3Select (pParse=0x7ffcbef3c150, p=0xdf7bd0, pDest=0x7ffcbef3adc8) at sqlite3.c:130384
+#10 0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffcbef3c150, pExpr=0xe08700) at sqlite3.c:99820
+#11 0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffcbef3c150, pExpr=0xe08700, target=11) at sqlite3.c:100770
+#12 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffcbef3c150, pList=0xdfaab0, target=11, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#13 0x00000000003ae220 in pushOntoSorter (pParse=0x7ffcbef3c150, pSort=0x7ffcbef3b378, pSelect=0xe02490, regData=12, regOrigData=0, nData=0, nPrefixReg=1) at sqlite3.c:125256
+#14 0x00000000003a9edf in selectInnerLoop (pParse=0x7ffcbef3c150, p=0xe02490, srcTab=-1, pSort=0x7ffcbef3b378, pDistinct=0x7ffcbef3b430, pDest=0x7ffcbef3b540, iContinue=35, iBreak=32) at sqlite3.c:125809
+#15 0x00000000002ff58c in sqlite3Select (pParse=0x7ffcbef3c150, p=0xe02490, pDest=0x7ffcbef3b540) at sqlite3.c:131068
+#16 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffcbef3b770, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffcbef3c150) at sqlite3.c:151581
+#17 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffcbef3b770, yymajor=1, yyminor=...) at sqlite3.c:152877
+#18 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffcbef3c150, zSql=0xe053cc ";", pzErrMsg=0x7ffcbef3c330) at sqlite3.c:154013
+#19 0x00000000002a1683 in sqlite3Prepare (db=0xdd82b0, zSql=0xde9dbe "SELECT \n    (SELECT avg(x) UNION SELECT min(x) OVER ()) \n  FROM tr2 GROUP BY x\n  ORDER BY 1\n;", nBytes=93, prepFlags=128, pReprepare=0x0, 
+    ppStmt=0x7ffcbef3c468, pzTail=0x7ffcbef3c450) at sqlite3.c:124303
+#20 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xdd82b0, zSql=0xde9dbe "SELECT \n    (SELECT avg(x) UNION SELECT min(x) OVER ()) \n  FROM tr2 GROUP BY x\n  ORDER BY 1\n;", nBytes=93, prepFlags=128, pOld=0x0, 
+    ppStmt=0x7ffcbef3c468, pzTail=0x7ffcbef3c450) at sqlite3.c:124403
+#21 0x000000000029247f in sqlite3_prepare_v2 (db=0xdd82b0, zSql=0xde9dbe "SELECT \n    (SELECT avg(x) UNION SELECT min(x) OVER ()) \n  FROM tr2 GROUP BY x\n  ORDER BY 1\n;", nBytes=93, ppStmt=0x7ffcbef3c468, 
+    pzTail=0x7ffcbef3c450) at sqlite3.c:124487
+#22 0x0000000000256bd0 in main (argc=1, argv=0x7ffcbef3c618) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 49518] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

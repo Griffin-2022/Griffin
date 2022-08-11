@@ -1,0 +1,31 @@
+# name: test/sql/copy/parquet/writer/parquet_write_hugeint.test
+# description: Parquet hugeint round trip
+# group: [writer]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE hugeints(h HUGEINT)
+
+;
+INSERT INTO hugeints VALUES (-1180591620717411303424), (0), (NULL), (1180591620717411303424)
+
+;
+COPY hugeints TO '__TEST_DIR__/hugeints.parquet' (FORMAT 'parquet');
+
+;
+SELECT * FROM '__TEST_DIR__/hugeints.parquet'
+;
+-1180591620717411303424
+0
+NULL
+1180591620717411303424
+
+;
+SELECT typeof(h) FROM '__TEST_DIR__/hugeints.parquet' LIMIT 1
+;
+DOUBLE
+

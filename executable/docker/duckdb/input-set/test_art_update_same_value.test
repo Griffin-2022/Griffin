@@ -1,0 +1,66 @@
+# name: test/sql/index/art/test_art_update_same_value.test
+# description: Test ART index with multiple updates on the same value
+# group: [art]
+
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+CREATE INDEX i_index ON integers using art(i)
+
+;
+INSERT INTO integers VALUES (1)
+
+;
+SELECT * FROM integers WHERE i > 0
+;
+1
+
+# update the same tuple a bunch of times in the same transaction and then rollback
+;
+BEGIN TRANSACTION
+
+loop i 1 11
+
+;
+UPDATE integers SET i=${i}+1 WHERE i=${i};
+
+;
+SELECT COUNT(*) FROM (SELECT * FROM integers WHERE i > 0 EXCEPT SELECT ${i} + 1) t1;
+;
+0
+
+endloop
+
+;
+ROLLBACK
+
+;
+SELECT * FROM integers WHERE i > 0
+;
+1
+
+# now update the same tuple a bunch of times in the same transaction and then commit
+;
+BEGIN TRANSACTION
+
+loop i 1 11
+
+;
+UPDATE integers SET i=${i}+1 WHERE i=${i};
+
+;
+SELECT COUNT(*) FROM (SELECT * FROM integers WHERE i > 0 EXCEPT SELECT ${i} + 1) t1;
+;
+0
+
+endloop
+
+;
+COMMIT
+
+;
+SELECT * FROM integers WHERE i > 0
+;
+11
+

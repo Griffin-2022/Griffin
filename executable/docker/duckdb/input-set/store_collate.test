@@ -1,0 +1,42 @@
+# name: test/sql/storage/catalog/store_collate.test
+# description: Test storage of collations
+# group: [catalog]
+
+# load the DB from disk
+load __TEST_DIR__/collate_test.db
+
+;
+CREATE TABLE collate_test(s VARCHAR COLLATE NOACCENT)
+
+;
+INSERT INTO collate_test VALUES ('Mühleisen'), ('Hëllö')
+
+# collate in equality
+;
+SELECT * FROM collate_test WHERE s='Muhleisen'
+;
+Mühleisen
+
+;
+SELECT * FROM collate_test WHERE s='mühleisen'
+
+;
+SELECT * FROM collate_test WHERE s='Hello'
+;
+Hëllö
+
+restart
+
+# collate in equality
+;
+SELECT * FROM collate_test WHERE s='Muhleisen'
+;
+Mühleisen
+
+;
+SELECT * FROM collate_test WHERE s='mühleisen'
+
+;
+SELECT * FROM collate_test WHERE s='Hello'
+;
+Hëllö

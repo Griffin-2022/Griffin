@@ -1,0 +1,49 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000434,sig:06,src:025380+008949,time:22322158,execs:4320614,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fab1cbb7859 in __GI_abort () at abort.c:79
+#2  0x00007fab1cbb7729 in __assert_fail_base (fmt=0x7fab1cd4d588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x2053d1 "j>=pLoop->u.btree.nEq || (pLoop->aLTerm[j]==0)==(j<pLoop->nSkip)", 
+    file=0x2291f4 "sqlite3.c", line=145053, function=<optimized out>) at assert.c:92
+#3  0x00007fab1cbc8fd6 in __GI___assert_fail (assertion=0x2053d1 "j>=pLoop->u.btree.nEq || (pLoop->aLTerm[j]==0)==(j<pLoop->nSkip)", file=0x2291f4 "sqlite3.c", line=145053, 
+    function=0x227296 "i8 wherePathSatisfiesOrderBy(WhereInfo *, ExprList *, WherePath *, u16, u16, WhereLoop *, Bitmask *)") at assert.c:101
+#4  0x0000000000386795 in wherePathSatisfiesOrderBy (pWInfo=0xd57d00, pOrderBy=0xd50c80, pPath=0xd4fe90, wctrlFlags=384, nLoop=0, pLast=0xd528a0, pRevMask=0x7ffee7c955a8) at sqlite3.c:145051
+#5  0x0000000000376a93 in wherePathSolver (pWInfo=0xd57d00, nRowEst=33) at sqlite3.c:145424
+#6  0x0000000000370d50 in sqlite3WhereBegin (pParse=0x7ffee7c96790, pTabList=0xd507d0, pWhere=0xd53b60, pOrderBy=0x0, pResultSet=0xd50c80, wctrlFlags=256, iAuxArg=320) at sqlite3.c:146115
+#7  0x000000000030171b in sqlite3Select (pParse=0x7ffee7c96790, p=0xd4c180, pDest=0x7ffee7c95b88) at sqlite3.c:131767
+#8  0x00000000002f0475 in yy_reduce (yypParser=0x7ffee7c95db0, yyruleno=80, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffee7c96790) at sqlite3.c:153207
+#9  0x00000000002eca18 in sqlite3Parser (yyp=0x7ffee7c95db0, yymajor=1, yyminor=...) at sqlite3.c:154496
+#10 0x00000000002a9df3 in sqlite3RunParser (pParse=0x7ffee7c96790, 
+    zSql=0xd66a08 ";;\n;UPDATE t1 SET t2=3, t2=4, t2=13 WHERE t2=6;;SELECT t2,t2 FROM t1;;SELECT count(*) FROM t1 WHERE t2=rowid+1;;\n;SAVEPOINT abc \n;UPDATE t1 SET t2=randomblob(500) WHERE rowid<=$i AND 0 \n;RELEASE abc \n"..., pzErrMsg=0x7ffee7c96970) at sqlite3.c:155636
+#11 0x00000000002a77e3 in sqlite3Prepare (db=0xd3ba00, 
+    zSql=0xd3d2e8 "SELECT DISTINCT t2\n    FROM t1\n   WHERE t2 = x\n     AND t2 = 3\n     AND x IN (1,3,2,4)\n     AND x >= 0\n     AND t2 <= 10;;\n;UPDATE t1 SET t2=3, t2=4, t2=13 WHERE t2=6;;SELECT t2,t2 FROM t1;;SELECT cou"..., nBytes=6626, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffee7c96aa8, pzTail=0x7ffee7c96a90) at sqlite3.c:125299
+#12 0x00000000002a6eae in sqlite3LockAndPrepare (db=0xd3ba00, 
+    zSql=0xd3d2e8 "SELECT DISTINCT t2\n    FROM t1\n   WHERE t2 = x\n     AND t2 = 3\n     AND x IN (1,3,2,4)\n     AND x >= 0\n     AND t2 <= 10;;\n;UPDATE t1 SET t2=3, t2=4, t2=13 WHERE t2=6;;SELECT t2,t2 FROM t1;;SELECT cou"..., nBytes=6626, prepFlags=128, pOld=0x0, ppStmt=0x7ffee7c96aa8, pzTail=0x7ffee7c96a90) at sqlite3.c:125402
+#13 0x0000000000294f4f in sqlite3_prepare_v2 (db=0xd3ba00, 
+    zSql=0xd3d2e8 "SELECT DISTINCT t2\n    FROM t1\n   WHERE t2 = x\n     AND t2 = 3\n     AND x IN (1,3,2,4)\n     AND x >= 0\n     AND t2 <= 10;;\n;UPDATE t1 SET t2=3, t2=4, t2=13 WHERE t2=6;;SELECT t2,t2 FROM t1;;SELECT cou"..., nBytes=6626, ppStmt=0x7ffee7c96aa8, pzTail=0x7ffee7c96a90) at sqlite3.c:125486
+#14 0x0000000000258550 in main (argc=1, argv=0x7ffee7c96c58) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 42500] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

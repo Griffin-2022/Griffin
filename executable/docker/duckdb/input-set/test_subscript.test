@@ -1,0 +1,148 @@
+# name: test/sql/function/string/test_subscript.test
+# description: Substring test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR, off INTEGER);
+
+;
+INSERT INTO strings VALUES ('hello', 1), ('world', 2), ('b', 1), (NULL, 2)
+
+# test direct subscript
+;
+SELECT '🦆ab'[1], 'abc'[2]
+;
+🦆	b
+
+# test grapheme clusters
+;
+SELECT '🤦🏼‍♂️ L🤦🏼‍♂️R 🤦🏼‍♂️'[4]
+;
+🤦🏼‍♂️
+
+;
+SELECT 'S̈a'[1]
+;
+S̈
+
+;
+SELECT 'MotörHead'[4]
+;
+ö
+
+;
+SELECT 'Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢'[2]
+;
+A̴̵̜̰͔ͫ͗͢
+
+# constant offset/length
+# normal array_extract
+;
+SELECT s[2] FROM strings
+;
+e
+o
+(empty)
+NULL
+
+# array_extract out of range
+;
+SELECT s[3] FROM strings
+;
+l
+r
+(empty)
+NULL
+
+# variable length offset/length
+;
+SELECT s[off] FROM strings
+;
+h
+o
+b
+NULL
+
+;
+SELECT s[2] FROM strings
+;
+e
+o
+(empty)
+NULL
+
+;
+SELECT 'hello'[off] FROM strings
+;
+h
+e
+h
+e
+
+# test substrings with constant nulls in different places
+;
+SELECT NULL::VARCHAR[off] FROM strings
+
+;
+SELECT 'hello'[NULL] FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT NULL::VARCHAR[NULL] FROM strings
+
+;
+SELECT NULL::VARCHAR[off] FROM strings
+
+;
+SELECT NULL::VARCHAR[NULL] FROM strings
+
+# negative offset
+;
+SELECT s[-1] FROM strings
+;
+o
+d
+b
+NULL
+
+# zero offset
+;
+SELECT s[1] FROM strings
+;
+h
+w
+b
+NULL
+
+# length 0
+;
+SELECT s[6] FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+# very large offset and length
+;
+SELECT s[2147483646] FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+;
+SELECT s[-2147483647] FROM strings
+;
+h
+w
+b
+NULL

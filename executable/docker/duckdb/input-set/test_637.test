@@ -1,0 +1,32 @@
+# name: test/issues/rigger/test_637.test
+# description: Issue 637
+# group: [rigger]
+
+;
+PRAGMA enable_verification
+
+# SELECT with RIGHT JOIN causes an assertion failure 'Assertion `!finalized' failed'
+;
+CREATE TABLE t0(c0 VARCHAR);
+
+;
+CREATE TABLE t1(c0 VARCHAR);
+
+;
+INSERT INTO t0 VALUES('');
+
+;
+INSERT INTO t1 VALUES(0);
+
+;
+CREATE VIEW v0 AS SELECT 0 FROM t0, t1 WHERE t0.c0 = t1.c0;
+
+;
+SELECT * FROM v0;
+;
+
+;
+SELECT * FROM v0 RIGHT JOIN t1 ON 1;
+;
+NULL	0
+

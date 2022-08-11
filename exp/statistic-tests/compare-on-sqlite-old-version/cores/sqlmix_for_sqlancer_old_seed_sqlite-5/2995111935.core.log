@@ -1,0 +1,722 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000062,sig:06,src:018230+014319,time:8354066,execs:1386983,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+  11 Transaction      0    0    0 0             00 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+SQL: [CREATE TABLE t1(a, b);]
+VDBE Program Listing:
+   0 Init             0   28    0               00 Start at 28
+   1 ReadCookie       0    3    2               00 
+   2 If               3    5    0               00 
+   3 SetCookie        0    2    4               00 
+   4 SetCookie        0    5    1               00 
+   5 CreateBtree      0    2    1               00 r[2]=root iDb=0 flags=1
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+   8 Blob             6    3    0              00 r[3]= (len=6)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain         14    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 SeekRowid        1   17    1               00 intkey=r[1]
+  16 Rowid            1    5    0               00 r[5]=rowid
+  17 IsNull           5   25    0               00 if r[5]==NULL goto 25
+  18 String8          0    6    0 table         00 r[6]='table'
+  19 String8          0    7    0 t1            00 r[7]='t1'
+  20 String8          0    8    0 t1            00 r[8]='t1'
+  21 Copy             2    9    0               00 r[9]=r[2]
+  22 String8          0   10    0 CREATE TABLE t1(a, b) 00 r[10]='CREATE TABLE t1(a, b)'
+  23 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+  24 Insert           1   11    5               00 intkey=r[5] data=r[11]
+  25 SetCookie        0    1    1               00 
+  26 ParseSchema      0    0    0 tbl_name='t1' AND type!='trigger' 00 
+  27 Halt             0    0    0               00 
+  28 Transaction      0    1    0 0             01 usesStmtJournal=0
+  29 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   15    0               00 Start at 15
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+  12 ResultRow        4    3    0               00 output=r[4..6]
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  15 Transaction      0    0    1 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+  18 Goto             0    1    0               00 
+SQL: [;
+pragma PAGE_COUNT;]
+VDBE Program Listing:
+   0 Init             0    4    0               00 Start at 4
+   1 Pagecount        0    3    0               00 
+   2 ResultRow        3    1    0               00 output=r[3]
+   3 Halt             0    0    0               00 
+   4 Transaction      0    0    1 0             01 usesStmtJournal=0
+   5 Goto             0    1    0               00 
+SQL: [CREATE UNIQUE INDEX t0st ON t1(b);]
+VDBE Program Listing:
+   0 Init             0   37    0               00 Start at 37
+   1 Noop             0   36    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+   5 String8          0    3    0 index         00 r[3]='index'
+   6 String8          0    4    0 t0st          00 r[4]='t0st'
+   7 String8          0    5    0 t1            00 r[5]='t1'
+   8 Copy             1    6    0               00 r[6]=r[1]
+   9 String8          0    7    0 CREATE UNIQUE INDEX t0st ON t1(b) 00 r[7]='CREATE UNIQUE INDEX t0st ON t1(b)'
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+  12 SorterOpen       3    0    1 k(2,,)        00 
+  13 OpenRead         1    2    0 2             00 root=2 iDb=0; t1
+  14 Rewind           1   20    0               00 
+  15 Column           1    1   10               00 r[10]=t1.b
+  16 Rowid            1   11    0               00 r[11]=rowid
+  17 MakeRecord      10    2    9               00 r[9]=mkrec(r[10..11])
+  18 SorterInsert     3    9    0               00 key=r[9]
+  19 Next             1   15    0               00 
+  20 OpenWrite        2    1    0 k(2,,)        11 root=1 iDb=0
+  21 SorterSort       3   30    0               00 
+  22 Goto             0   26    0               00 
+  23 Abortable        0    0    0               00 
+  24 SorterCompare    3   22    9 1             00 if key(3)!=trim(r[9],1) goto 22
+  25 Halt          2067    2    0 t1.b          02 
+  26 SorterData       3    9    2               00 r[9]=data
+  27 SeekEnd          2    0    0               00 
+  28 IdxInsert        2    9    0               10 key=r[9]
+  29 SorterNext       3   23    0               00 
+  30 Close            1    0    0               00 
+  31 Close            2    0    0               00 
+  32 Close            3    0    0               00 
+  33 SetCookie        0    1    2               00 
+  34 ParseSchema      0    0    0 name='t0st' AND type='index' 00 
+  35 Expire           0    1    0               00 
+  36 Halt             0    0    0               00 
+  37 Transaction      0    1    1 0             01 usesStmtJournal=1
+  38 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   15    0               00 Start at 15
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+  12 ResultRow        4    3    0               00 output=r[4..6]
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  15 Transaction      0    0    2 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t0st          00 r[2]='t0st'
+  17 String8          0    3    0 index         00 r[3]='index'
+  18 Goto             0    1    0               00 
+SQL: [;
+CREATE INDEX t0st_content ON t1(b DESC, b DESC) ;]
+VDBE Program Listing:
+   0 Init             0   34    0               00 Start at 34
+   1 Noop             0   33    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+   5 String8          0    3    0 index         00 r[3]='index'
+   6 String8          0    4    0 t0st_content  00 r[4]='t0st_content'
+   7 String8          0    5    0 t1            00 r[5]='t1'
+   8 Copy             1    6    0               00 r[6]=r[1]
+   9 String8          0    7    0 CREATE INDEX t0st_content ON t1(b DESC, b DESC)  00 r[7]='CREATE INDEX t0st_content ON t1(b DESC, b DESC) '
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+  12 SorterOpen       3    0    2 k(3,-,-,)     00 
+  13 OpenRead         1    2    0 2             00 root=2 iDb=0; t1
+  14 Rewind           1   21    0               00 
+  15 Column           1    1   10               00 r[10]=t1.b
+  16 Column           1    1   11               00 r[11]=t1.b
+  17 Rowid            1   12    0               00 r[12]=rowid
+  18 MakeRecord      10    3    9               00 r[9]=mkrec(r[10..12])
+  19 SorterInsert     3    9    0               00 key=r[9]
+  20 Next             1   15    0               00 
+  21 OpenWrite        2    1    0 k(3,-,-,)     11 root=1 iDb=0
+  22 SorterSort       3   27    0               00 
+  23 SorterData       3    9    2               00 r[9]=data
+  24 SeekEnd          2    0    0               00 
+  25 IdxInsert        2    9    0               10 key=r[9]
+  26 SorterNext       3   23    0               00 
+  27 Close            1    0    0               00 
+  28 Close            2    0    0               00 
+  29 Close            3    0    0               00 
+  30 SetCookie        0    1    3               00 
+  31 ParseSchema      0    0    0 name='t0st_content' AND type='index' 00 
+  32 Expire           0    1    0               00 
+  33 Halt             0    0    0               00 
+  34 Transaction      0    1    2 0             01 usesStmtJournal=0
+  35 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   15    0               00 Start at 15
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+  12 ResultRow        4    3    0               00 output=r[4..6]
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  15 Transaction      0    0    3 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t0st_content  00 r[2]='t0st_content'
+  17 String8          0    3    0 index         00 r[3]='index'
+  18 Goto             0    1    0               00 
+SQL: [SELECT name, rootpage, sql FROM "temp".sqlite_temp_master ORDER BY rowid;]
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_temp_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_temp_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_temp_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+  11 Transaction      1    0    0 0             01 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+SQL: [;
+ATTACH printf('file:%09000x/x.db?mode=memory&cache=shared',1) AS aux1;]
+VDBE Program Listing:
+   0 Init             0    7    0               00 Start at 7
+   1 SCopy            5    1    0               00 r[1]=r[5]
+   2 String8          0    2    0 aux1          00 r[2]='aux1'
+   3 Null             0    3    0               00 r[3]=NULL
+   4 Function0        0    1    4 sqlite_attach(3) 03 r[4]=func(r[1..3])
+   5 Expire           1    0    0               00 
+   6 Halt             0    0    0               00 
+   7 String8          0    6    0 file:%09000x/x.db?mode=memory&cache=shared 00 r[6]='file:%09000x/x.db?mode=memory&cache=shared'
+   8 Integer          1    7    0               00 r[7]=1
+   9 Function0        3    6    5 printf(-1)    02 r[5]=func(r[6..7])
+  10 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+  11 Transaction      0    0    3 1             00 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_temp_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_temp_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_temp_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+  11 Transaction      1    0    0 1             00 usesStmtJournal=0
+  12 Goto             0    1    0               00 
+SQL: [SELECT sum(a) OVER (PARTITION BY a ORDER BY a ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING), 
+         sum(a) OVER (PARTITION BY a ORDER BY a ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING)
+  FROM t1 ORDER BY a
+;]
+VDBE Program Listing:
+   0 Init             0  125    0               00 Start at 125
+   1 Null             0    1    0               00 r[1]=NULL
+   2 Null             0    3    0               00 r[3]=NULL
+   3 OpenEphemeral    1    5    0               00 nColumn=5
+   4 OpenDup          2    1    0               00 
+   5 OpenDup          3    1    0               00 
+   6 OpenDup          4    1    0               00 
+   7 InitCoroutine    5   34    8               00 subquery_2
+   8 Explain          8    0    0 CO-ROUTINE 2  00 
+   9 SorterOpen       6    8    0 k(2,B,B)      00 
+  10 OpenRead         0    2    0 1             00 root=2 iDb=0; t1
+  11 Explain         11    8    0 SCAN TABLE t1 00 
+  12 Rewind           0   22    0               00 
+  13 Column           0    0    8               00 r[8]=t1.a
+  14 Column           0    0    9               00 r[9]=t1.a
+  15 Column           0    0   10               00 r[10]=t1.a
+  16 Column           0    0   11               00 r[11]=t1.a
+  17 Column           0    0    6               00 r[6]=t1.a
+  18 Column           0    0    7               00 r[7]=t1.a
+  19 MakeRecord       6    6   13               00 r[13]=mkrec(r[6..11])
+  20 SorterInsert     6   13    6 6             00 key=r[13]
+  21 Next             0   13    0               01 
+  22 Explain         22    8    0 USE TEMP B-TREE FOR ORDER BY 00 
+  23 OpenPseudo       7   14    8               00 8 columns in r[14]
+  24 SorterSort       6   33    0               00 
+  25 SorterData       6   14    7               00 r[14]=data
+  26 Column           7    1   12               00 r[12]=
+  27 Column           7    5   11               00 r[11]=
+  28 Column           7    4   10               00 r[10]=
+  29 Column           7    3    9               00 r[9]=
+  30 Column           7    2    8               00 r[8]=
+  31 Yield            5    0    0               00 
+  32 SorterNext       6   25    0               00 
+  33 EndCoroutine     5    0    0               00 
+  34 SorterOpen       8    4    0 k(1,B)        00 
+  35 Null             0   15   15               00 r[15..15]=NULL
+  36 Integer          1   16    0               00 r[16]=1
+  37 Explain         37    0    0 SCAN SUBQUERY 2 00 
+  38 InitCoroutine    5    0    8               00 
+  39 Yield            5   94    0               00 next row of subquery_2
+  40 Copy             8   18    0               00 r[18]=r[8]
+  41 Copy             9   19    0               00 r[19]=r[9]
+  42 Copy            10   20    0               00 r[20]=r[10]
+  43 Copy            11   21    0               00 r[21]=r[11]
+  44 Copy            12   22    0               00 r[22]=r[12]
+  45 MakeRecord      18    5   23               00 r[23]=mkrec(r[18..22])
+  46 Compare         19   15    1 k(1,B)        00 r[19] <-> r[15]
+  47 Jump            48   50   48               00 
+  48 Gosub           27   95    0               00 call flush_partition
+  49 Copy            19   15    0               00 r[15]=r[19]
+  50 NewRowid         2   24    0               00 r[24]=rowid
+  51 Insert           2   23   24               00 intkey=r[24] data=r[23]
+  52 Ne              16   76   24               00 if r[24]!=r[16] goto 76
+  53 Null             0    1    0               00 r[1]=NULL
+  54 Null             0    3    0               00 r[3]=NULL
+  55 Integer          1   25    0               00 r[25]=1
+  56 Integer          0   29    0               00 r[29]=0
+  57 MustBeInt       25   59    0               00 
+  58 Ge              29   60   25               00 if r[25]>=r[29] goto 60
+  59 Halt             1    2    0 frame starting offset must be a non-negative integer 00 
+  60 Integer          1   26    0               00 r[26]=1
+  61 Integer          0   29    0               00 r[29]=0
+  62 MustBeInt       26   64    0               00 
+  63 Ge              29   65   26               00 if r[26]>=r[29] goto 65
+  64 Halt             1    2    0 frame ending offset must be a non-negative integer 00 
+  65 Le              25   72   26               00 if r[26]<=r[25] goto 72
+  66 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+  67 AggValue         3    1    4 sum(1)        00 r[4]=value N=1
+  68 Rewind           1    1    0               00 
+  69 Gosub           17  109    0               00 
+  70 ResetSorter      1    0    0               00 
+  71 Goto             0   93    0               00 
+  72 Rewind           3    1    0               00 
+  73 Rewind           1    1    0               00 
+  74 Rewind           4    1    0               00 
+  75 Goto             0   93    0               00 
+  76 IfPos           26   82    1               00 if r[26]>0 then r[26]-=1, goto 82
+  77 Column           4    3   28               00 r[28]=
+  78 AggStep          0   28    1 sum(1)        01 accum=r[1] step(r[28])
+  79 Column           4    4   28               00 r[28]=
+  80 AggStep          0   28    3 sum(1)        01 accum=r[3] step(r[28])
+  81 Next             4   82    0               00 
+  82 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+  83 AggValue         3    1    4 sum(1)        00 r[4]=value N=1
+  84 Gosub           17  109    0               00 
+  85 Next             1   86    0               00 
+  86 IfPos           25   93    1               00 if r[25]>0 then r[25]-=1, goto 93
+  87 Column           3    3   28               00 r[28]=
+  88 AggInverse       1   28    1 sum(1)        01 accum=r[1] inverse(r[28])
+  89 Column           3    4   28               00 r[28]=
+  90 AggInverse       1   28    3 sum(1)        01 accum=r[3] inverse(r[28])
+  91 Delete           3    0    0               02 
+  92 Next             3   93    0               00 
+  93 Goto             0   39    0               00 
+  94 Integer        107   27    0               00 r[27]=107
+  95 Rewind           2  106    0               00 
+  96 IfPos           26  102    1               00 if r[26]>0 then r[26]-=1, goto 102
+  97 Column           4    3   28               00 r[28]=
+  98 AggStep          0   28    1 sum(1)        01 accum=r[1] step(r[28])
+  99 Column           4    4   28               00 r[28]=
+ 100 AggStep          0   28    3 sum(1)        01 accum=r[3] step(r[28])
+ 101 Next             4  102    0               00 
+ 102 AggValue         1    1    2 sum(1)        00 r[2]=value N=1
+ 103 AggValue         3    1    4 sum(1)        00 r[4]=value N=1
+ 104 Gosub           17  109    0               00 
+ 105 Next             1  106    0               00 
+ 106 ResetSorter      1    0    0               00 
+ 107 Return          27    0    0               00 
+ 108 Goto             0  116    0               00 
+ 109 Noop             0    0    0               00 inner-loop subroutine
+ 110 Copy             4   31    0               00 r[31]=r[4]
+ 111 Copy             2   32    0               00 r[32]=r[2]
+ 112 Column           1    0   30               00 r[30]=
+ 113 MakeRecord      30    3   33               00 r[33]=mkrec(r[30..32])
+ 114 SorterInsert     8   33   30 3             00 key=r[33]
+ 115 Return          17    0    0               00 end inner-loop subroutine
+ 116 Explain        116    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 117 OpenPseudo       9   34    4               00 4 columns in r[34]
+ 118 SorterSort       8  124    0               00 
+ 119 SorterData       8   34    9               00 r[34]=data
+ 120 Column           9    2   32               00 r[32]=sum(a) OVER (PARTITION BY a ORDER BY a ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING)
+ 121 Column           9    1   31               00 r[31]=sum(a) OVER (PARTITION BY a ORDER BY a ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING)
+ 122 ResultRow       31    2    0               00 output=r[31..32]
+ 123 SorterNext       8  119    0               00 
+ 124 Halt             0    0    0               00 
+ 125 Transaction      0    0    3 1             01 usesStmtJournal=0
+ 126 Goto             0    1    0               00 
+SQL: [ROLLBACK TO changeset_apply;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Savepoint        2    0    0 changeset_apply 00 
+   2 Halt             0    0    0               00 
+SQL: [;
+INSERT INTO t1 VALUES(14, '  123.e+2');]
+VDBE Program Listing:
+   0 Init             0   24    0               00 Start at 24
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; t1
+   2 OpenWrite        1    4    0 k(3,-,-,)     00 root=4 iDb=0; t0st_content
+   3 OpenWrite        2    3    0 k(2,,)        00 root=3 iDb=0; t0st
+   4 NewRowid         0    1    0               00 r[1]=rowid
+   5 Integer         14    2    0               00 r[2]=14
+   6 String8          0    3    0   123.e+2     00 r[3]='  123.e+2'
+   7 Noop             0    0    0               00 uniqueness check for t0st_content
+   8 SCopy            3    5    0               00 r[5]=r[3]; b
+   9 SCopy            3    6    0               00 r[6]=r[3]; b
+  10 IntCopy          1    7    0               00 r[7]=r[1]; rowid
+  11 MakeRecord       5    3    4               00 r[4]=mkrec(r[5..7]); for t0st_content
+  12 Noop             0    0    0               00 uniqueness check for t0st
+  13 SCopy            3    9    0               00 r[9]=r[3]; b
+  14 IntCopy          1   10    0               00 r[10]=r[1]; rowid
+  15 MakeRecord       9    2    8               00 r[8]=mkrec(r[9..10]); for t0st
+  16 Abortable        0    0    0               00 
+  17 NoConflict       2   19    9 1             00 key=r[9]
+  18 Halt          2067    2    0 t1.b          02 
+  19 IdxInsert        1    4    5 3             10 key=r[4]
+  20 IdxInsert        2    8    9 2             10 key=r[8]
+  21 MakeRecord       2    2   11               00 r[11]=mkrec(r[2..3])
+  22 Insert           0   11    1 t1            39 intkey=r[1] data=r[11]
+  23 Halt             0    0    0               00 
+  24 Transaction      0    1    3 1             01 usesStmtJournal=0
+  25 Goto             0    1    0               00 
+SQL: [SELECT a, rank() OVER (ORDER BY a) FROM t1 ORDER BY 1,2
+;]
+VDBE Program Listing:
+   0 Init             0  181    0               00 Start at 181
+   1 Null             0    1    0               00 r[1]=NULL
+   2 OpenEphemeral    1    4    0               00 nColumn=4
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3  105    7               00 subquery_2
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+   9 OpenEphemeral    6    4    0               00 nColumn=4
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   37   14               00 subquery_3
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 SorterOpen      11    6    0 k(1,B)        00 
+  16 OpenRead         0    2    0 1             00 root=2 iDb=0; t1
+  17 Explain         17   14    0 SCAN TABLE t1 00 
+  18 Rewind           0   26    0               00 
+  19 Column           0    0    8               00 r[8]=t1.a
+  20 Column           0    0    9               00 r[9]=t1.a
+  21 Column           0    0   10               00 r[10]=t1.a
+  22 Column           0    0    7               00 r[7]=t1.a
+  23 MakeRecord       7    4   12               00 r[12]=mkrec(r[7..10])
+  24 SorterInsert    11   12    7 4             00 key=r[12]
+  25 Next             0   19    0               01 
+  26 Explain         26   14    0 USE TEMP B-TREE FOR ORDER BY 00 
+  27 OpenPseudo      12   13    6               00 6 columns in r[13]
+  28 SorterSort      11   36    0               00 
+  29 SorterData      11   13   12               00 r[13]=data
+  30 Column          12    0   11               00 r[11]=
+  31 Column          12    3   10               00 r[10]=
+  32 Column          12    2    9               00 r[9]=
+  33 Column          12    1    8               00 r[8]=
+  34 Yield            6    0    0               00 
+  35 SorterNext      11   29    0               00 
+  36 EndCoroutine     6    0    0               00 
+  37 Integer          1   14    0               00 r[14]=1
+  38 Explain         38    7    0 SCAN SUBQUERY 3 00 
+  39 InitCoroutine    6    0   14               00 
+  40 Yield            6   77    0               00 next row of subquery_3
+  41 Copy             8   16    0               00 r[16]=r[8]
+  42 Copy             9   17    0               00 r[17]=r[9]
+  43 Copy            10   18    0               00 r[18]=r[10]
+  44 Copy            11   19    0               00 r[19]=r[11]
+  45 MakeRecord      16    4   20               00 r[20]=mkrec(r[16..19])
+  46 NewRowid         7   21    0               00 r[21]=rowid
+  47 Insert           7   20   21               00 intkey=r[21] data=r[20]
+  48 Ne              14   57   21               00 if r[21]!=r[14] goto 57
+  49 Null             0    4    0               00 r[4]=NULL
+  50 Rewind           6    1    0               00 
+  51 Rewind           9    1    0               00 
+  52 Copy            19   22    0               00 r[22]=r[19]
+  53 Copy            22   23    0               00 r[23]=r[22]
+  54 Copy            22   24    0               00 r[24]=r[22]
+  55 Copy            22   25    0               00 r[25]=r[22]
+  56 Goto             0   76    0               00 
+  57 Compare         22   19    1 k(1,B)        00 r[22] <-> r[19]
+  58 Jump            59   76   59               00 
+  59 Copy            19   22    0               00 r[22]=r[19]
+  60 AggStep          0   26    4 rank(0)       00 accum=r[4] step(r[26])
+  61 Next             9   63    0               00 
+  62 Goto             0   67    0               00 
+  63 Column           9    3   26               00 r[26]=
+  64 Compare         25   26    1 k(1,B)        00 r[25] <-> r[26]
+  65 Jump            66   60   66               00 
+  66 Copy            26   25    0               00 r[25]=r[26]
+  67 AggValue         4    0    5 rank(0)       00 r[5]=value N=0
+  68 Gosub           15   97    0               00 
+  69 Delete           6    0    0               02 
+  70 Next             6   72    0               00 
+  71 Goto             0   76    0               00 
+  72 Column           6    3   26               00 r[26]=
+  73 Compare         24   26    1 k(1,B)        00 r[24] <-> r[26]
+  74 Jump            75   68   75               00 
+  75 Copy            26   24    0               00 r[24]=r[26]
+  76 Goto             0   40    0               00 
+  77 Rewind           7   95    0               00 
+  78 AggStep          0   26    4 rank(0)       00 accum=r[4] step(r[26])
+  79 Next             9   81    0               00 
+  80 Goto             0   85    0               00 
+  81 Column           9    3   26               00 r[26]=
+  82 Compare         25   26    1 k(1,B)        00 r[25] <-> r[26]
+  83 Jump            84   78   84               00 
+  84 Copy            26   25    0               00 r[25]=r[26]
+  85 AggValue         4    0    5 rank(0)       00 r[5]=value N=0
+  86 Gosub           15   97    0               00 
+  87 Delete           6    0    0               02 
+  88 Next             6   90    0               00 
+  89 Goto             0   95    0               00 
+  90 Column           6    3   26               00 r[26]=
+  91 Compare         24   26    1 k(1,B)        00 r[24] <-> r[26]
+  92 Jump            93   86   93               00 
+  93 Copy            26   24    0               00 r[24]=r[26]
+  94 Goto             0   85    0               00 
+  95 ResetSorter      6    0    0               00 
+  96 Goto             0  104    0               00 
+  97 Noop             0    0    0               00 inner-loop subroutine
+  98 Column           6    0   27               00 r[27]=
+  99 Column           6    1   28               00 r[28]=
+ 100 Copy             5   29    0               00 r[29]=r[5]
+ 101 Column           6    2   30               00 r[30]=
+ 102 Yield            3    0    0               00 
+ 103 Return          15    0    0               00 end inner-loop subroutine
+ 104 EndCoroutine     3    0    0               00 
+ 105 SorterOpen      13    5    0 k(2,B,B)      00 
+ 106 Integer          1   31    0               00 r[31]=1
+ 107 Explain        107    0    0 SCAN SUBQUERY 2 00 
+ 108 InitCoroutine    3    0    7               00 
+ 109 Yield            3  146    0               00 next row of subquery_2
+ 110 Copy            27   33    0               00 r[33]=r[27]
+ 111 Copy            28   34    0               00 r[34]=r[28]
+ 112 Copy            29   35    0               00 r[35]=r[29]
+ 113 Copy            30   36    0               00 r[36]=r[30]
+ 114 MakeRecord      33    4   37               00 r[37]=mkrec(r[33..36])
+ 115 NewRowid         2   38    0               00 r[38]=rowid
+ 116 Insert           2   37   38               00 intkey=r[38] data=r[37]
+ 117 Ne              31  126   38               00 if r[38]!=r[31] goto 126
+ 118 Null             0    1    0               00 r[1]=NULL
+ 119 Rewind           1    1    0               00 
+ 120 Rewind           4    1    0               00 
+ 121 Copy            36   39    0               00 r[39]=r[36]
+ 122 Copy            39   40    0               00 r[40]=r[39]
+ 123 Copy            39   41    0               00 r[41]=r[39]
+ 124 Copy            39   42    0               00 r[42]=r[39]
+ 125 Goto             0  145    0               00 
+ 126 Compare         39   36    1 k(1,B)        00 r[39] <-> r[36]
+ 127 Jump           128  145  128               00 
+ 128 Copy            36   39    0               00 r[39]=r[36]
+ 129 AggStep          0   43    1 rank(0)       00 accum=r[1] step(r[43])
+ 130 Next             4  132    0               00 
+ 131 Goto             0  136    0               00 
+ 132 Column           4    3   43               00 r[43]=
+ 133 Compare         42   43    1 k(1,B)        00 r[42] <-> r[43]
+ 134 Jump           135  129  135               00 
+ 135 Copy            43   42    0               00 r[42]=r[43]
+ 136 AggValue         1    0    2 rank(0)       00 r[2]=value N=0
+ 137 Gosub           32  166    0               00 
+ 138 Delete           1    0    0               02 
+ 139 Next             1  141    0               00 
+ 140 Goto             0  145    0               00 
+ 141 Column           1    3   43               00 r[43]=
+ 142 Compare         41   43    1 k(1,B)        00 r[41] <-> r[43]
+ 143 Jump           144  137  144               00 
+ 144 Copy            43   41    0               00 r[41]=r[43]
+ 145 Goto             0  109    0               00 
+ 146 Rewind           2  164    0               00 
+ 147 AggStep          0   43    1 rank(0)       00 accum=r[1] step(r[43])
+ 148 Next             4  150    0               00 
+ 149 Goto             0  154    0               00 
+ 150 Column           4    3   43               00 r[43]=
+ 151 Compare         42   43    1 k(1,B)        00 r[42] <-> r[43]
+ 152 Jump           153  147  153               00 
+ 153 Copy            43   42    0               00 r[42]=r[43]
+ 154 AggValue         1    0    2 rank(0)       00 r[2]=value N=0
+ 155 Gosub           32  166    0               00 
+ 156 Delete           1    0    0               02 
+ 157 Next             1  159    0               00 
+ 158 Goto             0  164    0               00 
+ 159 Column           1    3   43               00 r[43]=
+ 160 Compare         41   43    1 k(1,B)        00 r[41] <-> r[43]
+ 161 Jump           162  155  162               00 
+ 162 Copy            43   41    0               00 r[41]=r[43]
+ 163 Goto             0  154    0               00 
+ 164 ResetSorter      1    0    0               00 
+ 165 Goto             0  172    0               00 
+ 166 Noop             0    0    0               00 inner-loop subroutine
+ 167 Column           1    1   44               00 r[44]=
+ 168 Column           1    2   45               00 r[45]=
+ 169 MakeRecord      44    2   48               00 r[48]=mkrec(r[44..45])
+ 170 SorterInsert    13   48   44 2             00 key=r[48]
+ 171 Return          32    0    0               00 end inner-loop subroutine
+ 172 Explain        172    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 173 OpenPseudo      14   49    5               00 5 columns in r[49]
+ 174 SorterSort      13  180    0               00 
+ 175 SorterData      13   49   14               00 r[49]=data
+ 176 Column          14    1   47               00 r[47]=rank() OVER (ORDER BY a)
+ 177 Column          14    0   46               00 r[46]=a
+ 178 ResultRow       46    2    0               00 output=r[46..47]
+ 179 SorterNext      13  175    0               00 
+ 180 Halt             0    0    0               00 
+ 181 Transaction      0    0    3 1             01 usesStmtJournal=0
+ 182 Goto             0    1    0               00 
+SQL: [;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;]
+VDBE Program Listing:
+   0 Init             0   15    0               00 Start at 15
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+  12 ResultRow        4    3    0               00 output=r[4..6]
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  15 Transaction      0    0    3 1             01 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+  18 Goto             0    1    0               00 
+SQL: [SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;]
+VDBE Program Listing:
+   0 Init             0   15    0               00 Start at 15
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+  12 ResultRow        4    3    0               00 output=r[4..6]
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  15 Transaction      0    0    3 1             01 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+  18 Goto             0    1    0               00 
+SQL: [;
+SELECT sum(a) FROM t1;]
+VDBE Program Listing:
+   0 Init             0   12    0               00 Start at 12
+   1 Null             0    1    2               00 r[1..2]=NULL
+   2 OpenRead         0    2    0 1             00 root=2 iDb=0; t1
+   3 Explain          3    0    0 SCAN TABLE t1 00 
+   4 Rewind           0    8    0               00 
+   5 Column           0    0    3               00 r[3]=t1.a
+   6 AggStep          0    3    1 sum(1)        01 accum=r[1] step(r[3])
+   7 Next             0    5    0               01 
+   8 AggFinal         1    1    0 sum(1)        00 accum=r[1] N=1
+   9 Copy             1    4    0               00 r[4]=r[1]
+  10 ResultRow        4    1    0               00 output=r[4]
+  11 Halt             0    0    0               00 
+  12 Transaction      0    0    3 1             01 usesStmtJournal=0
+  13 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f7ae5fcc859 in __GI_abort () at abort.c:79
+#2  0x00007f7ae5fcc729 in __assert_fail_base (fmt=0x7f7ae6162588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f7ae5fddfd6 in __GI___assert_fail (assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=0x223e82 "int sqlite3Select(Parse *, Select *, SelectDest *)") at assert.c:101
+#4  0x00000000002fcfa0 in sqlite3Select (pParse=0x7ffd0b2a5d50, p=0x246f540, pDest=0x7ffd0b2a45e8) at sqlite3.c:130468
+#5  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffd0b2a5d50, pExpr=0x2467200) at sqlite3.c:99820
+#6  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffd0b2a5d50, pExpr=0x2467200, target=7) at sqlite3.c:100770
+#7  0x00000000003790ab in codeEqualityTerm (pParse=0x7ffd0b2a5d50, pTerm=0x24651c0, pLevel=0x2465520, iEq=1, bRev=0, iTarget=7) at sqlite3.c:136648
+#8  0x000000000037a706 in codeAllEqualityTerms (pParse=0x7ffd0b2a5d50, pLevel=0x2465520, bRev=0, nExtraReg=0, pzAff=0x7ffd0b2a4b68) at sqlite3.c:136869
+#9  0x0000000000375cb8 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffd0b2a5d50, v=0x2469c30, pWInfo=0x2465130, iLevel=1, pLevel=0x2465520, notReady=18446744073709551614) at sqlite3.c:137776
+#10 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffd0b2a5d50, pTabList=0x24692d0, pWhere=0x2466d50, pOrderBy=0x0, pResultSet=0x2475c60, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#11 0x00000000002fdcea in sqlite3Select (pParse=0x7ffd0b2a5d50, p=0x24618f0, pDest=0x7ffd0b2a5140) at sqlite3.c:130695
+#12 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffd0b2a5370, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffd0b2a5d50) at sqlite3.c:151581
+#13 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffd0b2a5370, yymajor=1, yyminor=...) at sqlite3.c:152877
+#14 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffd0b2a5d50, 
+    zSql=0x24812df ";;\nSELECT b=b FROM t1;;\nUPDATE t1 SET a='xyz', a=NULL;;\nUPDATE t1 SET b='abc\341\210\264', b='b%\341\210\264\341\210\264';;;\nSELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY "..., pzErrMsg=0x7ffd0b2a5f30) at sqlite3.c:154013
+#15 0x00000000002a1683 in sqlite3Prepare (db=0x2457520, 
+    zSql=0x2457ff4 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1805, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffd0b2a6068, pzTail=0x7ffd0b2a6050) at sqlite3.c:124303
+#16 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x2457520, 
+    zSql=0x2457ff4 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1805, prepFlags=128, pOld=0x0, ppStmt=0x7ffd0b2a6068, pzTail=0x7ffd0b2a6050) at sqlite3.c:124403
+#17 0x000000000029247f in sqlite3_prepare_v2 (db=0x2457520, 
+    zSql=0x2457ff4 ";\nSELECT\n    SrcWord, t1.b\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.b= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1805, ppStmt=0x7ffd0b2a6068, pzTail=0x7ffd0b2a6050) at sqlite3.c:124487
+#18 0x0000000000256bd0 in main (argc=1, argv=0x7ffd0b2a6218) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 6545] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

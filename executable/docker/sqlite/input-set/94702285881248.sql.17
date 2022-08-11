@@ -1,0 +1,54 @@
+CREATE TABLE t1(a,b,c);
+;INSERT INTO t1 VALUES(1,2,3),(100,50,75),(-11,22,-33);
+;CREATE VIEW v1a AS SELECT f3(a+b) FROM t1;
+;SELECT f3(a+b) FROM t1;
+;
+;PRAGMA trusted_schema=ON;
+;SELECT * FROM v1a;
+;PRAGMA trusted_schema=OFF;
+;SELECT * FROM v1a;
+;DROP VIEW v1a;
+;CREATE TEMP VIEW v1a AS SELECT f3(a+b) FROM t1;
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='v1a' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='v1a' AND type!='trigger' ORDER BY rowid
+;SELECT * FROM v1a;
+;
+;CREATE VIEW v1b AS SELECT f2(b+c) FROM t1;
+;SELECT f2(b+c) FROM t1;
+;
+;PRAGMA trusted_schema=ON;
+;SELECT * FROM v1b;
+;
+;PRAGMA trusted_schema=OFF;
+;DROP VIEW v1b;
+;CREATE TEMP VIEW v1b AS SELECT f2(b+c) FROM t1;
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='v1b' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='v1b' AND type!='trigger' ORDER BY rowid
+;SELECT * FROM v1b;
+;
+;DELETE FROM t1;
+;CREATE TABLE t2(x);
+;CREATE TRIGGER r1 AFTER INSERT ON t1 BEGIN
+    INSERT INTO t2(x) SELECT f3(new.a);
+  END;
+;
+;INSERT INTO t1 VALUES(7,6,5);
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;
+;DROP TRIGGER r1;
+;CREATE TRIGGER r1 AFTER INSERT ON t1 BEGIN
+    INSERT INTO t2(x) SELECT f2(new.a)+100;
+  END;
+;PRAGMA trusted_schema=ON;
+;INSERT INTO t1 VALUES(7,6,5);
+;SELECT * FROM t1, t2;
+;
+;DELETE FROM t1;
+;DELETE FROM t2;
+;PRAGMA trusted_schema=OFF;
+;INSERT INTO t1 VALUES(7,6,5);
+;SELECT * FROM t1;
+;SELECT * FROM t2;
+;
+;

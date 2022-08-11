@@ -1,0 +1,95 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000525,sig:06,src:024755+024609,time:23937526,execs:4175045,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: SELECT v2,v2,v2 FROM v0 UNION SELECT v2,v2,v2 FROM v0
+    ORDER BY v2 DESC,v2,v2
+  
+;
+SQL-trace: ;PRAGMA integrity_check;
+SQL-trace: ;
+;VACUUM 
+;
+SQL-trace: ATTACH '' AS vacuum_db;
+SQL-trace: PRAGMA vacuum_db.synchronous=OFF
+SQL-trace: BEGIN;
+SQL-trace: SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14)   FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: CREATE TABLE vacuum_db.v0(
+    v1 UNIQUE ON CONFLICT REPLACE, 
+    v2 UNIQUE ON CONFLICT IGNORE,
+    v3 INTEGER PRIMARY KEY ON CONFLICT FAIL
+  )
+SQL-trace: CREATE TABLE vacuum_db.x(xyz,t1,a,b,t1b,abc)
+SQL-trace: SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14)  FROM sqlite_master WHERE sql LIKE 'CREATE INDEX %' 
+SQL-trace: CREATE INDEX vacuum_db.c ON v0(v3+v3+v2)
+SQL-trace: CREATE INDEX vacuum_db.def ON v0(v2)
+
+SQL-trace: SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21)   FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';'FROM main.sqlite_master WHERE type = 'table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: INSERT INTO vacuum_db.'v0' SELECT * FROM main.'v0';
+SQL-trace: INSERT INTO vacuum_db.'x' SELECT * FROM main.'x';
+SQL-trace: SELECT 'DELETE FROM vacuum_db.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name='sqlite_sequence' 
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name=='sqlite_sequence';
+SQL-trace: INSERT INTO vacuum_db.sqlite_master   SELECT type, name, tbl_name, rootpage, sql    FROM main.sqlite_master   WHERE type='view' OR type='trigger'      OR (type='table' AND rootpage=0)
+SQL-trace: ;
+;DELETE FROM x;
+SQL-trace: ;
+;VACUUM;
+SQL-trace: ATTACH '' AS vacuum_db;
+SQL-trace: PRAGMA vacuum_db.synchronous=OFF
+SQL-trace: BEGIN;
+SQL-trace: SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14)   FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: CREATE TABLE vacuum_db.v0(
+    v1 UNIQUE ON CONFLICT REPLACE, 
+    v2 UNIQUE ON CONFLICT IGNORE,
+    v3 INTEGER PRIMARY KEY ON CONFLICT FAIL
+  )
+SQL-trace: CREATE TABLE vacuum_db.x(xyz,t1,a,b,t1b,abc)
+SQL-trace: SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14)  FROM sqlite_master WHERE sql LIKE 'CREATE INDEX %' 
+SQL-trace: CREATE INDEX vacuum_db.c ON v0(v3+v3+v2)
+SQL-trace: CREATE INDEX vacuum_db.def ON v0(v2)
+
+SQL-trace: SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21)   FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';'FROM main.sqlite_master WHERE type = 'table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: INSERT INTO vacuum_db.'v0' SELECT * FROM main.'v0';
+SQL-trace: INSERT INTO vacuum_db.'x' SELECT * FROM main.'x';
+SQL-trace: SELECT 'DELETE FROM vacuum_db.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name='sqlite_sequence' 
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name=='sqlite_sequence';
+SQL-trace: INSERT INTO vacuum_db.sqlite_master   SELECT type, name, tbl_name, rootpage, sql    FROM main.sqlite_master   WHERE type='view' OR type='trigger'      OR (type='table' AND rootpage=0)
+SQL-trace: ;
+;SELECT CAST('0.0' AS numeric);
+SQL-trace: ;INSERT INTO v0(v1) VALUES('v1');
+SQL-trace: ;UPDATE v0 SET v3=v3, v3=random();
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f49deb1c859 in __GI_abort () at abort.c:79
+#2  0x00007f49deb1c729 in __assert_fail_base (fmt=0x7f49decb2588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x212700 "memIsValid(&aMem[pOp->p1])", file=0x222c23 "sqlite3.c", line=77360, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f49deb2dfd6 in __GI___assert_fail (assertion=0x212700 "memIsValid(&aMem[pOp->p1])", file=0x222c23 "sqlite3.c", line=77360, function=0x213a19 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003e2946 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:77360
+#5  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#6  0x000000000024b5e9 in main (argc=1, argv=0x7ffd16d4cea8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 38227] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

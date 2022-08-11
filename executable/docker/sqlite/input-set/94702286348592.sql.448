@@ -1,0 +1,38 @@
+CREATE TABLE t1(a, b);
+;CREATE TABLE t2(a, b);
+;CREATE TABLE t3(a, b);
+;CREATE TABLE log(x);
+;CREATE TRIGGER t1_i BEFORE INSERT ON t1 BEGIN
+    INSERT INTO t2 VALUES(new.a, new.b), (new.a, new.b);
+    INSERT INTO log VALUES('t2->' || changes());
+  END;
+;CREATE TRIGGER t2_i AFTER INSERT ON t2 BEGIN
+    INSERT INTO t3 VALUES(new.a, new.b), (new.a, new.b), (new.a, new.b);
+    INSERT INTO log VALUES('t3->' || changes());
+  END;
+;CREATE TRIGGER t1_u AFTER UPDATE ON t1 BEGIN
+    UPDATE t2 SET b=new.b WHERE a=old.a;
+    INSERT INTO log VALUES('t2->' || changes());
+  END;
+;CREATE TRIGGER t2_u BEFORE UPDATE ON t2 BEGIN
+    UPDATE t3 SET b=new.b WHERE a=old.a;
+    INSERT INTO log VALUES('t3->' || changes());
+  END;
+;CREATE TRIGGER t1_d AFTER DELETE ON t1 BEGIN
+    DELETE FROM t2 WHERE a=old.a AND b=old.b;
+    INSERT INTO log VALUES('t2->' || changes());
+  END;
+;CREATE TRIGGER t2_d BEFORE DELETE ON t2 BEGIN
+    DELETE FROM t3 WHERE a=old.a AND b=old.b;
+    INSERT INTO log VALUES('t3->' || changes());
+  END;
+;
+;INSERT INTO t1 VALUES('+', 'o');
+;SELECT * FROM log;
+;
+;DELETE FROM log;
+;UPDATE t1 SET b='*';
+;
+;DELETE FROM t1;
+;
+;

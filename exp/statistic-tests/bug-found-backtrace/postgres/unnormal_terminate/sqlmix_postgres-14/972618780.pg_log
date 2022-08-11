@@ -1,0 +1,111 @@
+	      (225), (270), (315), (360)) AS test1(x);
+2022-08-02 02:45:38.201 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.201 UTC [83422] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 02:45:38.201 UTC [83422] WARNING:  there is no transaction in progress
+2022-08-02 02:45:38.201 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.201 UTC [83422] STATEMENT:  DISCARD ALL;
+2022-08-02 02:45:38.201 UTC [83422] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 02:45:38.201 UTC [83422] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 02:45:38.201 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.201 UTC [83422] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  SET SESSION AUTHORIZATION regress_sro_user;
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  SET datestyle = 'ISO, YMD';
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662 at character 17
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  
+	  CREATE TABLE test1 (b int PRIMARY KEY, a text);
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662 at character 17
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  
+	  CREATE TABLE test1_a_idx (t1 int NOT NULL REFERENCES test1);
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE TABLESPACE')
+	   execute procedure test_event_trigger();
+2022-08-02 02:45:38.204 UTC [89584] PANIC:  could not open critical system index 2662
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662 at character 17
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  
+	  CREATE TABLE foo (pg_description int PRIMARY KEY, c text);
+2022-08-02 02:45:38.204 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.204 UTC [83422] STATEMENT:  
+	
+	-- rename column of system table
+	ALTER TABLE pg_description RENAME COLUMN description TO comment;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	
+	-- ATSimplePermissions()
+	ALTER TABLE pg_description ALTER COLUMN description SET NOT NULL;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	
+	-- RangeVarCallbackOwnsRelation()
+	CREATE INDEX pg_descripton_test_index ON pg_description (description);
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  CREATE SCHEMA alt_nsp1;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  GRANT ALL ON SCHEMA alt_nsp1, alt_nsp2 TO public;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	CREATE TABLE audit_tbls.test1(a text);
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	
+	-- triggers
+	CREATE FUNCTION tf1() RETURNS trigger
+	LANGUAGE plpgsql
+	AS $$
+	BEGIN
+	  RETURN NULL;
+	END $$;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	CREATE OR REPLACE FUNCTION event_trigger_report_end()
+	 RETURNS event_trigger
+	 LANGUAGE plpgsql
+	AS $$
+	DECLARE r RECORD;
+	BEGIN
+	    FOR r IN SELECT * FROM pg_event_trigger_ddl_commands()
+	    LOOP
+	        RAISE NOTICE 'END: command_tag=% type=% identity=%',
+	            r.command_tag, r.object_type, r.object_identity;
+	    END LOOP;
+	END; $$;
+2022-08-02 02:45:38.205 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.205 UTC [83422] STATEMENT:  
+	CREATE EVENT TRIGGER regress_event_trigger_report_end ON ddl_command_end
+	  EXECUTE PROCEDURE event_trigger_report_end();
+2022-08-02 02:45:38.205 UTC [83422] WARNING:  there is no transaction in progress
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  ALTER FUNCTION alt_func3(int) SET SCHEMA alt_nsp2;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  CREATE OPERATOR CLASS alt_opc2 FOR TYPE uuid USING hash AS STORAGE uuid;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  SELECT '2006-08-13 12:34:56'::timestamptz;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  SELECT '2006-08-13 12:34:56'::timestamptz;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  ALTER OPERATOR CLASS alt_opc2 USING hash OWNER TO regress_alter_generic_user2;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  ALTER OPERATOR CLASS alt_opc2 USING hash OWNER TO regress_alter_generic_user2;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  CREATE ROLE regress_guc_user;
+2022-08-02 02:45:38.206 UTC [83422] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 02:45:38.206 UTC [83422] STATEMENT:  ALTER OPERATOR CLASS alt_opc3 USING hash OWNER TO regress_alter_generic_user2;
+2022-08-02 02:45:38.206 UTC [83108] LOG:  server process (PID 89584) was terminated by signal 6: Aborted
+2022-08-02 02:45:38.206 UTC [83108] LOG:  terminating any other active server processes
+2022-08-02 02:45:38.248 UTC [83108] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:45:38.262 UTC [89601] LOG:  database system was interrupted; last known up at 2022-08-02 02:44:29 UTC
+2022-08-02 02:45:38.263 UTC [89602] FATAL:  the database system is in recovery mode
+2022-08-02 02:45:38.265 UTC [89605] FATAL:  the database system is in recovery mode
+2022-08-02 02:45:38.278 UTC [89606] FATAL:  the database system is in recovery mode
+2022-08-02 02:45:38.284 UTC [89601] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:45:38.285 UTC [89601] LOG:  redo starts at 0/167A560
+2022-08-02 02:45:38.285 UTC [83108] LOG:  received smart shutdown request
+2022-08-02 02:45:38.290 UTC [83108] LOG:  abnormal database system shutdown

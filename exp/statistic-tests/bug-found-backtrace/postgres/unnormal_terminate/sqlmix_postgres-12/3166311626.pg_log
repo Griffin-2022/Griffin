@@ -1,0 +1,121 @@
+	FROM pg_catalog.pg_attribute a
+	WHERE a.attrelid = '24536' AND a.attnum > 0 AND NOT a.attisdropped
+	ORDER BY a.attnum;
+2022-08-02 06:10:10.221 UTC [66897] ERROR:  schema "schema_one" does not exist at character 14
+2022-08-02 06:10:10.221 UTC [66897] STATEMENT:  CREATE TABLE schema_one.current_check_2(nochange int);
+2022-08-02 06:10:10.221 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:10:10.221 UTC [66897] STATEMENT:  CREATE TABLE audit_tbls.sqlsim0(sqlsim1 text);
+2022-08-02 06:10:10.221 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:10:10.221 UTC [66897] STATEMENT:  CREATE TABLE schema_two.uctest(f2 int);
+2022-08-02 06:10:10.221 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:10:10.221 UTC [66897] STATEMENT:  create table pg_shadow partition of footrg_ondel for values with (modulus 4, remainder 2);
+2022-08-02 06:10:10.221 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:10:10.221 UTC [66897] STATEMENT:  create table userepl partition of f1 for values with (modulus 8, remainder 4);
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:    -- error
+	ALTER TABLE twophase_type ADD COLUMN uuid_reserved_bits int DEFAULT 42,
+	  ADD COLUMN uuid_multicast_bit int GENERATED ALWAYS AS (uuid_reserved_bits * 4) STORED;
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  
+	CREATE TABLE gtest30_1 () INHERITS (gtest30);
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  CREATE TABLE sqlsim2 (
+		sqlsim3 text,
+		sqlsim4 text
+	);
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  
+	DROP TRIGGER twophase_type ON current_check;
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  CREATE OR REPLACE FUNCTION undroppable() RETURNS event_trigger
+	LANGUAGE plpgsql AS $$
+	DECLARE
+		obj record;
+	BEGIN
+		PERFORM 1 FROM pg_tables WHERE tablename = 'f1';
+		IF NOT FOUND THEN
+			RAISE NOTICE 'table f1 not found, skipping';
+			RETURN;
+		END IF;
+		FOR obj IN
+			SELECT * FROM pg_event_trigger_dropped_objects() JOIN
+				f1 USING (ucchild, ucchild)
+		LOOP
+			RAISE EXCEPTION 'object % of type % cannot be dropped',
+				obj.ucchild, obj.ucchild;
+		END LOOP;
+	END;
+	$$;
+2022-08-02 06:10:10.222 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.222 UTC [66897] STATEMENT:  CREATE OR REPLACE FUNCTION test_evtrig_dropped_objects() RETURNS event_trigger
+	LANGUAGE plpgsql AS $$
+	DECLARE
+	    obj record;
+	BEGIN
+	    FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
+	    LOOP
+	        IF obj.object_type = 'table' THEN
+	                EXECUTE format('DROP TABLE IF EXISTS audit_tbls.%I',
+						format('%s_%s', obj.schema_name, obj.object_name));
+	        END IF;
+	
+		INSERT INTO ucchild
+			(ucchild, ucchild, ucchild) VALUES
+			(obj.object_type, obj.schema_name, obj.object_identity);
+	    END LOOP;
+	END
+	$$;
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  CREATE EVENT TRIGGER regress_event_trigger_report_end ON ddl_command_end
+	  EXECUTE PROCEDURE event_trigger_report_end();
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  schema "evttrig" does not exist
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  ALTER TABLE evttrig.sqlsim0 DROP CONSTRAINT sqlsim0;
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  schema "evttrig" does not exist
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  ALTER TABLE evttrig.ucchild DROP COLUMN ucview;
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  create event trigger no_rewrite_allowed on table_rewrite
+	  execute procedure test_evtrig_no_rewrite();
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  set timezone to '0';
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  drop event trigger no_rewrite_allowed;
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  CREATE EVENT TRIGGER sql_drop_command ON sql_drop
+	    WHEN TAG IN ('DROP POLICY') EXECUTE PROCEDURE drop_sql_command();
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  ALTER POLICY p1 ON current_check_2 USING (TRUE);
+2022-08-02 06:10:10.223 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.223 UTC [66897] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:10:10.223 UTC [66897] WARNING:  there is no transaction in progress
+2022-08-02 06:10:10.224 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.224 UTC [66897] STATEMENT:  DISCARD ALL;
+2022-08-02 06:10:10.224 UTC [66897] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:10:10.224 UTC [66897] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:10:10.224 UTC [66897] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:10:10.224 UTC [66897] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:10:11.517 UTC [74526] PANIC:  could not open critical system index 2662
+2022-08-02 06:10:11.518 UTC [64390] LOG:  server process (PID 74526) was terminated by signal 6: Aborted
+2022-08-02 06:10:11.518 UTC [64390] LOG:  terminating any other active server processes
+2022-08-02 06:10:11.561 UTC [64390] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:10:11.577 UTC [74528] LOG:  database system was interrupted; last known up at 2022-08-02 06:09:14 UTC
+2022-08-02 06:10:11.598 UTC [74528] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:10:11.598 UTC [74528] LOG:  redo starts at 0/B49FA20
+2022-08-02 06:10:11.840 UTC [74528] LOG:  invalid record length at 0/C12C938: wanted 24, got 0
+2022-08-02 06:10:11.840 UTC [74528] LOG:  redo done at 0/C12C900 system usage: CPU: user: 0.22 s, system: 0.01 s, elapsed: 0.24 s
+2022-08-02 06:10:11.852 UTC [64390] LOG:  database system is ready to accept connections
+2022-08-02 06:10:18.803 UTC [74748] PANIC:  could not open critical system index 2662
+2022-08-02 06:10:18.805 UTC [64390] LOG:  server process (PID 74748) was terminated by signal 6: Aborted
+2022-08-02 06:10:18.805 UTC [64390] LOG:  terminating any other active server processes
+2022-08-02 06:10:18.809 UTC [74752] FATAL:  the database system is in recovery mode
+2022-08-02 06:10:18.812 UTC [64390] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:10:18.825 UTC [64390] LOG:  received smart shutdown request
+2022-08-02 06:10:18.826 UTC [74758] LOG:  database system was interrupted; last known up at 2022-08-02 06:10:11 UTC
+2022-08-02 06:10:18.837 UTC [74758] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:10:18.838 UTC [74758] LOG:  invalid record length at 0/C12C9B0: wanted 24, got 0
+2022-08-02 06:10:18.838 UTC [74758] LOG:  redo is not required
+2022-08-02 06:10:18.843 UTC [64390] LOG:  abnormal database system shutdown
+2022-08-02 06:10:18.845 UTC [64390] LOG:  database system is shut down

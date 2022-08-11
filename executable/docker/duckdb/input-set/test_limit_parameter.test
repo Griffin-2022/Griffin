@@ -1,0 +1,149 @@
+# name: test/sql/order/test_limit_parameter.test
+# description: Test LIMIT with a parameter (issue 1866)
+# group: [order]
+
+;
+PRAGMA enable_verification
+
+;
+SELECT 'Test' LIMIT ?
+
+;
+PREPARE v1 AS SELECT 'Test' LIMIT ?
+
+;
+EXECUTE v1(1)
+;
+Test
+
+;
+EXECUTE v1(0)
+;
+
+;
+PREPARE v2 AS SELECT * FROM RANGE(1000000000) LIMIT ? OFFSET ?
+
+;
+EXECUTE v2(3, 0)
+;
+0
+1
+2
+
+;
+EXECUTE v2(3, 17)
+;
+17
+18
+19
+
+;
+PREPARE v3 AS SELECT * FROM RANGE(1000000000) LIMIT 2 OFFSET ?
+
+;
+EXECUTE v3(0)
+;
+0
+1
+
+;
+EXECUTE v3(17)
+;
+17
+18
+
+;
+PREPARE v4 AS SELECT * FROM RANGE(1000000000) LIMIT ? OFFSET 17
+
+;
+EXECUTE v4(3)
+;
+17
+18
+19
+
+;
+EXECUTE v4(6)
+;
+17
+18
+19
+20
+21
+22
+
+;
+PREPARE v5 AS SELECT * FROM RANGE(1000000000) LIMIT (SELECT ?::INT) OFFSET (SELECT ?::INT)
+
+;
+EXECUTE v5(3, 0)
+;
+0
+1
+2
+
+;
+EXECUTE v5(3, 17)
+;
+17
+18
+19
+
+;
+PREPARE v6 AS SELECT * FROM RANGE(1000000000) LIMIT 3+? OFFSET ?+2*?
+
+;
+EXECUTE v6(1, 0, 0)
+;
+0
+1
+2
+3
+
+;
+EXECUTE v6(3, 1, 2)
+;
+5
+6
+7
+8
+9
+10
+
+;
+PREPARE v7 AS SELECT * FROM RANGE(5) LIMIT ? OFFSET ?
+
+;
+EXECUTE v7(NULL, 2)
+;
+2
+3
+4
+
+;
+EXECUTE v7(2, NULL)
+;
+0
+1
+
+;
+EXECUTE v7(NULL, 922337203685477580700)
+
+;
+EXECUTE v7(NULL, 9223372036854775807)
+
+;
+EXECUTE v7(9223372036854775807, NULL)
+
+;
+EXECUTE v7(NULL, 4611686018427387904)
+;
+
+;
+EXECUTE v7(4611686018427387904, NULL)
+;
+0
+1
+2
+3
+4

@@ -1,0 +1,150 @@
+# name: test/sql/function/string/test_ilike.test
+# description: Test ILIKE statement
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# scalar like
+;
+SELECT 'aaa' ILIKE 'bbb'
+;
+0
+
+;
+SELECT 'aaa' ILIKE 'aAa'
+;
+1
+
+;
+SELECT 'aaa' ILIKE '%'
+;
+1
+
+;
+SELECT 'aaa' ILIKE '%A'
+;
+1
+
+;
+SELECT 'aaa' ILIKE '%b'
+;
+0
+
+;
+SELECT 'aaa' ILIKE 'A%'
+;
+1
+
+;
+SELECT 'aaa' ILIKE 'b%'
+;
+0
+
+;
+SELECT 'aaa' ILIKE 'A_a'
+;
+1
+
+;
+SELECT 'aaa' ILIKE 'a_'
+;
+0
+
+;
+SELECT 'aaa' ILIKE '__%'
+;
+1
+
+;
+SELECT 'aaa' ILIKE '____%'
+;
+0
+
+;
+SELECT 'ababac' ILIKE '%abac'
+;
+1
+
+;
+SELECT 'ababac' ILIKE '%%%aBac'
+;
+1
+
+;
+SELECT 'ababac' ILIKE 'abab%%%%%'
+;
+1
+
+;
+SELECT 'ababac' ILIKE '%%%a%%%b%%a%b%%%%%a%c%%'
+;
+1
+
+;
+SELECT 'ababac' ILIKE '%%%a%%%b%%a%b%%%%%a%d%%'
+;
+0
+
+;
+SELECT 'ababac' NOT ILIKE '%Abac'
+;
+0
+
+# like with table
+;
+CREATE TABLE strings(s STRING, pat STRING);
+
+;
+INSERT INTO strings VALUES ('abab', 'Ab%'), ('aaa', 'A_a'), ('aaa', '%b%')
+
+;
+SELECT s FROM strings WHERE s LIKE 'ab%'
+;
+abab
+
+;
+SELECT s FROM strings WHERE 'aba' ILIKE pat
+;
+abab
+aaa
+aaa
+
+;
+SELECT s FROM strings WHERE 'aba' NOT ILIKE pat
+;
+
+;
+SELECT s FROM strings WHERE s ILIKE pat
+;
+abab
+aaa
+
+;
+SELECT s FROM strings WHERE s NOT ILIKE pat
+;
+aaa
+
+# unicode
+;
+SELECT 'MÜHLEISEN' ILIKE 'mühleisen'
+;
+1
+
+
+;
+CREATE TABLE unicode_strings(s STRING, pat STRING);
+
+;
+INSERT INTO unicode_strings VALUES ('öäb', 'Ö%B'), ('aaÄ', 'A_ä'), ('aaa', '%b%')
+
+;
+SELECT s FROM unicode_strings WHERE s ILIKE pat
+;
+öäb
+aaÄ
+
+;
+SELECT s FROM unicode_strings WHERE s NOT ILIKE pat
+;
+aaa

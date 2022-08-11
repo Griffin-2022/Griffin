@@ -1,0 +1,124 @@
+# name: test/sql/storage/wal/wal_list_storage.test
+# description: Test lists with persistent storage
+# group: [wal]
+
+load __TEST_DIR__/list_storage_test.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE a(b INTEGER[]);
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM a
+;
+
+;
+INSERT INTO a VALUES ([1, 2]), (NULL), ([3, 4, 5, 6]), ([NULL, 7]);
+
+;
+SELECT * FROM a
+;
+[1, 2]
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM a
+;
+[1, 2]
+NULL
+[3, 4, 5, 6]
+[NULL, 7]
+
+# nested lists
+;
+CREATE TABLE b(b INTEGER[][]);
+
+;
+INSERT INTO b VALUES ([[1, 2], [3, 4]]), (NULL), ([NULL, [7, 8, NULL], [2, 3]]), ([[NULL, 6], NULL, [1, 2, NULL]]);
+
+;
+SELECT * FROM b
+;
+[[1, 2], [3, 4]]
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM b
+;
+[[1, 2], [3, 4]]
+NULL
+[NULL, [7, 8, NULL], [2, 3]]
+[[NULL, 6], NULL, [1, 2, NULL]]
+
+;
+CREATE TABLE c(b VARCHAR[]);
+
+;
+INSERT INTO c VALUES (['hello', 'world']), (NULL), (['fejwfoaejwfoijwafew', 'b', 'c']), ([NULL, 'XXXXXXXXXXXXXXXXXXXXXXXX']);
+
+;
+SELECT * FROM c
+;
+[hello, world]
+NULL
+[fejwfoaejwfoijwafew, b, c]
+[NULL, XXXXXXXXXXXXXXXXXXXXXXXX]
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM c
+;
+[hello, world]
+NULL
+[fejwfoaejwfoijwafew, b, c]
+[NULL, XXXXXXXXXXXXXXXXXXXXXXXX]
+
+restart
+
+;
+SELECT * FROM c
+;
+[hello, world]
+NULL
+[fejwfoaejwfoijwafew, b, c]
+[NULL, XXXXXXXXXXXXXXXXXXXXXXXX]

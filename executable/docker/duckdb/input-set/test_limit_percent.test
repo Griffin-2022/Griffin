@@ -1,0 +1,245 @@
+# name: test/sql/order/test_limit_percent.test
+# description: Test LIMIT keyword {% | PERCENT}
+# group: [order]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (12, 21), (13, 22), (14, 32), (15, 52)
+
+# constant limit
+;
+SELECT a FROM test LIMIT 20 %
+;
+11
+
+;
+SELECT a FROM test LIMIT 40 PERCENT
+;
+11
+12
+
+# decimal limit
+;
+SELECT a FROM test LIMIT 35%
+;
+11
+
+;
+SELECT a FROM test LIMIT 79.9%
+;
+11
+12
+13
+
+;
+SELECT a FROM test LIMIT 80.1%
+;
+11
+12
+13
+14
+
+;
+SELECT a FROM test LIMIT 101.1 PERCENT
+;
+11
+12
+13
+14
+15
+
+# LIMIT with operation
+;
+SELECT a FROM test LIMIT (30-10) %
+;
+11
+
+# LIMIT with non-scalar should fail
+;
+SELECT a FROM test LIMIT a %
+
+# LIMIT with non-scalar operation should also fail
+;
+SELECT a FROM test LIMIT (a+1) %
+
+;
+SELECT a FROM test LIMIT (a+b*c) %
+
+;
+SELECT a FROM test LIMIT (a+b*c) %
+
+# aggregate in limit percent
+;
+SELECT a FROM test LIMIT SUM(42) %
+
+# non-foldable expression in limit percent
+;
+SELECT * FROM test LIMIT RANDOM() %;
+
+# subquery in limit percent and offset
+;
+SELECT a FROM test LIMIT 50% OFFSET 2
+;
+13
+14
+
+;
+SELECT * FROM range(10) LIMIT 50% OFFSET 2
+;
+2
+3
+4
+5
+6
+
+;
+SELECT * FROM range(10000) LIMIT 0.1% OFFSET 8000
+;
+8000
+8001
+8002
+8003
+8004
+8005
+8006
+8007
+8008
+8009
+
+;
+SELECT * FROM range(10000) LIMIT 0.1% OFFSET 9999
+;
+9999
+
+;
+SELECT a FROM test LIMIT (SELECT COUNT(*) FROM test) % OFFSET 1
+;
+
+;
+SELECT a FROM test LIMIT 50% OFFSET (((SELECT MIN(b) FROM test)-1)/10);
+;
+13
+14
+
+;
+SELECT b FROM test LIMIT 70% OFFSET (((SELECT MIN(test.a) FROM test)-1)/10);
+;
+21
+22
+32
+
+# non-foldable expression in limit
+;
+SELECT * FROM test LIMIT 30% OFFSET RANDOM();
+
+;
+SELECT COUNT(*) FROM (SELECT * FROM (SELECT * FROM (SELECT * FROM range(1000000) LIMIT 10%) LIMIT 10%) LIMIT 10%)
+;
+1000
+
+;
+SELECT * FROM range(10) UNION ALL SELECT * FROM range(10, 20) LIMIT 10%;
+;
+0
+1
+
+#boundary values
+# big value
+;
+SELECT * FROM range(1000000) LIMIT 0.0001%
+;
+0
+
+;
+SELECT b FROM test LIMIT 0%
+;
+
+#Subqueries that return negative values
+;
+SELECT * FROM range(100) LIMIT -10 %;
+
+#Subqueries that return strings that can't be converted to integers
+;
+SELECT * FROM test LIMIT (SELECT 'ab') %
+
+# can only limit % by integers
+;
+select 1 limit date '2021-11-25' %;
+
+;
+select * from test limit "Hello World" %;
+
+#LIMIT % with strings
+;
+CREATE TABLE test2 (a STRING);
+
+;
+INSERT INTO test2 VALUES ('first'), ('second'), ('third'), ('4th'), ('5th') 
+
+;
+PREPARE v1 AS SELECT * FROM test2 LIMIT 40%
+
+;
+EXECUTE v1
+;
+first
+second
+
+# LIMIT % with multiple lists
+;
+CREATE VIEW v3 AS SELECT i % 5 g, LIST(CASE WHEN i=6 or i=8 then null else i end) l FROM RANGE(20) tbl(i) group by g
+
+;
+SELECT g, 5=ANY(l) FROM v3 ORDER BY g LIMIT 80%;
+;
+0	true
+1	NULL
+2	false
+3	NULL
+
+;
+SELECT g, 3>ANY(l) FROM v3 ORDER BY g LIMIT 50%;
+;
+0	true
+1	true
+
+# LIMIT % with struct
+;
+CREATE TABLE struct_data (g INTEGER, e INTEGER)
+
+;
+INSERT INTO struct_data VALUES (1, 1), (1, 2), (2, 3), (2, 4), (2, 5), (3, 6), (5, NULL)
+
+;
+SELECT STRUCT_PACK(a := 42, b := 43)
+;
+{'a': 42, 'b': 43}
+
+;
+SELECT e, STRUCT_PACK(e) FROM struct_data ORDER BY e LIMIT 60%
+;
+NULL	{'e': NULL}
+1	{'e': 1}
+2	{'e': 2}
+3	{'e': 3}
+
+# LIMIT % of NULL
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (1), (2), (3), (4), (5);
+
+;
+SELECT * FROM integers as int LIMIT (SELECT max(integers.i) FROM integers where i > 5) %
+;
+1
+2
+3
+4
+5

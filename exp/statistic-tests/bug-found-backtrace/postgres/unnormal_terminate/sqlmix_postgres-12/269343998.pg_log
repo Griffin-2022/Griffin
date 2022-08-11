@@ -1,0 +1,111 @@
+2022-08-02 03:44:46.141 UTC [86363] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct a,b,c)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c),
+	         generate_series(1,3) i;
+2022-08-02 03:44:46.141 UTC [86363] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 03:44:46.141 UTC [86363] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct a,b,c order by b)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c),
+	         generate_series(1,3) i;
+2022-08-02 03:44:46.141 UTC [86363] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 03:44:46.141 UTC [86363] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,b,c order by b+1)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-02 03:44:46.141 UTC [86363] ERROR:  view "agg_view1" does not exist
+2022-08-02 03:44:46.141 UTC [86363] STATEMENT:  drop view agg_view1;
+2022-08-02 03:44:46.146 UTC [86363] ERROR:  prepared statement "q" does not exist
+2022-08-02 03:44:46.146 UTC [86363] STATEMENT:  execute q;
+2022-08-02 03:44:46.148 UTC [86363] ERROR:  relation "tenk1" does not exist at character 290
+2022-08-02 03:44:46.148 UTC [86363] STATEMENT:  create view aggordview1 as
+	select ten,
+	       percentile_disc(0.5) within group (order by thousand) as p50,
+	       percentile_disc(0.5) within group (order by thousand) filter (where hundred=1) as px,
+	       rank(5,'AZZZZ',50) within group (order by hundred, string4 desc, hundred)
+	  from tenk1
+	 group by ten order by ten;
+2022-08-02 03:44:46.151 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.151 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.152 UTC [86363] ERROR:  bar
+2022-08-02 03:44:46.152 UTC [86363] STATEMENT:  do $$
+	begin
+	  raise notice 'foo';
+	  raise exception 'bar';
+	end $$;
+2022-08-02 03:44:46.173 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.173 UTC [86363] ERROR:  SAVEPOINT can only be used in transaction blocks
+2022-08-02 03:44:46.173 UTC [86363] STATEMENT:  SAVEPOINT pg_psql_temporary_savepoint
+	;
+2022-08-02 03:44:46.175 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.184 UTC [86363] ERROR:  role "regress_user1" already exists
+2022-08-02 03:44:46.184 UTC [86363] STATEMENT:  
+	
+	CREATE USER regress_user1;
+2022-08-02 03:44:46.188 UTC [86363] ERROR:  function functest_b_2(integer) does not exist
+2022-08-02 03:44:46.188 UTC [86363] STATEMENT:  
+	
+	ALTER FUNCTION functest_B_2(int) VOLATILE;
+2022-08-02 03:44:46.188 UTC [86363] ERROR:  function functest_b_3(integer) does not exist
+2022-08-02 03:44:46.188 UTC [86363] STATEMENT:  
+	ALTER FUNCTION functest_B_3(int) COST 100;
+2022-08-02 03:44:46.188 UTC [86363] ERROR:  function functest_e_2(integer) does not exist
+2022-08-02 03:44:46.188 UTC [86363] STATEMENT:  
+	ALTER FUNCTION functest_E_2(int) STABLE;
+2022-08-02 03:44:46.189 UTC [86363] ERROR:  function functest_e_2(integer) does not exist
+2022-08-02 03:44:46.189 UTC [86363] STATEMENT:  
+	
+	ALTER FUNCTION functest_E_2(int) NOT LEAKPROOF;
+2022-08-02 03:44:46.189 UTC [86363] ERROR:  function functest_e_2(integer) does not exist
+2022-08-02 03:44:46.189 UTC [86363] STATEMENT:  
+	ALTER FUNCTION functest_E_2(int) OWNER TO regress_unpriv_user;
+2022-08-02 03:44:46.191 UTC [86363] ERROR:  function functest_s_10(unknown, unknown) does not exist at character 10
+2022-08-02 03:44:46.191 UTC [86363] STATEMENT:  
+	
+	SELECT functest_S_10('abcd', '2020-01-01');
+2022-08-02 03:44:46.192 UTC [86363] ERROR:  function functest_is_1(integer, integer, text) does not exist
+2022-08-02 03:44:46.192 UTC [86363] STATEMENT:  
+	
+	DROP FUNCTION functest_IS_1(int, int, text), functest_IS_2(int), functest_IS_3(int);
+2022-08-02 03:44:46.195 UTC [86363] ERROR:  could not find a function named "functest_b_2"
+2022-08-02 03:44:46.195 UTC [86363] STATEMENT:    -- error, not found
+	DROP FUNCTION functest_b_2;
+2022-08-02 03:44:46.197 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.311 UTC [86363] ERROR:  role "regress_user1" already exists
+2022-08-02 03:44:46.311 UTC [86363] STATEMENT:  
+	
+	CREATE USER regress_user1;
+2022-08-02 03:44:46.322 UTC [86363] ERROR:  unrecognized object type "stone"
+2022-08-02 03:44:46.322 UTC [86363] STATEMENT:  SELECT pg_get_object_address('stone', '{}', '{}');
+2022-08-02 03:44:46.323 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.331 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.393 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.443 UTC [86363] ERROR:  could not extend file "base/12975/58440": No space left on device
+2022-08-02 03:44:46.443 UTC [86363] STATEMENT:  INSERT INTO tab_int
+		SELECT (x - 1) * 100 + y, polygon(circle(point(x * 10, y * 10), 1 + (x + y) % 10))
+		FROM generate_series(1, 100) x,
+			 generate_series(1, 100) y;
+2022-08-02 03:44:46.444 UTC [86363] ERROR:  role "regress_user1" does not exist
+2022-08-02 03:44:46.444 UTC [86363] STATEMENT:  
+	
+	-- error: password is user name
+	ALTER USER regress_user1 PASSWORD 'md5e589150ae7d28f93333afae92b36ef48';
+2022-08-02 03:44:46.444 UTC [86363] ERROR:  subscription "admin_sub" does not exist
+2022-08-02 03:44:46.444 UTC [86363] STATEMENT:  ALTER SUBSCRIPTION admin_sub OWNER TO regress_alice;
+2022-08-02 03:44:46.446 UTC [86363] WARNING:  there is no transaction in progress
+2022-08-02 03:44:46.461 UTC [86363] PANIC:  could not write to file "pg_wal/xlogtemp.86363": No space left on device
+2022-08-02 03:44:46.461 UTC [86363] STATEMENT:  CREATE TEMP TABLE tab_int (
+	    a int,
+	    tt1 int,
+	    f1 date,
+	    PRIMARY KEY (a, tt1)
+	);
+2022-08-02 03:44:46.481 UTC [76528] LOG:  server process (PID 86363) was terminated by signal 6: Aborted
+2022-08-02 03:44:46.481 UTC [76528] LOG:  terminating any other active server processes
+2022-08-02 03:44:46.487 UTC [76528] LOG:  all server processes terminated; reinitializing
+2022-08-02 03:44:46.504 UTC [86491] LOG:  database system was interrupted; last known up at 2022-08-02 03:44:41 UTC
+2022-08-02 03:44:46.505 UTC [86492] FATAL:  the database system is in recovery mode
+2022-08-02 03:44:46.507 UTC [86495] FATAL:  the database system is in recovery mode
+2022-08-02 03:44:46.509 UTC [86496] FATAL:  the database system is in recovery mode
+2022-08-02 03:44:46.515 UTC [76528] LOG:  received smart shutdown request
+2022-08-02 03:44:46.530 UTC [86491] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 03:44:46.531 UTC [86491] LOG:  redo starts at 1/B82E7220
+2022-08-02 03:44:46.535 UTC [76528] LOG:  abnormal database system shutdown

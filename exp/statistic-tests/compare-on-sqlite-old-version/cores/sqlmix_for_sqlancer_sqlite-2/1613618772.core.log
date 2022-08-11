@@ -1,0 +1,54 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000504,sig:08,src:023893+020047,time:18319367,execs:3544591,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGFPE, Arithmetic exception.
+0x000000000038263a in whereLoopAddBtree (pBuilder=0x7ffd05b17fd8, mPrereq=0) at sqlite3.c:143060
+143060	        pNew->rRun = rSize + 1 + (15*pProbe->szIdxRow)/pTab->szTabRow;
+(gdb) #0  0x000000000038263a in whereLoopAddBtree (pBuilder=0x7ffd05b17fd8, mPrereq=0) at sqlite3.c:143060
+#1  0x000000000036fb8f in whereLoopAddAll (pBuilder=0x7ffd05b17fd8) at sqlite3.c:143616
+#2  0x000000000036a9df in sqlite3WhereBegin (pParse=0x7ffd05b19930, pTabList=0x2193bd0, pWhere=0x0, pOrderBy=0x219e940, pResultSet=0x21a4bb0, wctrlFlags=16384, iAuxArg=33) at sqlite3.c:144811
+#3  0x00000000002fdcea in sqlite3Select (pParse=0x7ffd05b19930, p=0x2197410, pDest=0x7ffd05b18400) at sqlite3.c:130695
+#4  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7ffd05b19930, pExpr=0x2192910, iTab=1) at sqlite3.c:99650
+#5  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7ffd05b19930, pX=0x2192910, inFlags=3, prRhsHasNull=0x7ffd05b18628, aiMap=0x2189c70, piTab=0x7ffd05b1865c) at sqlite3.c:99448
+#6  0x000000000034f943 in sqlite3ExprCodeIN (pParse=0x7ffd05b19930, pExpr=0x2192910, destIfFalse=-3, destIfNull=-4) at sqlite3.c:99925
+#7  0x000000000034be9e in sqlite3ExprCodeTarget (pParse=0x7ffd05b19930, pExpr=0x2192910, target=1) at sqlite3.c:100792
+#8  0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffd05b19930, pList=0x21a2630, target=1, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#9  0x00000000003addca in innerLoopLoadRow (pParse=0x7ffd05b19930, pSelect=0x2194530, pInfo=0x7ffd05b18970) at sqlite3.c:125172
+#10 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffd05b19930, p=0x2194530, srcTab=-1, pSort=0x0, pDistinct=0x7ffd05b18c10, pDest=0x7ffd05b18d20, iContinue=-2, iBreak=-2) at sqlite3.c:125624
+#11 0x00000000002fe191 in sqlite3Select (pParse=0x7ffd05b19930, p=0x2194530, pDest=0x7ffd05b18d20) at sqlite3.c:130743
+#12 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffd05b18f50, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffd05b19930) at sqlite3.c:151581
+#13 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffd05b18f50, yymajor=1, yyminor=...) at sqlite3.c:152877
+#14 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffd05b19930, zSql=0x21889f5 ";DROP table \"preceding\"\n;DROP table \"last_field\"\n;PRAGMA foreign_keys = OFF\n;", pzErrMsg=0x7ffd05b19b10) at sqlite3.c:154013
+#15 0x00000000002a1683 in sqlite3Prepare (db=0x21852b0, 
+    zSql=0x21865c2 "SELECT (2, 1) IN (SELECT t1, t1 FROM preceding ORDER BY t1 LIMIT 10)\n;DROP table \"preceding\"\n;DROP table \"last_field\"\n;PRAGMA foreign_keys = OFF\n;", nBytes=146, prepFlags=128, pReprepare=0x0, 
+    ppStmt=0x7ffd05b19c48, pzTail=0x7ffd05b19c30) at sqlite3.c:124303
+#16 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x21852b0, 
+    zSql=0x21865c2 "SELECT (2, 1) IN (SELECT t1, t1 FROM preceding ORDER BY t1 LIMIT 10)\n;DROP table \"preceding\"\n;DROP table \"last_field\"\n;PRAGMA foreign_keys = OFF\n;", nBytes=146, prepFlags=128, pOld=0x0, 
+    ppStmt=0x7ffd05b19c48, pzTail=0x7ffd05b19c30) at sqlite3.c:124403
+#17 0x000000000029247f in sqlite3_prepare_v2 (db=0x21852b0, 
+    zSql=0x21865c2 "SELECT (2, 1) IN (SELECT t1, t1 FROM preceding ORDER BY t1 LIMIT 10)\n;DROP table \"preceding\"\n;DROP table \"last_field\"\n;PRAGMA foreign_keys = OFF\n;", nBytes=146, ppStmt=0x7ffd05b19c48, 
+    pzTail=0x7ffd05b19c30) at sqlite3.c:124487
+#18 0x0000000000256bd0 in main (argc=1, argv=0x7ffd05b19df8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 59064] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

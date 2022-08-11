@@ -1,0 +1,78 @@
+# name: test/sql/optimizer/expression/test_cse.test
+# description: Test queries involving Common SubExpressions
+# group: [expression]
+
+;
+PRAGMA enable_verification
+
+;
+create table test(a integer);
+
+;
+insert into test values (42);
+
+# single CSE
+;
+SELECT (a*2)+(a*2) FROM test
+;
+168
+
+# multiple CSEs
+;
+SELECT (a*2)+(a*2)+(a*2)+(a*2)+(a*2) FROM test
+;
+420
+
+# use the actual columns still
+;
+SELECT (a*2)+(a*2)+(a*2)+(a*2)+(a*2), a FROM test
+;
+420	42
+
+# CSE in aggregates
+;
+SELECT SUM((a*2)+(a*2)+(a*2)+(a*2)+(a*2)) FROM test
+;
+420
+
+# also with group by clause
+;
+SELECT a, SUM((a*2)+(a*2)+(a*2)+(a*2)+(a*2)) FROM test GROUP BY a
+;
+42	420
+
+
+# CSE in WHERE clause
+;
+SELECT * FROM test WHERE ((a*2)+(a*2))>100
+;
+42
+
+# multiple CSE in WHERE clause
+;
+SELECT * FROM test WHERE ((a*2)+(a*2)+(a*2)+(a*2)+(a*2))>400
+;
+42
+
+# Strings and NULL values
+;
+create table test2(a VARCHAR);
+
+;
+insert into test2 values ('hello'), ('world'), (NULL);
+
+# single CSE in projection
+;
+SELECT substring(a, 1, 3)=substring(a, 1, 3) FROM test2 ORDER BY 1
+;
+NULL
+1
+1
+
+# now with GROUP BY clause
+;
+SELECT substring(a, 1, 3)=substring(a, 1, 3) AS b FROM test2 GROUP BY b ORDER BY b
+;
+NULL
+1
+

@@ -1,0 +1,280 @@
+# name: test/sql/filter/test_obsolete_filters.test
+# description: Test expressions with obsolete filters
+# group: [filter]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(a INTEGER, b INTEGER)
+
+;
+INSERT INTO integers VALUES (1, 10), (2, 12), (3, 14), (4, 16), (5, NULL), (NULL, NULL)
+
+;
+SELECT * FROM integers WHERE TRUE ORDER BY 1
+;
+NULL	NULL
+1	10
+2	12
+3	14
+4	16
+5	NULL
+
+# Obsolete filters that can be pruned
+;
+SELECT * FROM integers WHERE FALSE ORDER BY 1
+;
+
+;
+SELECT * FROM integers WHERE NULL ORDER BY 1
+;
+
+# involving equality
+;
+SELECT * FROM integers WHERE a=2 AND a=2
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a=2 AND a>0
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a>0 AND a=2
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a=2 AND a<4
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a<4 AND a=2
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a=2 AND a<=2
+;
+2	12
+
+;
+SELECT * FROM integers WHERE a=2 AND a>=2
+;
+2	12
+
+# involving multiple GREATER THAN expressions
+;
+SELECT * FROM integers WHERE a>2 AND a>4
+;
+5	NULL
+
+;
+SELECT * FROM integers WHERE a>4 AND a>2
+;
+5	NULL
+
+;
+SELECT * FROM integers WHERE a>4 AND a>=4
+;
+5	NULL
+
+;
+SELECT * FROM integers WHERE a>=4 AND a>4
+;
+5	NULL
+
+# involving multiple LESS THAN expressions
+;
+SELECT * FROM integers WHERE a<2 AND a<4
+;
+1	10
+
+;
+SELECT * FROM integers WHERE a<4 AND a<2
+;
+1	10
+
+;
+SELECT * FROM integers WHERE a<2 AND a<=2
+;
+1	10
+
+;
+SELECT * FROM integers WHERE a<=2 AND a<2
+;
+1	10
+
+# involving inequality expression
+;
+SELECT * FROM integers WHERE a<2 AND a<>3
+;
+1	10
+
+;
+SELECT * FROM integers WHERE a<=1 AND a<>3
+;
+1	10
+
+;
+SELECT * FROM integers WHERE a>4 AND a<>2
+;
+5	NULL
+
+;
+SELECT * FROM integers WHERE a>=5 AND a<>2
+;
+5	NULL
+
+;
+SELECT * FROM integers WHERE a>=4 AND a<>4 AND a<>4
+;
+5	NULL
+
+# many conditions
+;
+SELECT * FROM integers WHERE a<3 AND a<4 AND a<5 AND a<10 AND a<2 AND a<20
+;
+1	10
+
+# various obsolete filters that always result in zero results
+# (i.e. entire tree can be pruned)
+
+;
+SELECT * FROM integers WHERE a=2 AND a=4
+;
+
+;
+SELECT * FROM integers WHERE a=2 AND a>4
+;
+
+;
+SELECT * FROM integers WHERE a>4 AND a=2
+;
+
+;
+SELECT * FROM integers WHERE a=2 AND a>2
+;
+
+;
+SELECT * FROM integers WHERE a>=4 AND a=2
+;
+
+;
+SELECT * FROM integers WHERE a=4 AND a<2
+;
+
+;
+SELECT * FROM integers WHERE a<2 AND a=4
+;
+
+;
+SELECT * FROM integers WHERE a=2 AND a<2
+;
+
+;
+SELECT * FROM integers WHERE a<=2 AND a=4
+;
+
+;
+SELECT * FROM integers WHERE a<2 AND a>4
+;
+
+;
+SELECT * FROM integers WHERE a=2 AND a<>2
+;
+
+;
+SELECT * FROM integers WHERE a<>2 AND a=2
+;
+
+;
+SELECT * FROM integers WHERE 0
+;
+
+;
+SELECT * FROM integers WHERE a<2 AND 0
+;
+
+# Test string expressions with obsolete filters
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello'), ('world'), (NULL)
+
+;
+SELECT * FROM strings WHERE s='hello' AND s='hello'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s='world'
+;
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<>'hello'
+;
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<>'world'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s>'a'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s>='hello'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<='hello'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<'z'
+;
+hello
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<='a'
+;
+
+;
+SELECT * FROM strings WHERE s='hello' AND s<'hello'
+;
+
+;
+SELECT * FROM strings WHERE s='hello' AND s>'hello'
+;
+
+;
+SELECT * FROM strings WHERE s='hello' AND s>='z'
+;
+
+;
+SELECT * FROM strings WHERE s<>'hello' AND s<='a'
+;
+
+;
+SELECT * FROM strings WHERE s<>'hello' AND s<'hello'
+;
+
+;
+SELECT * FROM strings WHERE s<>'hello' AND s>'hello'
+;
+world
+
+;
+SELECT * FROM strings WHERE s<>'world' AND s>='hello'
+;
+hello
+

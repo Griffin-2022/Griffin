@@ -1,0 +1,35 @@
+# name: test/sql/catalog/view/recursive_view.test
+# description: Issue #3017: Querying View of a View Crashes
+# group: [view]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE IF NOT EXISTS test (val INTEGER);
+
+;
+INSERT INTO test(val) VALUES (1), (2), (3);
+
+# recursive view definition
+;
+CREATE OR REPLACE VIEW foo AS (SELECT * FROM test);
+
+;
+CREATE OR REPLACE VIEW foo AS (SELECT * FROM foo);
+
+;
+SELECT * FROM foo;
+
+# more complex recursive view definition
+;
+CREATE OR REPLACE VIEW foo AS (SELECT * FROM test);
+
+;
+CREATE OR REPLACE VIEW foo2 AS (SELECT * FROM foo);
+
+;
+CREATE OR REPLACE VIEW foo AS (SELECT (SELECT * FROM foo2));
+
+;
+SELECT * FROM foo;

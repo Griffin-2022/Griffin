@@ -1,0 +1,41 @@
+# name: test/sql/function/list/aggregates/product.test
+# description: Test the list_product aggregate function
+# group: [aggregates]
+
+# incorrect usage
+;
+select list_product()
+
+;
+CREATE TABLE integers(i INTEGER[]);
+
+;
+INSERT INTO integers VALUES ([1, 2, 4]), (NULL), ([]), ([NULL]), ([1, 2, NULL, 4, NULL])
+
+;
+SELECT list_product(i)  FROM integers
+;
+8
+NULL
+NULL
+NULL
+8
+
+;
+CREATE TABLE prods AS SELECT LIST(2) AS i FROM range(100) t1(i)
+
+;
+SELECT list_product(i) FROM prods;
+;
+1267650600228229401496703205376
+
+;
+drop table prods
+
+;
+CREATE TABLE prods AS SELECT LIST(2) AS i FROM range(100 / 2) t1(i)
+
+;
+SELECT list_product(i) FROM prods;
+;
+1125899906842624

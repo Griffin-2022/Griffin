@@ -1,0 +1,1514 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000328,sig:06,src:006180+009313,time:31374356,execs:4956473,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+pragma locking_mode=exclusive ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 String8          0    1    0 exclusive     00 r[1]='exclusive'
+REG[1] =   t9[exclusive](8)
+   2 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t9[exclusive](8)
+   3 Halt             0    0    0               00 
+SQL: [PRAGMA integrity_check ;]
+VDBE Trace:
+   0 Init             0   54    0               00 Start at 54
+  54 Transaction      0    0    2 0             01 usesStmtJournal=0
+  55 Transaction      1    0    0 0             01 usesStmtJournal=0
+  56 Transaction      2    0  223 0             01 usesStmtJournal=0
+  57 TableLock        0    3    0 t2            00 iDb=0 root=3 write=0
+  58 Goto             0    1    0               00 
+   1 Integer        100    1    0               00 r[1]=100
+REG[1] =  i:100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+REG[1] =  i:100
+   4 IntegrityCk      2    3    1 [2,1]         00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+REG[2] =  NULL
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+REG[1] =  i:100
+  12 OpenRead         2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+  13 Integer          0    7    0               00 r[7]=0
+REG[7] =  i:0
+  14 Integer          0    8    0               00 r[8]=0
+REG[8] =  i:0
+  15 Rewind           2   32    0               00 
+  32 String8          0    2    0 wrong # of entries in index  00 r[2]='wrong # of entries in index '
+REG[2] =   t28[wrong # of entr](8)
+  33 IfPos            1   35    0               00 if r[1]>0 then r[1]-=0, goto 35
+REG[1] =  i:100
+  35 IntegrityCk      2    1    1 ]             01 
+  36 IsNull           2   41    0               00 if r[2]==NULL goto 41
+REG[2] =  NULL
+  41 IfPos            1   43    0               00 if r[1]>0 then r[1]-=0, goto 43
+REG[1] =  i:100
+  43 IntegrityCk      2    3    1 [3,1,0,-1431655766] 02 
+  44 IsNull           2   49    0               00 if r[2]==NULL goto 49
+REG[2] =   z20[Page 4 is never](8)
+  45 String8          0    3    0 *** in database db12 ***
+ 00 r[3]='*** in database db12 ***
+'
+REG[3] =   t25[*** in database](8)
+  46 Move             2    4    1               00 r[4]=r[2]
+REG[4] =   z20[Page 4 is never](8)
+  47 Concat           4    3    2               00 r[2]=r[3]+r[4]
+REG[4] =   z20[Page 4 is never](8)
+REG[3] =   t25[*** in database](8)
+REG[2] =   s45[*** in database](8)
+  48 ResultRow        2    1    0               00 output=r[2]
+REG[2] =   s45[*** in database](8)
+  49 AddImm           1 -100    0               00 r[1]=r[1]+-100
+REG[1] =  i:99
+  50 If               1   53    0               00 
+REG[1] =  i:-1
+  53 Halt             0    0    0               00 
+SQL: [PRAGMA encoding=UTF8;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [SELECT count(*) FROM t2;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 Transaction      0    0    2 0             01 usesStmtJournal=0
+   8 TableLock        0    3    0 t2            00 iDb=0 root=3 write=0
+   9 Goto             0    1    0               00 
+   1 OpenRead         1    3    0 k(2,,)        00 root=3 iDb=0
+   2 Count            1    1    0               00 r[1]=count()
+REG[1] =  i:0
+   3 Close            1    0    0               00 
+   4 Copy             1    2    0               00 r[2]=r[1]
+REG[2] =  i:0
+   5 ResultRow        2    1    0               00 output=r[2]
+REG[2] =  i:0
+   6 Halt             0    0    0               00 
+SQL: [;
+PRAGMA journal_mode = off;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 JournalMode      2    1    2               00 
+REG[1] =   t3[off](8)
+   2 JournalMode      1    1    2               00 
+REG[1] =   t3[off](8)
+   3 JournalMode      0    1    2               00 
+REG[1] =   t3[off](8)
+   4 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t3[off](8)
+   5 Halt             0    0    0               00 
+SQL: [;
+SELECT 12345678901234567890;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Real             0    1    0 1.234567890123457e+19 00 r[1]=1.234567890123457e+19
+REG[1] =  r:1.23457e+19
+   2 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  r:1.23457e+19
+   3 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+pragma cache_size=16;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [;
+SELECT y+y FROM t1;]
+VDBE Trace:
+   0 Init             0   10    0               00 Start at 10
+  10 Transaction      0    0    2 0             01 usesStmtJournal=0
+  11 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  12 Goto             0    1    0               00 
+   1 OpenRead         0    2    0 2             00 root=2 iDb=0; t1
+   2 Explain          0    0    0 SCAN TABLE t1 00 
+   3 Rewind           0    8    0               00 
+   8 Close            0    0    0               00 
+   9 Halt             0    0    0               00 
+SQL: [;
+INSERT INTO t1 VALUES(12, '  .125');]
+VDBE Trace:
+   0 Init             0    9    0               00 Start at 9
+   9 Transaction      0    1    2 0             01 usesStmtJournal=0
+  10 TableLock        0    2    1 t1            00 iDb=0 root=2 write=1
+  11 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; t1
+   2 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   3 Integer         12    2    0               00 r[2]=12
+REG[2] =  i:12
+   4 String8          0    3    0   .125        00 r[3]='  .125'
+REG[3] =   t6[  .125](8)
+   5 MakeRecord       2    2    4               00 r[4]=mkrec(r[2..3])
+REG[4] =  s10[0301190C20202E313235....  .125](8)
+   6 Insert           0    4    1 t1            1B intkey=r[1] data=r[4]
+REG[4] =  s10[0301190C20202E313235....  .125](8)
+REG[1] =  i:1
+   7 Noop             0    0    0               00 
+   8 Halt             0    0    0               00 
+SQL: [select * from sqlite_temp_master;]
+VDBE Trace:
+   0 Init             0   13    0               00 Start at 13
+  13 Transaction      1    0    0 0             01 usesStmtJournal=0
+  14 TableLock        1    1    0 sqlite_temp_master 00 iDb=1 root=1 write=0
+  15 Goto             0    1    0               00 
+   1 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   2 Explain          0    0    0 SCAN TABLE sqlite_temp_master 00 
+   3 Rewind           0   11    0               00 
+  11 Close            0    0    0               00 
+  12 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 0             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [PRAGMA auto_vacuum = full;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+SQL: [;
+PRAGMA temp_store=2;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 1             00 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      2    0  223 1             00 usesStmtJournal=0
+  13 TableLock        2    1    0 sqlite_master 00 iDb=2 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    2 5             00 root=1 iDb=2; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s5[files](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s30[CREATE TABLE fi](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s5[files](8)
+REG[2] =  i:3
+REG[3] =   s30[CREATE TABLE fi](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s24[s.q.l.i.t.e._.s](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s78[C.R.E.A.T.E. .T](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s24[s.q.l.i.t.e._.s](8)
+REG[2] =  i:4
+REG[3] =   s78[C.R.E.A.T.E. .T](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s12[sqlite_stat1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s39[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s12[sqlite_stat1](8)
+REG[2] =  i:5
+REG[3] =   s39[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+SELECT coalesce(y!=y,99) FROM t1;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    2 1             01 usesStmtJournal=0
+  13 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  14 Goto             0    1    0               00 
+   1 OpenRead         0    2    0 2             00 root=2 iDb=0; t1
+   2 Explain          0    0    0 SCAN TABLE t1 00 
+   3 Rewind           0   10    0               00 
+   4 Column           0    1    2               00 r[2]=t1.y
+REG[2] =   s6[  .125](8)
+   5 Ne               2    1    2 (BINARY)      61 if r[2]!=r[2] goto 1
+REG[2] =   s6[  .125](8)
+REG[2] =   s6[  .125](8)
+REG[1] =  i:0
+   6 NotNull          1    8    0               00 if r[1]!=NULL goto 8
+REG[1] =  i:0
+   8 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:0
+   9 Next             0    4    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [CREATE TRIGGER b AFTER INSERT ON t1 BEGIN
+        INSERT INTO t1(y) VALUES(new.y+1);
+      END;]
+VDBE Trace:
+   0 Init             0   14    0               00 Start at 14
+  14 Transaction      0    1    2 1             01 usesStmtJournal=0
+  15 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  16 Goto             0    1    0               00 
+   1 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   2 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:3
+   3 String8          0    2    0 trigger       00 r[2]='trigger'
+REG[2] =   t7[trigger](8)
+   4 String8          0    3    0 b             00 r[3]='b'
+REG[3] =   t1[b](8)
+   5 String8          0    4    0 t1            00 r[4]='t1'
+REG[4] =   t2[t1](8)
+   6 Integer          0    5    0               00 r[5]=0
+REG[5] =  i:0
+   7 String8          0    6    0 CREATE TRIGGER b AFTER INSERT ON t1 BEGIN
+        INSERT INTO t1(y) VALUES(new.y+1);
+      END 00 r[6]='CREATE TRIGGER b AFTER INSERT ON t1 BEGIN
+        INSERT INTO t1(y) VALUES(new.y+1);
+      EN
+REG[6] =   t94[CREATE TRIGGER ](8)
+   8 MakeRecord       2    5    7 BBBDB         00 r[7]=mkrec(r[2..6])
+REG[7] =  s111[071B0F11088149747269676765726274......Itriggerbt](8)
+   9 Insert           0    7    1               18 intkey=r[1] data=r[7]
+REG[7] =  s111[071B0F11088149747269676765726274......Itriggerbt](8)
+REG[1] =  i:3
+  10 Close            0    0    0               00 
+  11 SetCookie        0    1    3               00 
+  12 ParseSchema      0    0    0 type='trigger' AND name='b' 00 
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    3 1             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 trigger       00 r[2]='trigger'
+REG[2] =   t7[trigger](8)
+  19 String8          0    4    0 b             00 r[4]='b'
+REG[4] =   t1[b](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[table](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[trigger](8)
+REG[1] =   s5[table](8)
+  13 Next             0    5    0               01 
+   5 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s5[table](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[trigger](8)
+REG[1] =   s5[table](8)
+  13 Next             0    5    0               01 
+   5 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s7[trigger](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[trigger](8)
+REG[1] =   s7[trigger](8)
+   7 Column           0    1    3               00 r[3]=sqlite_master.name
+REG[3] =   s1[b](8)
+   8 Ne               4   13    3 (BINARY)      52 if r[4]!=r[3] goto 13
+REG[4] =   t1[b](8)
+REG[3] =   s1[b](8)
+   9 Copy             3    5    0               00 r[5]=r[3]
+REG[5] =   s1[b](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:0
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s94[CREATE TRIGGER ](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s1[b](8)
+REG[6] =  i:0
+REG[7] =   s94[CREATE TRIGGER ](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  13 Halt             0    0    0               00 
+SQL: [SELECT y FROM t1 WHERE y = 5 - abs(+3) ORDER BY y;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    3 1             01 usesStmtJournal=0
+  13 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  14 Integer          5    4    0               00 r[4]=5
+REG[4] =  i:5
+  15 Integer          3    6    0               00 r[6]=3
+REG[6] =  i:3
+  16 Function0        1    6    5 abs(1)        01 r[5]=func(r[6])
+REG[6] =  i:3
+REG[5] =  i:3
+  17 Subtract         5    4    2               00 r[2]=r[4]-r[5]
+REG[5] =  i:3
+REG[4] =  i:5
+REG[2] =  i:2
+  18 Goto             0    1    0               00 
+   1 Noop             1    3    0               00 
+   2 OpenRead         0    2    0 2             00 root=2 iDb=0; t1
+   3 Explain          0    0    0 SCAN TABLE t1 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=t1.y
+REG[1] =   s6[  .125](8)
+   6 Ne               2    9    1 (BINARY)      51 if r[2]!=r[1] goto 9
+REG[2] =  i:2
+REG[1] =   s6[  .125](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='i1y' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    3 1             01 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 i1y           00 r[2]='i1y'
+REG[2] =   t3[i1y](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t3[i1y](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t2](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t3[i1y](8)
+REG[1] =   s2[t2](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t3[i1y](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+SQL: [SELECT y, y FROM t1 WHERE y = 1 AND y IN (2, 4, 5) ORDER BY y ASC, y ASC;]
+VDBE Trace:
+   0 Init             0   29    0               00 Start at 29
+  29 Transaction      0    0    3 1             01 usesStmtJournal=0
+  30 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  31 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+  32 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    2    0 2             00 root=2 iDb=0; t1
+   3 Explain          0    0    0 SCAN TABLE t1 00 
+   4 Rewind           0   27    0               00 
+   5 Column           0    1    1               00 r[1]=t1.y
+REG[1] =   s6[  .125](8)
+   6 Ne               2   26    1 (BINARY)      51 if r[2]!=r[1] goto 26
+REG[2] =  i:1
+REG[1] =   s6[  .125](8)
+  26 Next             0    5    0               01 
+  27 Close            0    0    0               00 
+  28 Halt             0    0    0               00 
+SQL: [BEGIN;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       0    0    0               00 
+SQL: [SELECT x, x FROM t1 WHERE x = 1 AND x IN (2, 4, 5) ORDER BY x ASC, x ASC;]
+VDBE Trace:
+   0 Init             0   29    0               00 Start at 29
+  29 Transaction      0    0    3 1             01 usesStmtJournal=0
+  30 TableLock        0    2    0 t1            00 iDb=0 root=2 write=0
+  31 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+  32 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    2    0 1             00 root=2 iDb=0; t1
+   3 Explain          0    0    0 SCAN TABLE t1 00 
+   4 Rewind           0   27    0               00 
+   5 Column           0    0    1               00 r[1]=t1.x
+REG[1] =  i:12
+   6 Ne               2   26    1 (BINARY)      51 if r[2]!=r[1] goto 26
+REG[2] =  i:1
+REG[1] =  i:12
+  26 Next             0    5    0               01 
+  27 Close            0    0    0               00 
+  28 Halt             0    0    0               00 
+SQL: [;
+CREATE UNIQUE INDEX sqlsim0 ON t1(y ASC);]
+VDBE Trace:
+   0 Init             0   37    0               00 Start at 37
+  37 Transaction      0    1    3 1             01 usesStmtJournal=1
+  38 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  39 TableLock        0    2    1 t1            00 iDb=0 root=2 write=1
+  40 Goto             0    1    0               00 
+   1 Noop             0   36    0               00 
+   2 CreateIndex      0    1    0               00 r[1]=root iDb=0
+REG[1] =  i:4
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+REG[2] =  i:4
+   5 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t5[index](8)
+   6 String8          0    4    0 sqlsim0       00 r[4]='sqlsim0'
+REG[4] =   t7[sqlsim0](8)
+   7 String8          0    5    0 t1            00 r[5]='t1'
+REG[5] =   t2[t1](8)
+   8 Copy             1    6    0               00 r[6]=r[1]
+REG[6] =  i:4
+   9 String8          0    7    0 CREATE UNIQUE INDEX sqlsim0 ON t1(y ASC) 00 r[7]='CREATE UNIQUE INDEX sqlsim0 ON t1(y ASC)'
+REG[7] =   t40[CREATE UNIQUE I](8)
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+REG[8] =  s61[06171B11015D696E64657873716C7369.....]indexsqlsi](8)
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+REG[8] =  s61[06171B11015D696E64657873716C7369.....]indexsqlsi](8)
+REG[2] =  i:4
+  12 Close            0    0    0               00 
+  13 SorterOpen       3    0    1 k(2,,)        00 
+  14 OpenRead         1    2    0 2             00 root=2 iDb=0; t1
+  15 Rewind           1   21    0               00 
+  16 Column           1    1   10               00 r[10]=t1.y
+REG[10] =   s6[  .125](8)
+  17 Rowid            1   11    0               00 r[11]=rowid
+REG[11] =  i:1
+  18 MakeRecord      10    2    9               00 r[9]=mkrec(r[10..11])
+REG[9] =  s9[03190920202E313235...  .125](8)
+  19 SorterInsert     3    9    0               00 
+REG[9] =  s9[03190920202E313235...  .125](8)
+  20 Next             1   16    0               00 
+  21 OpenWrite        2    1    0 k(2,,)        11 root=1 iDb=0
+  22 SorterSort       3   30    0               00 
+  23 Goto             0   26    0               00 
+  26 SorterData       3    9    2               00 r[9]=data
+  27 Last             2    0   -1               00 
+  28 IdxInsert        2    9    0               10 key=r[9]
+REG[9] =  s9[03190920202E313235...  .125](8)
+  29 SorterNext       3   24    0               00 
+  30 Close            1    0    0               00 
+  31 Close            2    0    0               00 
+  32 Close            3    0    0               00 
+  33 SetCookie        0    1    4               00 
+  34 ParseSchema      0    0    0 name='sqlsim0' AND type='index' 00 
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    4 1             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 sqlsim0       00 r[2]='sqlsim0'
+REG[2] =   t7[sqlsim0](8)
+  19 String8          0    4    0 index         00 r[4]='index'
+REG[4] =   t5[index](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim0](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim0](8)
+REG[1] =   s2[t2](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim0](8)
+REG[1] =   s1[b](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim0](8)
+REG[1] =   s7[sqlsim0](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[index](8)
+   8 Ne               4   13    3 (BINARY)      52 if r[4]!=r[3] goto 13
+REG[4] =   t5[index](8)
+REG[3] =   s5[index](8)
+   9 Copy             1    5    0               00 r[5]=r[1]
+REG[5] =   s7[sqlsim0](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:4
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s40[CREATE UNIQUE I](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s7[sqlsim0](8)
+REG[6] =  i:4
+REG[7] =   s40[CREATE UNIQUE I](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  35 Expire           0    0    0               00 
+  36 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    4 1             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "temp".sqlite_temp_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      1    0    0 1             01 usesStmtJournal=0
+  13 TableLock        1    1    0 sqlite_temp_master 00 iDb=1 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   10    0               00 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+ROLLBACK ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    1    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    4 2             00 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      2    0  223 2             00 usesStmtJournal=0
+  13 TableLock        2    1    0 sqlite_master 00 iDb=2 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    2 5             00 root=1 iDb=2; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s5[files](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s30[CREATE TABLE fi](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s5[files](8)
+REG[2] =  i:3
+REG[3] =   s30[CREATE TABLE fi](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s24[s.q.l.i.t.e._.s](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s78[C.R.E.A.T.E. .T](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s24[s.q.l.i.t.e._.s](8)
+REG[2] =  i:4
+REG[3] =   s78[C.R.E.A.T.E. .T](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s12[sqlite_stat1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s39[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s12[sqlite_stat1](8)
+REG[2] =  i:5
+REG[3] =   s39[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      1    0    0 2             00 usesStmtJournal=0
+  13 TableLock        1    1    0 sqlite_temp_master 00 iDb=1 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   10    0               00 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [CREATE TABLE sqlsim1
+              (sqlsim2 TEXT NOT NULL,
+              sqlsim4 TEXT NOT NULL,
+              sqlsim5 TEXT NOT NULL,
+              t4 TEXT NOT NULL,
+              sqlsim3 TEXT NOT NULL,
+              m INTEGER NOT NULL DEFAULT 0,
+              PRIMARY KEY (sqlsim2, sqlsim4, sqlsim5, t4));]
+VDBE Trace:
+   0 Init             0   42    0               00 Start at 42
+  42 Transaction      0    1    4 2             01 usesStmtJournal=0
+  43 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  44 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:4
+   2 If               3    5    0               00 
+REG[3] =  i:4
+   5 CreateTable      0    2    0               00 r[2]=root iDb=0
+REG[2] =  i:5
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:5
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......](8)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......](8)
+REG[1] =  i:5
+  10 Close            0    0    0               00 
+  11 Noop             0   23    0               00 
+  12 CreateIndex      0    4    0               00 r[4]=root iDb=0
+REG[4] =  i:6
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 NewRowid         1    5    0               00 r[5]=rowid
+REG[5] =  i:6
+  15 String8          0    6    0 index         00 r[6]='index'
+REG[6] =   t5[index](8)
+  16 String8          0    7    0 sqlite_autoindex_sqlsim1_1 00 r[7]='sqlite_autoindex_sqlsim1_1'
+REG[7] =   t26[sqlite_autoinde](8)
+  17 String8          0    8    0 sqlsim1       00 r[8]='sqlsim1'
+REG[8] =   t7[sqlsim1](8)
+  18 Copy             4    9    0               00 r[9]=r[4]
+REG[9] =  i:6
+  19 Null             0   10    0               00 r[10]=NULL
+REG[10] =  NULL
+  20 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s45[0617411B0100696E64657873716C6974..A...indexsqlit](8)
+  21 Insert           1   11    5               18 intkey=r[5] data=r[11]
+REG[11] =  s45[0617411B0100696E64657873716C6974..A...indexsqlit](8)
+REG[5] =  i:6
+  22 Close            1    0    0               00 
+  23 Close            0    0    0               00 
+  24 Null             0   12   13               00 r[12..13]=NULL
+REG[12] =  NULL
+  25 OpenWrite        2    1    0 5             00 root=1 iDb=0; sqlite_master
+  26 Explain          0    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  27 MustBeInt        1   30    0               00 
+REG[1] =  i:5
+  28 NotExists        2   30    1               00 intkey=r[1]; pk
+REG[1] =  i:5
+  29 Rowid            2   13    0               00 r[13]=rowid
+REG[13] =  i:5
+  30 IsNull          13   38    0               00 if r[13]==NULL goto 38
+REG[13] =  i:5
+  31 String8          0   14    0 table         00 r[14]='table'
+REG[14] =   t5[table](8)
+  32 String8          0   15    0 sqlsim1       00 r[15]='sqlsim1'
+REG[15] =   t7[sqlsim1](8)
+  33 String8          0   16    0 sqlsim1       00 r[16]='sqlsim1'
+REG[16] =   t7[sqlsim1](8)
+  34 Copy             2   17    0               00 r[17]=r[2]
+REG[17] =  i:5
+  35 String8          0   18    0 CREATE TABLE sqlsim1
+              (sqlsim2 TEXT NOT NULL,
+              sqlsim4 TEXT NOT NULL,
+              sqlsim5 TEXT NOT NULL,
+              t4 TEXT NOT NULL,
+              sqlsim3 TEXT NOT NULL,
+              m INTEGER NOT NULL DEFAULT 0,
+              PRIMARY KEY (sqlsim2, sqlsim4, sqlsim5, t4)) 00 r[18]='CREATE TABLE sqlsim1
+              (sqlsim2 TEXT NOT NULL,
+              sqlsim4 TEXT NOT NU
+REG[18] =   t304[CREATE TABLE sq](8)
+  36 MakeRecord      14    5   19 BBBDB         00 r[19]=mkrec(r[14..18])
+REG[19] =  s331[07171B1B01846D7461626C6573716C73......mtablesqls](8)
+  37 Insert           2   19   13               00 intkey=r[13] data=r[19]
+REG[19] =  s331[07171B1B01846D7461626C6573716C73......mtablesqls](8)
+REG[13] =  i:5
+  38 Close            2    0    0               00 
+  39 SetCookie        0    1    5               00 
+  40 ParseSchema      0    0    0 tbl_name='sqlsim1' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    5 2             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 sqlsim1       00 r[2]='sqlsim1'
+REG[2] =   t7[sqlsim1](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t2](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s2[t2](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s7[sqlsim1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s7[sqlsim1](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[table](8)
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+REG[4] =   t7[trigger](8)
+REG[3] =   s5[table](8)
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+REG[5] =   s7[sqlsim1](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:5
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =   s304[CREATE TABLE sq](8)
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s7[sqlsim1](8)
+REG[6] =  i:5
+REG[7] =   s304[CREATE TABLE sq](8)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s7[sqlsim1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t7[sqlsim1](8)
+REG[1] =   s7[sqlsim1](8)
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+REG[3] =   s5[index](8)
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+REG[4] =   t7[trigger](8)
+REG[3] =   s5[index](8)
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+REG[5] =   s26[sqlite_autoinde](8)
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+REG[6] =  i:6
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+REG[7] =  NULL
+  12 ResultRow        5    3    0               00 output=r[5..7]
+REG[5] =   s26[sqlite_autoinde](8)
+REG[6] =  i:6
+REG[7] =  NULL
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  41 Halt             0    0    0               00 
+SQL: [END;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    5 2             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s304[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim1](8)
+REG[2] =  i:5
+REG[3] =   s304[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s26[sqlite_autoinde](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:6
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =  NULL
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s26[sqlite_autoinde](8)
+REG[2] =  i:6
+REG[3] =  NULL
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+ROLLBACK ;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 AutoCommit       1    1    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    5 2             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s304[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim1](8)
+REG[2] =  i:5
+REG[3] =   s304[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s26[sqlite_autoinde](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:6
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =  NULL
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s26[sqlite_autoinde](8)
+REG[2] =  i:6
+REG[3] =  NULL
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    5 2             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s304[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim1](8)
+REG[2] =  i:5
+REG[3] =   s304[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s26[sqlite_autoinde](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:6
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =  NULL
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s26[sqlite_autoinde](8)
+REG[2] =  i:6
+REG[3] =  NULL
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [SELECT 1 FROM sqlite_master ;]
+VDBE Trace:
+   0 Init             0    9    0               00 Start at 9
+   9 Transaction      0    0    5 2             01 usesStmtJournal=0
+  10 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  11 Goto             0    1    0               00 
+   1 OpenRead         0    1    0 0             00 root=1 iDb=0; sqlite_master
+   2 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   3 Rewind           0    7    0               00 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   4 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   5 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+   6 Next             0    4    0               01 
+   7 Close            0    0    0               00 
+   8 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    5 2             01 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s21[CREATE TABLE t1](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t1](8)
+REG[2] =  i:2
+REG[3] =   s21[CREATE TABLE t1](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:3
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s58[CREATE TABLE t2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[t2](8)
+REG[2] =  i:3
+REG[3] =   s58[CREATE TABLE t2](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:0
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s94[CREATE TRIGGER ](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s1[b](8)
+REG[2] =  i:0
+REG[3] =   s94[CREATE TRIGGER ](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:4
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s40[CREATE UNIQUE I](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim0](8)
+REG[2] =  i:4
+REG[3] =   s40[CREATE UNIQUE I](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim1](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:5
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s304[CREATE TABLE sq](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s7[sqlsim1](8)
+REG[2] =  i:5
+REG[3] =   s304[CREATE TABLE sq](8)
+   9 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s26[sqlite_autoinde](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:6
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =  NULL
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s26[sqlite_autoinde](8)
+REG[2] =  i:6
+REG[3] =  NULL
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE name='p' AND type='index' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    0    5 2             01 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 p             00 r[2]='p'
+REG[2] =   t1[p](8)
+  19 String8          0    4    0 index         00 r[4]='index'
+REG[4] =   t5[index](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s2[t1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[t2](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s2[t2](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s1[b](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s1[b](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim0](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s7[sqlsim0](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s7[sqlsim1](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s7[sqlsim1](8)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s26[sqlite_autoinde](8)
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+REG[2] =   t1[p](8)
+REG[1] =   s26[sqlite_autoinde](8)
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+SQL: [SELECT name, rootpage, sql FROM 'temp'.sqlite_temp_master WHERE tbl_name='t44' AND type!='trigger' ORDER BY rowid;]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      1    0    0 2             01 usesStmtJournal=0
+  17 TableLock        1    1    0 sqlite_temp_master 00 iDb=1 root=1 write=0
+  18 String8          0    2    0 t44           00 r[2]='t44'
+REG[2] =   t3[t44](8)
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t7[trigger](8)
+  20 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   14    0               00 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+[Inferior 1 (process 121345) exited normally]
+(gdb) (gdb) quit

@@ -1,0 +1,269 @@
+# name: test/sql/function/string/test_string_slice.test
+# description: String slicing test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(s VARCHAR, off INTEGER, length INTEGER);
+
+;
+INSERT INTO strings VALUES ('hello', 0, 2), ('world', 1, 3), ('b', 0, 1), (NULL, 1, 2)
+
+# Slicing NULLs is not supported
+;
+CREATE TABLE nulltable(n VARCHAR);
+
+;
+INSERT INTO nulltable VALUES (NULL)
+
+;
+SELECT NULL::VARCHAR[off:length+off] FROM strings
+
+;
+SELECT NULL::VARCHAR[NULL:length+NULL] FROM strings
+
+;
+SELECT NULL::VARCHAR[off:NULL+off] FROM strings
+
+;
+SELECT NULL::VARCHAR[off:NULL+off] FROM strings
+
+;
+SELECT NULL::VARCHAR[NULL:NULL+NULL] FROM strings
+
+# test zero length
+;
+SELECT '🦆ab'[0:0], 'abc'[0:0]
+;
+(empty)	(empty)
+
+# test grapheme clusters
+;
+SELECT '🤦🏼‍♂️ L🤦🏼‍♂️R 🤦🏼‍♂️'[2:5]
+;
+ L🤦🏼‍♂️R
+
+;
+SELECT 'S̈a'[1:2]
+;
+S̈a
+
+;
+SELECT 'S̈a'[2:2]
+;
+a
+
+;
+SELECT 'MotörHead'[:5]
+;
+Motör
+
+;
+SELECT 'Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢'[2:]
+;
+A̴̵̜̰͔ͫ͗͢
+
+# constant offset/length
+# normal slice
+;
+SELECT s[0:2] FROM strings
+;
+he
+wo
+b
+NULL
+
+# index out of range
+;
+SELECT s[1:3] FROM strings
+;
+hel
+wor
+b
+NULL
+
+;
+SELECT s[2:3] FROM strings
+;
+el
+or
+(empty)
+NULL
+
+# variable length offset/length
+;
+SELECT s[off:length+off] FROM strings
+;
+he
+worl
+b
+NULL
+
+;
+SELECT s[off:2+off] FROM strings
+;
+he
+wor
+b
+NULL
+
+;
+SELECT s[0:length] FROM strings
+;
+he
+wor
+b
+NULL
+
+;
+SELECT 'hello'[off:length+off] FROM strings
+;
+he
+hell
+h
+hel
+
+# test substrings with constant nulls in different places
+;
+SELECT n[off:length+off] FROM strings, nulltable
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT 'hello'[NULL:length+NULL] FROM strings
+;
+hello
+hello
+hello
+hello
+
+;
+SELECT 'hello'[off:NULL+off] FROM strings
+;
+hello
+hello
+hello
+hello
+
+;
+SELECT 'hello'[off+1:NULL+off] FROM strings
+;
+hello
+ello
+hello
+ello
+
+;
+SELECT n[NULL:length+NULL] FROM strings, nulltable
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT 'hello'[NULL:NULL+NULL] FROM strings
+;
+hello
+hello
+hello
+hello
+
+;
+SELECT n[off:NULL+off] FROM strings, nulltable
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT n[NULL:NULL+NULL] FROM strings, nulltable
+;
+NULL
+NULL
+NULL
+NULL
+
+# fixed slice
+;
+SELECT s[-2:] FROM strings
+;
+lo
+ld
+NULL
+NULL
+
+# length 1
+;
+SELECT s[0:1] FROM strings
+;
+h
+w
+b
+NULL
+
+# negative offset and negative length
+;
+SELECT s[-4:-2] FROM strings
+;
+el
+or
+NULL
+NULL
+
+# length 0
+;
+SELECT s[1:0] FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+# no end
+;
+SELECT s[2:] FROM strings
+;
+ello
+orld
+(empty)
+NULL
+
+# very large offset and length
+;
+SELECT s[(2147483647-1):1] FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+;
+SELECT s[(2147483647-1):-1] FROM strings
+;
+(empty)
+(empty)
+(empty)
+NULL
+
+;
+SELECT s[(-2147483646-1):-1] FROM strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT s[(-2147483646-1):-2147483647] FROM strings
+;
+NULL
+NULL
+NULL
+NULL

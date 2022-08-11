@@ -1,0 +1,67 @@
+# name: test/sql/catalog/test_schema.test
+# description: Schema creation/deletion with transactions
+# group: [catalog]
+
+# create a schema with a table
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.hello(i INTEGER);
+
+# in one transaction drop the table and then the schema (without cascade)
+;
+BEGIN TRANSACTION;
+
+;
+DROP TABLE test.hello;
+
+;
+DROP SCHEMA test;
+
+;
+COMMIT;
+
+# now work with multiple connections
+# create the same schema
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.hello(i INTEGER);
+
+;
+INSERT INTO test.hello VALUES (2), (3), (4)
+
+# begin the transactions
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# con1 drops the schema and commits it
+;
+DROP TABLE test.hello;
+
+;
+DROP SCHEMA test;
+
+;
+COMMIT;
+
+# con2 queries the schema (should still work)
+;
+SELECT * FROM test.hello
+;
+2
+3
+4
+
+# now con2 finishes the transaction and tries again
+;
+ROLLBACK;
+
+;
+SELECT * FROM test.hello
+

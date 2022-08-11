@@ -1,0 +1,68 @@
+# name: test/sql/aggregate/aggregates/test_product.test
+# description: Test Product operator
+# group: [aggregates]
+
+#Corner cases
+;
+select product()
+
+;
+select product(NULL)
+;
+NULL
+
+;
+select product(1)
+;
+1
+
+;
+select product(*)
+
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (1), (2),(4), (NULL)
+
+;
+SELECT product(i)  FROM integers
+;
+8
+
+;
+SELECT PRODUCT(2) FROM range(100);
+;
+1267650600228229401496703205376
+
+;
+SELECT PRODUCT(2) FROM range(100) tbl(i) WHERE i % 2 != 0;
+;
+1125899906842624
+
+# Grouped Aggregation
+;
+select product(i) from integers group by i%2
+;
+1.000000
+8.000000
+NULL
+
+# Empty Table
+;
+SELECT PRODUCT(i) FROM range(100) tbl(i) WHERE 1=0;
+;
+NULL
+
+# Window Function
+require vector_size 512
+
+;
+select product(i) over (partition by i%2)
+    from integers;
+;
+1
+8
+8
+NULL
+

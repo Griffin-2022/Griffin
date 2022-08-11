@@ -1,0 +1,111 @@
+2022-08-02 01:25:24.580 UTC [124919] ERROR:  division by zero
+2022-08-02 01:25:24.580 UTC [124919] STATEMENT:  
+	select jsonb_path_query('0', '1 / $');
+2022-08-02 01:25:24.581 UTC [124919] ERROR:  operand of unary jsonpath operator + is not a numeric value
+2022-08-02 01:25:24.581 UTC [124919] STATEMENT:  
+	select jsonb_path_query('[1,"2",3]', '+$');
+2022-08-02 01:25:24.590 UTC [124919] ERROR:  string argument of jsonpath item method .double() is not a valid representation of a double precision number
+2022-08-02 01:25:24.590 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"1.23aaa"', '$.double()');
+2022-08-02 01:25:24.590 UTC [124919] ERROR:  string argument of jsonpath item method .double() is not a valid representation of a double precision number
+2022-08-02 01:25:24.590 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"nan"', '$.double()');
+2022-08-02 01:25:24.590 UTC [124919] ERROR:  string argument of jsonpath item method .double() is not a valid representation of a double precision number
+2022-08-02 01:25:24.590 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"NaN"', '$.double()');
+2022-08-02 01:25:24.591 UTC [124919] ERROR:  string argument of jsonpath item method .double() is not a valid representation of a double precision number
+2022-08-02 01:25:24.591 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"inf"', '$.double()');
+2022-08-02 01:25:24.592 UTC [124919] ERROR:  jsonpath item method .datetime() can only be applied to a string
+2022-08-02 01:25:24.592 UTC [124919] STATEMENT:  
+	select jsonb_path_query('[]', 'strict $.datetime()');
+2022-08-02 01:25:24.592 UTC [124919] ERROR:  datetime format is not recognized: "bogus"
+2022-08-02 01:25:24.592 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"bogus"', '$.datetime()');
+2022-08-02 01:25:24.592 UTC [124919] ERROR:  trailing characters remain in input string after datetime format
+2022-08-02 01:25:24.592 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"10-03-2017 12:34"', '$.datetime("dd-mm-yyyy")');
+2022-08-02 01:25:24.593 UTC [124919] ERROR:  trailing characters remain in input string after datetime format
+2022-08-02 01:25:24.593 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"10-03-2017 12:34"', '$.datetime("dd-mm-yyyy").type()');
+2022-08-02 01:25:24.593 UTC [124919] ERROR:  input string is too short for datetime format
+2022-08-02 01:25:24.593 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"10-03-2017 12:34"', '$.datetime("dd-mm-yyyy HH24:MI TZH")');
+2022-08-02 01:25:24.594 UTC [124919] ERROR:  input string is too short for datetime format
+2022-08-02 01:25:24.594 UTC [124919] STATEMENT:  
+	select jsonb_path_query('"10-03-2017 12:34"', '$.datetime("dd-mm-yyyy HH24:MI TZH")');
+2022-08-02 01:25:24.595 UTC [124919] ERROR:  cannot convert value from time to timetz without time zone usage
+2022-08-02 01:25:24.595 UTC [124919] STATEMENT:  
+	select jsonb_path_query(
+		'["12:34:00", "12:35:00", "12:36:00", "12:35:00+00", "12:35:00+01", "13:35:00+01", "2017-03-10", "2017-03-10 12:35:00", "2017-03-10 12:35:00+01"]',
+		'$[*].datetime() ? (@ <  "12:35".datetime("HH24:MI"))');
+2022-08-02 01:25:24.595 UTC [124919] ERROR:  cannot convert value from time to timetz without time zone usage
+2022-08-02 01:25:24.595 UTC [124919] STATEMENT:  
+	
+	-- timetz comparison
+	select jsonb_path_query(
+		'["12:34:00+01", "12:35:00+01", "12:36:00+01", "12:35:00+02", "12:35:00-02", "10:35:00", "11:35:00", "12:35:00", "2017-03-10", "2017-03-10 12:35:00", "2017-03-10 12:35:00 +1"]',
+		'$[*].datetime() ? (@ == "12:35 +1".datetime("HH24:MI TZH"))');
+2022-08-02 01:25:24.596 UTC [124919] ERROR:  cannot convert value from timestamp to timestamptz without time zone usage
+2022-08-02 01:25:24.596 UTC [124919] STATEMENT:  
+	select jsonb_path_query(
+		'["2017-03-10 12:34:00", "2017-03-10 12:35:00", "2017-03-10 12:36:00", "2017-03-10 12:35:00+01", "2017-03-10 13:35:00+01", "2017-03-10 12:35:00-01", "2017-03-10", "2017-03-11", "12:34:56", "12:34:56+01"]',
+		'$[*].datetime() ? (@ >= "10.03.2017 12:35".datetime("dd.mm.yyyy HH24:MI"))');
+2022-08-02 01:25:24.596 UTC [124919] ERROR:  cannot convert value from timestamp to timestamptz without time zone usage
+2022-08-02 01:25:24.596 UTC [124919] STATEMENT:  
+	select jsonb_path_query(
+		'["2017-03-10 12:34:00+01", "2017-03-10 12:35:00+01", "2017-03-10 12:36:00+01", "2017-03-10 12:35:00+02", "2017-03-10 12:35:00-02", "2017-03-10 10:35:00", "2017-03-10 11:35:00", "2017-03-10 12:35:00", "2017-03-10", "2017-03-11", "12:34:56", "12:34:56+01"]',
+		'$[*].datetime() ? (@ >= "10.03.2017 12:35 +1".datetime("dd.mm.yyyy HH24:MI TZH"))');
+2022-08-02 01:25:24.596 UTC [124919] ERROR:  cannot convert value from timestamp to timestamptz without time zone usage
+2022-08-02 01:25:24.596 UTC [124919] STATEMENT:  
+	select jsonb_path_query(
+		'["2017-03-10 12:34:00+01", "2017-03-10 12:35:00+01", "2017-03-10 12:36:00+01", "2017-03-10 12:35:00+02", "2017-03-10 12:35:00-02", "2017-03-10 10:35:00", "2017-03-10 11:35:00", "2017-03-10 12:35:00", "2017-03-10", "2017-03-11", "12:34:56", "12:34:56+01"]',
+		'$[*].datetime() ? (@ < "10.03.2017 12:35 +1".datetime("dd.mm.yyyy HH24:MI TZH"))');
+2022-08-02 01:25:24.597 UTC [124919] ERROR:  single boolean result is expected
+2022-08-02 01:25:24.597 UTC [124919] STATEMENT:  
+	SELECT jsonb_path_match('[true]', '$', silent => false);
+2022-08-02 01:25:24.597 UTC [124919] ERROR:  single boolean result is expected
+2022-08-02 01:25:24.597 UTC [124919] STATEMENT:  
+	SELECT jsonb_path_match('{}', 'lax $.a', silent => false);
+2022-08-02 01:25:24.597 UTC [124919] ERROR:  JSON object does not contain key "a"
+2022-08-02 01:25:24.597 UTC [124919] STATEMENT:  
+	SELECT jsonb_path_match('{}', 'strict $.a', silent => false);
+2022-08-02 01:25:24.598 UTC [124919] ERROR:  could not find pg_class tuple for index 2662 at character 127
+2022-08-02 01:25:24.598 UTC [124919] STATEMENT:  
+	
+	-- test string comparison (Unicode codepoint collation)
+	WITH str(j, num) AS
+	(
+		SELECT jsonb_build_object('s', s), num
+		FROM unnest('{"", "a", "ab", "abc", "abcd", "b", "A", "AB", "ABC", "ABc", "ABcD", "B"}'::text[]) WITH ORDINALITY AS a(s, num)
+	)
+	SELECT
+		s1.j, s2.j,
+		jsonb_path_query_first(s1.j, '$.s < $s', vars => s2.j) lt,
+		jsonb_path_query_first(s1.j, '$.s <= $s', vars => s2.j) le,
+		jsonb_path_query_first(s1.j, '$.s == $s', vars => s2.j) eq,
+		jsonb_path_query_first(s1.j, '$.s >= $s', vars => s2.j) ge,
+		jsonb_path_query_first(s1.j, '$.s > $s', vars => s2.j) gt
+	FROM str s1, str s2
+	ORDER BY s1.num, s2.num;
+2022-08-02 01:25:24.598 UTC [124919] WARNING:  there is no transaction in progress
+2022-08-02 01:25:24.598 UTC [124919] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:25:24.598 UTC [124919] STATEMENT:  DISCARD ALL;
+2022-08-02 01:25:24.598 UTC [124919] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 01:25:24.598 UTC [124919] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 01:25:24.598 UTC [124919] ERROR:  schema "public" already exists
+2022-08-02 01:25:24.598 UTC [124919] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 01:25:24.708 UTC [2878] PANIC:  could not open critical system index 2662
+2022-08-02 01:25:24.710 UTC [118661] LOG:  server process (PID 2878) was terminated by signal 6: Aborted
+2022-08-02 01:25:24.710 UTC [118661] LOG:  terminating any other active server processes
+2022-08-02 01:25:24.744 UTC [118661] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:25:24.761 UTC [2880] LOG:  database system was interrupted; last known up at 2022-08-02 01:25:12 UTC
+2022-08-02 01:25:24.780 UTC [2880] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 01:25:24.780 UTC [2880] LOG:  recovered replication state of node 3 to 0/1
+2022-08-02 01:25:24.780 UTC [2880] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:25:24.781 UTC [2880] LOG:  redo starts at 0/285B8AF8
+2022-08-02 01:25:24.781 UTC [2880] LOG:  invalid record length at 0/285B8FD8: wanted 24, got 0
+2022-08-02 01:25:24.781 UTC [2880] LOG:  redo done at 0/285B8FB0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 01:25:24.793 UTC [118661] LOG:  database system is ready to accept connections

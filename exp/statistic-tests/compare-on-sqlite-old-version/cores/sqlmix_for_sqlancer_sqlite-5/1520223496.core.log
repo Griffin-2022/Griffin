@@ -1,0 +1,52 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000459,sig:11,src:016415+010867,time:17113761,execs:4731527,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+musable (mem=0xaaaaaaaaaaaaaaaa) at malloc.c:4843
+(gdb) #0  musable (mem=0xaaaaaaaaaaaaaaaa) at malloc.c:4843
+#1  __malloc_usable_size (m=0xaaaaaaaaaaaaaaaa) at malloc.c:4867
+#2  0x000000000027213e in sqlite3MemSize (pPrior=0xaaaaaaaaaaaaaaaa) at sqlite3.c:22927
+#3  0x000000000025d20b in sqlite3DbMallocSize (db=0x2389810, p=0xaaaaaaaaaaaaaaaa) at sqlite3.c:26809
+#4  0x000000000031caea in sqlite3ExprListDup (db=0x2389810, p=0xaaaaaaaaaaaaaaaa, flags=0) at sqlite3.c:98290
+#5  0x00000000003a1362 in sqlite3WindowRewrite (pParse=0x7ffe3d792d80, p=0x23a5c30) at sqlite3.c:146325
+#6  0x00000000002fc6de in sqlite3Select (pParse=0x7ffe3d792d80, p=0x23a5c30, pDest=0x7ffe3d791a78) at sqlite3.c:130281
+#7  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffe3d792d80, pExpr=0x23a36b0) at sqlite3.c:99820
+#8  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffe3d792d80, pExpr=0x23a36b0, target=1) at sqlite3.c:100770
+#9  0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffe3d792d80, pList=0x23a6590, target=1, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#10 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffe3d792d80, pSelect=0x239f060, pInfo=0x7ffe3d791dc0) at sqlite3.c:125172
+#11 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffe3d792d80, p=0x239f060, srcTab=-1, pSort=0x0, pDistinct=0x7ffe3d792060, pDest=0x7ffe3d792170, iContinue=-4, iBreak=-2) at sqlite3.c:125624
+#12 0x00000000002fe191 in sqlite3Select (pParse=0x7ffe3d792d80, p=0x239f060, pDest=0x7ffe3d792170) at sqlite3.c:130743
+#13 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffe3d7923a0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe3d792d80) at sqlite3.c:151581
+#14 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffe3d7923a0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#15 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffe3d792d80, 
+    zSql=0x23a7893 ";;CREATE TABLE a(b REFERENCES c1 ON DELETE SET NULL);;\n;SELECT sum(c0) OVER () FROM t0\n   ORDER BY EXISTS(SELECT 1 FROM t0 ORDER BY sum(c0) OVER ());", pzErrMsg=0x7ffe3d792f60) at sqlite3.c:154013
+#16 0x00000000002a1683 in sqlite3Prepare (db=0x2389810, 
+    zSql=0x2389672 ";\n;SELECT EXISTS(SELECT 1 FROM t0 ORDER BY sum(c0) OVER ()) FROM t0;;CREATE TABLE a(b REFERENCES c1 ON DELETE SET NULL);;\n;SELECT sum(c0) OVER () FROM t0\n   ORDER BY EXISTS(SELECT 1 FROM t0 ORDER BY s"..., nBytes=216, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffe3d793098, pzTail=0x7ffe3d793080) at sqlite3.c:124303
+#17 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x2389810, 
+    zSql=0x2389672 ";\n;SELECT EXISTS(SELECT 1 FROM t0 ORDER BY sum(c0) OVER ()) FROM t0;;CREATE TABLE a(b REFERENCES c1 ON DELETE SET NULL);;\n;SELECT sum(c0) OVER () FROM t0\n   ORDER BY EXISTS(SELECT 1 FROM t0 ORDER BY s"..., nBytes=216, prepFlags=128, pOld=0x0, ppStmt=0x7ffe3d793098, pzTail=0x7ffe3d793080) at sqlite3.c:124403
+#18 0x000000000029247f in sqlite3_prepare_v2 (db=0x2389810, 
+    zSql=0x2389672 ";\n;SELECT EXISTS(SELECT 1 FROM t0 ORDER BY sum(c0) OVER ()) FROM t0;;CREATE TABLE a(b REFERENCES c1 ON DELETE SET NULL);;\n;SELECT sum(c0) OVER () FROM t0\n   ORDER BY EXISTS(SELECT 1 FROM t0 ORDER BY s"..., nBytes=216, ppStmt=0x7ffe3d793098, pzTail=0x7ffe3d793080) at sqlite3.c:124487
+#19 0x0000000000256bd0 in main (argc=1, argv=0x7ffe3d793248) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 54262] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

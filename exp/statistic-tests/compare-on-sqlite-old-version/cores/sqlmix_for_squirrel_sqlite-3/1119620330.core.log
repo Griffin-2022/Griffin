@@ -1,0 +1,127 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000430,sig:06,src:021442+021238,time:14910140,execs:2952549,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: SELECT log_entry, count(*) FROM x GROUP BY log_entry ORDER BY log_entry
+;
+SQL-trace: ;BEGIN;
+SQL-trace: SELECT a, count(*), avg(a), max(a+a*2) FROM test 
+    GROUP BY a 
+    ORDER BY max(a+a*2)+0, avg(a)+0
+  
+;
+SQL-trace: ;ROLLBACK;
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+SQL-trace: ;PRAGMA vdbe_trace=on;
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;SELECT typeof(sum(a)) FROM test;]
+VDBE Trace:
+   0 Init             0   13    0               00 Start at 13
+SQL-trace: ;SELECT typeof(sum(a)) FROM test;
+  13 Transaction      0    0    3 1             01 usesStmtJournal=0
+  14 Goto             0    1    0               00 
+   1 Null             0    1    2               00 r[1..2]=NULL
+REG[1] =  NULL
+   2 OpenRead         0    2    0 2             00 root=2 iDb=0; test
+   3 Explain          3    0    0 SCAN TABLE test 00 
+   4 Rewind           0    8    0               00 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  i:0
+   6 AggStep          0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  i:0
+   7 Next             0    5    0               01 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  i:4
+   6 AggStep1         0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  i:4
+   7 Next             0    5    0               01 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  i:3
+   6 AggStep1         0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  i:3
+   7 Next             0    5    0               01 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  i:10
+   6 AggStep1         0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  i:10
+   7 Next             0    5    0               01 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  NULL
+   6 AggStep1         0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  NULL
+   7 Next             0    5    0               01 
+   5 Column           0    1    3               00 r[3]=test.a
+REG[3] =  NULL
+   6 AggStep1         0    3    1 sum(1)        01 accum=r[1] step(r[3])
+REG[3] =  NULL
+   7 Next             0    5    0               01 
+   8 AggFinal         1    1    0 sum(1)        00 accum=r[1] N=1
+   9 Copy             1    3    0               00 r[3]=r[1]
+REG[3] =  i:17
+  10 Function0        0    3    4 typeof(1)     01 r[4]=func(r[3])
+REG[3] =  i:17
+REG[4] =   t7[integer](8)
+  11 ResultRow        4    1    0               00 output=r[4]
+REG[4] =   t7[integer](8)
+  12 Halt             0    0    0               00 
+SQL: [;INSERT INTO x(log_entry, log_entry) VALUES (0, $x), (0, 0);]
+VDBE Trace:
+   0 Init             0   21    0               00 Start at 21
+SQL-trace: ;INSERT INTO x(log_entry, log_entry) VALUES (0, $x), (0, 0);
+  21 Transaction      0    1    3 1             01 usesStmtJournal=1
+  22 Goto             0    1    0               00 
+   1 InitCoroutine    3   10    2               00 
+  10 OpenWrite        0    3    0 1             00 root=3 iDb=0; x
+  11 Yield            3   20    0               00 
+REG[3] =  i:1
+REG[3] =  i:11
+   2 Explain          2    0    0 SCAN 2 CONSTANT ROWS 00 
+   3 Integer          0    4    0               00 r[4]=0
+REG[4] =  i:0
+   4 Variable         1    5    0 $x            00 r[5]=parameter(1,$x)
+REG[5] =  NULL
+   5 Yield            3    0    0               00 
+REG[3] =  i:11
+REG[3] =  i:5
+  12 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+  13 SCopy            4    2    0               00 r[2]=r[4]
+REG[2] =  i:0
+  14 Abortable        0    0    0               00 
+  15 Ne               2   17    2 (BINARY)      52 if r[2]!=r[2] goto 17
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f065c04e859 in __GI_abort () at abort.c:79
+#2  0x00007f065c04e729 in __assert_fail_base (fmt=0x7f065c1e4588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21dc88 "pIn1!=pIn3", file=0x2291f4 "sqlite3.c", line=86002, function=<optimized out>) at assert.c:92
+#3  0x00007f065c05ffd6 in __GI___assert_fail (assertion=0x21dc88 "pIn1!=pIn3", file=0x2291f4 "sqlite3.c", line=86002, function=0x216a86 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003cf4ad in sqlite3VdbeExec (p=0x171bb90) at sqlite3.c:86002
+#5  0x000000000041ba74 in sqlite3Step (p=0x171bb90) at sqlite3.c:82300
+#6  0x0000000000293d5d in sqlite3_step (pStmt=0x171bb90) at sqlite3.c:82365
+#7  0x0000000000258a39 in main (argc=1, argv=0x7ffc230c3898) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 54737] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

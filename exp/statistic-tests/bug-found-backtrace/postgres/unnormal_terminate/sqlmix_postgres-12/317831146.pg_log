@@ -1,0 +1,111 @@
+2022-08-02 09:34:25.711 UTC [9606] ERROR:  value too long for type character(1)
+2022-08-02 09:34:25.711 UTC [9606] STATEMENT:  INSERT INTO tt1 (f1) VALUES ('f1');
+2022-08-02 09:34:25.712 UTC [9606] ERROR:  value too long for type character(1)
+2022-08-02 09:34:25.712 UTC [9606] STATEMENT:  INSERT INTO tt1 (f1) VALUES ('cd');
+2022-08-02 09:34:25.714 UTC [9606] ERROR:  value too long for type character(1)
+2022-08-02 09:34:25.714 UTC [9606] STATEMENT:  INSERT INTO tt1 (f1) VALUES ('abcd    ');
+2022-08-02 09:34:25.716 UTC [9606] WARNING:  there is no transaction in progress
+2022-08-02 09:34:25.720 UTC [9606] WARNING:  there is no transaction in progress
+2022-08-02 09:34:25.728 UTC [9606] ERROR:  directory "/root/postgres/src/test/recovery/tmp_check/tmp_test_cUlt" does not exist
+2022-08-02 09:34:25.728 UTC [9606] STATEMENT:  CREATE TABLESPACE ts1 LOCATION '/root/postgres/src/test/recovery/tmp_check/tmp_test_cUlt'
+	;
+2022-08-02 09:34:25.730 UTC [9606] ERROR:  jsonpath member accessor can only be applied to an object
+2022-08-02 09:34:25.730 UTC [9606] STATEMENT:  select jsonb_path_query('[1,2,3]', 'strict $[*].a');
+2022-08-02 09:34:25.734 UTC [9606] ERROR:  block label "begin_block1" cannot be used in CONTINUE at character 195
+2022-08-02 09:34:25.734 UTC [9606] STATEMENT:  
+	
+	-- should fail: CONTINUE can't reference the label of a named block
+	create function continue_error3() returns void as $$
+	begin
+	    <<begin_block1>>
+	    begin
+	        loop
+	            continue begin_block1;
+	        end loop;
+	    end;
+	end;
+	$$ language plpgsql;
+2022-08-02 09:34:25.736 UTC [9606] ERROR:  relation "clstr_4" does not exist
+2022-08-02 09:34:25.736 UTC [9606] STATEMENT:  
+	create index cluster_sort on clstr_4 (hundred, thousand, tenthous);
+2022-08-02 09:34:25.738 UTC [9606] ERROR:  searching for elements in multidimensional arrays is not supported
+2022-08-02 09:34:25.738 UTC [9606] STATEMENT:  SELECT array_position(ARRAY[[1,2],[3,4]], 3);
+2022-08-02 09:34:25.744 UTC [9606] ERROR:  type "sqlsim7" does not exist
+2022-08-02 09:34:25.744 UTC [9606] STATEMENT:  drop type sqlsim7;
+2022-08-02 09:34:25.744 UTC [9606] ERROR:  cannot determine result data type
+2022-08-02 09:34:25.744 UTC [9606] STATEMENT:  create function bogus_func(anyelement)
+	  returns anymultirange as 'select int4multirange(int4range(1,10))' language sql;
+2022-08-02 09:34:25.747 UTC [9606] ERROR:  cannot determine result data type
+2022-08-02 09:34:25.747 UTC [9606] STATEMENT:  create function mr_outparam_fail(i anyelement, out r anymultirange, out t currentid)
+	  as $$ select '[1,10]', 'foo' $$ language sql;
+2022-08-02 09:34:25.748 UTC [9606] ERROR:  cannot determine result data type
+2022-08-02 09:34:25.748 UTC [9606] STATEMENT:  create function mr_inoutparam_fail(inout i anyelement, out r anymultirange)
+	  as $$ select $1, '[1,10]' $$ language sql;
+2022-08-02 09:34:25.748 UTC [9606] WARNING:  there is no transaction in progress
+=================================================================
+==9606==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffcb16ebfd0 sp 0x7ffcb16ebfc8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7ff14e13f082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==9606==ABORTING
+2022-08-02 09:34:25.813 UTC [5789] LOG:  server process (PID 9606) was terminated by signal 6: Aborted
+2022-08-02 09:34:25.813 UTC [5789] LOG:  terminating any other active server processes
+2022-08-02 09:34:25.820 UTC [26520] FATAL:  the database system is in recovery mode
+2022-08-02 09:34:25.823 UTC [5789] LOG:  all server processes terminated; reinitializing
+2022-08-02 09:34:25.838 UTC [26523] LOG:  database system was interrupted; last known up at 2022-08-02 09:34:13 UTC
+2022-08-02 09:34:25.839 UTC [26524] FATAL:  the database system is in recovery mode
+2022-08-02 09:34:25.841 UTC [26525] FATAL:  the database system is in recovery mode
+2022-08-02 09:34:25.845 UTC [5789] LOG:  received smart shutdown request
+2022-08-02 09:34:25.862 UTC [26523] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 09:34:25.862 UTC [26523] LOG:  recovered replication state of node 7 to 0/0
+2022-08-02 09:34:25.862 UTC [26523] LOG:  database system was not properly shut down; automatic recovery in progress

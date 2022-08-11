@@ -1,0 +1,230 @@
+# name: test/sql/aggregate/aggregates/test_quantile_disc.test
+# description: Test QUANTILE_DISC aggregate
+# group: [aggregates]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE quantile as
+SELECT range r, random() AS q
+FROM range(10000)
+UNION ALL VALUES (NULL, 0.1), (NULL, 0.5), (NULL, 0.9)
+ORDER BY 2;
+
+;
+SELECT quantile_disc(r, 0.5) FROM quantile
+;
+4999
+
+;
+SELECT quantile_disc(r::decimal(10,2), 0.5) FROM quantile
+;
+4999
+
+;
+SELECT quantile_disc(r, 1.0) FROM quantile
+;
+9999
+
+;
+SELECT quantile_disc(r, 0.0) FROM quantile
+;
+0
+
+;
+SELECT quantile_disc(NULL, 0.5) FROM quantile
+;
+NULL
+
+;
+SELECT quantile_disc(42, 0.5) FROM quantile
+;
+42
+
+;
+SELECT quantile_disc(NULL, 0.5)
+;
+NULL
+
+;
+SELECT quantile_disc(42, 0.5)
+;
+42
+
+# single GROUP
+;
+SELECT quantile_disc(r, 0.1), quantile_disc(r, 0.5), quantile_disc(r, 0.9) from quantile
+;
+999
+4999
+8999
+
+foreach type decimal(4,1) decimal(8,1) decimal(12,1) decimal(18,1) decimal(24,1)
+
+;
+SELECT quantile_disc(d::${type}, 0.1), quantile_disc(d::${type}, 0.5), quantile_disc(d::${type}, 0.9)
+FROM range(0,100) tbl(d)
+;
+9.0	49.0	89.0
+
+endloop
+
+#
+# VARCHAR. Remember, this is dictionary ordering, not numeric ordering!
+#
+;
+SELECT quantile_disc(d::VARCHAR, 0.1), quantile_disc(d::VARCHAR, 0.5), quantile_disc(d::VARCHAR, 0.9)
+FROM range(0,100) tbl(d)
+;
+17	53	9
+
+# A string column that has only NULL values
+;
+SELECT quantile_disc(NULL::VARCHAR, 0.1)
+FROM range(0,100) tbl(d)
+;
+NULL
+
+# A string column that has long strings (>12 characters)
+;
+SELECT quantile_disc('prefix-' || d::VARCHAR || '-suffix', 0.1)
+FROM range(0,100) tbl(d)
+;
+prefix-17-suffix
+
+# Using median itself on a string (just an alias for quantile_disc)
+;
+SELECT median(d::VARCHAR)
+FROM range(0,100) tbl(d)
+;
+53
+
+# Median on an empty table
+;
+SELECT median(d::VARCHAR)
+FROM range(0,100) tbl(d)
+WHERE d > 100
+;
+NULL
+
+#
+# Multiple groups
+#
+;
+SELECT mod(r,10) as g, quantile_disc(r, 0.1) FROM quantile GROUP BY 1 ORDER BY 1
+;
+NULL	NULL
+0	990
+1	991
+2	992
+3	993
+4	994
+5	995
+6	996
+7	997
+8	998
+9	999
+
+# temporal types
+;
+SELECT quantile_disc('2021-01-01'::TIMESTAMP + interval (r) hour, 0.5) FROM quantile
+;
+2021-07-28 07:00:00
+
+;
+SELECT quantile_disc('1990-01-01'::DATE + interval (r) day, 0.5) FROM quantile
+;
+2003-09-09
+
+;
+SELECT quantile_disc('00:00:00'::TIME + interval (r) second, 0.5) FROM quantile
+;
+01:23:19
+
+;
+SELECT quantile_disc(interval (r) second, 0.5) FROM quantile
+;
+01:23:19
+
+# WITH TIME ZONE
+;
+SELECT quantile_disc(('2021-01-01'::TIMESTAMP + interval (r) hour)::TIMESTAMPTZ, 0.5) FROM quantile
+;
+2021-07-28 07:00:00+00
+
+# constant input
+;
+SELECT quantile_disc(1, 0.1) FROM quantile
+;
+1
+
+# empty input
+;
+SELECT quantile_disc(r, 0.1) FROM quantile WHERE 1=0
+;
+NULL
+
+# Invalid usage
+;
+SELECT quantile_disc(r, -0.1) FROM quantile
+
+;
+SELECT quantile_disc(r, 1.1) FROM quantile
+
+;
+SELECT quantile_disc(r, "string") FROM quantile
+
+;
+SELECT quantile_disc(r, NULL) FROM quantile
+
+;
+SELECT quantile_disc(r) FROM quantile
+
+;
+SELECT quantile_disc(r, 0.1, 50) FROM quantile
+
+;
+SELECT quantile_cont(r, q) FROM quantile
+
+;
+pragma threads=4
+
+;
+PRAGMA verify_parallelism
+
+# single GROUP
+;
+SELECT quantile_disc(r, 0.1), quantile_disc(r, 0.5), quantile_disc(r, 0.9) from quantile
+;
+999
+4999
+8999
+
+# multiple groups
+;
+SELECT mod(r,10) as g, quantile_disc(r, 0.1) FROM quantile GROUP BY 1 ORDER BY 1
+;
+NULL	NULL
+0	990
+1	991
+2	992
+3	993
+4	994
+5	995
+6	996
+7	997
+8	998
+9	999
+
+# constant input
+;
+SELECT quantile_disc(1, 0.1) FROM quantile
+;
+1
+
+# empty input
+;
+SELECT quantile_disc(r, 0.1) FROM quantile WHERE 1=0
+;
+NULL

@@ -1,0 +1,27 @@
+# name: test/sql/types/float/nan_aggregate.test
+# description: Test NaN and inf as aggregate groups
+# group: [float]
+
+;
+PRAGMA enable_verification
+
+# grouping by inf and nan
+foreach type FLOAT DOUBLE
+
+;
+create table floats(f ${type}, i int);
+
+;
+insert into floats values ('inf', 1), ('inf', 7), ('-inf', 3), ('nan', 7), ('nan', 19), ('-inf', 2)
+
+;
+SELECT f, SUM(i) FROM floats GROUP BY f ORDER BY f;
+;
+-inf	5
+inf	8
+nan	26
+
+;
+DROP TABLE floats
+
+endloop

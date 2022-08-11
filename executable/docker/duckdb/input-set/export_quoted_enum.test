@@ -1,0 +1,21 @@
+# name: test/sql/export/export_quoted_enum.test
+# description: Test export of enum with reserved keyword name
+# group: [export]
+
+;
+BEGIN TRANSACTION
+
+;
+CREATE TYPE "group" AS ENUM ( 'one', 'two');
+
+;
+CREATE TABLE table1(col1 "group");
+
+;
+EXPORT DATABASE '__TEST_DIR__/export_enum' (FORMAT CSV);
+
+;
+ROLLBACK
+
+;
+IMPORT DATABASE '__TEST_DIR__/export_enum'

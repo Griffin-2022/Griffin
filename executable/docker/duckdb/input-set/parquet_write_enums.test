@@ -1,0 +1,141 @@
+# name: test/sql/copy/parquet/writer/parquet_write_enums.test
+# description: ENUM tests
+# group: [writer]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+# standard enum
+;
+CREATE TYPE mood AS ENUM ('joy', 'ok', 'happy');
+
+;
+CREATE TABLE enums(m mood);
+
+;
+INSERT INTO enums VALUES
+	('happy'), ('happy'), ('joy'), ('joy'),
+	('happy'), ('happy'), ('joy'), ('joy'),
+    ('happy'), ('happy'), ('joy'), ('joy'),
+    ('happy'), ('happy'), ('joy'), ('joy'),
+    ('happy'), ('happy'), ('joy'), ('joy'),
+    ('happy'), ('happy'), ('joy'), ('joy'),
+    ('happy'), ('happy'), ('joy'), ('joy'), ('joy')
+
+;
+COPY enums TO '__TEST_DIR__/enums.parquet' (FORMAT PARQUET);
+
+;
+SELECT * FROM '__TEST_DIR__/enums.parquet'
+;
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+happy
+happy
+joy
+joy
+joy
+
+# enum with null values
+;
+UPDATE enums SET m=NULL WHERE m='joy'
+
+;
+COPY enums TO '__TEST_DIR__/enums.parquet' (FORMAT PARQUET);
+
+;
+SELECT * FROM '__TEST_DIR__/enums.parquet'
+;
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+happy
+happy
+NULL
+NULL
+NULL
+
+# all values are null
+;
+UPDATE enums SET m=NULL
+
+;
+COPY enums TO '__TEST_DIR__/enums.parquet' (FORMAT PARQUET);
+
+;
+SELECT * FROM '__TEST_DIR__/enums.parquet'
+;
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL

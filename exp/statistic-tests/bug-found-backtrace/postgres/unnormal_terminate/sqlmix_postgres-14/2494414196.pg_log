@@ -1,0 +1,111 @@
+	CREATE TABLE alter_op_test_fn(customcontsel tsvector, foobar tsvector, combocidtest tsvector);
+2022-08-02 03:09:12.153 UTC [95171] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:09:12.153 UTC [95171] STATEMENT:  
+	    SET allow_system_table_mods TO true;
+2022-08-02 03:09:12.153 UTC [95171] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:09:12.153 UTC [95171] STATEMENT:  
+	REINDEX INDEX objsubid;
+2022-08-02 03:09:12.153 UTC [95171] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:09:12.153 UTC [95171] STATEMENT:  
+	CREATE OR REPLACE FUNCTION testcase(tabname text)
+	  RETURNS TABLE (relname name, relkind "char", state text) AS
+	  $func$
+	  BEGIN
+	    RETURN QUERY EXECUTE
+	      format(
+	        'SELECT  b.relname,
+	                 b.relkind,
+	                 CASE WHEN i.relfilenode = b.relfilenode THEN ''relfilenode is unchanged''
+	                 ELSE ''relfilenode has changed'' END
+	           -- Do not join with OID here as CONCURRENTLY changes it.
+	           FROM %I b JOIN pg_class i ON b.relname = i.relname
+	           ORDER BY 1;', tabname);
+	  END
+	  $func$ LANGUAGE plpgsql;
+2022-08-02 03:09:12.153 UTC [95171] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:09:12.153 UTC [95171] STATEMENT:  
+	REINDEX TABLE CONCURRENTLY t2;
+2022-08-02 03:09:12.153 UTC [95171] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:09:12.153 UTC [95171] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 03:09:12.162 UTC [95171] ERROR:  no partition of relation "test1" found for row
+2022-08-02 03:09:12.162 UTC [95171] STATEMENT:  
+	    INSERT INTO test1
+	      SELECT 1, repeat('1', 11) || string_agg(g.i::text || random()::text, '') FROM generate_series(1, 500) g(i);
+2022-08-02 03:09:12.166 UTC [95171] ERROR:  unsupported XML feature
+2022-08-02 03:09:12.166 UTC [95171] STATEMENT:  SELECT xmlparse(document '   ');
+=================================================================
+==95171==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffd5a705504 at pc 0x00000057bc7d bp 0x7ffd5a705230 sp 0x7ffd5a705228
+READ of size 1 at 0x7ffd5a705504 thread T0
+    #0 0x57bc7c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c)
+    #1 0x99eb2f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99eb2f)
+    #2 0x99deb6  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99deb6)
+    #3 0x119309b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x119309b)
+    #4 0x118f991  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118f991)
+    #5 0x118e3f3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118e3f3)
+    #6 0x118d660  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118d660)
+    #7 0x118b88d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b88d)
+    #8 0x118a128  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a128)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f32e5e6e082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+Address 0x7ffd5a705504 is located in stack of thread T0 at offset 388 in frame
+    #0 0x99e66f  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x99e66f)
+
+  This frame has 4 object(s):
+    [32, 248) 'skey' (line 145)
+    [320, 352) 'values' (line 149)
+    [384, 388) 'nulls' (line 150) <== Memory access at offset 388 overflows this variable
+    [400, 404) 'replaces' (line 151)
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x57bc7c) 
+Shadow bytes around the buggy address:
+  0x10002b4d8a50: f8 f2 f2 f2 f8 f3 f3 f3 00 00 00 00 00 00 00 00
+  0x10002b4d8a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8a70: f1 f1 f1 f1 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f2
+  0x10002b4d8a90: f2 f2 f2 f2 f2 f2 f2 f2 00 00 00 00 f2 f2 f2 f2
+=>0x10002b4d8aa0:[04]f2 04 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8ab0: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  0x10002b4d8ac0: 00 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8ad0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8ae0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10002b4d8af0: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==95171==ABORTING
+2022-08-02 03:09:12.203 UTC [94621] LOG:  server process (PID 95171) was terminated by signal 6: Aborted
+2022-08-02 03:09:12.203 UTC [94621] LOG:  terminating any other active server processes
+2022-08-02 03:09:12.208 UTC [94621] LOG:  all server processes terminated; reinitializing
+2022-08-02 03:09:12.221 UTC [98417] LOG:  database system was interrupted; last known up at 2022-08-02 03:08:58 UTC
+2022-08-02 03:09:12.222 UTC [98418] FATAL:  the database system is in recovery mode
+2022-08-02 03:09:12.224 UTC [98421] FATAL:  the database system is in recovery mode
+2022-08-02 03:09:12.226 UTC [98422] FATAL:  the database system is in recovery mode
+2022-08-02 03:09:12.231 UTC [94621] LOG:  received smart shutdown request
+2022-08-02 03:09:12.255 UTC [98417] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 03:09:12.257 UTC [98417] LOG:  redo starts at 0/5281C30
+2022-08-02 03:09:12.261 UTC [94621] LOG:  abnormal database system shutdown

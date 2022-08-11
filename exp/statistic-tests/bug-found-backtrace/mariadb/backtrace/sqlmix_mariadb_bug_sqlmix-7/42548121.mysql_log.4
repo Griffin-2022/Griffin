@@ -1,0 +1,100 @@
+| | | | | | | | >ddl_log_sync_no_lock
+| | | | | | | | | >ddl_log_sync_file
+| | | | | | | | | | >my_sync
+| | | | | | | | | | | my: fd: 3  my_flags: 16
+| | | | | | | | | | <my_sync
+| | | | | | | | | <ddl_log_sync_file
+| | | | | | | | <ddl_log_sync_no_lock
+| | | | | | | | >ddl_log_get_free_entry
+| | | | | | | | <ddl_log_get_free_entry
+| | | | | | | | ddl_log: pos: 2=>1
+| | | | | | | | >write_ddl_log_file_entry
+| | | | | | | | | >my_pwrite
+| | | | | | | | | | my: fd: 3  Seek: 8192  Buffer: 0x621000030d88  Count: 4096  MyFlags: 20
+| | | | | | | | | <my_pwrite
+| | | | | | | | <write_ddl_log_file_entry
+| | | | | | | | >ddl_log_sync_no_lock
+| | | | | | | | | >ddl_log_sync_file
+| | | | | | | | | | >my_sync
+| | | | | | | | | | | my: fd: 3  my_flags: 16
+| | | | | | | | | | <my_sync
+| | | | | | | | | <ddl_log_sync_file
+| | | | | | | | <ddl_log_sync_no_lock
+| | | | | | | <ddl_log_write_execute_entry
+| | | | | | | mutex: LOCK_gdl (0x6031ce0) unlocking
+| | | | | | <ddl_log_write
+| | | | | <ddl_log_drop_file
+| | | | | >ddl_log_drop_view
+| | | | | | >ddl_log_drop
+| | | | | | | mutex: LOCK_gdl (0x6031ce0) locking
+| | | | | | | mutex: LOCK_gdl (0x6031ce0) locked
+| | | | | | | >ddl_log_write_entry
+| | | | | | | | >ddl_log_get_free_entry
+| | | | | | | | <ddl_log_get_free_entry
+| | | | | | | | ddl_log: pos: 3->0  action: 9 (drop view) phase: 0  handler: '(null)'  name: 'tables'  from_name: '(null)'  tmp_name: './rwoasfsv/tables.frm'
+| | | | | | | | >write_ddl_log_file_entry
+| | | | | | | | | >my_pwrite
+| | | | | | | | | | my: fd: 3  Seek: 12288  Buffer: 0x621000030d88  Count: 4096  MyFlags: 20
+| | | | | | | | | <my_pwrite
+| | | | | | | | <write_ddl_log_file_entry
+| | | | | | | <ddl_log_write_entry
+| | | | | | | >ddl_log_sync_no_lock
+| | | | | | | | >ddl_log_sync_file
+| | | | | | | | | >my_sync
+| | | | | | | | | | my: fd: 3  my_flags: 16
+| | | | | | | | | <my_sync
+| | | | | | | | <ddl_log_sync_file
+| | | | | | | <ddl_log_sync_no_lock
+| | | | | | | >update_next_entry_pos
+| | | | | | | | ddl_log: pos: 1->3
+| | | | | | | | >my_pwrite
+| | | | | | | | | my: fd: 3  Seek: 4100  Buffer: 0x7fae8cdab6f0  Count: 4  MyFlags: 20
+| | | | | | | | <my_pwrite
+| | | | | | | <update_next_entry_pos
+| | | | | | | mutex: LOCK_gdl (0x6031ce0) unlocking
+| | | | | | <ddl_log_drop
+| | | | | <ddl_log_drop_view
+| | | | | >debug_crash_here
+| | | | | | enter: keyword: ddl_log_drop_before_delete_view
+| | | | | <debug_crash_here
+| | | | | >my_delete
+| | | | | | my: name ./rwoasfsv/tables.frm MyFlags 16
+| | | | | <my_delete
+| | | | | >debug_crash_here
+| | | | | | enter: keyword: ddl_log_drop_after_delete_view
+| | | | | <debug_crash_here
+| | | | | >tdc_remove_table
+| | | | | | enter: name: tables
+| | | | | | info: Adding mdl lock MDL_EXCLUSIVE to MDL_EXCLUSIVE
+| | | | | | mutex: LOCK_unused_shares (0x606a5c0) locking
+| | | | | | mutex: LOCK_unused_shares (0x606a5c0) locked
+| | | | | | >tdc_lock_share
+| | | | | | | mutex: element->LOCK_table_share (0x61b0001326c0) locking
+| | | | | | | mutex: element->LOCK_table_share (0x61b0001326c0) locked
+| | | | | | <tdc_lock_share
+| | | | | | mutex: LOCK_unused_shares (0x606a5c0) unlocking
+| | | | | | >tdc_delete_share_from_hash
+| | | | | | | mutex: element->LOCK_table_share (0x61b0001326c0) unlocking
+| | | | | | | >free_table_share
+| | | | | | | | enter: table: rwoasfsv.tables
+| | | | | | | | >TABLE_SHARE::destroy
+| | | | | | | | | info: db: rwoasfsv table: tables
+| | | | | | | | | >free_root
+| | | | | | | | | | enter: root: 0x61b00114d100  flags: 0
+| | | | | | | | | <free_root
+| | | | | | | | | >safe_mutex_destroy
+| | | | | | | | | | enter: mutex: 0x61b00114cfe8  name: share->LOCK_share
+| | | | | | | | | <safe_mutex_destroy
+| | | | | | | | | >safe_mutex_destroy
+| | | | | | | | | | enter: mutex: 0x61b00114cf38  name: share->LOCK_ha_data
+| | | | | | | | | <safe_mutex_destroy
+| | | | | | | | | >my_hash_free
+| | | | | | | | | | enter: hash:0x61b00114ce30  elements: 0
+| | | | | | | | | <my_hash_free
+| | | | | | | | | >plugin_unlock
+| | | | | | | | | <plugin_unlock
+| | | | | | | | | >plugin_unlock
+| | | | | | | | | <plugin_unlock
+| | | | | | | | | >free_root
+| | | | | | | | | | enter: root: 0x7fae8cdab660  flags: 0
+|

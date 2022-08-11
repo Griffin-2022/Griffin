@@ -1,0 +1,178 @@
+# name: test/sql/function/string/test_mismatches.test
+# description: Test mismatches function
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+SELECT mismatches('hallo', 'hallo')
+;
+0
+
+;
+SELECT mismatches('hello', 'hallo')
+;
+1
+
+;
+SELECT mismatches('hallo', 'hello')
+;
+1
+
+;
+SELECT mismatches('aloha', 'hallo')
+;
+5
+
+;
+SELECT mismatches('hallo', 'aloha')
+;
+5
+
+;
+SELECT mismatches(NULL, 'hallo')
+;
+NULL
+
+;
+SELECT mismatches('hello', NULL)
+;
+NULL
+
+;
+SELECT mismatches(NULL, NULL)
+;
+NULL
+
+
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello'), ('hallo'), ('aloha'), ('world'), (NULL)
+
+# normal counts
+;
+SELECT mismatches(s, 'hallo') FROM strings ORDER BY s
+;
+NULL
+5
+0
+1
+4
+
+;
+SELECT mismatches('hallo', s) FROM strings ORDER BY s
+;
+NULL
+5
+0
+1
+4
+
+
+
+
+# special cases
+
+;
+SELECT mismatches('', '')
+
+;
+SELECT mismatches(NULL, s) FROM strings ORDER BY s
+;
+NULL
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT mismatches(s, NULL) FROM strings ORDER BY s
+;
+NULL
+NULL
+NULL
+NULL
+NULL
+
+
+
+
+
+# incorrect usages
+;
+SELECT mismatches('hoi', 'hallo')
+
+;
+SELECT mismatches('hallo', 'hoi')
+
+;
+SELECT mismatches('', 'hallo')
+
+;
+SELECT mismatches('hi', '')
+
+;
+SELECT mismatches('', s) FROM strings ORDER BY s
+
+;
+SELECT mismatches(s, '') FROM strings ORDER BY s
+
+
+;
+DROP TABLE strings
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello'), ('halo'), (NULL)
+
+
+# incorrect usage
+
+;
+SELECT mismatches(s, 'hallo') FROM strings
+
+;
+SELECT mismatches('hallo', s) FROM strings
+
+
+
+
+;
+SELECT hamming('hallo', 'hallo')
+;
+0
+
+;
+SELECT hamming('hello', 'hallo')
+;
+1
+
+;
+SELECT hamming(s, 'hallo') FROM strings WHERE s = 'hello'
+;
+1
+
+
+
+# Comparing fields from two columns row wise
+
+;
+DROP TABLE strings;
+
+;
+CREATE TABLE strings(s VARCHAR, t VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello', 'world'), ('hallo', 'ola'), ('hello', ''), (NULL, NULL), ('', ''), ('bora', 'bora')
+
+;
+SELECT s, t, hamming(s, t) hd FROM strings WHERE length(s) = length(t)
+
+;
+SELECT hamming(s, t)  FROM strings

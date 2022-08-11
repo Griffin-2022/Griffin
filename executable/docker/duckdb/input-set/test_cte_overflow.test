@@ -1,0 +1,17 @@
+# name: test/sql/cte/test_cte_overflow.test
+# description: Ensure no stack overflow for CTE names that match existing tables
+# group: [cte]
+
+;
+create table a (id integer)
+
+;
+insert into a values (1729)
+
+;
+create view va as (with v as (select * from a) select * from v)
+
+;
+with a as (select * from va) select * from a
+;
+1729

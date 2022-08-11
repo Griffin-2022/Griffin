@@ -1,0 +1,68 @@
+CREATE TABLE log(x);
+;CREATE TABLE p1(one PRIMARY KEY, two);
+;CREATE TRIGGER tr_ai AFTER INSERT ON p1 BEGIN
+    INSERT INTO log VALUES('insert');
+  END;
+;CREATE TRIGGER tr_bd BEFORE DELETE ON p1 BEGIN
+    INSERT INTO log VALUES('delete');
+  END;
+;CREATE TRIGGER tr_au AFTER UPDATE ON p1 BEGIN
+    INSERT INTO log VALUES('update');
+  END;
+;
+;INSERT INTO p1 VALUES('a', 'A'), ('b', 'B'), ('c', 'C');
+;
+;UPDATE p1 SET two = two||two;
+;
+;DELETE FROM p1 WHERE one IN ('a', 'c');
+;
+;-- None of the inserts on table log were counted.
+  SELECT count(*) FROM log
+
+;DELETE FROM p1;
+;INSERT INTO p1 VALUES('a', 'A'), ('b', 'B'), ('c', 'C');
+;CREATE TABLE c1(a, b, FOREIGN KEY(a) REFERENCES p1 ON DELETE SET NULL);
+;CREATE TABLE c2(a, b, FOREIGN KEY(a) REFERENCES p1 ON DELETE SET DEFAULT);
+;CREATE TABLE c3(a, b, FOREIGN KEY(a) REFERENCES p1 ON DELETE CASCADE);
+;INSERT INTO c1 VALUES('a', 'aaa');
+;INSERT INTO c2 VALUES('b', 'bbb');
+;INSERT INTO c3 VALUES('c', 'ccc');
+;INSERT INTO p1 VALUES('d', 'D'), ('e', 'E'), ('f', 'F');
+;CREATE TABLE c4(a, b, FOREIGN KEY(a) REFERENCES p1 ON UPDATE SET NULL);
+;CREATE TABLE c5(a, b, FOREIGN KEY(a) REFERENCES p1 ON UPDATE SET DEFAULT);
+;CREATE TABLE c6(a, b, FOREIGN KEY(a) REFERENCES p1 ON UPDATE CASCADE);
+;INSERT INTO c4 VALUES('d', 'aaa');
+;INSERT INTO c5 VALUES('e', 'bbb');
+;INSERT INTO c6 VALUES('f', 'ccc');
+;PRAGMA foreign_keys = ON;
+;
+;DELETE FROM p1 WHERE one = 'a' 
+;DELETE FROM p1 WHERE one = 'b' 
+;DELETE FROM p1 WHERE one = 'c' 
+;SELECT * FROM c1;
+;SELECT * FROM c2;
+;SELECT * FROM c3;
+;
+;UPDATE p1 SET one = 'g' WHERE one = 'd' 
+;UPDATE p1 SET one = 'h' WHERE one = 'e' 
+;UPDATE p1 SET one = 'i' WHERE one = 'f' 
+;SELECT * FROM c4;
+;SELECT * FROM c5;
+;SELECT * FROM c6;
+;
+;CREATE TABLE r1(a UNIQUE, b UNIQUE);
+;INSERT INTO r1 VALUES('i', 'i');
+;INSERT INTO r1 VALUES('ii', 'ii');
+;INSERT INTO r1 VALUES('iii', 'iii');
+;INSERT INTO r1 VALUES('iv', 'iv');
+;INSERT INTO r1 VALUES('v', 'v');
+;INSERT INTO r1 VALUES('vi', 'vi');
+;INSERT INTO r1 VALUES('vii', 'vii');
+;
+;INSERT OR REPLACE INTO r1 VALUES('i', 1)    
+;INSERT OR REPLACE INTO r1 VALUES('iv', 'v') 
+;UPDATE OR REPLACE r1 SET b='v' WHERE a='iii' 
+;UPDATE OR REPLACE r1 SET b='vi',a='vii' WHERE a='ii' 
+;SELECT * FROM r1 ORDER BY a;
+;
+;

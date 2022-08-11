@@ -1,0 +1,121 @@
+Warning: AFL++ tools might need to set AFL_MAP_SIZE to 1234115 to be able to run this instrumented program if this crashes!
+AFL init.
+=================================================================
+==109219==ERROR: AddressSanitizer: heap-use-after-free on address 0x60c000003ac0 at pc 0x000004a7a57c bp 0x7ffef74dec30 sp 0x7ffef74dec28
+READ of size 1 at 0x60c000003ac0 thread T0
+    #0 0x4a7a57b in duckdb::LogicalType::operator==(duckdb::LogicalType const&) const /root/duckdb/src/common/types.cpp:1273:6
+    #1 0x6f6693c in duckdb::ExpressionExecutor::Execute(duckdb::BoundParameterExpression const&, duckdb::ExpressionState*, duckdb::SelectionVector const*, unsigned long, duckdb::Vector&) /root/duckdb/src/execution/expression_executor/execute_parameter.cpp:17:2
+    #2 0x50a1164 in duckdb::ExpressionExecutor::Execute(duckdb::Expression const&, duckdb::ExpressionState*, duckdb::SelectionVector const*, unsigned long, duckdb::Vector&) /root/duckdb/src/execution/expression_executor.cpp:179:3
+    #3 0x6f5cd6f in duckdb::ExpressionExecutor::Execute(duckdb::BoundFunctionExpression const&, duckdb::ExpressionState*, duckdb::SelectionVector const*, unsigned long, duckdb::Vector&) /root/duckdb/src/execution/expression_executor/execute_function.cpp:26:4
+    #4 0x50a0b75 in duckdb::ExpressionExecutor::Execute(duckdb::Expression const&, duckdb::ExpressionState*, duckdb::SelectionVector const*, unsigned long, duckdb::Vector&) /root/duckdb/src/execution/expression_executor.cpp:173:3
+    #5 0x509be60 in duckdb::ExpressionExecutor::ExecuteExpression(unsigned long, duckdb::Vector&) /root/duckdb/src/execution/expression_executor.cpp:75:2
+    #6 0x509a914 in duckdb::ExpressionExecutor::Execute(duckdb::DataChunk*, duckdb::DataChunk&) /root/duckdb/src/execution/expression_executor.cpp:46:3
+    #7 0xdbc0fc in duckdb::ExpressionExecutor::Execute(duckdb::DataChunk&, duckdb::DataChunk&) /root/duckdb/src/include/duckdb/execution/expression_executor.hpp:32:3
+    #8 0x89fc633 in duckdb::PhysicalProjection::Execute(duckdb::ExecutionContext&, duckdb::DataChunk&, duckdb::DataChunk&, duckdb::OperatorState&) const /root/duckdb/src/execution/operator/projection/physical_projection.cpp:29:17
+    #9 0xbb5f2e in duckdb::PipelineExecutor::Execute(duckdb::DataChunk&, duckdb::DataChunk&, unsigned long) /root/duckdb/src/parallel/pipeline_executor.cpp:275:36
+    #10 0xb90597 in duckdb::PipelineExecutor::ExecutePull(duckdb::DataChunk&) /root/duckdb/src/parallel/pipeline_executor.cpp:200:5
+    #11 0xb8eac0 in duckdb::Executor::FetchChunk() /root/duckdb/src/parallel/executor.cpp:698:18
+    #12 0x76dbad in duckdb::ClientContext::FetchInternal(duckdb::ClientContextLock&, duckdb::Executor&, duckdb::BaseQueryResult&) /root/duckdb/src/main/client_context.cpp:99:25
+    #13 0x779078 in duckdb::ClientContext::FetchResultInternal(duckdb::ClientContextLock&, duckdb::PendingQueryResult&, bool) /root/duckdb/src/main/client_context.cpp:230:16
+    #14 0x79635c in duckdb::PendingQueryResult::ExecuteInternal(duckdb::ClientContextLock&, bool) /root/duckdb/src/main/pending_query_result.cpp:55:25
+    #15 0x797a91 in duckdb::ClientContext::ExecutePendingQueryInternal(duckdb::ClientContextLock&, duckdb::PendingQueryResult&, bool) /root/duckdb/src/main/client_context.cpp:703:15
+    #16 0x6a74ad in duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool) /root/duckdb/src/main/client_context.cpp:642:21
+    #17 0x6ac75f in duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /root/duckdb/src/main/connection.cpp:67:25
+    #18 0x5b764e in duckdb_query /root/duckdb/src/main/capi/duckdb-c.cpp:67:22
+    #19 0x59cdc3 in run_one_statement_new(void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /mnt/jingzhou_workspace/sqlsim/client_new/duckdb/client_new.cpp:68:13
+    #20 0x57b433 in run_testcase(void*&, char const*, int) /root/autodriver.cpp:135:14
+    #21 0x57f845 in do_fuzz()::$_3::operator()() const /root/autodriver.cpp:295:13
+    #22 0x57f13e in do_fuzz() /root/autodriver.cpp:303:13
+    #23 0x57ff53 in main /root/autodriver.cpp:365:9
+    #24 0x7feb00be9082 in __libc_start_main /build/glibc-SzIz7B/glibc-2.31/csu/../csu/libc-start.c:308:16
+    #25 0x4cc3fd in _start (/root/autodriver_afl_asan_debug+0x4cc3fd)
+
+0x60c000003ac0 is located 0 bytes inside of 128-byte region [0x60c000003ac0,0x60c000003b40)
+freed by thread T0 here:
+    #0 0x578bdd in operator delete(void*) (/root/autodriver_afl_asan_debug+0x578bdd)
+    #1 0x84979a in std::default_delete<duckdb::Value>::operator()(duckdb::Value*) const /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/unique_ptr.h:81:2
+    #2 0x8491ba in std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >::~unique_ptr() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/unique_ptr.h:292:4
+    #3 0x848df0 in void std::_Destroy<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > >(std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_construct.h:98:19
+    #4 0x848c1a in void std::_Destroy_aux<false>::__destroy<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*>(std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*, std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_construct.h:108:6
+    #5 0x848b44 in void std::_Destroy<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*>(std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*, std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_construct.h:136:7
+    #6 0x84842c in void std::_Destroy<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*, std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > >(std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*, std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >*, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > >&) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_construct.h:206:7
+    #7 0x84832b in std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > >::~vector() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_vector.h:677:2
+    #8 0x847e8c in std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >::~pair() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/stl_pair.h:208:12
+    #9 0x847d9e in void __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false> >::destroy<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > > >(std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/ext/new_allocator.h:152:10
+    #10 0x847ab6 in void std::allocator_traits<std::allocator<std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false> > >::destroy<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > > >(std::allocator<std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false> >&, std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/alloc_traits.h:496:8
+    #11 0x8479c7 in std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false> > >::_M_deallocate_node(std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false>*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/hashtable_policy.h:2102:7
+    #12 0x846df7 in std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false> > >::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, false>*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/hashtable_policy.h:2124:4
+    #13 0x8b2ad6 in std::_Hashtable<unsigned long, std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, std::allocator<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > > >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::clear() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/hashtable.h:2063:13
+    #14 0x8b2918 in std::_Hashtable<unsigned long, std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > >, std::allocator<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > > >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::~_Hashtable() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/hashtable.h:1387:7
+    #15 0x7e36c8 in std::unordered_map<unsigned long, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > >, std::hash<unsigned long>, std::equal_to<unsigned long>, std::allocator<std::pair<unsigned long const, std::vector<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> >, std::allocator<std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > > > > > >::~unordered_map() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/unordered_map.h:102:11
+    #16 0x7e35c6 in duckdb::PreparedStatementData::~PreparedStatementData() /root/duckdb/src/main/prepared_statement_data.cpp:12:1
+    #17 0x99c15e in void __gnu_cxx::new_allocator<duckdb::PreparedStatementData>::destroy<duckdb::PreparedStatementData>(duckdb::PreparedStatementData*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/ext/new_allocator.h:152:10
+    #18 0x99bdf6 in void std::allocator_traits<std::allocator<duckdb::PreparedStatementData> >::destroy<duckdb::PreparedStatementData>(std::allocator<duckdb::PreparedStatementData>&, duckdb::PreparedStatementData*) /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/alloc_traits.h:496:8
+    #19 0x99aea5 in std::_Sp_counted_ptr_inplace<duckdb::PreparedStatementData, std::allocator<duckdb::PreparedStatementData>, (__gnu_cxx::_Lock_policy)2>::_M_dispose() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/shared_ptr_base.h:557:2
+    #20 0x582638 in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/shared_ptr_base.h:155:6
+    #21 0x783f78 in std::shared_ptr<duckdb::PreparedStatementData>::~shared_ptr() /usr/lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/shared_ptr.h:103:11
+    #22 0x18881c6 in duckdb::Planner::PlanExecute(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:126:1
+    #23 0x1883f65 in duckdb::Planner::CreatePlan(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:168:3
+    #24 0x693c3e in duckdb::ClientContext::CreatePreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:254:10
+    #25 0x69a5d1 in duckdb::ClientContext::PendingStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:485:18
+    #26 0x6a48cf in duckdb::ClientContext::PendingStatementOrPreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:560:13
+    #27 0x699482 in duckdb::ClientContext::PendingStatementOrPreparedStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:544:9
+    #28 0x796fb6 in duckdb::ClientContext::PendingQueryInternal(duckdb::ClientContextLock&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, bool) /root/duckdb/src/main/client_context.cpp:695:10
+    #29 0x6a6f86 in duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool) /root/duckdb/src/main/client_context.cpp:637:24
+
+previously allocated by thread T0 here:
+    #0 0x57837d in operator new(unsigned long) (/root/autodriver_afl_asan_debug+0x57837d)
+    #1 0x187fdfa in std::unique_ptr<duckdb::Value, std::default_delete<duckdb::Value> > duckdb::make_unique<duckdb::Value, duckdb::LogicalType&>(duckdb::LogicalType&) /root/duckdb/src/include/duckdb/common/helper.hpp:28:23
+    #2 0x187d2a6 in duckdb::Planner::CreatePlan(duckdb::SQLStatement&) /root/duckdb/src/planner/planner.cpp:47:16
+    #3 0x1883e68 in duckdb::Planner::CreatePlan(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:165:3
+    #4 0x1881a78 in duckdb::Planner::PrepareSQLStatement(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:64:2
+    #5 0x1885edf in duckdb::Planner::PlanExecute(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:94:14
+    #6 0x1883f65 in duckdb::Planner::CreatePlan(std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/planner/planner.cpp:168:3
+    #7 0x693c3e in duckdb::ClientContext::CreatePreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:254:10
+    #8 0x69a5d1 in duckdb::ClientContext::PendingStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:485:18
+    #9 0x6a48cf in duckdb::ClientContext::PendingStatementOrPreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:560:13
+    #10 0x699482 in duckdb::ClientContext::PendingStatementOrPreparedStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:544:9
+    #11 0x796fb6 in duckdb::ClientContext::PendingQueryInternal(duckdb::ClientContextLock&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, bool) /root/duckdb/src/main/client_context.cpp:695:10
+    #12 0x6a6f86 in duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool) /root/duckdb/src/main/client_context.cpp:637:24
+    #13 0x6ac75f in duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /root/duckdb/src/main/connection.cpp:67:25
+    #14 0x5b764e in duckdb_query /root/duckdb/src/main/capi/duckdb-c.cpp:67:22
+    #15 0x59cdc3 in run_one_statement_new(void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /mnt/jingzhou_workspace/sqlsim/client_new/duckdb/client_new.cpp:68:13
+    #16 0x57b433 in run_testcase(void*&, char const*, int) /root/autodriver.cpp:135:14
+    #17 0x57f845 in do_fuzz()::$_3::operator()() const /root/autodriver.cpp:295:13
+    #18 0x57ff53 in main /root/autodriver.cpp:365:9
+    #19 0x7feb00be9082 in __libc_start_main /build/glibc-SzIz7B/glibc-2.31/csu/../csu/libc-start.c:308:16
+
+SUMMARY: AddressSanitizer: heap-use-after-free /root/duckdb/src/common/types.cpp:1273:6 in duckdb::LogicalType::operator==(duckdb::LogicalType const&) const
+Shadow bytes around the buggy address:
+  0x0c187fff8700: fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa
+  0x0c187fff8710: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c187fff8720: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x0c187fff8730: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+  0x0c187fff8740: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x0c187fff8750: fa fa fa fa fa fa fa fa[fd]fd fd fd fd fd fd fd
+  0x0c187fff8760: fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa
+  0x0c187fff8770: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c187fff8780: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x0c187fff8790: fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa
+  0x0c187fff87a0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==109219==ABORTING

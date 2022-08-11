@@ -1,0 +1,56 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < /root/crashes/id:000207,sig:06,src:031264,time:17166359,execs:10754407,op:havoc,rep:2
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fdcb918a859 in __GI_abort () at abort.c:79
+#2  0x00007fdcb918a729 in __assert_fail_base (fmt=0x7fdcb9320588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x565ea5 "pPk->tnum==pTab->tnum", file=0x549ad6 "sqlite3.c", line=124037, function=<optimized out>)
+    at assert.c:92
+#3  0x00007fdcb919bfd6 in __GI___assert_fail (assertion=0x565ea5 "pPk->tnum==pTab->tnum", file=0x549ad6 "sqlite3.c", line=124037, function=0x565e2a "void sqlite3OpenTable(Parse *, int, int, Table *, int)") at assert.c:101
+#4  0x00000000004c5ecf in sqlite3OpenTable (pParse=0x1667460, iCur=1, iDb=0, pTab=0x167f390, opcode=100) at sqlite3.c:124037
+#5  0x00000000004eea04 in sqlite3WhereBegin (pParse=0x1667460, pTabList=0x166dba0, pWhere=0x166d520, pOrderBy=0x1666650, pResultSet=0x0, wctrlFlags=64, iAuxArg=0) at sqlite3.c:155865
+#6  0x00000000004b03cd in sqlite3Select (pParse=0x1667460, p=0x166f8a0, pDest=0x7ffcb2196a00) at sqlite3.c:140366
+#7  0x00000000004cc0cf in sqlite3CodeSubselect (pParse=0x1667460, pExpr=0x166d9a0) at sqlite3.c:104910
+#8  0x00000000004c87ed in sqlite3ExprCodeTarget (pParse=0x1667460, pExpr=0x166d9a0, target=13) at sqlite3.c:106106
+#9  0x00000000004cb2c1 in sqlite3ExprCodeExprList (pParse=0x1667460, pList=0x1665cf0, target=13, srcReg=0, flags=13 '\r') at sqlite3.c:106568
+#10 0x00000000005164f6 in innerLoopLoadRow (pParse=0x1667460, pSelect=0x1664580, pInfo=0x7ffcb2196e38) at sqlite3.c:133787
+#11 0x00000000004f0b55 in selectInnerLoop (pParse=0x1667460, p=0x1664580, srcTab=-1, pSort=0x7ffcb2197140, pDistinct=0x7ffcb2197170, pDest=0x7ffcb2197420, iContinue=30, iBreak=27) at sqlite3.c:134372
+#12 0x00000000004b0c34 in sqlite3Select (pParse=0x1667460, p=0x1664580, pDest=0x7ffcb2197420) at sqlite3.c:140535
+#13 0x00000000004aeb64 in sqlite3Select (pParse=0x1667460, p=0x166ef20, pDest=0x7ffcb21975e8) at sqlite3.c:139911
+#14 0x000000000051b209 in codeTriggerProgram (pParse=0x1667460, pStepList=0x167dce0, orconf=4) at sqlite3.c:141998
+#15 0x000000000051ab3d in codeRowTrigger (pParse=0x7ffcb2198758, pTrigger=0x16741f0, pTab=0x167f390, orconf=4) at sqlite3.c:142128
+#16 0x000000000051a679 in getRowTrigger (pParse=0x7ffcb2198758, pTrigger=0x16741f0, pTab=0x167f390, orconf=4) at sqlite3.c:142184
+#17 0x0000000000519424 in sqlite3TriggerColmask (pParse=0x7ffcb2198758, pTrigger=0x1660330, pChanges=0x166e120, isNew=0, tr_tm=3, pTab=0x167f390, orconf=4) at sqlite3.c:142361
+#18 0x00000000004b696d in sqlite3Update (pParse=0x7ffcb2198758, pTabList=0x166fba0, pChanges=0x166e120, pWhere=0x0, onError=4, pOrderBy=0x0, pLimit=0x0, pUpsert=0x0) at sqlite3.c:143256
+#19 0x00000000004a3ac0 in yy_reduce (yypParser=0x7ffcb2197d58, yyruleno=157, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffcb2198758) at sqlite3.c:163617
+#20 0x00000000004a107e in sqlite3Parser (yyp=0x7ffcb2197d58, yymajor=1, yyminor=...) at sqlite3.c:164670
+#21 0x000000000041f407 in sqlite3RunParser (pParse=0x7ffcb2198758, zSql=0x166e349 ";", pzErrMsg=0x7ffcb21988f0) at sqlite3.c:165966
+#22 0x0000000000494864 in sqlite3Prepare (db=0x1659ed0, zSql=0x166e320 ";UPDATE OR IGNORE t1 SET a=null, a=a, a=a;", nBytes=-1, prepFlags=128, pReprepare=0x166b150, ppStmt=0x7ffcb21989b0, pzTail=0x0) at sqlite3.c:132931
+#23 0x000000000041dc7c in sqlite3LockAndPrepare (db=0x1659ed0, zSql=0x166e320 ";UPDATE OR IGNORE t1 SET a=null, a=a, a=a;", nBytes=-1, prepFlags=128, pOld=0x166b150, ppStmt=0x7ffcb21989b0, pzTail=0x0) at sqlite3.c:133006
+#24 0x000000000041668d in sqlite3Reprepare (p=0x166b150) at sqlite3.c:133040
+#25 0x000000000040e28c in sqlite3_step (pStmt=0x166b150) at sqlite3.c:85205
+#26 0x000000000040556f in main (argc=1, argv=0x7ffcb2198c48) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 36553] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

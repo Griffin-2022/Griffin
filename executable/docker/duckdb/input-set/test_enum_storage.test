@@ -1,0 +1,83 @@
+# name: test/sql/types/enum/test_enum_storage.test
+# description: ENUM types used in table/catalog storage tests
+# group: [enum]
+
+;
+PRAGMA enable_verification
+
+# load the DB from disk
+load __TEST_DIR__/enum_types.db
+
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+;
+CREATE TABLE person (
+    name text,
+    current_mood mood
+);
+
+;
+INSERT INTO person VALUES ('Moe', 'happy');
+
+;
+select * from person
+;
+Moe	happy
+
+;
+DROP TABLE person;
+
+# reload the database from disk a few times, and check that the data in the catalog is still there
+loop i 0 2
+
+restart
+
+;
+CREATE TABLE person (
+    name text,
+    current_mood mood
+);
+
+;
+INSERT INTO person VALUES ('Moe', 'happy');
+
+;
+select * from person
+;
+Moe	happy
+
+;
+DROP TABLE person;
+
+endloop
+
+;
+CREATE TABLE person (
+    name text,
+    current_mood mood
+);
+
+;
+INSERT INTO person VALUES ('Moe', 'happy');
+
+;
+select * from person
+;
+Moe	happy
+
+# reload the database from disk a few times, and check that the data in the table is still there
+loop i 0 2
+
+restart
+
+# We cant drop mood and we verify the constraint is still there after reloading the database
+;
+DROP TYPE mood;
+
+;
+select * from person
+;
+Moe	happy
+
+endloop

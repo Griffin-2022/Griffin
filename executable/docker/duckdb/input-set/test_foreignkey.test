@@ -1,0 +1,263 @@
+# name: test/sql/constraints/foreignkey/test_foreignkey.test
+# description: Test foreign key constraint
+# group: [foreignkey]
+
+;
+CREATE TABLE album(artistid INTEGER, albumname TEXT, albumcover TEXT, UNIQUE (artistid, albumname));
+
+;
+INSERT INTO album VALUES (1, 'A', 'A_cover'), (2, 'B', 'B_cover'), (3, 'C', 'C_cover'), (4, 'D', 'D_cover');
+
+# The count of columns are primary keys must be equal with the count of columns are foreign keys
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songartist, songalbum) REFERENCES album(artistid));
+
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songalbum) REFERENCES album(artistid, albumname));
+
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songartist, songalbum) REFERENCES albumlist(artistid, albumname));
+
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songartist, songalbum) REFERENCES album(artistid, album_name));
+
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songartist, song_album) REFERENCES album(artistid, albumname));
+
+;
+CREATE TABLE song(songid INTEGER, songartist INTEGER, songalbum TEXT, songname TEXT, FOREIGN KEY(songartist, songalbum) REFERENCES album(artistid, albumname));
+
+# Any row that is inserted into the table with the foreign key must exist in the table with the primary key (constraint)
+;
+INSERT INTO song VALUES (11, 1, 'A', 'A_song'), (12, 2, 'E', 'B_song'), (13, 3, 'C', 'C_song');
+
+;
+INSERT INTO song VALUES (11, 1, 'A', 'A_song'), (12, 5, 'D', 'B_song'), (13, 3, 'C', 'C_song');
+
+;
+INSERT INTO song VALUES (11, 1, 'A', 'A_song'), (12, 2, 'B', 'B_song'), (13, 3, 'C', 'C_song');
+
+# Any row that is deleted from the table with the primary key must not exist in the table with the foreign key (constraint)
+;
+DELETE FROM album WHERE albumname='C';
+
+;
+DELETE FROM album WHERE albumname='D';
+
+;
+SELECT * FROM album;
+;
+1	A	A_cover	
+2	B	B_cover	
+3	C	C_cover	
+
+# Any row that is updated from the table has foreign key must exist in the table with the primary key (constraint)
+;
+UPDATE song SET songartist=5, songalbum='A' WHERE songname='B_song';
+
+;
+UPDATE song SET songartist=1, songalbum='A' WHERE songname='B_song';
+
+;
+SELECT * FROM album;
+;
+1	A	A_cover	
+2	B	B_cover	
+3	C	C_cover
+
+;
+SELECT * FROM song;
+;
+11	1	A	A_song	
+13	3	C	C_song	
+12	1	A	B_song	
+
+# Any row that is updated from the table with primary key must not exist in the table has foreign key (constraint)
+;
+UPDATE album SET albumname='B' WHERE albumcover='C_cover';
+
+;
+UPDATE song SET songalbum='E' WHERE albumcover='C_song';
+
+;
+UPDATE album SET artistid=5, albumname='D' WHERE albumcover='B_cover';
+
+;
+SELECT * FROM album;
+;
+1	A	A_cover
+3	C	C_cover
+5	D	B_cover
+
+# perform an update on a column that is NOT part of the primary key in the main table
+;
+UPDATE album SET albumcover='C_cover_new' WHERE artistid=3;
+
+# perform an update on a column that is NOT part of the foreign key in the referencing table
+;
+UPDATE song SET songname='C_song_new' WHERE songartist=3;
+
+;
+SELECT * FROM album;
+;
+1	A	A_cover
+3	C	C_cover_new
+5	D	B_cover
+
+;
+SELECT * FROM song;
+;
+11	1	A	A_song	
+13	3	C	C_song_new	
+12	1	A	B_song	
+
+# Cannot rename the columns that are involved in the foreign key constraint
+;
+ALTER TABLE album RENAME COLUMN albumname TO albumname_new;
+
+;
+ALTER TABLE song RENAME COLUMN songalbum TO songalbum_new;
+
+;
+ALTER TABLE song RENAME COLUMN songname TO songname_new;
+
+# Cannot change type of the columns that are involved in the foreign key constraint
+;
+ALTER TABLE song ALTER COLUMN songartist SET DATA TYPE TEXT;
+
+;
+ALTER TABLE album ALTER COLUMN artistid SET DATA TYPE TEXT;
+
+;
+ALTER TABLE song ALTER COLUMN songname_new SET DATA TYPE VARCHAR;
+
+# Cannot drop the columns that are involved in the foreign key constraint because of dependency
+;
+ALTER TABLE album DROP COLUMN artistid;
+
+;
+ALTER TABLE song DROP COLUMN songname_new;
+
+# Can't drop the table with primary key corresponding with foreign key until exists the table has foreign key
+;
+DROP TABLE album;
+
+;
+DROP TABLE song;
+
+;
+ALTER TABLE album RENAME COLUMN albumname TO albumname_new;
+
+;
+ALTER TABLE album ALTER COLUMN albumcover SET DATA TYPE VARCHAR;
+
+;
+ALTER TABLE album DROP COLUMN albumcover;
+
+;
+DROP TABLE album;
+
+# multiple columns and indices
+;
+CREATE TABLE pkt(i INTEGER UNIQUE, k INTEGER UNIQUE)
+
+;
+INSERT INTO pkt VALUES (1, 11), (2, 12), (3, 13)
+
+;
+CREATE TABLE fkt(j INTEGER, l INTEGER UNIQUE, FOREIGN KEY (j) REFERENCES pkt(i))
+
+;
+CREATE INDEX k_index ON pkt(k)
+
+;
+CREATE INDEX l_index ON fkt(l)
+
+;
+INSERT INTO fkt VALUES (1, 101), (2, 102)
+
+;
+INSERT INTO fkt VALUES (4, 104)
+
+;
+INSERT INTO fkt VALUES (3, 103)
+
+;
+DELETE FROM pkt WHERE k=13
+
+;
+DELETE FROM fkt WHERE l=103
+
+;
+DELETE FROM pkt WHERE k=13
+
+;
+UPDATE pkt SET i=5 WHERE k=12
+
+;
+UPDATE fkt SET i=4 WHERE l=102
+
+;
+UPDATE fkt SET i=4 WHERE l=102
+
+;
+DROP INDEX k_index
+
+;
+DROP INDEX l_index
+
+;
+DROP TABLE pkt;
+
+;
+DROP TABLE fkt;
+
+;
+DROP TABLE pkt;
+
+# for tables that do not live in the current schema search path
+;
+CREATE SCHEMA s1
+
+;
+CREATE TABLE s1.pkt(i INTEGER PRIMARY KEY)
+
+;
+CREATE TABLE s1.fkt(j INTEGER, FOREIGN KEY (j) REFERENCES s1.pkt(i))
+
+;
+INSERT INTO s1.pkt VALUES (1), (2), (3), (4), (5)
+
+;
+INSERT INTO s1.fkt VALUES (2), (3)
+
+;
+INSERT INTO s1.fkt VALUES (6)
+
+;
+INSERT INTO s1.fkt VALUES (1)
+
+;
+DELETE FROM s1.pkt WHERE i=2
+
+;
+DELETE FROM s1.pkt WHERE i=5
+
+;
+DROP TABLE s1.pkt;
+
+;
+DROP TABLE s1.fkt;
+
+;
+DROP TABLE s1.pkt;
+
+# insert NULL into the foreign key column
+;
+CREATE TABLE pkt(i INTEGER UNIQUE)
+
+;
+CREATE TABLE fkt(j INTEGER, FOREIGN KEY (j) REFERENCES pkt(i))
+
+;
+INSERT INTO fkt VALUES (NULL)

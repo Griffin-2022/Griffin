@@ -1,0 +1,38 @@
+# name: test/sql/alter/alter_type/test_alter_type_rollback.test
+# description: Test ALTER TABLE ALTER TYPE with rollback
+# group: [alter_type]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE test ALTER i SET DATA TYPE VARCHAR
+
+;
+UPDATE test SET i='hello'
+
+;
+SELECT * FROM test
+;
+hello
+1
+hello
+2
+
+;
+ROLLBACK
+
+;
+SELECT * FROM test
+;
+1
+1
+2
+2
+

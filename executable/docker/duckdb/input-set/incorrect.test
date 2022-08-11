@@ -1,0 +1,102 @@
+# name: test/sql/function/list/aggregates/incorrect.test
+# description: Test incorrect and incompatible aggregate functions for lists
+# group: [aggregates]
+
+# incorrect syntax
+
+foreach func_name approx_count_distinct avg favg bit_and bit_or bit_xor bool_and bool_or count entropy first arbitrary histogram kurtosis last mad max median min mode array_agg list product sem skewness string_agg group_concat sum fsum sumKahan kahan_sum var_samp var_pop stddev stddev_pop variance stddev_samp
+
+;
+SELECT list_aggr('${func_name}')
+
+;
+SELECT list_aggr(*, '${func_name}')
+
+;
+SELECT list_aggr('hello', '${func_name}')
+
+;
+SELECT list_aggr(1, 2, '${func_name}')
+
+foreach type boolean varchar tinyint smallint integer bigint hugeint utinyint usmallint uinteger ubigint float double decimal(4,1) decimal(9,4) decimal(18,6) decimal(38,10) date time timestamp timestamp_s timestamp_ms timestamp_ns timetz timestamptz interval json blob
+
+;
+SELECT list_aggr(NULL::${type}, '${func_name}')
+
+endloop
+
+endloop
+
+# incompatible aggregate functions (more than one column)
+
+;
+SELECT list_aggr([1, 2, NULL], 'count_star');
+
+;
+SELECT list_aggr([1, 2, NULL], 'corr');
+
+;
+SELECT list_aggr([1, 2, NULL], 'covar_pop');
+
+;
+SELECT list_aggr([1, 2, NULL], 'covar_samp');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_intercept');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_sxy');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_sxx');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_syy');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_r2');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_slope');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_count');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_avgy');
+
+;
+SELECT list_aggr([1, 2, NULL], 'regr_avgx');
+
+;
+SELECT list_aggr([1, 2, NULL], 'reservoir_quantile');
+
+;
+SELECT list_aggr([1, 2, NULL], 'approx_quantile');
+
+;
+SELECT list_aggr([1, 2, NULL], 'quantile');
+
+;
+SELECT list_aggr([1, 2, NULL], 'quantile_cont');
+
+;
+SELECT list_aggr([1, 2, NULL], 'quantile_disc');
+
+;
+SELECT list_aggr([1, 2, NULL], 'arg_max');
+
+;
+SELECT list_aggr([1, 2, NULL], 'max_by');
+
+;
+SELECT list_aggr([1, 2, NULL], 'argmax');
+
+;
+SELECT list_aggr([1, 2, NULL], 'arg_min');
+
+;
+SELECT list_aggr([1, 2, NULL], 'min_by');
+
+;
+SELECT list_aggr([1, 2, NULL], 'argmin');

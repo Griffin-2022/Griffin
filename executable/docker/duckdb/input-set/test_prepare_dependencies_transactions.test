@@ -1,0 +1,70 @@
+# name: test/sql/catalog/dependencies/test_prepare_dependencies_transactions.test
+# description: Prepare dependencies and transactions
+# group: [dependencies]
+
+# case one: prepared statement is created outside of transaction and committed
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+INSERT INTO integers VALUES (1), (2), (3), (4), (5)
+
+;
+PREPARE v AS SELECT SUM(i) FROM integers
+
+# begin a transaction in con2
+;
+BEGIN TRANSACTION
+
+# now drop the table in con, with a cascading drop
+;
+DROP TABLE integers CASCADE
+
+# we can still execute v in con2
+;
+EXECUTE v
+
+# if we try to drop integers we get a conflict though
+;
+DROP TABLE integers CASCADE
+
+# now we rollback
+;
+ROLLBACK
+
+# now we can't use the prepared statement anymore
+;
+EXECUTE v
+
+# case two: prepared statement is created inside transaction
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+INSERT INTO integers VALUES (1), (2), (3), (4), (5)
+
+# begin a transaction and create a prepared statement
+;
+BEGIN TRANSACTION
+
+;
+PREPARE v AS SELECT SUM(i) FROM integers
+
+# use the prepared statement
+;
+EXECUTE v
+
+# integers has a prepared statement depending on it, but we can still drop it
+;
+DROP TABLE integers
+
+# using the prepared statement after the table is still works: we are inside a transaction that uses an old version
+;
+EXECUTE v
+
+;
+COMMIT
+
+# after committing we can no longer use the prepared statement
+;
+EXECUTE v

@@ -1,0 +1,27 @@
+# name: test/sql/pragma/test_query_log.test
+# description: Test query logging
+# group: [pragma]
+
+;
+SELECT CURRENT_SETTING('log_query_path')
+
+;
+PRAGMA log_query_path='__TEST_DIR__/query_log.txt'
+
+;
+SELECT 42
+;
+42
+
+;
+SELECT CURRENT_SETTING('log_query_path')
+
+;
+PRAGMA log_query_path=''
+
+;
+SELECT * FROM read_csv('__TEST_DIR__/query_log.txt', columns={'sql': 'VARCHAR'}, auto_detect=false)
+;
+SELECT 42
+SELECT CURRENT_SETTING('log_query_path')
+PRAGMA log_query_path=''

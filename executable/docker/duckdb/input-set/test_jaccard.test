@@ -1,0 +1,144 @@
+# name: test/sql/function/string/test_jaccard.test
+# description: Test jaccard function
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# jaccard
+;
+SELECT jaccard('hello', 'hello')
+;
+1
+
+;
+SELECT jaccard('hello', NULL)
+;
+NULL
+
+;
+SELECT jaccard(NULL, 'hello')
+;
+NULL
+
+;
+SELECT jaccard(NULL, NULL)
+;
+NULL
+
+;
+SELECT jaccard('ab', 'aabb')
+;
+1.0
+
+;
+SELECT jaccard('aabb', 'ab')
+;
+1.0
+
+;
+SELECT jaccard('ab', 'cd')
+;
+0.0
+
+;
+SELECT jaccard('cd', 'ab')
+;
+0.0
+
+;
+SELECT round(jaccard('ab', 'aabbcc'), 3)
+;
+0.667
+
+;
+SELECT round(jaccard('aabbcc', 'ab'), 3)
+;
+0.667
+
+;
+SELECT round(jaccard('aabbccddeeff', 'ab'), 3)
+;
+0.333
+
+;
+SELECT round(jaccard('ab', 'aabbccddeeff'), 3)
+;
+0.333
+
+;
+SELECT round(jaccard('aabbccddeeffg', 'ab'), 3)
+;
+0.286
+
+;
+SELECT round(jaccard('ab', 'aaaabbbccddeeffgabcccc'), 3)
+;
+0.286
+
+;
+SELECT round(jaccard('ababababababba', 'aaaabbbccddeeffgabcccc'), 3)
+;
+0.286
+
+;
+SELECT jaccard('hello', '')
+
+;
+SELECT jaccard('', 'hello')
+
+;
+SELECT jaccard('', '')
+
+
+;
+CREATE TABLE strings(s VARCHAR, t VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello', 'hallo'), ('aloha', 'fello'), ('fellow', 'ducks'), (NULL, NULL)
+
+;
+select round(jaccard(s, t), 1) from strings
+;
+0.6
+0.3
+0.0
+NULL
+
+;
+select round(jaccard(s, 'hallo'), 1) from strings
+;
+0.6
+1.0
+0.3
+NULL
+
+;
+select round(jaccard('hallo', t), 1) from strings
+;
+1.0
+0.3
+0.0
+NULL
+
+;
+select round(jaccard(NULL, t), 1) from strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+select round(jaccard(s, NULL), 1) from strings
+;
+NULL
+NULL
+NULL
+NULL
+
+;
+select round(jaccard('', t), 1) from strings
+
+;
+select round(jaccard(s, ''), 1) from strings

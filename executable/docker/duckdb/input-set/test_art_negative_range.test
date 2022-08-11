@@ -1,0 +1,34 @@
+# name: test/sql/index/art/test_art_negative_range.test
+# description: ART Negative Range
+# group: [art]
+
+;
+CREATE TABLE integers(i integer)
+
+;
+INSERT INTO integers SELECT * FROM range(-500, 500, 1)
+
+;
+CREATE INDEX i_index ON integers(i)
+
+;
+SELECT sum(i) FROM integers WHERE i >= -500 AND i <= -498
+;
+-1497.000000
+
+;
+SELECT sum(i) FROM integers WHERE i >= -10 AND i <= 5
+;
+-40.000000
+
+;
+SELECT sum(i) FROM integers WHERE i >= 10 AND i <= 15
+;
+75.000000
+
+;
+DROP INDEX i_index
+
+;
+DROP TABLE integers
+

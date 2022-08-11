@@ -1,0 +1,111 @@
+		drop table if exists keycol, hash_split_heap, a, keycol;
+2022-08-02 05:17:36.350 UTC [29192] ERROR:  relation "foo_tbl" does not exist
+2022-08-02 05:17:36.350 UTC [29192] STATEMENT:  
+		create table o partition of foo_tbl for values in (1);
+2022-08-02 05:17:36.350 UTC [29192] ERROR:  access method "no_such_am" does not exist
+2022-08-02 05:17:36.350 UTC [29192] STATEMENT:  
+	
+	-- access method
+	DROP ACCESS METHOD no_such_am;
+2022-08-02 05:17:36.351 UTC [29192] ERROR:  relation "hash_idx" already exists
+2022-08-02 05:17:36.351 UTC [29192] STATEMENT:  
+		create table hash_idx (hash_heap_float4 int primary key) partition by list (hash_heap_float4);
+2022-08-02 05:17:36.351 UTC [29192] ERROR:  relation "var_ptbl_tens" does not exist
+2022-08-02 05:17:36.351 UTC [29192] STATEMENT:  
+		create table n partition of var_ptbl_tens for values in (2);
+2022-08-02 05:17:36.352 UTC [29192] ERROR:  there is no primary key for referenced table "hash_idx"
+2022-08-02 05:17:36.352 UTC [29192] STATEMENT:  
+		create table tpart_ones (tpart_tens int references hash_idx);
+2022-08-02 05:17:36.353 UTC [29192] ERROR:  relation "t4" does not exist
+2022-08-02 05:17:36.353 UTC [29192] STATEMENT:  
+		create table htab2 partition of t4 for values in (1);
+2022-08-02 05:17:36.354 UTC [29192] ERROR:  invalid name syntax
+2022-08-02 05:17:36.354 UTC [29192] STATEMENT:  SELECT to_regnamespace('foo.bar');
+2022-08-02 05:17:36.354 UTC [29192] ERROR:  relation "n" does not exist
+2022-08-02 05:17:36.354 UTC [29192] STATEMENT:  
+		create table rolreplication partition of n for values in (2);
+2022-08-02 05:17:36.355 UTC [29192] ERROR:  function hash_idx(text) does not exist
+2022-08-02 05:17:36.355 UTC [29192] STATEMENT:  DROP FUNCTION hash_idx(text);
+2022-08-02 05:17:36.355 UTC [29192] ERROR:  relation "rolvaliduntil" does not exist
+2022-08-02 05:17:36.355 UTC [29192] STATEMENT:  
+		create table pg_group partition of rolvaliduntil for values in (1);
+2022-08-02 05:17:36.355 UTC [29192] ERROR:  relation "rolvaliduntil" does not exist
+2022-08-02 05:17:36.355 UTC [29192] STATEMENT:  
+		create table pg_user (pg_policies int references rolvaliduntil);
+2022-08-02 05:17:36.357 UTC [29192] ERROR:  partition "viewname" would overlap partition "hash_split_index" at character 69
+2022-08-02 05:17:36.357 UTC [29192] STATEMENT:  
+		create table viewname partition of hash_split_heap for values in (1);
+2022-08-02 05:17:36.357 UTC [29192] WARNING:  there is no transaction in progress
+2022-08-02 05:17:36.365 UTC [29192] ERROR:  index "test_index_exists" does not exist
+2022-08-02 05:17:36.365 UTC [29192] STATEMENT:  
+	
+	-- index
+	
+	DROP INDEX test_index_exists;
+=================================================================
+==29192==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd0cf88690 sp 0x7ffd0cf88688
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fa77a21b082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==29192==ABORTING
+2022-08-02 05:17:36.395 UTC [28973] LOG:  server process (PID 29192) was terminated by signal 6: Aborted
+2022-08-02 05:17:36.395 UTC [28973] LOG:  terminating any other active server processes
+2022-08-02 05:17:36.400 UTC [28973] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:17:36.412 UTC [29524] LOG:  database system was interrupted; last known up at 2022-08-02 05:17:32 UTC
+2022-08-02 05:17:36.412 UTC [29525] FATAL:  the database system is in recovery mode
+2022-08-02 05:17:36.414 UTC [29528] FATAL:  the database system is in recovery mode
+2022-08-02 05:17:36.415 UTC [29529] FATAL:  the database system is in recovery mode
+2022-08-02 05:17:36.420 UTC [28973] LOG:  received smart shutdown request
+2022-08-02 05:17:36.425 UTC [29524] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:17:36.426 UTC [29524] LOG:  redo starts at 0/167D7A8
+2022-08-02 05:17:36.429 UTC [28973] LOG:  abnormal database system shutdown

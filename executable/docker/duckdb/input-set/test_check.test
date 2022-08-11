@@ -1,0 +1,59 @@
+# name: test/sql/constraints/check/test_check.test
+# description: CHECK constraint
+# group: [check]
+
+;
+CREATE TABLE integers(i INTEGER CHECK(i < 5))
+
+;
+INSERT INTO integers VALUES (3)
+
+;
+INSERT INTO integers VALUES (7)
+
+;
+INSERT INTO integers VALUES (NULL)
+
+;
+SELECT * FROM integers
+;
+3
+NULL
+
+;
+DROP TABLE integers;
+
+;
+CREATE TABLE integers(i INTEGER CHECK(i + j < 10), j INTEGER)
+
+;
+INSERT INTO integers VALUES (3, 3)
+
+;
+INSERT INTO integers VALUES (5, 5)
+
+;
+INSERT INTO integers VALUES (3, 3), (5, 5)
+
+;
+SELECT * FROM integers
+;
+3	3
+
+;
+CREATE TABLE integers2(i INTEGER CHECK(i > (SELECT 42)), j INTEGER)
+
+;
+CREATE TABLE integers2(i INTEGER CHECK(i > SUM(j)), j INTEGER)
+
+;
+CREATE TABLE integers3(i INTEGER CHECK(k < 10), j INTEGER)
+
+;
+CREATE TABLE integers3(i INTEGER CHECK(integers3.k < 10), j INTEGER)
+
+;
+CREATE TABLE integers3(i INTEGER CHECK(integers2.i < 10), j INTEGER)
+
+;
+CREATE TABLE integers4(i INTEGER CHECK(integers4.i < 10), j INTEGER)

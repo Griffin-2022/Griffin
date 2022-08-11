@@ -1,0 +1,22 @@
+# name: test/issues/rigger/test_619.test
+# description: Issue 619
+# group: [rigger]
+
+;
+PRAGMA enable_verification
+
+# Query on altered table results in a segmentation fault
+;
+CREATE TABLE t0(c0 INT UNIQUE, c1 DATE);
+
+;
+ALTER TABLE t0 ALTER c1 TYPE INT;
+
+;
+INSERT INTO t0(c0) VALUES(-1);
+
+;
+SELECT * FROM t0 WHERE c0 < 0;
+;
+-1	NULL
+

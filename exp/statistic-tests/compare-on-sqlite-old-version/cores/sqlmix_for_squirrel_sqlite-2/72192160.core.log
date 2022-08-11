@@ -1,0 +1,83 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000487,sig:06,src:023840+023383,time:29671488,execs:5740848,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;PRAGMA sql_trace=on;
+SQL-trace: ;ROLLBACK;
+SQL-trace: ;ROLLBACK;
+SQL-trace: ;INSERT INTO t1(x,x) VALUES(1,'Alice'),(2,'Bartholemew'),(3,'Cynthia');
+SQL-trace: -- TRIGGER t4a
+SQL-trace: -- TRIGGER t4a
+SQL-trace: -- TRIGGER t4a
+SQL-trace: ;SELECT x
+    FROM t1 me
+  WHERE 2 > (
+    SELECT COUNT( * )
+      FROM t1 rownum__emulation
+    WHERE
+      (
+        me.x IS NOT NULL
+          AND
+        rownum__emulation.x IS NULL
+      )
+        OR
+      (
+        me.x IS NOT NULL
+          AND
+        rownum__emulation.x IS NOT NULL
+          AND
+        rownum__emulation.x < me.x
+      )
+        OR
+      (
+        ( me.x = rownum__emulation.x OR ( me.x IS NULL
+  AND rownum__emulation.x IS NULL ) )
+          AND
+        rownuSQL-trace: ;BEGIN;
+SQL-trace: ;CREATE TABLE t5(t6 INTEGER PRIMARY KEY, t7 TEXT);
+SQL-trace: ;CREATE TABLE t8(t9 REAL);
+SQL-trace: ;SELECT +t2 FROM t1 WHERE t2=2;
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007efe27b0a859 in __GI_abort () at abort.c:79
+#2  0x00007efe27b0a729 in __assert_fail_base (fmt=0x7efe27ca0588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x217f00 "(pTabItem[0].fg.jointype & JT_LEFT)==0 || ExprHasProperty(pOrExpr, EP_FromJoin)", 
+    file=0x2291f4 "sqlite3.c", line=139367, function=<optimized out>) at assert.c:92
+#3  0x00007efe27b1bfd6 in __GI___assert_fail (assertion=0x217f00 "(pTabItem[0].fg.jointype & JT_LEFT)==0 || ExprHasProperty(pOrExpr, EP_FromJoin)", file=0x2291f4 "sqlite3.c", line=139367, 
+    function=0x21094c "Bitmask sqlite3WhereCodeOneLoopStart(Parse *, Vdbe *, WhereInfo *, int, WhereLevel *, Bitmask)") at assert.c:101
+#4  0x000000000037e29e in sqlite3WhereCodeOneLoopStart (pParse=0x7ffe476f35d0, v=0x20ba3f0, pWInfo=0x20d0d60, iLevel=1, pLevel=0x20d1158, notReady=18446744073709551614) at sqlite3.c:139365
+#5  0x00000000003726b6 in sqlite3WhereBegin (pParse=0x7ffe476f35d0, pTabList=0x20a7340, pWhere=0x20ba8a0, pOrderBy=0x20ab030, pResultSet=0x20c1920, wctrlFlags=0, iAuxArg=320) at sqlite3.c:146414
+#6  0x000000000030171b in sqlite3Select (pParse=0x7ffe476f35d0, p=0x20b4630, pDest=0x7ffe476f29c8) at sqlite3.c:131767
+#7  0x00000000002f0475 in yy_reduce (yypParser=0x7ffe476f2bf0, yyruleno=80, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe476f35d0) at sqlite3.c:153207
+#8  0x00000000002eca18 in sqlite3Parser (yyp=0x7ffe476f2bf0, yymajor=1, yyminor=...) at sqlite3.c:154496
+#9  0x00000000002a9df3 in sqlite3RunParser (pParse=0x7ffe476f35d0, 
+    zSql=0x20acc9f ";;SELECT * FROM t5 WHERE\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 or t7=1 or t7=1 or\n    t7=1 or t7=1 or t7=1 or t7=1 or\n    t7=1 or t7=1;;\n;SELE"..., pzErrMsg=0x7ffe476f37b0) at sqlite3.c:155636
+#10 0x00000000002a77e3 in sqlite3Prepare (db=0x20a24c0, 
+    zSql=0x20a3909 ";\n;SELECT * FROM t4 LEFT JOIN t1 ON a=x\n   WHERE x=4 OR x IS NULL\n   ORDER BY a;;SELECT * FROM t5 WHERE\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 "..., nBytes=383, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffe476f38e8, pzTail=0x7ffe476f38d0) at sqlite3.c:125299
+#11 0x00000000002a6eae in sqlite3LockAndPrepare (db=0x20a24c0, 
+    zSql=0x20a3909 ";\n;SELECT * FROM t4 LEFT JOIN t1 ON a=x\n   WHERE x=4 OR x IS NULL\n   ORDER BY a;;SELECT * FROM t5 WHERE\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 "..., nBytes=383, prepFlags=128, pOld=0x0, ppStmt=0x7ffe476f38e8, pzTail=0x7ffe476f38d0) at sqlite3.c:125402
+#12 0x0000000000294f4f in sqlite3_prepare_v2 (db=0x20a24c0, 
+    zSql=0x20a3909 ";\n;SELECT * FROM t4 LEFT JOIN t1 ON a=x\n   WHERE x=4 OR x IS NULL\n   ORDER BY a;;SELECT * FROM t5 WHERE\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 or  t7=1 or  t7=1 or\n    t7=1 or  t7=1 "..., nBytes=383, ppStmt=0x7ffe476f38e8, pzTail=0x7ffe476f38d0) at sqlite3.c:125486
+#13 0x0000000000258550 in main (argc=1, argv=0x7ffe476f3a98) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 42938] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

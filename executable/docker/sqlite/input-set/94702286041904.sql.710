@@ -1,0 +1,71 @@
+CREATE TABLE t1(a,b,c,d,e,f);
+;CREATE INDEX t1abc ON t1(refcnt(a+b+c));
+;
+;INSERT INTO t1 VALUES(1,2,3,4,5,6);
+;UPDATE t1 SET b=b+1;
+;UPDATE t1 SET d=d+1;
+;CREATE TABLE t2(a,b,c,d,e,f);
+;INSERT INTO t2 VALUES(2,3,4,5,6,7);
+;CREATE INDEX t2abc ON t2(a+b+c);
+;CREATE INDEX t2cd ON t2(c*d);
+;CREATE INDEX t2def ON t2(d,e+25*f);
+;SELECT sqlite_master.name 
+      FROM sqlite_master, explain('UPDATE t2 SET b=b+1')
+     WHERE explain.opcode LIKE 'Open%'
+       AND sqlite_master.rootpage=explain.p2
+     ORDER BY 1;
+;EXPLAIN UPDATE t2 SET b=b+1
+;
+;SELECT sqlite_master.name 
+      FROM sqlite_master, explain('UPDATE t2 SET c=c+1')
+     WHERE explain.opcode LIKE 'Open%'
+       AND sqlite_master.rootpage=explain.p2
+     ORDER BY 1;
+;EXPLAIN UPDATE t2 SET c=c+1
+;
+;SELECT sqlite_master.name 
+      FROM sqlite_master, explain('UPDATE t2 SET c=c+1, f=NULL')
+     WHERE explain.opcode LIKE 'Open%'
+       AND sqlite_master.rootpage=explain.p2
+     ORDER BY 1;
+;EXPLAIN UPDATE t2 SET c=c+1, f=NULL
+;
+;CREATE TABLE t5(a INTEGER, b INTEGER);
+;INSERT INTO t5 VALUES(2, 4), (3, 9);
+;
+;SELECT * FROM t5 WHERE abs(a)=2 or abs(b)=9;
+;
+;CREATE INDEX t5a ON t5( abs(a) );
+;CREATE INDEX t5b ON t5( abs(b) );
+;
+;
+;CREATE TABLE x1(a INTEGER PRIMARY KEY, b);
+;INSERT INTO x1 VALUES
+      (1, 123), (2, '123'), (3, '123abc'), (4, 123.0), (5, 1234);
+;
+;SELECT a, b FROM x1 WHERE CAST(b AS INTEGER) = 123;
+;
+;CREATE INDEX x1i ON x1( CAST(b AS INTEGER) );
+;
+;EXPLAIN QUERY PLAN 
+  SELECT a, b FROM x1 WHERE CAST(b AS INTEGER) = 123;
+;
+;SELECT a, b FROM x1 WHERE CAST(b AS TEXT) = 123;
+;
+;CREATE INDEX x1i2 ON x1( CAST(b AS TEXT) );
+;
+;EXPLAIN QUERY PLAN 
+  SELECT a, b FROM x1 WHERE CAST(b AS TEXT) = 123;
+;
+;CREATE TABLE IF NOT EXISTS t0(c0);
+;INSERT INTO t0(c0) VALUES (-9223372036854775808);
+;BEGIN;
+;
+;CREATE INDEX i0 ON t0(ABS(c0));
+;COMMIT;
+;SELECT sql FROM sqlite_master WHERE tbl_name = 't0';
+;CREATE INDEX i0 ON t0(c0);
+;
+;REINDEX;
+;
+;

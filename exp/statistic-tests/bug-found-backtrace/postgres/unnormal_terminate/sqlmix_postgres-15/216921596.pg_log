@@ -1,0 +1,111 @@
+	    end loop;
+	end;
+	$$;
+2022-08-01 20:40:17.048 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.048 UTC [109372] STATEMENT:  select * from (select intmultirange,intmultirange from intr order by intmultirange,intmultirange) as x limit 3;
+2022-08-01 20:40:17.048 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.048 UTC [109372] STATEMENT:  drop table two_ints_range;
+2022-08-01 20:40:17.048 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.048 UTC [109372] STATEMENT:  declare c1 scroll cursor for
+	 select * from generate_series(1,4) i
+	  where i <> all (values (2),(3));
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  fetch backward all in c1;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  explain (verbose, costs off)
+	with x as (select * from (select mr_inoutparam_succeed from mr_outparam_succeed4) ss)
+	select * from x where mr_inoutparam_succeed = 1;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  explain (verbose, costs off)
+	with x as materialized (select * from (select mr_polymorphic from mr_outparam_succeed4) ss)
+	select * from x where mr_polymorphic = 1;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  explain (verbose, costs off)
+	with x as (select * from (select nmr, random() from nummultirange_test) ss)
+	select * from x where nmr = 1;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  explain (verbose, costs off)
+	with recursive x(a) as
+	  ((values ('a'), ('b'))
+	   union all
+	   (with z as not materialized (select * from x)
+	    select z.a || z1.a as a from z cross join z as z1
+	    where length(z.a || z1.a) < 5))
+	select * from x;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  explain (verbose, costs off)
+	with recursive x(a) as
+	  ((values ('a'), ('b'))
+	   union all
+	   (with z as not materialized (select * from x)
+	    select z.a || z.a as a from z
+	    where length(z.a || z.a) < 5))
+	select * from x;
+2022-08-01 20:40:17.049 UTC [109372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 20:40:17.049 UTC [109372] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-01 20:40:17.597 UTC [109372] ERROR:  column "nummultirange_test_btree" is of type integer[] but expression is of type integer at character 43
+2022-08-01 20:40:17.597 UTC [109372] STATEMENT:  INSERT INTO nummultirange_test VALUES (3, 1);
+2022-08-01 20:40:17.597 UTC [109372] ERROR:  column reference "reservations" is ambiguous at character 59
+2022-08-01 20:40:17.597 UTC [109372] STATEMENT:  SELECT * FROM nummultirange_test WHERE nmr IN
+	    (SELECT reservations FROM (SELECT reservations, reservations FROM mr UNION
+	                      SELECT reservations, reservations FROM mr) AS s);
+2022-08-01 20:40:17.617 UTC [109372] ERROR:  column "room_id" is of type double precision but expression is of type boolean at character 30
+2022-08-01 20:40:17.617 UTC [109372] STATEMENT:  INSERT INTO mr VALUES (1, 1, false);
+2022-08-01 20:40:17.618 UTC [109372] ERROR:  column "room_id" is of type double precision but expression is of type boolean at character 31
+2022-08-01 20:40:17.618 UTC [109372] STATEMENT:  INSERT INTO mr VALUES (66, 8, false);
+2022-08-01 20:40:17.618 UTC [109372] ERROR:  column "room_id" is of type double precision but expression is of type boolean at character 31
+2022-08-01 20:40:17.618 UTC [109372] STATEMENT:  INSERT INTO mr VALUES (66, 1, false);
+2022-08-01 20:40:17.618 UTC [109372] ERROR:  column "room_id" is of type double precision but expression is of type boolean at character 30
+2022-08-01 20:40:17.618 UTC [109372] STATEMENT:  INSERT INTO mr VALUES (1, 1, false);
+2022-08-01 20:40:17.622 UTC [109372] ERROR:  more than one row returned by a subquery used as an expression
+2022-08-01 20:40:17.622 UTC [109372] STATEMENT:  select
+	  ( select min(mr.test_mulrirange_gist_idx) from mr
+	    where mr.reservations = (select mr.reservations from mr where mr.test_mulrirange_gist_idx = mr.test_mulrirange_gist_idx) ) as min_tb_id
+	from mr;
+2022-08-01 20:40:17.625 UTC [109372] ERROR:  syntax error at or near "anycompatiblerange_anycompatiblemultirange_func" at character 128
+2022-08-01 20:40:17.625 UTC [109372] STATEMENT:  create temp table anycompatiblearray_anycompatiblemultirange_func(anycompatiblerange_anycompatiblemultirange_func int4 primary anycompatiblerange_anycompatiblemultirange_func, i8mr_array text);
+2022-08-01 20:40:17.625 UTC [109372] ERROR:  relation "anycompatiblearray_anycompatiblemultirange_func" does not exist at character 13
+2022-08-01 20:40:17.625 UTC [109372] STATEMENT:  insert into anycompatiblearray_anycompatiblemultirange_func values(1, 'i8mr_array') on conflict (anycompatiblerange_anycompatiblemultirange_func) do update set i8mr_array = 'not seen';
+2022-08-01 20:40:17.625 UTC [109372] ERROR:  INSERT has more expressions than target columns at character 41
+2022-08-01 20:40:17.625 UTC [109372] STATEMENT:  insert into range_add_bounds values (1, 0);
+2022-08-01 20:40:17.625 UTC [109372] ERROR:  INSERT has more expressions than target columns at character 35
+2022-08-01 20:40:17.625 UTC [109372] STATEMENT:  insert into textrange2 values (1, null);
+2022-08-01 20:40:17.626 UTC [109372] ERROR:  subquery has too few columns at character 65
+2022-08-01 20:40:17.626 UTC [109372] STATEMENT:  select * from mr where (test_mulrirange_gist_idx, reservations) not in (select * from range_add_bounds);
+2022-08-01 20:40:17.626 UTC [109372] ERROR:  invalid input syntax for type integer: "b" at character 37
+2022-08-01 20:40:17.626 UTC [109372] STATEMENT:  insert into intr_multirange values ('b', 'a');
+2022-08-01 20:40:17.626 UTC [109372] ERROR:  invalid input syntax for type integer: "b" at character 37
+2022-08-01 20:40:17.626 UTC [109372] STATEMENT:  insert into intr_multirange values ('b', null);
+2022-08-01 20:40:17.628 UTC [109372] ERROR:  invalid input syntax for type integer: "a" at character 40
+2022-08-01 20:40:17.628 UTC [109372] STATEMENT:  insert into multirange_of_text values ('a', null);
+2022-08-01 20:40:17.628 UTC [109372] ERROR:  relation "anycompatiblearray_anycompatiblemultirange_func" does not exist at character 101
+2022-08-01 20:40:17.628 UTC [109372] STATEMENT:  select * from two_ints_multirange where (mr_outparam_succeed, two_ints_range) not in (select * from anycompatiblearray_anycompatiblemultirange_func);
+2022-08-01 20:40:17.629 UTC [109372] ERROR:  could not identify a hash function for type record
+2022-08-01 20:40:17.629 UTC [109372] STATEMENT:  select row(row(row(1))) = any (select row(row(1)));
+2022-08-01 20:40:17.630 UTC [109372] WARNING:  there is no transaction in progress
+2022-08-01 20:40:17.631 UTC [109372] ERROR:  cannot create a temporary relation as partition of permanent relation "mydomain"
+2022-08-01 20:40:17.631 UTC [109372] STATEMENT:  create temp table mr_polymorphic partition of mydomain for values in (null);
+2022-08-01 20:40:17.631 UTC [109372] ERROR:  INSERT has more expressions than target columns at character 48
+2022-08-01 20:40:17.631 UTC [109372] STATEMENT:  insert into two_ints_multirange select x, x/2, x+1 from generate_series(0,10) x;
+2022-08-01 20:40:17.632 UTC [109372] ERROR:  column "multirangetypes_sql" does not exist at character 38
+2022-08-01 20:40:17.632 UTC [109372] STATEMENT:  select * from range_add_bounds where multirangetypes_sql not in (select nmr from nummultirange_test);
+2022-08-01 20:40:17.633 UTC [109372] ERROR:  relation "ts1" does not exist at character 16
+2022-08-01 20:40:17.633 UTC [109372] STATEMENT:  select nextval('ts1');
+2022-08-01 20:40:17.636 UTC [109372] ERROR:  cursor "c1" does not exist
+2022-08-01 20:40:17.636 UTC [109372] STATEMENT:  move forward all in c1;
+2022-08-01 20:40:17.638 UTC [109372] WARNING:  there is no transaction in progress
+2022-08-01 20:40:17.966 UTC [109372] PANIC:  could not write to file "pg_wal/xlogtemp.109372": No space left on device
+2022-08-01 20:40:17.966 UTC [109372] STATEMENT:  
+	
+	INSERT INTO nummultirange_test SELECT nmr, ARRAY[1,10] FROM generate_series(2,10000) nmr;
+2022-08-01 20:40:18.011 UTC [108898] LOG:  server process (PID 109372) was terminated by signal 6: Aborted
+2022-08-01 20:40:18.011 UTC [108898] LOG:  terminating any other active server processes
+2022-08-01 20:40:18.017 UTC [108898] LOG:  all server processes terminated; reinitializing
+2022-08-01 20:40:18.028 UTC [110235] LOG:  database system was interrupted; last known up at 2022-08-01 20:40:13 UTC
+2022-08-01 20:40:18.029 UTC [110236] FATAL:  the database system is in recovery mode
+2022-08-01 20:40:18.032 UTC [110239] FATAL:  the database system is in recovery mode
+2022-08-01 20:40:18.034 UTC [110240] FATAL:  the database system is in recovery mode
+2022-08-01 20:40:18.043 UTC [108898] LOG:  received smart shutdown request
+2022-08-01 20:40:18.044 UTC [110235] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 20:40:18.045 UTC [110235] LOG:  redo starts at 0/2703B60
+2022-08-01 20:40:18.050 UTC [108898] LOG:  abnormal database system shutdown

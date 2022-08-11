@@ -1,0 +1,33 @@
+# name: test/issues/rigger/test_526.test
+# description: Issue 526
+# group: [rigger]
+
+;
+PRAGMA enable_verification
+
+# Query that uses the CONCAT() function and OR expression crashes
+# FIXME: #398
+;
+CREATE TABLE t0(c0 REAL);
+
+;
+CREATE TABLE t1(c0 INT2);
+
+;
+CREATE TABLE t2(c0 INT);
+
+;
+INSERT INTO t0 VALUES (-1);
+
+;
+INSERT INTO t1 VALUES (0);
+
+;
+INSERT INTO t2 VALUES (0), (0);
+
+;
+SELECT * FROM t1, t2, t0 WHERE CONCAT(t1.c0) OR t0.c0;
+;
+0	0	-1.000000
+0	0	-1.000000
+

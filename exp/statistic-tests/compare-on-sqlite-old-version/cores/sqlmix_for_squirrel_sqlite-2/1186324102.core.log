@@ -1,0 +1,47 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000029,sig:06,src:019508+004607,time:987249,execs:123147,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGFPE, Arithmetic exception.
+0x00000000002a26fc in rehash (pH=0x244cbe8, new_size=0) at sqlite3.c:32161
+32161	    unsigned int h = strHash(elem->pKey) % new_size;
+(gdb) #0  0x00000000002a26fc in rehash (pH=0x244cbe8, new_size=0) at sqlite3.c:32161
+#1  0x000000000029ee4a in sqlite3HashInsert (pH=0x244cbe8, pKey=0x2455be0 "log", data=0x2455c00) at sqlite3.c:32288
+#2  0x00000000002f8ea7 in sqlite3EndTable (pParse=0x7fff3b66f7b0, pCons=0x7fff3b66ee48, pEnd=0x7fff3b66ee60, tabOpts=0 '\000', pSelect=0x0) at sqlite3.c:109928
+#3  0x00000000002ef5e9 in yy_reduce (yypParser=0x7fff3b66edd0, yyruleno=19, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff3b66f7b0) at sqlite3.c:153002
+#4  0x00000000002eca18 in sqlite3Parser (yyp=0x7fff3b66edd0, yymajor=1, yyminor=...) at sqlite3.c:154496
+#5  0x00000000002a9df3 in sqlite3RunParser (pParse=0x7fff3b66f7b0, zSql=0x24458c3 "", pzErrMsg=0x7fff3b66f990) at sqlite3.c:155636
+#6  0x00000000002a785a in sqlite3Prepare (db=0x242ba10, zSql=0x24458b0 "CREATE TABLE log(v)", nBytes=-1, prepFlags=0, pReprepare=0x0, ppStmt=0x7fff3b66fa88, pzTail=0x0) at sqlite3.c:125306
+#7  0x00000000002a6eae in sqlite3LockAndPrepare (db=0x242ba10, zSql=0x24458b0 "CREATE TABLE log(v)", nBytes=-1, prepFlags=0, pOld=0x0, ppStmt=0x7fff3b66fa88, pzTail=0x0) at sqlite3.c:125402
+#8  0x0000000000292ecc in sqlite3_prepare (db=0x242ba10, zSql=0x24458b0 "CREATE TABLE log(v)", nBytes=-1, ppStmt=0x7fff3b66fa88, pzTail=0x0) at sqlite3.c:125469
+#9  0x000000000032fe7e in sqlite3InitCallback (pInit=0x7fff3b66fbb8, argc=5, argv=0x243e858, NotUsed=0x243e830) at sqlite3.c:124789
+#10 0x0000000000291cb3 in sqlite3_exec (db=0x242ba10, zSql=0x2448790 "SELECT*FROM\"aux\".sqlite_master ORDER BY rowid", xCallback=0x32fb20 <sqlite3InitCallback>, pArg=0x7fff3b66fbb8, pzErrMsg=0x0) at sqlite3.c:119964
+#11 0x000000000032f7de in sqlite3InitOne (db=0x242ba10, iDb=2, pzErrMsg=0x7fff3b66fcf8, mFlags=0) at sqlite3.c:125010
+#12 0x000000000032ec76 in sqlite3Init (db=0x242ba10, pzErrMsg=0x7fff3b66fcf8) at sqlite3.c:125089
+#13 0x000000000035d927 in attachFunc (context=0x244a3b0, NotUsed=3, argv=0x244a3e0) at sqlite3.c:106969
+#14 0x00000000003e9e49 in sqlite3VdbeExec (p=0x2449f00) at sqlite3.c:91482
+#15 0x000000000041ba74 in sqlite3Step (p=0x2449f00) at sqlite3.c:82300
+#16 0x0000000000293d5d in sqlite3_step (pStmt=0x2449f00) at sqlite3.c:82365
+#17 0x0000000000258a39 in main (argc=1, argv=0x7fff3b670958) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 38255] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

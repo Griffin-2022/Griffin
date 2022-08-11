@@ -1,0 +1,111 @@
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	SELECT to_timestamp('2000 ++ JUN', 'YYYY  MON');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	SELECT to_timestamp('2000 + + JUN', 'YYYY  MON');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	SELECT to_timestamp('2000 + + JUN', 'YYYY   MON');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	
+	SELECT to_date('2011 12  18', 'YYYY MM DD');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 62
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	
+	-- Insufficient digit characters for a single node:
+	SELECT to_timestamp('19971)24', 'YYYYMMDD');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 88
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	
+	-- We don't accept full-length day or month names if short form is specified:
+	SELECT to_timestamp('Friday 1-January-1999', 'DY DD MON YYYY');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 38
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:    -- ok
+	
+	-- Value clobbering:
+	SELECT to_timestamp('1997-11-Jan-16', 'YYYY-MM-Mon-DD');
+2022-08-02 05:19:29.247 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.247 UTC [92908] STATEMENT:  
+	SELECT to_timestamp('2016-06-13 15:50:55', 'YYYY-MM-DD HH24:MI:SS');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  
+	SELECT to_timestamp('2015-02-11 86000', 'YYYY-MM-DD SSSSS');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  
+	SELECT to_date('2016-02-29', 'YYYY-MM-DD');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  
+	SELECT to_date('2015 365', 'YYYY DDD');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:    -- ok
+	SELECT to_date('2015 366', 'YYYY DDD');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  
+	SELECT to_date('2016 365', 'YYYY DDD');
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 16
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:    -- ok
+	SELECT to_date('2016 366', 'YYYY DDD');
+2022-08-02 05:19:29.248 UTC [92908] WARNING:  there is no transaction in progress
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  DISCARD ALL;
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 05:19:29.248 UTC [92908] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 05:19:29.248 UTC [92908] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  
+	CREATE SCHEMA test_pg_dump_s1;
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  CREATE TABLE reloptions_test2(i INT) WITH (fillfactor=110);
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 67
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  select has_table_privilege(t1.oid,'select')
+	from (select oid from pg_class where relname = 'pg_authid') as t1;
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  select has_table_privilege('pg_class','truncate');
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  select has_column_privilege('pg_authid','nosuchcol','select');
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  select has_column_privilege(9999,99::int2,'select');
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  select has_column_privilege('pg_authid',99::int2,'select');
+2022-08-02 05:19:29.250 UTC [92908] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 05:19:29.250 UTC [92908] STATEMENT:  create temp table nummultirange_test(nmr int, nummultirange_test_btree int, test_multirange_gist int);
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  select has_column_privilege('nummultirange_test',99::int2,'select');
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  cannot execute GRANT in a read-only transaction
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  GRANT UPDATE ON atest4 TO regress_priv_user2;
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  CREATE TABLE mr (test_mulrirange_gist_idx VARCHAR)
+		WITH (toast.autovacuum_vacuum_cost_delay = 23);
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  SELECT reloptions FROM pg_class WHERE oid = 35468;
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  SELECT reloptions FROM pg_class WHERE oid = 35468;
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  CREATE TABLE reservations (room_id VARCHAR) WITH
+		(toast.autovacuum_vacuum_cost_delay = 23,
+		autovacuum_vacuum_cost_delay = 24, fillfactor = 40);
+2022-08-02 05:19:29.251 UTC [92908] WARNING:  there is no transaction in progress
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  DISCARD ALL;
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 05:19:29.251 UTC [92908] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 05:19:29.251 UTC [92908] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 05:19:30.668 UTC [98584] PANIC:  could not open critical system index 2662
+2022-08-02 05:19:30.670 UTC [89262] LOG:  server process (PID 98584) was terminated by signal 6: Aborted
+2022-08-02 05:19:30.670 UTC [89262] LOG:  terminating any other active server processes
+2022-08-02 05:19:30.704 UTC [89262] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:19:30.718 UTC [98589] LOG:  database system was interrupted; last known up at 2022-08-02 05:19:21 UTC
+2022-08-02 05:19:30.731 UTC [98589] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 05:19:30.731 UTC [98589] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 05:19:30.731 UTC [98589] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:19:30.732 UTC [98589] LOG:  redo starts at 0/E450AF8
+2022-08-02 05:19:30.732 UTC [98589] LOG:  invalid record length at 0/E450BA8: wanted 24, got 0
+2022-08-02 05:19:30.732 UTC [98589] LOG:  redo done at 0/E450B30 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 05:19:30.743 UTC [89262] LOG:  database system is ready to accept connections

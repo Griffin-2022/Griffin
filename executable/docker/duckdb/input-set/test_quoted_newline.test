@@ -1,0 +1,27 @@
+# name: test/sql/copy/csv/test_quoted_newline.test
+# description: Test copy statement with quoted newline
+# group: [csv]
+
+# CSV file with newlines enclosed by quotes
+;
+CREATE TABLE test (a VARCHAR, b INTEGER);
+
+;
+COPY test FROM 'test/sql/copy/csv/data/test/quoted_newline.csv' (DELIMITER ',', AUTO_DETECT 0);
+;
+2
+
+;
+SELECT SUM(b) FROM test;
+;
+11
+
+;
+SELECT string_split_regex(a, '[\r\n]+') FROM test ORDER BY a;
+;
+[hello, world]
+[what,,  brings, you here,  , today]
+
+;
+DROP TABLE test;
+

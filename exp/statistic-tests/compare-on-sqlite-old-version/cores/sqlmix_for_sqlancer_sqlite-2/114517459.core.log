@@ -1,0 +1,57 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000361,sig:06,src:022935+017956,time:7221476,execs:1312726,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fbbdb93a859 in __GI_abort () at abort.c:79
+#2  0x00007fbbdb93a729 in __assert_fail_base (fmt=0x7fbbdbad0588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fbbdb94bfd6 in __GI___assert_fail (assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d160 in sqlite3ColumnsFromExprList (pParse=0x7ffccbf50460, pEList=0xb31590, pnCol=0xb2bcc6, paCol=0xb2bc88) at sqlite3.c:126590
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7ffccbf50460, pFrom=0xb30c38) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7ffccbf50460, p=0xb23490) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7ffccbf50460, p=0xb23490, pDest=0x7ffccbf4ed50) at sqlite3.c:130281
+#8  0x00000000003a45ed in multiSelect (pParse=0x7ffccbf50460, p=0xb23490, pDest=0x7ffccbf4f158) at sqlite3.c:127314
+#9  0x00000000002fccf5 in sqlite3Select (pParse=0x7ffccbf50460, p=0xb23490, pDest=0x7ffccbf4f158) at sqlite3.c:130384
+#10 0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffccbf50460, pExpr=0xb2fe20) at sqlite3.c:99820
+#11 0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffccbf50460, pExpr=0xb2fe20, target=5) at sqlite3.c:100770
+#12 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffccbf50460, pList=0xb38610, target=5, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#13 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffccbf50460, pSelect=0xb23940, pInfo=0x7ffccbf4f4a0) at sqlite3.c:125172
+#14 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffccbf50460, p=0xb23940, srcTab=-1, pSort=0x0, pDistinct=0x0, pDest=0x7ffccbf4f850, iContinue=-2, iBreak=-2) at sqlite3.c:125624
+#15 0x00000000002fffb0 in sqlite3Select (pParse=0x7ffccbf50460, p=0xb23940, pDest=0x7ffccbf4f850) at sqlite3.c:131196
+#16 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffccbf4fa80, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffccbf50460) at sqlite3.c:151581
+#17 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffccbf4fa80, yymajor=1, yyminor=...) at sqlite3.c:152877
+#18 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffccbf50460, 
+    zSql=0xb344ac ";INSERT INTO following DEFAULT VALUES\n;;DROP TABLE IF EXISTS following;;CREATE TABLE following AS SELECT \"with space\" FROM t0;DELETE FROM 't0'\n;DELETE FROM 'following'\n;SELECT * FROM following\n;;CREAT"..., pzErrMsg=0x7ffccbf50640) at sqlite3.c:154013
+#19 0x00000000002a1683 in sqlite3Prepare (db=0xb1a380, 
+    zSql=0xb1b269 ";SELECT (SELECT avg(c0) UNION SELECT min(c0) OVER()) FROM t0;INSERT INTO following DEFAULT VALUES\n;;DROP TABLE IF EXISTS following;;CREATE TABLE following AS SELECT \"with space\" FROM t0;DELETE FROM 't"..., nBytes=338, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffccbf50778, pzTail=0x7ffccbf50760) at sqlite3.c:124303
+#20 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xb1a380, 
+    zSql=0xb1b269 ";SELECT (SELECT avg(c0) UNION SELECT min(c0) OVER()) FROM t0;INSERT INTO following DEFAULT VALUES\n;;DROP TABLE IF EXISTS following;;CREATE TABLE following AS SELECT \"with space\" FROM t0;DELETE FROM 't"..., nBytes=338, prepFlags=128, pOld=0x0, ppStmt=0x7ffccbf50778, pzTail=0x7ffccbf50760) at sqlite3.c:124403
+#21 0x000000000029247f in sqlite3_prepare_v2 (db=0xb1a380, 
+    zSql=0xb1b269 ";SELECT (SELECT avg(c0) UNION SELECT min(c0) OVER()) FROM t0;INSERT INTO following DEFAULT VALUES\n;;DROP TABLE IF EXISTS following;;CREATE TABLE following AS SELECT \"with space\" FROM t0;DELETE FROM 't"..., nBytes=338, ppStmt=0x7ffccbf50778, pzTail=0x7ffccbf50760) at sqlite3.c:124487
+#22 0x0000000000256bd0 in main (argc=1, argv=0x7ffccbf50928) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 57929] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

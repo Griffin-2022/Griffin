@@ -1,0 +1,111 @@
+2022-08-02 04:04:31.471 UTC [10591] ERROR:  could not open extension control file "/root/bin_aflpp_asan/usr/local/pgsql/share/extension/btree_gin.control": No such file or directory
+2022-08-02 04:04:31.471 UTC [10591] STATEMENT:  CREATE EXTENSION btree_gin;
+2022-08-02 04:04:31.472 UTC [10591] ERROR:  database "sepgsql_test_regression_1" already exists
+2022-08-02 04:04:31.472 UTC [10591] STATEMENT:  
+	
+	-- @SECURITY-CONTEXT=unconfined_u:unconfined_r:sepgsql_regtest_superuser_t:s0
+	
+	--
+	-- CREATE Objects to be altered (with debug_audit being silent)
+	--
+	CREATE DATABASE sepgsql_test_regression_1;
+2022-08-02 04:04:31.472 UTC [10591] ERROR:  role "regress_sepgsql_test_user" does not exist
+2022-08-02 04:04:31.472 UTC [10591] STATEMENT:  
+	ALTER SCHEMA regtest_schema_1 OWNER TO regress_sepgsql_test_user;
+2022-08-02 04:04:31.472 UTC [10591] ERROR:  relation "t" does not exist
+2022-08-02 04:04:31.472 UTC [10591] STATEMENT:  
+	ALTER TABLE t OWNER TO regress_sepgsql_test_user;
+2022-08-02 04:04:31.472 UTC [10591] ERROR:  relation "regtest_seq_1" does not exist
+2022-08-02 04:04:31.472 UTC [10591] STATEMENT:  
+	ALTER SEQUENCE regtest_seq_1 OWNER TO regress_sepgsql_test_user;
+2022-08-02 04:04:31.473 UTC [10591] ERROR:  relation "regtest_seq_1" does not exist
+2022-08-02 04:04:31.473 UTC [10591] STATEMENT:  
+	---
+	
+	ALTER SEQUENCE regtest_seq_1 RENAME TO regtest_seq;
+2022-08-02 04:04:31.474 UTC [10591] ERROR:  database "sepgsql_test_regression" does not exist
+2022-08-02 04:04:31.474 UTC [10591] STATEMENT:  
+	
+	--
+	-- misc ALTER commands
+	--
+	ALTER DATABASE sepgsql_test_regression CONNECTION LIMIT 999;
+2022-08-02 04:04:31.477 UTC [10591] WARNING:  there is no transaction in progress
+2022-08-02 04:04:31.481 UTC [10591] ERROR:  relation "sqlsim14" does not exist
+2022-08-02 04:04:31.481 UTC [10591] STATEMENT:  create temp table sqlsim19 partition of sqlsim14 for values in(2);
+2022-08-02 04:04:31.486 UTC [10591] ERROR:  relation "sqlsim14" does not exist
+2022-08-02 04:04:31.486 UTC [10591] STATEMENT:  analyze sqlsim14;
+2022-08-02 04:04:31.486 UTC [10591] ERROR:  table "sqlsim19" does not exist
+2022-08-02 04:04:31.486 UTC [10591] STATEMENT:  drop table sqlsim19;
+2022-08-02 04:04:31.486 UTC [10591] ERROR:  table "sqlsim14" does not exist
+2022-08-02 04:04:31.486 UTC [10591] STATEMENT:  drop table sqlsim14;
+2022-08-02 04:04:31.487 UTC [10591] ERROR:  thresholds array must not contain NULLs
+2022-08-02 04:04:31.487 UTC [10591] STATEMENT:  SELECT width_bucket(5, ARRAY[3, 4, NULL]);
+2022-08-02 04:04:31.487 UTC [10591] WARNING:  there is no transaction in progress
+=================================================================
+==10591==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffe4fbb90d0 sp 0x7ffe4fbb90c8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fe3caf08082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==10591==ABORTING
+2022-08-02 04:04:31.527 UTC [7642] LOG:  server process (PID 10591) was terminated by signal 6: Aborted
+2022-08-02 04:04:31.527 UTC [7642] LOG:  terminating any other active server processes
+2022-08-02 04:04:31.533 UTC [7642] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:04:31.544 UTC [12083] LOG:  database system was interrupted; last known up at 2022-08-02 04:04:30 UTC
+2022-08-02 04:04:31.545 UTC [12084] FATAL:  the database system is in recovery mode
+2022-08-02 04:04:31.547 UTC [12087] FATAL:  the database system is in recovery mode
+2022-08-02 04:04:31.549 UTC [12088] FATAL:  the database system is in recovery mode
+2022-08-02 04:04:31.554 UTC [7642] LOG:  received smart shutdown request
+2022-08-02 04:04:31.557 UTC [12083] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 04:04:31.557 UTC [12083] LOG:  recovered replication state of node 4 to 0/0
+2022-08-02 04:04:31.557 UTC [12083] LOG:  recovered replication state of node 2 to 0/0

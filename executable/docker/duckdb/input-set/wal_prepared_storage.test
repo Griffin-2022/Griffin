@@ -1,0 +1,109 @@
+# name: test/sql/storage/wal/wal_prepared_storage.test
+# description: PREPARE and WAL
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/prepared_storage.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# insert values in a database using prepared statements
+;
+CREATE TABLE t (a INTEGER)
+
+;
+PREPARE p1 AS INSERT INTO t VALUES ($1)
+
+;
+EXECUTE p1(42)
+
+;
+EXECUTE p1(43)
+
+;
+DEALLOCATE p1
+
+;
+SELECT a FROM t
+;
+42
+43
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+# now restart and verify that the data is still there
+;
+SELECT a FROM t
+;
+42
+43
+
+# unhelpfully use the same statement name again, it should be available, but do nothing with it
+;
+PREPARE p1 AS DELETE FROM t WHERE a=$1
+
+restart
+
+# do the same with delete
+;
+PREPARE p1 AS DELETE FROM t WHERE a=$1
+
+;
+EXECUTE p1(43)
+
+;
+SELECT a FROM t
+;
+42
+
+# restart again
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+# data is still gone
+;
+SELECT a FROM t
+;
+42
+
+# now with update
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+SELECT a FROM t
+;
+42
+
+;
+PREPARE p1 AS UPDATE t SET a = $1
+
+;
+EXECUTE p1(43)
+
+;
+SELECT a FROM t
+;
+43
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+SELECT a FROM t
+;
+43
+

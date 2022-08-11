@@ -1,0 +1,103 @@
+# name: test/sql/types/struct/struct_updates.test
+# description: Test updates on struct tables
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(b ROW(i INTEGER, j INTEGER));
+
+;
+INSERT INTO a VALUES ({'i': 1, 'j': 2});
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 1, 'j': 2}
+
+# standard update
+;
+UPDATE a SET b={'i': 3, 'j': 4}
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 3, 'j': 4}
+
+# NULL update
+;
+UPDATE a SET b=NULL
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+NULL
+
+;
+UPDATE a SET b={'i': NULL, 'j': 4}
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': NULL, 'j': 4}
+
+;
+UPDATE a SET b={'i': 3, 'j': NULL}
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 3, 'j': NULL}
+
+# rollbacks
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE a SET b={'i': 3, 'j': 4}
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 3, 'j': 4}
+
+;
+ROLLBACK;
+
+;
+SELECT * FROM a ORDER BY (b).i;
+;
+{'i': 3, 'j': NULL}
+
+# updates with a filter
+;
+INSERT INTO a VALUES ({'i': 2, 'j': 3});
+
+;
+SELECT * FROM a
+;
+{'i': 3, 'j': NULL}
+{'i': 2, 'j': 3}
+
+;
+INSERT INTO a VALUES ({'i': 3, 'j': 4});
+
+;
+SELECT * FROM a
+;
+{'i': 3, 'j': NULL}
+{'i': 2, 'j': 3}
+{'i': 3, 'j': 4}
+
+;
+UPDATE a SET b={'i': NULL, 'j': NULL} WHERE (b).j>=3
+;
+2
+
+;
+SELECT * FROM a
+;
+{'i': 3, 'j': NULL}
+{'i': NULL, 'j': NULL}
+{'i': NULL, 'j': NULL}

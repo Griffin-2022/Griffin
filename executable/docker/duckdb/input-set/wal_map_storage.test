@@ -1,0 +1,54 @@
+# name: test/sql/storage/wal/wal_map_storage.test
+# description: Test maps with persistent storage and WAL
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/map_storage_test.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE a(b MAP(INTEGER,INTEGER));
+
+;
+INSERT INTO a VALUES (MAP([1], [2])), (MAP([1, 2, 3], [4, 5, 6]));
+
+;
+SELECT * FROM a;
+;
+{1=2}
+{1=4, 2=5, 3=6}
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM a;
+;
+{1=2}
+{1=4, 2=5, 3=6}
+
+restart
+
+;
+SELECT * FROM a;
+;
+{1=2}
+{1=4, 2=5, 3=6}
+
+restart
+
+;
+SELECT * FROM a;
+;
+{1=2}
+{1=4, 2=5, 3=6}

@@ -1,0 +1,23 @@
+# name: test/sql/catalog/table/test_create_table_parallelism.test
+# description: Test parallel table creation
+# group: [table]
+
+;
+PRAGMA enable_verification
+
+;
+PRAGMA threads=4
+
+;
+PRAGMA verify_parallelism
+
+;
+CREATE TABLE test AS (SELECT string_agg(range, '🦆 ') AS s, mod(range, 10000) xx FROM range(50000) GROUP BY xx)
+
+;
+CREATE TABLE test2 AS (SELECT unnest(string_split(s, ' ')) FROM test)
+
+;
+SELECT count(*) FROM test2
+;
+50000

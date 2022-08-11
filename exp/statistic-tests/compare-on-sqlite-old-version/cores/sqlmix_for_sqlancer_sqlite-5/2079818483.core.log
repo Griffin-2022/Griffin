@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000113,sig:08,src:020578+001747,time:2481992,execs:369285,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGFPE, Arithmetic exception.
+0x0000000000386bda in whereLoopAddBtreeIndex (pBuilder=0x7fff932845b8, pSrc=0x1f0e3f8, pProbe=0x7fff932843c8, nInMul=0) at sqlite3.c:142707
+142707	    rCostIdx = pNew->nOut + 1 + (15*pProbe->szIdxRow)/pSrc->pTab->szTabRow;
+(gdb) #0  0x0000000000386bda in whereLoopAddBtreeIndex (pBuilder=0x7fff932845b8, pSrc=0x1f0e3f8, pProbe=0x7fff932843c8, nInMul=0) at sqlite3.c:142707
+#1  0x00000000003828e6 in whereLoopAddBtree (pBuilder=0x7fff932845b8, mPrereq=0) at sqlite3.c:143097
+#2  0x000000000036fb8f in whereLoopAddAll (pBuilder=0x7fff932845b8) at sqlite3.c:143616
+#3  0x000000000036a9df in sqlite3WhereBegin (pParse=0x7fff93285620, pTabList=0x1f0e3f0, pWhere=0x1f0f200, pOrderBy=0x0, pResultSet=0x1f0ed50, wctrlFlags=0, iAuxArg=320) at sqlite3.c:144811
+#4  0x00000000002fdcea in sqlite3Select (pParse=0x7fff93285620, p=0x1f0b9c0, pDest=0x7fff93284a10) at sqlite3.c:130695
+#5  0x00000000002ecaa8 in yy_reduce (yypParser=0x7fff93284c40, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff93285620) at sqlite3.c:151581
+#6  0x00000000002e92f8 in sqlite3Parser (yyp=0x7fff93284c40, yymajor=1, yyminor=...) at sqlite3.c:152877
+#7  0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fff93285620, zSql=0x1f0c7f3 ";;ANALYZE sqlite_master;SELECT count(c0) FROM t0;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT count(c0) FROM t0;", 
+    pzErrMsg=0x7fff93285800) at sqlite3.c:154013
+#8  0x00000000002a1683 in sqlite3Prepare (db=0x1ef9e60, 
+    zSql=0x1ef9d89 "SELECT 0 FROM t0 WHERE c0 IN(1,2,3);;ANALYZE sqlite_master;SELECT count(c0) FROM t0;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT count(c0) FROM t0;", nBytes=155, prepFlags=128, pReprepare=0x0, 
+    ppStmt=0x7fff93285938, pzTail=0x7fff93285920) at sqlite3.c:124303
+#9  0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x1ef9e60, 
+    zSql=0x1ef9d89 "SELECT 0 FROM t0 WHERE c0 IN(1,2,3);;ANALYZE sqlite_master;SELECT count(c0) FROM t0;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT count(c0) FROM t0;", nBytes=155, prepFlags=128, pOld=0x0, 
+    ppStmt=0x7fff93285938, pzTail=0x7fff93285920) at sqlite3.c:124403
+#10 0x000000000029247f in sqlite3_prepare_v2 (db=0x1ef9e60, 
+    zSql=0x1ef9d89 "SELECT 0 FROM t0 WHERE c0 IN(1,2,3);;ANALYZE sqlite_master;SELECT count(c0) FROM t0;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1\n;SELECT count(c0) FROM t0;", nBytes=155, ppStmt=0x7fff93285938, 
+    pzTail=0x7fff93285920) at sqlite3.c:124487
+#11 0x0000000000256bd0 in main (argc=1, argv=0x7fff93285ae8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 51036] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

@@ -1,0 +1,111 @@
+2022-08-02 05:19:20.049 UTC [32375] ERROR:  role "regress_testrol2" does not exist
+2022-08-02 05:19:20.049 UTC [32375] STATEMENT:  
+	SET ROLE regress_testrol2;
+2022-08-02 05:19:20.050 UTC [32375] ERROR:  role "current_user" does not exist
+2022-08-02 05:19:20.050 UTC [32375] STATEMENT:  
+	ALTER TABLE x OWNER TO "current_user";
+2022-08-02 05:19:20.051 UTC [32375] ERROR:  role "current_user" does not exist
+2022-08-02 05:19:20.051 UTC [32375] STATEMENT:  
+	ALTER AGGREGATE hash_idx(int2) OWNER TO "current_user";
+2022-08-02 05:19:20.051 UTC [32375] ERROR:  foreign-data wrapper "test_wrapper" does not exist
+2022-08-02 05:19:20.051 UTC [32375] STATEMENT:  
+	CREATE SERVER sv3 FOREIGN DATA WRAPPER test_wrapper;
+2022-08-02 05:19:20.051 UTC [32375] ERROR:  role "user" does not exist
+2022-08-02 05:19:20.051 UTC [32375] STATEMENT:  
+	CREATE USER MAPPING FOR "user" SERVER sv5 OPTIONS (user '"USER"');
+2022-08-02 05:19:20.051 UTC [32375] ERROR:  role "current_user" does not exist
+2022-08-02 05:19:20.051 UTC [32375] STATEMENT:  
+	ALTER USER MAPPING FOR "current_user" SERVER sv2
+	 OPTIONS (SET user '"current_user"_alt');
+2022-08-02 05:19:20.052 UTC [32375] ERROR:  role "user" does not exist
+2022-08-02 05:19:20.052 UTC [32375] STATEMENT:  
+	ALTER USER MAPPING FOR "user" SERVER sv5
+	 OPTIONS (SET user '"user"_alt');
+2022-08-02 05:19:20.052 UTC [32375] ERROR:  server "sv9" does not exist
+2022-08-02 05:19:20.052 UTC [32375] STATEMENT:  
+	DROP USER MAPPING FOR regress_testrolx SERVER sv9;
+2022-08-02 05:19:20.052 UTC [32375] ERROR:  server "sv1" does not exist
+2022-08-02 05:19:20.052 UTC [32375] STATEMENT:  
+	
+	CREATE USER MAPPING FOR CURRENT_USER SERVER sv1 OPTIONS (user 'CURRENT_USER');
+2022-08-02 05:19:20.052 UTC [32375] ERROR:  role "regress_role_haspriv" already exists
+2022-08-02 05:19:20.052 UTC [32375] STATEMENT:  
+	
+	-- DEFAULT MONITORING ROLES
+	CREATE ROLE regress_role_haspriv;
+2022-08-02 05:19:20.058 UTC [32375] ERROR:  role "regress_testrol2" does not exist
+2022-08-02 05:19:20.058 UTC [32375] STATEMENT:  
+	SET ROLE regress_testrol2;
+2022-08-02 05:19:20.062 UTC [32375] ERROR:  role "session_role" does not exist
+2022-08-02 05:19:20.062 UTC [32375] STATEMENT:   -- error
+	ALTER USER SESSION_ROLE WITH NOREPLICATION;
+2022-08-02 05:19:20.064 UTC [32375] ERROR:  role "Public" does not exist
+2022-08-02 05:19:20.064 UTC [32375] STATEMENT:  
+	ALTER ROLE "Public" RESET application_name;
+=================================================================
+==32375==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffe20f54870 sp 0x7ffe20f54868
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f50373a8082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==32375==ABORTING
+2022-08-02 05:19:20.119 UTC [32158] LOG:  server process (PID 32375) was terminated by signal 6: Aborted
+2022-08-02 05:19:20.119 UTC [32158] LOG:  terminating any other active server processes
+2022-08-02 05:19:20.123 UTC [32158] LOG:  all server processes terminated; reinitializing
+2022-08-02 05:19:20.138 UTC [36163] LOG:  database system was interrupted; last known up at 2022-08-02 05:19:17 UTC
+2022-08-02 05:19:20.139 UTC [36164] FATAL:  the database system is in recovery mode
+2022-08-02 05:19:20.141 UTC [36167] FATAL:  the database system is in recovery mode
+2022-08-02 05:19:20.143 UTC [36168] FATAL:  the database system is in recovery mode
+2022-08-02 05:19:20.148 UTC [36163] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 05:19:20.148 UTC [36163] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 05:19:20.148 UTC [36163] LOG:  redo starts at 0/92BADB8
+2022-08-02 05:19:20.148 UTC [32158] LOG:  received smart shutdown request

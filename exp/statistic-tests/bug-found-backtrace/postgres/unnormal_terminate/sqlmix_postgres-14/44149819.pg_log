@@ -1,0 +1,111 @@
+2022-08-02 00:33:29.300 UTC [27745] ERROR:  relation "test1" does not exist at character 47
+2022-08-02 00:33:29.300 UTC [27745] STATEMENT:  CREATE VIEW b AS SELECT * from (select * from test1) sub;
+2022-08-02 00:33:29.300 UTC [27745] ERROR:  role "regress_rol_lock1" already exists
+2022-08-02 00:33:29.300 UTC [27745] STATEMENT:  CREATE ROLE regress_rol_lock1;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  ALTER ROLE regress_rol_lock1 SET search_path = lock_schema1;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  schema "lock_schema1" does not exist
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  GRANT USAGE ON SCHEMA lock_schema1 TO regress_rol_lock1;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  schema "addr_nsp" does not exist
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  
+	CREATE POLICY genpol ON addr_nsp.gentable;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  LOCK TABLE b IN ACCESS SHARE MODE;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  schema "addr_nsp" does not exist
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  
+	CREATE PROCEDURE addr_nsp.proc(int4) LANGUAGE SQL AS $$ $$;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  LOCK t1 IN ROW SHARE MODE;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  LOCK TABLE t1 IN ROW EXCLUSIVE MODE;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  
+	CREATE SERVER "integer" FOREIGN DATA WRAPPER addr_fdw;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE;
+2022-08-02 00:33:29.301 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 35
+2022-08-02 00:33:29.301 UTC [27745] STATEMENT:  
+	
+	-- test some error cases
+	SELECT pg_get_object_address('stone', '{}', '{}');
+2022-08-02 00:33:29.302 UTC [27745] WARNING:  there is no transaction in progress
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('table', '{}', '{}');
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  LOCK TABLE t1 IN ROW SHARE MODE NOWAIT;
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 47
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  
+	
+	-- miscellaneous other errors
+	select * from pg_get_object_address('operator of access method', '{btree,integer_ops,1}', '{int4,bool}');
+2022-08-02 00:33:29.302 UTC [27745] WARNING:  there is no transaction in progress
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE NOWAIT;
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('language', '{one,two}', '{}');
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE;
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('large object', '{123}', '{}');
+2022-08-02 00:33:29.302 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.302 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('schema', '{one}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] WARNING:  there is no transaction in progress
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('role', '{one}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('tablespace', '{one}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  LOCK TABLE can only be used in transaction blocks
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE;
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('tablespace', '{one,two}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  LOCK TABLE t1 IN EXCLUSIVE MODE;
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('extension', '{one,two}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	SELECT pg_get_object_address('publication', '{one}', '{}');
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  
+	
+	DROP OWNED BY regress_addr_user;
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  relation "t1" does not exist at character 47
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  CREATE OR REPLACE VIEW test1 AS SELECT * from t1;
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  relation "t1" does not exist
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  LOCK TABLE t1 * IN ACCESS EXCLUSIVE MODE;
+2022-08-02 00:33:29.303 UTC [27745] WARNING:  there is no transaction in progress
+2022-08-02 00:33:29.303 UTC [27745] ERROR:  view "t1" does not exist
+2022-08-02 00:33:29.303 UTC [27745] STATEMENT:  DROP VIEW t1;
+2022-08-02 00:33:29.304 UTC [27745] ERROR:  table "description" does not exist
+2022-08-02 00:33:29.304 UTC [27745] STATEMENT:  DROP TABLE description;
+2022-08-02 00:33:29.304 UTC [27745] ERROR:  table "description" does not exist
+2022-08-02 00:33:29.304 UTC [27745] STATEMENT:  DROP TABLE description;
+2022-08-02 00:33:29.304 UTC [27745] WARNING:  there is no transaction in progress
+2022-08-02 00:33:29.304 UTC [27745] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 00:33:29.304 UTC [27745] STATEMENT:  DISCARD ALL;
+2022-08-02 00:33:29.304 UTC [27745] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 00:33:29.304 UTC [27745] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 00:33:29.304 UTC [27745] ERROR:  schema "public" already exists
+2022-08-02 00:33:29.304 UTC [27745] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 00:33:31.737 UTC [40048] PANIC:  could not open critical system index 2662
+2022-08-02 00:33:31.739 UTC [26855] LOG:  server process (PID 40048) was terminated by signal 6: Aborted
+2022-08-02 00:33:31.739 UTC [26855] LOG:  terminating any other active server processes
+2022-08-02 00:33:31.770 UTC [26855] LOG:  all server processes terminated; reinitializing
+2022-08-02 00:33:31.786 UTC [40057] LOG:  database system was interrupted; last known up at 2022-08-02 00:33:27 UTC
+2022-08-02 00:33:31.802 UTC [40057] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 00:33:31.802 UTC [40057] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 00:33:31.803 UTC [40057] LOG:  redo starts at 0/20386AC8
+2022-08-02 00:33:31.803 UTC [40057] LOG:  invalid record length at 0/20386B78: wanted 24, got 0
+2022-08-02 00:33:31.803 UTC [40057] LOG:  redo done at 0/20386B00 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 00:33:31.815 UTC [26855] LOG:  database system is ready to accept connections
+2022-08-02 00:33:31.821 UTC [40068] PANIC:  could not open critical system index 2662

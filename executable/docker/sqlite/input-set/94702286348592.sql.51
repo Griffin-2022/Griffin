@@ -1,0 +1,34 @@
+CREATE TABLE t1(x);
+;INSERT INTO t1 VALUES(randstr(1000,1000));
+;INSERT INTO t1 SELECT * FROM t1;
+;CREATE INDEX t1i1 ON t1(x);
+;CREATE TABLE t2 AS SELECT x AS a, x AS b FROM t1;
+;CREATE INDEX t2i1 ON t2(b);
+;
+;PRAGMA integrity_check
+;INSERT INTO t1 SELECT * FROM t1;
+;DELETE FROM t1;
+;VACUUM
+;ATTACH '' AS vacuum_db
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;BEGIN
+;SELECT sql FROM "main".sqlite_schema WHERE type='table'AND name<>'sqlite_sequence' AND coalesce(rootpage,1)>0
+;CREATE TABLE t1(x)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t2(a,b)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT sql FROM "main".sqlite_schema WHERE type='index'
+;CREATE INDEX t1i1 ON t1(x)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1i1' AND type='index' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1i1' AND type='index' ORDER BY rowid
+;CREATE INDEX t2i1 ON t2(b)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t2i1' AND type='index' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t2i1' AND type='index' ORDER BY rowid
+;SELECT'INSERT INTO vacuum_db.'||quote(name)||' SELECT*FROM"main".'||quote(name)FROM vacuum_db.sqlite_schema WHERE type='table'AND coalesce(rootpage,1)>0
+;INSERT INTO vacuum_db.'t1' SELECT*FROM"main".'t1'
+;INSERT INTO vacuum_db.'t2' SELECT*FROM"main".'t2'
+;INSERT INTO vacuum_db.sqlite_schema SELECT*FROM "main".sqlite_schema WHERE type IN('view','trigger') OR(type='table'AND rootpage=0)
+;

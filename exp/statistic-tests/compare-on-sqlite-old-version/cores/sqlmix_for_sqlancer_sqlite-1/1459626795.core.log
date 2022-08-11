@@ -1,0 +1,1050 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000525,sig:06,src:021228+008907,time:30291660,execs:10611600,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT CASE 55 WHEN '55' THEN 'A' ELSE 'B' END
+
+;]
+VDBE Trace:
+   0 Init             0    8    0               00 Start at 8
+   8 Integer         55    2    0               00 r[2]=55
+REG[2] =  i:55
+   9 String8          0    4    0 55            00 r[4]='55'
+REG[4] =   t4[5.5.](16LE)
+  10 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Ne               4    5    2               51 if r[2]!=r[4] goto 5
+REG[4] =   t4[5.5.](16LE)
+REG[2] =  i:55
+   5 String8          0    1    0 B             00 r[1]='B'
+REG[1] =   t2[B.](16LE)
+   6 ResultRow        1    1    0               00 output=r[1]
+REG[1] =   t2[B.](16LE)
+   7 Halt             0    0    0               00 
+SQL: [;SELECT * FROM sqlite_master WHERE rowid=10;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    0 0             01 usesStmtJournal=0
+  13 Goto             0    1    0               00 
+   1 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   2 Explain          2    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+   3 Integer         10    1    0               00 r[1]=10
+REG[1] =  i:10
+   4 SeekRowid        0   11    1               00 intkey=r[1]
+REG[1] =  i:10
+  11 Halt             0    0    0               00 
+SQL: [;SELECT * FROM sqlite_master WHERE rowid<=10;]
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    0 0             01 usesStmtJournal=0
+  16 Goto             0    1    0               00 
+   1 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   2 Explain          2    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid<?) 00 
+   3 Rewind           0   14    0               00 
+  14 Halt             0    0    0               00 
+SQL: [;SELECT * FROM sqlite_master;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    0 0             01 usesStmtJournal=0
+  13 Goto             0    1    0               00 
+   1 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   2 Explain          2    0    0 SCAN TABLE sqlite_master 00 
+   3 Rewind           0   11    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;
+;SELECT 10 IN (SELECT rowid FROM sqlite_master);]
+VDBE Trace:
+   0 Init             0   17    0               00 Start at 17
+  17 Transaction      0    0    0 0             01 usesStmtJournal=0
+  18 Integer         10    2    0               00 r[2]=10
+REG[2] =  i:10
+  19 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   3 Noop             0    0    0               00 begin IN expr
+   4 Once             0    7    0               00 
+   5 OpenRead         1    1    0 5             00 root=1 iDb=0; sqlite_master
+   6 Explain          6    0    0 USING ROWID SEARCH ON TABLE sqlite_master FOR IN-OPERATOR 00 
+   7 SeekRowid        1   14    2               00 intkey=r[2]
+REG[2] =  i:10
+  14 AddImm           1    0    0               00 r[1]=r[1]+0
+REG[1] =  NULL
+  15 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:0
+  16 Halt             0    0    0               00 
+SQL: [SELECT '€'=CAST(x'80' AS text) AS x
+;]
+VDBE Trace:
+   0 Init             0    5    0               00 Start at 5
+   5 String8          0    2    0 €             00 r[2]='€'
+REG[2] =   t2[..](16LE)
+   6 Blob             1    3    0 €             00 r[3]=€ (len=1)
+REG[3] =  t1[80.]
+   7 Cast             3   66    0               00 affinity(r[3])
+REG[3] =  t1[80.]
+   8 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Eq               3    1    2               62 r[1] = (r[2]==r[3])
+REG[3] =   t1[.](16LE)
+REG[2] =   t2[..](16LE)
+REG[1] =  i:0
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:0
+   4 Halt             0    0    0               00 
+SQL: [CREATE TABLE t1(x);]
+VDBE Trace:
+   0 Init             0   28    0               00 Start at 28
+  28 Transaction      0    1    0 0             01 usesStmtJournal=0
+  29 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:0
+   2 If               3    5    0               00 
+REG[3] =  i:0
+   3 SetCookie        0    2    4               00 
+   4 SetCookie        0    5    2               00 
+   5 CreateBtree      0    2    1               00 r[2]=root iDb=0 flags=1
+REG[2] =  i:2
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......]
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......]
+REG[1] =  i:1
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+REG[4] =  NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain         14    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 SeekRowid        1   17    1               00 intkey=r[1]
+REG[1] =  i:1
+  16 Rowid            1    5    0               00 r[5]=rowid
+REG[5] =  i:1
+  17 IsNull           5   25    0               00 if r[5]==NULL goto 25
+REG[5] =  i:1
+  18 String8          0    6    0 table         00 r[6]='table'
+REG[6] =   t10[t.a.b.l.e.](16LE)
+  19 String8          0    7    0 t1            00 r[7]='t1'
+REG[7] =   t4[t.1.](16LE)
+  20 String8          0    8    0 t1            00 r[8]='t1'
+REG[8] =   t4[t.1.](16LE)
+  21 Copy             2    9    0               00 r[9]=r[2]
+REG[9] =  i:2
+  22 String8          0   10    0 CREATE TABLE t1(x) 00 r[10]='CREATE TABLE t1(x)'
+REG[10] =   t36[C.R.E.A.T.E. .T](16LE)
+  23 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s61[0621151501557400610062006C006500.!...Ut.a.b.l.e.]
+  24 Insert           1   11    5               00 intkey=r[5] data=r[11]
+REG[11] =  s61[0621151501557400610062006C006500.!...Ut.a.b.l.e.]
+REG[5] =  i:1
+  25 SetCookie        0    1    1               00 
+  26 ParseSchema      0    0    0 tbl_name='t1' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    1 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t1            00 r[2]='t1'
+REG[2] =   t4[t.1.](16LE)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s4[t.1.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t.1.](16LE)
+REG[1] =   s4[t.1.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s4[t.1.](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:2
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s36[C.R.E.A.T.E. .T](16LE)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s4[t.1.](16LE)
+REG[5] =  i:2
+REG[6] =   s36[C.R.E.A.T.E. .T](16LE)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  27 Halt             0    0    0               00 
+SQL: [;CREATE INDEX t2 ON t1(x);]
+VDBE Trace:
+   0 Init             0   33    0               00 Start at 33
+  33 Transaction      0    1    1 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Noop             0   32    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+REG[1] =  i:3
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+REG[2] =  i:2
+   5 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t10[i.n.d.e.x.](16LE)
+   6 String8          0    4    0 t2            00 r[4]='t2'
+REG[4] =   t4[t.2.](16LE)
+   7 String8          0    5    0 t1            00 r[5]='t1'
+REG[5] =   t4[t.1.](16LE)
+   8 Copy             1    6    0               00 r[6]=r[1]
+REG[6] =  i:3
+   9 String8          0    7    0 CREATE INDEX t2 ON t1(x) 00 r[7]='CREATE INDEX t2 ON t1(x)'
+REG[7] =   t48[C.R.E.A.T.E. .I](16LE)
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+REG[8] =  s73[06211515016D69006E00640065007800.!...mi.n.d.e.x.]
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+REG[8] =  s73[06211515016D69006E00640065007800.!...mi.n.d.e.x.]
+REG[2] =  i:2
+  12 SorterOpen       3    0    1 k(2,,)        00 
+  13 OpenRead         1    2    0 1             00 root=2 iDb=0; t1
+  14 Rewind           1   20    0               00 
+  20 OpenWrite        2    1    0 k(2,,)        11 root=1 iDb=0
+  21 SorterSort       3   26    0               00 
+  26 Close            1    0    0               00 
+  27 Close            2    0    0               00 
+  28 Close            3    0    0               00 
+  29 SetCookie        0    1    2               00 
+  30 ParseSchema      0    0    0 name='t2' AND type='index' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    2 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t2            00 r[2]='t2'
+REG[2] =   t4[t.2.](16LE)
+  17 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t10[i.n.d.e.x.](16LE)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s4[t.1.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t.2.](16LE)
+REG[1] =   s4[t.1.](16LE)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s4[t.2.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t4[t.2.](16LE)
+REG[1] =   s4[t.2.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+REG[3] =   t10[i.n.d.e.x.](16LE)
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s4[t.2.](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:3
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s48[C.R.E.A.T.E. .I](16LE)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s4[t.2.](16LE)
+REG[5] =  i:3
+REG[6] =   s48[C.R.E.A.T.E. .I](16LE)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  31 Expire           0    1    0               00 
+  32 Halt             0    0    0               00 
+SQL: [SELECT typeof( CAST(X'313233' AS INTEGER) ),  CAST(X'313233' AS INTEGER) 
+;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 Blob             3    4    0 123           00 r[4]=123 (len=3)
+REG[4] =  t3[313233123]
+   8 Cast             4   68    0               00 affinity(r[4])
+REG[4] =  t3[313233123]
+   9 Function0        1    4    3 typeof(1)     01 r[3]=func(r[4])
+REG[4] =  i:0
+REG[3] =   s14[i.n.t.e.g.e.r.](16LE)
+  10 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             3    1    0               00 r[1]=r[3]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+   3 Blob             3    2    0 123           00 r[2]=123 (len=3)
+REG[2] =  t3[313233123]
+   4 Cast             2   68    0               00 affinity(r[2])
+REG[2] =  t3[313233123]
+   5 ResultRow        1    2    0               00 output=r[1..2]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+REG[2] =  i:0
+   6 Halt             0    0    0               00 
+SQL: [SELECT typeof( CAST('  14523abcd' AS INT) ),  CAST('  14523abcd' AS INT) 
+;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 String8          0    4    0   14523abcd   00 r[4]='  14523abcd'
+REG[4] =   t22[ . .1.4.5.2.3.a](16LE)
+   8 Cast             4   68    0               00 affinity(r[4])
+REG[4] =   t22[ . .1.4.5.2.3.a](16LE)
+   9 Function0        1    4    3 typeof(1)     01 r[3]=func(r[4])
+REG[4] =  i:14523
+REG[3] =   s14[i.n.t.e.g.e.r.](16LE)
+  10 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             3    1    0               00 r[1]=r[3]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+   3 String8          0    2    0   14523abcd   00 r[2]='  14523abcd'
+REG[2] =   t22[ . .1.4.5.2.3.a](16LE)
+   4 Cast             2   68    0               00 affinity(r[2])
+REG[2] =   t22[ . .1.4.5.2.3.a](16LE)
+   5 ResultRow        1    2    0               00 output=r[1..2]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+REG[2] =  i:14523
+   6 Halt             0    0    0               00 
+SQL: [;INSERT INTO t1 VALUES(1);]
+VDBE Trace:
+   0 Init             0   13    0               00 Start at 13
+  13 Transaction      0    1    2 0             01 usesStmtJournal=0
+  14 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 1             00 root=2 iDb=0; t1
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; t2
+   3 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   4 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+   5 Noop             0    0    0               00 uniqueness check for t2
+   6 SCopy            2    4    0               00 r[4]=r[2]; x
+REG[4] =  i:1
+   7 IntCopy          1    5    0               00 r[5]=r[1]; rowid
+REG[5] =  i:1
+   8 MakeRecord       4    2    3               00 r[3]=mkrec(r[4..5]); for t2
+REG[3] =  s3[030909...]
+   9 IdxInsert        1    3    4 2             10 key=r[3]
+REG[3] =  s3[030909...]
+  10 MakeRecord       2    1    6               00 r[6]=mkrec(r[2])
+REG[6] =  s2[0209..]
+  11 Insert           0    6    1 t1            39 intkey=r[1] data=r[6]
+REG[6] =  s2[0209..]
+REG[1] =  i:1
+  12 Halt             0    0    0               00 
+SQL: [;INSERT INTO t1 VALUES(2);]
+VDBE Trace:
+   0 Init             0   13    0               00 Start at 13
+  13 Transaction      0    1    2 0             01 usesStmtJournal=0
+  14 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 1             00 root=2 iDb=0; t1
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; t2
+   3 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+   4 Integer          2    2    0               00 r[2]=2
+REG[2] =  i:2
+   5 Noop             0    0    0               00 uniqueness check for t2
+   6 SCopy            2    4    0               00 r[4]=r[2]; x
+REG[4] =  i:2
+   7 IntCopy          1    5    0               00 r[5]=r[1]; rowid
+REG[5] =  i:2
+   8 MakeRecord       4    2    3               00 r[3]=mkrec(r[4..5]); for t2
+REG[3] =  s5[0301010202.....]
+   9 IdxInsert        1    3    4 2             10 key=r[3]
+REG[3] =  s5[0301010202.....]
+  10 MakeRecord       2    1    6               00 r[6]=mkrec(r[2])
+REG[6] =  s3[020102...]
+  11 Insert           0    6    1 t1            39 intkey=r[1] data=r[6]
+REG[6] =  s3[020102...]
+REG[1] =  i:2
+  12 Halt             0    0    0               00 
+SQL: [
+;DROP TABLE IF EXISTS t1;]
+VDBE Trace:
+   0 Init             0   60    0               00 Start at 60
+  60 Transaction      0    1    2 0             01 usesStmtJournal=1
+  61 String8          0    3    0 t1            00 r[3]='t1'
+REG[3] =   t4[t.1.](16LE)
+  62 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+  63 Goto             0    1    0               00 
+   1 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   2 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   13    0               00 
+   5 Column           0    2    2               00 r[2]=sqlite_master.tbl_name
+REG[2] =   s4[t.1.](16LE)
+   6 Ne               3   12    2 (BINARY)      52 if r[2]!=r[3] goto 12
+REG[3] =   t4[t.1.](16LE)
+REG[2] =   s4[t.1.](16LE)
+   7 Column           0    0    2               00 r[2]=sqlite_master.type
+REG[2] =   s10[t.a.b.l.e.](16LE)
+   8 Eq               4   12    2 (BINARY)      52 if r[2]==r[4] goto 12
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[2] =   s10[t.a.b.l.e.](16LE)
+   9 Rowid            0    5    0               00 r[5]=rowid
+REG[5] =  i:1
+  10 Once             0   11    0               00 
+  11 Delete           0    0    0               02 
+  12 Next             0    5    0               01 
+   5 Column           0    2    2               00 r[2]=sqlite_master.tbl_name
+REG[2] =   s4[t.1.](16LE)
+   6 Ne               3   12    2 (BINARY)      52 if r[2]!=r[3] goto 12
+REG[3] =   t4[t.1.](16LE)
+REG[2] =   s4[t.1.](16LE)
+   7 Column           0    0    2               00 r[2]=sqlite_master.type
+REG[2] =   s10[i.n.d.e.x.](16LE)
+   8 Eq               4   12    2 (BINARY)      52 if r[2]==r[4] goto 12
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[2] =   s10[i.n.d.e.x.](16LE)
+   9 Rowid            0    5    0               00 r[5]=rowid
+REG[5] =  i:2
+  10 Once             1   11    0               00 
+  11 Delete           0    0    0               02 
+  12 Next             0    5    0               01 
+  13 Destroy          3    2    0               00 
+REG[2] =  i:0
+  14 Null             0    6    7               00 r[6..7]=NULL
+REG[6] =  NULL
+  15 IfNot            2   24    1               00 
+REG[2] =  i:0
+  24 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  25 RowSetRead       6   35    7               00 r[7]=rowset(6)
+REG[6] =  NULL
+REG[7] =  NULL
+  35 Destroy          2    2    0               00 
+REG[2] =  i:0
+  36 Null             0   15   16               00 r[15..16]=NULL
+REG[15] =  NULL
+  37 IfNot            2   46    1               00 
+REG[2] =  i:0
+  46 OpenWrite        2    1    0 5             00 root=1 iDb=0; sqlite_master
+  47 RowSetRead      15   57   16               00 r[16]=rowset(15)
+REG[15] =  NULL
+REG[16] =  NULL
+  57 DropTable        0    0    0 t1            00 
+  58 SetCookie        0    1    3               00 
+  59 Halt             0    0    0               00 
+SQL: [SELECT typeof( 
+  CAST('   9223372036854775807   ' AS NUMERIC)
+),  
+  CAST('   9223372036854775807   ' AS NUMERIC)
+
+;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 String8          0    4    0    9223372036854775807    00 r[4]='   9223372036854775807   '
+REG[4] =   t50[ . . .9.2.2.3.3](16LE)
+   8 Cast             4   67    0               00 affinity(r[4])
+REG[4] =   t50[ . . .9.2.2.3.3](16LE)
+   9 Function0        1    4    3 typeof(1)     01 r[3]=func(r[4])
+REG[4] =  i:9223372036854775807
+REG[3] =   s14[i.n.t.e.g.e.r.](16LE)
+  10 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             3    1    0               00 r[1]=r[3]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+   3 String8          0    2    0    9223372036854775807    00 r[2]='   9223372036854775807   '
+REG[2] =   t50[ . . .9.2.2.3.3](16LE)
+   4 Cast             2   67    0               00 affinity(r[2])
+REG[2] =   t50[ . . .9.2.2.3.3](16LE)
+   5 ResultRow        1    2    0               00 output=r[1..2]
+REG[1] =   s14[i.n.t.e.g.e.r.](16LE)
+REG[2] =  i:9223372036854775807
+   6 Halt             0    0    0               00 
+SQL: [;DROP TABLE IF EXISTS t2;]
+VDBE Trace:
+   0 Init             0    2    0               00 Start at 2
+   2 Transaction      0    0    3 0             01 usesStmtJournal=0
+   3 Goto             0    1    0               00 
+   1 Halt             0    0    0               00 
+SQL: [;CREATE TABLE a(b,t1i1);]
+VDBE Trace:
+   0 Init             0   28    0               00 Start at 28
+  28 Transaction      0    1    3 0             01 usesStmtJournal=0
+  29 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:4
+   2 If               3    5    0               00 
+REG[3] =  i:4
+   5 CreateBtree      0    2    1               00 r[2]=root iDb=0 flags=1
+REG[2] =  i:2
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......]
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......]
+REG[1] =  i:1
+  10 Close            0    0    0               00 
+  11 Close            0    0    0               00 
+  12 Null             0    4    5               00 r[4..5]=NULL
+REG[4] =  NULL
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 Explain         14    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  15 SeekRowid        1   17    1               00 intkey=r[1]
+REG[1] =  i:1
+  16 Rowid            1    5    0               00 r[5]=rowid
+REG[5] =  i:1
+  17 IsNull           5   25    0               00 if r[5]==NULL goto 25
+REG[5] =  i:1
+  18 String8          0    6    0 table         00 r[6]='table'
+REG[6] =   t10[t.a.b.l.e.](16LE)
+  19 String8          0    7    0 a             00 r[7]='a'
+REG[7] =   t2[a.](16LE)
+  20 String8          0    8    0 a             00 r[8]='a'
+REG[8] =   t2[a.](16LE)
+  21 Copy             2    9    0               00 r[9]=r[2]
+REG[9] =  i:2
+  22 String8          0   10    0 CREATE TABLE a(b,t1i1) 00 r[10]='CREATE TABLE a(b,t1i1)'
+REG[10] =   t44[C.R.E.A.T.E. .T](16LE)
+  23 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s65[0621111101657400610062006C006500.!...et.a.b.l.e.]
+  24 Insert           1   11    5               00 intkey=r[5] data=r[11]
+REG[11] =  s65[0621111101657400610062006C006500.!...et.a.b.l.e.]
+REG[5] =  i:1
+  25 SetCookie        0    1    4               00 
+  26 ParseSchema      0    0    0 tbl_name='a' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    4 0             00 usesStmtJournal=0
+  16 String8          0    2    0 a             00 r[2]='a'
+REG[2] =   t2[a.](16LE)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[a.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[a.](16LE)
+REG[1] =   s2[a.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s2[a.](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:2
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s44[C.R.E.A.T.E. .T](16LE)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s2[a.](16LE)
+REG[5] =  i:2
+REG[6] =   s44[C.R.E.A.T.E. .T](16LE)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  27 Halt             0    0    0               00 
+SQL: [;CREATE INDEX t2i1 ON a(b);]
+VDBE Trace:
+   0 Init             0   33    0               00 Start at 33
+  33 Transaction      0    1    4 0             01 usesStmtJournal=0
+  34 Goto             0    1    0               00 
+   1 Noop             0   32    0               00 
+   2 CreateBtree      0    1    2               00 r[1]=root iDb=0 flags=2
+REG[1] =  i:3
+   3 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   4 NewRowid         0    2    0               00 r[2]=rowid
+REG[2] =  i:2
+   5 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t10[i.n.d.e.x.](16LE)
+   6 String8          0    4    0 t2i1          00 r[4]='t2i1'
+REG[4] =   t8[t.2.i.1.](16LE)
+   7 String8          0    5    0 a             00 r[5]='a'
+REG[5] =   t2[a.](16LE)
+   8 Copy             1    6    0               00 r[6]=r[1]
+REG[6] =  i:3
+   9 String8          0    7    0 CREATE INDEX t2i1 ON a(b) 00 r[7]='CREATE INDEX t2i1 ON a(b)'
+REG[7] =   t50[C.R.E.A.T.E. .I](16LE)
+  10 MakeRecord       3    5    8 BBBDB         00 r[8]=mkrec(r[3..7])
+REG[8] =  s77[06211D11017169006E00640065007800.!...qi.n.d.e.x.]
+  11 Insert           0    8    2               18 intkey=r[2] data=r[8]
+REG[8] =  s77[06211D11017169006E00640065007800.!...qi.n.d.e.x.]
+REG[2] =  i:2
+  12 SorterOpen       3    0    1 k(2,,)        00 
+  13 OpenRead         1    2    0 2             00 root=2 iDb=0; a
+  14 Rewind           1   20    0               00 
+  20 OpenWrite        2    1    0 k(2,,)        11 root=1 iDb=0
+  21 SorterSort       3   26    0               00 
+  26 Close            1    0    0               00 
+  27 Close            2    0    0               00 
+  28 Close            3    0    0               00 
+  29 SetCookie        0    1    5               00 
+  30 ParseSchema      0    0    0 name='t2i1' AND type='index' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    5 0             00 usesStmtJournal=0
+  16 String8          0    2    0 t2i1          00 r[2]='t2i1'
+REG[2] =   t8[t.2.i.1.](16LE)
+  17 String8          0    3    0 index         00 r[3]='index'
+REG[3] =   t10[i.n.d.e.x.](16LE)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[a.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t8[t.2.i.1.](16LE)
+REG[1] =   s2[a.](16LE)
+  13 Next             0    5    0               01 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s8[t.2.i.1.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t8[t.2.i.1.](16LE)
+REG[1] =   s8[t.2.i.1.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   8 Ne               3   13    1 (BINARY)      52 if r[1]!=r[3] goto 13
+REG[3] =   t10[i.n.d.e.x.](16LE)
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s8[t.2.i.1.](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:3
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s50[C.R.E.A.T.E. .I](16LE)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s8[t.2.i.1.](16LE)
+REG[5] =  i:3
+REG[6] =   s50[C.R.E.A.T.E. .I](16LE)
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  31 Expire           0    1    0               00 
+  32 Halt             0    0    0               00 
+SQL: [;SELECT * FROM a,(SELECT * FROM a WHERE t1i1=2 ORDER BY t1i1,t1i1);]
+VDBE Trace:
+   0 Init             0   42    0               00 Start at 42
+  42 Transaction      0    0    5 0             01 usesStmtJournal=0
+  43 Integer          2    2    0               00 r[2]=2
+REG[2] =  i:2
+  44 Goto             0    1    0               00 
+   1 SorterOpen       3    7    0 k(2,B,B)      00 
+   2 OpenRead         0    2    0 2             00 root=2 iDb=0; a
+   3 OpenRead         2    2    0 2             00 root=2 iDb=0; a
+   4 Explain          4    0    0 SCAN TABLE a  00 
+   5 Rewind           0   31    0               00 
+  31 Explain         31    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+  32 OpenPseudo       5   14    7               00 7 columns in r[14]
+  33 SorterSort       3   41    0               00 
+  41 Halt             0    0    0               00 
+SQL: [;
+;SELECT * FROM a,(SELECT * FROM a WHERE t1i1=2 ORDER BY t1i1,b LIMIT 4);]
+VDBE Trace:
+   0 Init             0   55    0               00 Start at 55
+  55 Transaction      0    0    5 0             01 usesStmtJournal=0
+  56 Integer          2    4    0               00 r[4]=2
+REG[4] =  i:2
+  57 Goto             0    1    0               00 
+   1 Integer         41    1    0               00 r[1]=41
+REG[1] =  i:41
+   2 Once             0   41    0               00 materialize "subquery_1"
+   3 Explain          3    0    0 MATERIALIZE 1 00 
+   4 OpenEphemeral    3    3    0 k(1,B)        00 nColumn=3
+   5 OpenEphemeral    1    2    0               00 nColumn=2
+   6 Integer          4    2    0               00 r[2]=4; LIMIT counter
+REG[2] =  i:4
+   7 OpenRead         2    2    0 2             00 root=2 iDb=0; a
+   8 Explain          8    3    0 SCAN TABLE a  00 
+   9 Rewind           2   32    0               00 
+  32 Explain         32    3    0 USE TEMP B-TREE FOR RIGHT PART OF ORDER BY 00 
+  33 Gosub           16   35    0               00 
+REG[16] =  i:33
+  35 Sort             3   41    0               00 
+  41 Return           1    0    0               00 end subquery_1
+REG[1] =  i:41
+  42 OpenRead         0    2    0 2             00 root=2 iDb=0; a
+  43 Explain         43    0    0 SCAN SUBQUERY 1 00 
+  44 Rewind           1   54    0               00 
+  54 Halt             0    0    0               00 
+SQL: [;
+;SELECT * FROM a,(SELECT * FROM a WHERE b=2
+         UNION ALL SELECT * FROM a WHERE b=3 ORDER BY b,t1i1 LIMIT 4);]
+VDBE Trace:
+   0 Init             0  132    0               00 Start at 132
+ 132 Transaction      0    0    5 0             01 usesStmtJournal=0
+ 133 Goto             0    1    0               00 
+   1 Integer        118    1    0               00 r[1]=118
+REG[1] =  i:118
+   2 Once             0  118    0               00 materialize "subquery_2"
+   3 Explain          3    0    0 MATERIALIZE 2 00 
+   4 OpenEphemeral    1    2    0               00 nColumn=2
+   5 Integer          4    2    0               00 r[2]=4; LIMIT counter
+REG[2] =  i:4
+   6 Copy             2    3    0               00 r[3]=r[2]
+REG[3] =  i:4
+   7 Copy             3    4    0               00 r[4]=r[3]
+REG[4] =  i:4
+   8 Explain          8    3    0 MERGE (UNION ALL) 00 
+   9 InitCoroutine    5   47   10               00 left SELECT
+  47 InitCoroutine    6  113   48               00 right SELECT
+ 113 Yield            5   99    0               00 
+REG[5] =  i:9
+REG[5] =  i:113
+  10 Explain         10    8    0 LEFT          00 
+  11 OpenEphemeral    4    3    0 k(1,B)        00 nColumn=3
+  12 OpenRead         3    2    0 2             00 root=2 iDb=0; a
+  13 OpenRead         5    3    0 k(2,,)        02 root=3 iDb=0; t2i1
+  14 Explain         14   10    0 SEARCH TABLE a USING INDEX t2i1 (b=?) 00 
+  15 Integer          2    9    0               00 r[9]=2
+REG[9] =  i:2
+  16 SeekGE           5   37    9 1             00 key=r[9]
+REG[9] =  i:2
+  37 Explain         37   10    0 USE TEMP B-TREE FOR RIGHT PART OF ORDER BY 00 
+  38 Gosub           17   40    0               00 
+REG[17] =  i:38
+  40 Sort             4   46    0               00 
+  46 EndCoroutine     5    0    0               00 
+REG[5] =  i:113
+  99 Yield            6  118    0               00 
+REG[6] =  i:47
+REG[6] =  i:99
+  48 Explain         48    8    0 RIGHT         00 
+  49 OpenEphemeral    6    3    0 k(1,B)        00 nColumn=3
+  50 OpenRead         2    2    0 2             00 root=2 iDb=0; a
+  51 OpenRead         7    3    0 k(2,,)        02 root=3 iDb=0; t2i1
+  52 Explain         52   48    0 SEARCH TABLE a USING INDEX t2i1 (b=?) 00 
+  53 Integer          3   18    0               00 r[18]=3
+REG[18] =  i:3
+  54 SeekGE           7   75   18 1             00 key=r[18]
+REG[18] =  i:3
+  75 Explain         75   48    0 USE TEMP B-TREE FOR RIGHT PART OF ORDER BY 00 
+  76 Gosub           26   78    0               00 
+REG[26] =  i:76
+  78 Sort             6   84    0               00 
+  84 EndCoroutine     6    0    0               00 
+REG[6] =  i:99
+ 118 Return           1    0    0               00 end subquery_2
+REG[1] =  i:118
+ 119 OpenRead         0    2    0 2             00 root=2 iDb=0; a
+ 120 Explain        120    0    0 SCAN SUBQUERY 2 00 
+ 121 Rewind           1  131    0               00 
+ 131 Halt             0    0    0               00 
+SQL: [;
+;DROP TABLE IF EXISTS a;]
+VDBE Trace:
+   0 Init             0   60    0               00 Start at 60
+  60 Transaction      0    1    5 0             01 usesStmtJournal=1
+  61 String8          0    3    0 a             00 r[3]='a'
+REG[3] =   t2[a.](16LE)
+  62 String8          0    4    0 trigger       00 r[4]='trigger'
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+  63 Goto             0    1    0               00 
+   1 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   2 OpenWrite        0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   13    0               00 
+   5 Column           0    2    2               00 r[2]=sqlite_master.tbl_name
+REG[2] =   s2[a.](16LE)
+   6 Ne               3   12    2 (BINARY)      52 if r[2]!=r[3] goto 12
+REG[3] =   t2[a.](16LE)
+REG[2] =   s2[a.](16LE)
+   7 Column           0    0    2               00 r[2]=sqlite_master.type
+REG[2] =   s10[t.a.b.l.e.](16LE)
+   8 Eq               4   12    2 (BINARY)      52 if r[2]==r[4] goto 12
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[2] =   s10[t.a.b.l.e.](16LE)
+   9 Rowid            0    5    0               00 r[5]=rowid
+REG[5] =  i:1
+  10 Once             0   11    0               00 
+  11 Delete           0    0    0               02 
+  12 Next             0    5    0               01 
+   5 Column           0    2    2               00 r[2]=sqlite_master.tbl_name
+REG[2] =   s2[a.](16LE)
+   6 Ne               3   12    2 (BINARY)      52 if r[2]!=r[3] goto 12
+REG[3] =   t2[a.](16LE)
+REG[2] =   s2[a.](16LE)
+   7 Column           0    0    2               00 r[2]=sqlite_master.type
+REG[2] =   s10[i.n.d.e.x.](16LE)
+   8 Eq               4   12    2 (BINARY)      52 if r[2]==r[4] goto 12
+REG[4] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[2] =   s10[i.n.d.e.x.](16LE)
+   9 Rowid            0    5    0               00 r[5]=rowid
+REG[5] =  i:2
+  10 Once             1   11    0               00 
+  11 Delete           0    0    0               02 
+  12 Next             0    5    0               01 
+  13 Destroy          3    2    0               00 
+REG[2] =  i:0
+  14 Null             0    6    7               00 r[6..7]=NULL
+REG[6] =  NULL
+  15 IfNot            2   24    1               00 
+REG[2] =  i:0
+  24 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  25 RowSetRead       6   35    7               00 r[7]=rowset(6)
+REG[6] =  NULL
+REG[7] =  NULL
+  35 Destroy          2    2    0               00 
+REG[2] =  i:0
+  36 Null             0   15   16               00 r[15..16]=NULL
+REG[15] =  NULL
+  37 IfNot            2   46    1               00 
+REG[2] =  i:0
+  46 OpenWrite        2    1    0 5             00 root=1 iDb=0; sqlite_master
+  47 RowSetRead      15   57   16               00 r[16]=rowset(15)
+REG[15] =  NULL
+REG[16] =  NULL
+  57 DropTable        0    0    0 a             00 
+  58 SetCookie        0    1    6               00 
+  59 Halt             0    0    0               00 
+SQL: [;CREATE TABLE c(temptable PRIMARY KEY, key);]
+VDBE Trace:
+   0 Init             0   39    0               00 Start at 39
+  39 Transaction      0    1    6 0             01 usesStmtJournal=0
+  40 Goto             0    1    0               00 
+   1 ReadCookie       0    3    2               00 
+REG[3] =  i:4
+   2 If               3    5    0               00 
+REG[3] =  i:4
+   5 CreateBtree      0    2    1               00 r[2]=root iDb=0 flags=1
+REG[2] =  i:2
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   8 Blob             6    3    0              00 r[3]= (len=6)
+REG[3] =  t6[060000000000......]
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+REG[3] =  t6[060000000000......]
+REG[1] =  i:1
+  10 Close            0    0    0               00 
+  11 Noop             0   22    0               00 
+  12 CreateBtree      0    4    2               00 r[4]=root iDb=0 flags=2
+REG[4] =  i:3
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 NewRowid         1    5    0               00 r[5]=rowid
+REG[5] =  i:2
+  15 String8          0    6    0 index         00 r[6]='index'
+REG[6] =   t10[i.n.d.e.x.](16LE)
+  16 String8          0    7    0 sqlite_autoindex_c_1 00 r[7]='sqlite_autoindex_c_1'
+REG[7] =   t40[s.q.l.i.t.e._.a](16LE)
+  17 String8          0    8    0 c             00 r[8]='c'
+REG[8] =   t2[c.](16LE)
+  18 Copy             4    9    0               00 r[9]=r[4]
+REG[9] =  i:3
+  19 Null             0   10    0               00 r[10]=NULL
+REG[10] =  NULL
+  20 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+REG[11] =  s59[06215D11010069006E00640065007800.!]...i.n.d.e.x.]
+  21 Insert           1   11    5               18 intkey=r[5] data=r[11]
+REG[11] =  s59[06215D11010069006E00640065007800.!]...i.n.d.e.x.]
+REG[5] =  i:2
+  22 Close            0    0    0               00 
+  23 Null             0   12   13               00 r[12..13]=NULL
+REG[12] =  NULL
+  24 OpenWrite        2    1    0 5             00 root=1 iDb=0; sqlite_master
+  25 Explain         25    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  26 SeekRowid        2   28    1               00 intkey=r[1]
+REG[1] =  i:1
+  27 Rowid            2   13    0               00 r[13]=rowid
+REG[13] =  i:1
+  28 IsNull          13   36    0               00 if r[13]==NULL goto 36
+REG[13] =  i:1
+  29 String8          0   14    0 table         00 r[14]='table'
+REG[14] =   t10[t.a.b.l.e.](16LE)
+  30 String8          0   15    0 c             00 r[15]='c'
+REG[15] =   t2[c.](16LE)
+  31 String8          0   16    0 c             00 r[16]='c'
+REG[16] =   t2[c.](16LE)
+  32 Copy             2   17    0               00 r[17]=r[2]
+REG[17] =  i:2
+  33 String8          0   18    0 CREATE TABLE c(temptable PRIMARY KEY, key) 00 r[18]='CREATE TABLE c(temptable PRIMARY KEY, key)'
+REG[18] =   t84[C.R.E.A.T.E. .T](16LE)
+  34 MakeRecord      14    5   19 BBBDB         00 r[19]=mkrec(r[14..18])
+REG[19] =  s106[072111110181357400610062006C0065.!....5t.a.b.l.e]
+  35 Insert           2   19   13               00 intkey=r[13] data=r[19]
+REG[19] =  s106[072111110181357400610062006C0065.!....5t.a.b.l.e]
+REG[13] =  i:1
+  36 SetCookie        0    1    7               00 
+  37 ParseSchema      0    0    0 tbl_name='c' AND type!='trigger' 00 
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    0    7 0             00 usesStmtJournal=0
+  16 String8          0    2    0 c             00 r[2]='c'
+REG[2] =   t2[c.](16LE)
+  17 String8          0    3    0 trigger       00 r[3]='trigger'
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+  18 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[c.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[c.](16LE)
+REG[1] =   s2[c.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[1] =   s10[t.a.b.l.e.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s2[c.](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:2
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =   s84[C.R.E.A.T.E. .T](16LE)
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s2[c.](16LE)
+REG[5] =  i:2
+REG[6] =   s84[C.R.E.A.T.E. .T](16LE)
+  13 Next             0    5    0               01 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+REG[1] =   s2[c.](16LE)
+   6 Ne               2   13    1 (BINARY)      52 if r[1]!=r[2] goto 13
+REG[2] =   t2[c.](16LE)
+REG[1] =   s2[c.](16LE)
+   7 Column           0    0    1               00 r[1]=sqlite_master.type
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   8 Eq               3   13    1 (BINARY)      52 if r[1]==r[3] goto 13
+REG[3] =   t14[t.r.i.g.g.e.r.](16LE)
+REG[1] =   s10[i.n.d.e.x.](16LE)
+   9 Column           0    1    4               00 r[4]=sqlite_master.name
+REG[4] =   s40[s.q.l.i.t.e._.a](16LE)
+  10 Column           0    3    5               00 r[5]=sqlite_master.rootpage
+REG[5] =  i:3
+  11 Column           0    4    6               00 r[6]=sqlite_master.sql
+REG[6] =  NULL
+  12 ResultRow        4    3    0               00 output=r[4..6]
+REG[4] =   s40[s.q.l.i.t.e._.a](16LE)
+REG[5] =  i:3
+REG[6] =  NULL
+  13 Next             0    5    0               01 
+  14 Halt             0    0    0               00 
+  38 Halt             0    0    0               00 
+SQL: [;INSERT INTO c(temptable) VALUES(123);]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    1    7 0             01 usesStmtJournal=0
+  17 Null             0    3    0               00 r[3]=NULL
+REG[3] =  NULL
+  18 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; c
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_c_1
+   3 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   4 Integer        123    2    0               00 r[2]=123
+REG[2] =  i:123
+   5 Noop             0    0    0               00 uniqueness check for sqlite_autoindex_c_1
+   6 SCopy            2    5    0               00 r[5]=r[2]; temptable
+REG[5] =  i:123
+   7 IntCopy          1    6    0               00 r[6]=r[1]; rowid
+REG[6] =  i:1
+   8 MakeRecord       5    2    4               00 r[4]=mkrec(r[5..6]); for sqlite_autoindex_c_1
+REG[4] =  s4[0301097B...{]
+   9 Abortable        0    0    0               00 
+  10 NoConflict       1   12    5 1             00 key=r[5]
+REG[5] =  i:123
+  12 IdxInsert        1    4    5 2             10 key=r[4]
+REG[4] =  s4[0301097B...{]
+  13 MakeRecord       2    2    7               00 r[7]=mkrec(r[2..3])
+REG[7] =  s4[0301007B...{]
+  14 Insert           0    7    1 c             39 intkey=r[1] data=r[7]
+REG[7] =  s4[0301007B...{]
+REG[1] =  i:1
+  15 Halt             0    0    0               00 
+SQL: [;INSERT INTO c(key) VALUES(123);]
+VDBE Trace:
+   0 Init             0   16    0               00 Start at 16
+  16 Transaction      0    1    7 0             01 usesStmtJournal=0
+  17 Null             0    2    0               00 r[2]=NULL
+REG[2] =  NULL
+  18 Goto             0    1    0               00 
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; c
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_c_1
+   3 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+   4 Integer        123    3    0               00 r[3]=123
+REG[3] =  i:123
+   5 Noop             0    0    0               00 uniqueness check for sqlite_autoindex_c_1
+   6 SCopy            2    5    0               00 r[5]=r[2]; temptable
+REG[5] =  NULL
+   7 IntCopy          1    6    0               00 r[6]=r[1]; rowid
+REG[6] =  i:2
+   8 MakeRecord       5    2    4               00 r[4]=mkrec(r[5..6]); for sqlite_autoindex_c_1
+REG[4] =  s4[03000102....]
+   9 Abortable        0    0    0               00 
+  10 NoConflict       1   12    5 1             00 key=r[5]
+REG[5] =  NULL
+  12 IdxInsert        1    4    5 2             10 key=r[4]
+REG[4] =  s4[03000102....]
+  13 MakeRecord       2    2    7               00 r[7]=mkrec(r[2..3])
+REG[7] =  s4[0300017B...{]
+  14 Insert           0    7    1 c             39 intkey=r[1] data=r[7]
+REG[7] =  s4[0300017B...{]
+REG[1] =  i:2
+  15 Halt             0    0    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f0ffcef2859 in __GI_abort () at abort.c:79
+#2  0x00007f0ffcef2729 in __assert_fail_base (fmt=0x7f0ffd088588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f0ffcf03fd6 in __GI___assert_fail (assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=0x223e82 "int sqlite3Select(Parse *, Select *, SelectDest *)") at assert.c:101
+#4  0x00000000002fcfa0 in sqlite3Select (pParse=0x7ffcd2f09a10, p=0x1d55170, pDest=0x7ffcd2f06958) at sqlite3.c:130468
+#5  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffcd2f09a10, pExpr=0x1d5f590) at sqlite3.c:99820
+#6  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffcd2f09a10, pExpr=0x1d5f590, target=13) at sqlite3.c:100770
+#7  0x000000000034e173 in sqlite3ExprCodeTemp (pParse=0x7ffcd2f09a10, pExpr=0x1d5f590, pReg=0x7ffcd2f06c3c) at sqlite3.c:101065
+#8  0x0000000000351803 in sqlite3ExprIfFalse (pParse=0x7ffcd2f09a10, pExpr=0x1d58380, dest=-26, jumpIfNull=16) at sqlite3.c:101542
+#9  0x0000000000351577 in sqlite3ExprIfFalse (pParse=0x7ffcd2f09a10, pExpr=0x1d5b100, dest=-26, jumpIfNull=16) at sqlite3.c:101497
+#10 0x0000000000378815 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffcd2f09a10, v=0x1d3ac20, pWInfo=0x1d5efa0, iLevel=0, pLevel=0x1d5f338, notReady=18446744073709551615) at sqlite3.c:138358
+#11 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffcd2f09a10, pTabList=0x1d454e0, pWhere=0x1d57e40, pOrderBy=0x0, pResultSet=0x0, wctrlFlags=32, iAuxArg=6) at sqlite3.c:145128
+#12 0x00000000003777a8 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffcd2f09a10, v=0x1d3ac20, pWInfo=0x1d44220, iLevel=0, pLevel=0x1d445b8, notReady=18446744073709551615) at sqlite3.c:138143
+#13 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffcd2f09a10, pTabList=0x1d454e0, pWhere=0x1d381f0, pOrderBy=0x0, pResultSet=0x1d44b80, wctrlFlags=16384, iAuxArg=0) at sqlite3.c:145128
+#14 0x00000000002fdcea in sqlite3Select (pParse=0x7ffcd2f09a10, p=0x1d519c0, pDest=0x7ffcd2f078c8) at sqlite3.c:130695
+#15 0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffcd2f09a10, pExpr=0x1d3b580) at sqlite3.c:99820
+#16 0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffcd2f09a10, pExpr=0x1d3b580, target=5) at sqlite3.c:100770
+#17 0x000000000034e173 in sqlite3ExprCodeTemp (pParse=0x7ffcd2f09a10, pExpr=0x1d3b580, pReg=0x7ffcd2f07bc8) at sqlite3.c:101065
+#18 0x0000000000351a17 in sqlite3ExprIfFalse (pParse=0x7ffcd2f09a10, pExpr=0x1d3b580, dest=-8, jumpIfNull=16) at sqlite3.c:101592
+#19 0x0000000000378815 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffcd2f09a10, v=0x1d3ac20, pWInfo=0x1d39960, iLevel=0, pLevel=0x1d39cf8, notReady=18446744073709551615) at sqlite3.c:138358
+#20 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffcd2f09a10, pTabList=0x1d45030, pWhere=0x1d3b580, pOrderBy=0x0, pResultSet=0x1d4ca10, wctrlFlags=16384, iAuxArg=0) at sqlite3.c:145128
+#21 0x00000000002fdcea in sqlite3Select (pParse=0x7ffcd2f09a10, p=0x1d37d40, pDest=0x7ffcd2f08348) at sqlite3.c:130695
+#22 0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffcd2f09a10, pExpr=0x1d373e0) at sqlite3.c:99820
+#23 0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffcd2f09a10, pExpr=0x1d373e0, target=1) at sqlite3.c:100770
+#24 0x000000000034e173 in sqlite3ExprCodeTemp (pParse=0x7ffcd2f09a10, pExpr=0x1d373e0, pReg=0x7ffcd2f08648) at sqlite3.c:101065
+#25 0x0000000000351a17 in sqlite3ExprIfFalse (pParse=0x7ffcd2f09a10, pExpr=0x1d373e0, dest=-4, jumpIfNull=16) at sqlite3.c:101592
+#26 0x0000000000378815 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffcd2f09a10, v=0x1d3ac20, pWInfo=0x1d527d0, iLevel=0, pLevel=0x1d52b68, notReady=18446744073709551615) at sqlite3.c:138358
+#27 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffcd2f09a10, pTabList=0x1d53130, pWhere=0x1d373e0, pOrderBy=0x0, pResultSet=0x1d4e630, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#28 0x00000000002fdcea in sqlite3Select (pParse=0x7ffcd2f09a10, p=0x1d37890, pDest=0x7ffcd2f08e00) at sqlite3.c:130695
+#29 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffcd2f09030, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffcd2f09a10) at sqlite3.c:151581
+#30 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffcd2f09030, yymajor=1, yyminor=...) at sqlite3.c:152877
+#31 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffcd2f09a10, 
+    zSql=0x1d4ebc8 ";;\n;SELECT 1 FROM c, c WHERE (\n    SELECT 3 FROM (\n      SELECT temptable FROM c WHERE temptable=key OR temptable=(SELECT temptable FROM (VALUES(0)))\n    ) WHERE temptable>key OR temptable=key\n  );;CR"..., pzErrMsg=0x7ffcd2f09bf0) at sqlite3.c:154013
+#32 0x00000000002a1683 in sqlite3Prepare (db=0x1d34540, 
+    zSql=0x1d35579 ";\n;SELECT 1 FROM c WHERE (\n    SELECT 2 FROM c WHERE (\n      SELECT 3 FROM (\n        SELECT temptable FROM c WHERE temptable=key OR temptable=(SELECT temptable FROM (VALUES(0)))\n      ) WHERE temptabl"..., nBytes=460, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffcd2f09d28, pzTail=0x7ffcd2f09d10) at sqlite3.c:124303
+#33 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x1d34540, 
+    zSql=0x1d35579 ";\n;SELECT 1 FROM c WHERE (\n    SELECT 2 FROM c WHERE (\n      SELECT 3 FROM (\n        SELECT temptable FROM c WHERE temptable=key OR temptable=(SELECT temptable FROM (VALUES(0)))\n      ) WHERE temptabl"..., nBytes=460, prepFlags=128, pOld=0x0, ppStmt=0x7ffcd2f09d28, pzTail=0x7ffcd2f09d10) at sqlite3.c:124403
+#34 0x000000000029247f in sqlite3_prepare_v2 (db=0x1d34540, 
+    zSql=0x1d35579 ";\n;SELECT 1 FROM c WHERE (\n    SELECT 2 FROM c WHERE (\n      SELECT 3 FROM (\n        SELECT temptable FROM c WHERE temptable=key OR temptable=(SELECT temptable FROM (VALUES(0)))\n      ) WHERE temptabl"..., nBytes=460, ppStmt=0x7ffcd2f09d28, pzTail=0x7ffcd2f09d10) at sqlite3.c:124487
+#35 0x0000000000256bd0 in main (argc=1, argv=0x7ffcd2f09ed8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 55652] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

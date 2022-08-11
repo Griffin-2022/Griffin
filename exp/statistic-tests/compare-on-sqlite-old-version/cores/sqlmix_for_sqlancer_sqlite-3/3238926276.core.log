@@ -1,0 +1,59 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000508,sig:06,src:025100+012339,time:15852392,execs:4456605,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f53128bd859 in __GI_abort () at abort.c:79
+#2  0x00007f53128bd729 in __assert_fail_base (fmt=0x7f5312a53588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x212fd9 "pTab!=0", file=0x22873d "sqlite3.c", line=126595, function=<optimized out>) at assert.c:92
+#3  0x00007f53128cefd6 in __GI___assert_fail (assertion=0x212fd9 "pTab!=0", file=0x22873d "sqlite3.c", line=126595, function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d1de in sqlite3ColumnsFromExprList (pParse=0x7fffd5feb540, pEList=0x10dd460, pnCol=0x1108c56, paCol=0x1108c18) at sqlite3.c:126595
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7fffd5feb540, pFrom=0x10d19a8) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7fffd5feb540, p=0x10c8890) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7fffd5feb540, p=0x10c8890, pDest=0x7fffd5fe97b8) at sqlite3.c:130281
+#8  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7fffd5feb540, pExpr=0x10b9e30) at sqlite3.c:99820
+#9  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7fffd5feb540, pExpr=0x10b9e30, target=25) at sqlite3.c:100770
+#10 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7fffd5feb540, pList=0x10b94d0, target=25, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#11 0x00000000003addca in innerLoopLoadRow (pParse=0x7fffd5feb540, pSelect=0x10cf460, pInfo=0x7fffd5fe9b00) at sqlite3.c:125172
+#12 0x00000000003a92ea in selectInnerLoop (pParse=0x7fffd5feb540, p=0x10cf460, srcTab=-1, pSort=0x0, pDistinct=0x0, pDest=0x7fffd5fe9e78, iContinue=-29, iBreak=-29) at sqlite3.c:125624
+#13 0x00000000002fffb0 in sqlite3Select (pParse=0x7fffd5feb540, p=0x10cf460, pDest=0x7fffd5fe9e78) at sqlite3.c:131196
+#14 0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7fffd5feb540, pExpr=0x10ba2e0) at sqlite3.c:99820
+#15 0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7fffd5feb540, pExpr=0x10ba2e0, target=24) at sqlite3.c:100770
+#16 0x00000000003790ab in codeEqualityTerm (pParse=0x7fffd5feb540, pTerm=0x10df710, pLevel=0x10dfa70, iEq=0, bRev=0, iTarget=24) at sqlite3.c:136648
+#17 0x0000000000374503 in sqlite3WhereCodeOneLoopStart (pParse=0x7fffd5feb540, v=0x10c9b50, pWInfo=0x10df680, iLevel=1, pLevel=0x10dfa70, notReady=18446744073709551614) at sqlite3.c:137510
+#18 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7fffd5feb540, pTabList=0x10bf290, pWhere=0x10cf910, pOrderBy=0x0, pResultSet=0x10c5050, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#19 0x00000000002fdcea in sqlite3Select (pParse=0x7fffd5feb540, p=0x10c7f30, pDest=0x7fffd5fea930) at sqlite3.c:130695
+#20 0x00000000002ecaa8 in yy_reduce (yypParser=0x7fffd5feab60, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fffd5feb540) at sqlite3.c:151581
+#21 0x00000000002e92f8 in sqlite3Parser (yyp=0x7fffd5feab60, yymajor=1, yyminor=...) at sqlite3.c:152877
+#22 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fffd5feb540, 
+    zSql=0x10ce722 ";;INSERT INTO a VALUES(10,10,zeroblob(200));SELECT x IS TRUE FROM t1;\n;DELETE FROM a WHERE xyz=1 AND 1>5\n;DELETE FROM t1 WHERE x=12 AND 12>5\n;DELETE FROM a WHERE xyz=3 AND 3>5\n;DELETE FROM t1 WHERE x="..., pzErrMsg=0x7fffd5feb720) at sqlite3.c:154013
+#23 0x00000000002a1683 in sqlite3Prepare (db=0x10b0610, 
+    zSql=0x10b0054 ";SELECT a.xyz\n    FROM a\n    JOIN a AS b ON a.xyz=4\n    JOIN a AS e ON a.xyz=e.xyz\n   WHERE a.xyz=(SELECT (SELECT coalesce(lead(2) OVER(),0) + sum(d.xyz))\n", ' ' <repeats 16 times>, "FROM a AS d\n", ' ' <repeats 15 times>, "WH"..., nBytes=489, prepFlags=128, pReprepare=0x0, ppStmt=0x7fffd5feb858, pzTail=0x7fffd5feb840) at sqlite3.c:124303
+#24 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x10b0610, 
+    zSql=0x10b0054 ";SELECT a.xyz\n    FROM a\n    JOIN a AS b ON a.xyz=4\n    JOIN a AS e ON a.xyz=e.xyz\n   WHERE a.xyz=(SELECT (SELECT coalesce(lead(2) OVER(),0) + sum(d.xyz))\n", ' ' <repeats 16 times>, "FROM a AS d\n", ' ' <repeats 15 times>, "WH"..., nBytes=489, prepFlags=128, pOld=0x0, ppStmt=0x7fffd5feb858, pzTail=0x7fffd5feb840) at sqlite3.c:124403
+#25 0x000000000029247f in sqlite3_prepare_v2 (db=0x10b0610, 
+    zSql=0x10b0054 ";SELECT a.xyz\n    FROM a\n    JOIN a AS b ON a.xyz=4\n    JOIN a AS e ON a.xyz=e.xyz\n   WHERE a.xyz=(SELECT (SELECT coalesce(lead(2) OVER(),0) + sum(d.xyz))\n", ' ' <repeats 16 times>, "FROM a AS d\n", ' ' <repeats 15 times>, "WH"..., nBytes=489, ppStmt=0x7fffd5feb858, pzTail=0x7fffd5feb840) at sqlite3.c:124487
+#26 0x0000000000256bd0 in main (argc=1, argv=0x7fffd5feba08) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 61938] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

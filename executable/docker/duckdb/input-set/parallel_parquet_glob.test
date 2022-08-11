@@ -1,0 +1,36 @@
+# name: test/sql/copy/parquet/parallel_parquet_glob.test
+# description: Test parallel reads on multiple parquet files
+# group: [parquet]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+;
+PRAGMA threads=4
+
+;
+select count(*) from parquet_scan('data/parquet-testing/glob/t?.parquet')
+;
+2
+
+;
+select count(*) from parquet_scan('data/parquet-testing/glob/*')
+;
+2
+
+;
+select count(*) from parquet_scan('data/parquet-testing/glob/*.parquet')
+;
+2
+
+;
+select count(*) from parquet_scan('data/parquet-testing/g*/*.parquet')
+;
+3
+
+;
+select count(*) from parquet_scan('data/parquet-testing/g*/t1.parquet')
+;
+2

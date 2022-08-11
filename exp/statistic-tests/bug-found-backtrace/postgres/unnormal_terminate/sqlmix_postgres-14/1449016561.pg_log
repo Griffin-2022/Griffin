@@ -1,0 +1,111 @@
+2022-08-01 23:30:14.126 UTC [7692] STATEMENT:  
+		insert into t values (2);
+2022-08-01 23:30:14.126 UTC [7692] ERROR:  "t" is not partitioned
+2022-08-01 23:30:14.126 UTC [7692] STATEMENT:  
+		create table balance partition of t for values in (2);
+2022-08-01 23:30:14.127 UTC [7692] ERROR:  "balance" is an index at character 15
+2022-08-01 23:30:14.127 UTC [7692] STATEMENT:  
+		insert into balance values (1);
+2022-08-01 23:30:14.127 UTC [7692] ERROR:  "balance" is an index
+2022-08-01 23:30:14.127 UTC [7692] STATEMENT:  
+		create table d4_primary partition of balance for values in (1);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  foreign key constraint "sqlsim1_sqlsim2_fkey" cannot be implemented
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		create table sqlsim1 (sqlsim2 int references t);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  relation "sqlsim1" does not exist
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		create table sqlsim7 partition of sqlsim1 for values in (2);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  null value in column "id" of relation "t" violates not-null constraint
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		insert into t values (2);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  "balance" is an index at character 15
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		insert into balance values (2);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  relation "d4_primary" does not exist
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		create table objoid partition of d4_primary for values in (2);
+2022-08-01 23:30:14.128 UTC [7692] ERROR:  relation "sqlsim23" does not exist
+2022-08-01 23:30:14.128 UTC [7692] STATEMENT:  
+		create table sqlsim35 partition of sqlsim23 for values in (1);
+2022-08-01 23:30:14.130 UTC [7692] ERROR:  "balance" is an index
+2022-08-01 23:30:14.130 UTC [7692] STATEMENT:  
+		create table sqlsim49 (sqlsim50 int references balance);
+2022-08-01 23:30:14.131 UTC [7692] ERROR:  relation "sqlsim35" does not exist
+2022-08-01 23:30:14.131 UTC [7692] STATEMENT:  
+		create table sqlsim53 partition of sqlsim35 for values in (2);
+2022-08-01 23:30:14.131 UTC [7692] ERROR:  relation "sqlsim5" does not exist
+2022-08-01 23:30:14.131 UTC [7692] STATEMENT:  
+		create table sqlsim55 (sqlsim56 int references sqlsim5);
+2022-08-01 23:30:14.135 UTC [7692] WARNING:  there is no transaction in progress
+2022-08-01 23:30:14.147 UTC [7692] WARNING:  there is no transaction in progress
+2022-08-01 23:30:14.161 UTC [7692] WARNING:  there is no transaction in progress
+2022-08-01 23:30:14.161 UTC [7692] ERROR:  prepared transactions are disabled
+2022-08-01 23:30:14.161 UTC [7692] STATEMENT:  PREPARE TRANSACTION 'will_commit';
+2022-08-01 23:30:14.161 UTC [7692] WARNING:  there is no transaction in progress
+=================================================================
+==7692==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffdfba3dd10 sp 0x7ffdfba3dd08
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f1ec52fe082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==7692==ABORTING
+2022-08-01 23:30:14.204 UTC [7153] LOG:  server process (PID 7692) was terminated by signal 6: Aborted
+2022-08-01 23:30:14.204 UTC [7153] LOG:  terminating any other active server processes
+2022-08-01 23:30:14.211 UTC [7153] LOG:  all server processes terminated; reinitializing
+2022-08-01 23:30:14.226 UTC [11903] LOG:  database system was interrupted; last known up at 2022-08-01 23:30:12 UTC
+2022-08-01 23:30:14.227 UTC [11904] FATAL:  the database system is in recovery mode
+2022-08-01 23:30:14.230 UTC [11907] FATAL:  the database system is in recovery mode
+2022-08-01 23:30:14.232 UTC [11908] FATAL:  the database system is in recovery mode
+2022-08-01 23:30:14.238 UTC [7153] LOG:  received smart shutdown request
+2022-08-01 23:30:14.242 UTC [11903] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 23:30:14.243 UTC [11903] LOG:  redo starts at 0/5E03350
+2022-08-01 23:30:14.247 UTC [7153] LOG:  abnormal database system shutdown

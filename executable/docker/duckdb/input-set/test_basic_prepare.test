@@ -1,0 +1,70 @@
+# name: test/sql/prepared/test_basic_prepare.test
+# description: Basic prepared statements
+# group: [prepared]
+
+;
+PREPARE s1 AS SELECT CAST($1 AS INTEGER), CAST($2 AS STRING)
+
+;
+EXECUTE s1(42, 'dpfkg')
+
+;
+EXECUTE s1(43, 'asdf')
+
+# not enough params
+;
+EXECUTE s1(43)
+
+# too many
+;
+EXECUTE s1(43, 'asdf', 42)
+
+# wrong non-castable types
+;
+EXECUTE s1('asdf', 'asdf')
+
+;
+DEALLOCATE s1
+
+# we can deallocate non-existing statements
+;
+DEALLOCATE s2
+
+# now its gone
+;
+EXECUTE s1(42, 'dpfkg')
+
+# prepare a statement that cannot be prepared
+;
+PREPARE EXPLAIN SELECT 42
+
+;
+PREPARE CREATE TABLE a(i INTEGER)
+
+;
+SELECT * FROM a;
+
+# type will be resolved to "double"
+;
+PREPARE s1 AS SELECT $1+$2
+
+;
+DEALLOCATE s1
+
+# but this works
+;
+PREPARE s1 AS SELECT NOT($1), 10+$2, $3+20, 4 IN (2, 3, $4), $5 IN (2, 3, 4)
+
+;
+EXECUTE s1(1, 2, 3, 4, 2)
+
+# these types default to varchar
+;
+PREPARE s1 AS SELECT $1
+
+;
+PREPARE s2 AS SELECT (SELECT $1)
+
+;
+PREPARE s3 AS SELECT $1=$2
+

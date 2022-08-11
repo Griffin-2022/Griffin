@@ -1,0 +1,24 @@
+# name: test/sql/alter/rename_col/test_rename_col_check.test
+# description: Test ALTER TABLE RENAME COLUMN on a table with constraints: CHECK constraint
+# group: [rename_col]
+
+#  create a table with a check constraint referencing the to-be-renamed column
+;
+CREATE TABLE test(i INTEGER CHECK(i < 10), j INTEGER)
+
+;
+INSERT INTO test (i, j) VALUES (1, 2), (2, 3)
+
+;
+INSERT INTO test (i, j) VALUES (100, 2)
+
+;
+ALTER TABLE test RENAME COLUMN i TO k
+
+# the check should still work after the alter table
+;
+INSERT INTO test (k, j) VALUES (1, 2), (2, 3)
+
+;
+INSERT INTO test (k, j) VALUES (100, 2)
+

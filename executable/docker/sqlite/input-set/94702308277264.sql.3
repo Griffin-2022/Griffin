@@ -1,0 +1,103 @@
+PRAGMA user_version;
+;
+;PRAGMA schema_version;
+;
+;VACUUM;
+;ATTACH '' AS vacuum_db
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;BEGIN
+;SELECT sql FROM "main".sqlite_schema WHERE type='table'AND name<>'sqlite_sequence' AND coalesce(rootpage,1)>0
+;CREATE TABLE t1(a,b,c)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t2(a TYPE_X, b [TYPE_Y], c "TYPE_Z")
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t5(
+      a TEXT DEFAULT CURRENT_TIMESTAMP, 
+      b DEFAULT (5+3),
+      c TEXT,
+      d INTEGER DEFAULT NULL,
+      e TEXT DEFAULT '',
+      UNIQUE(b,c,d),
+      PRIMARY KEY(e,b,c)
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t5' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t5' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t2_3(a,b INTEGER PRIMARY KEY,c)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2_3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2_3' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t3(a int references t2(b), b UNIQUE)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE trial(col_main)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='trial' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='trial' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE test_table(
+      one INT NOT NULL DEFAULT -1, 
+      two text,
+      three VARCHAR(45, 65) DEFAULT 'abcde',
+      four REAL DEFAULT X'abcdef',
+      five DEFAULT CURRENT_TIME
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='test_table' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='test_table' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t68(a,b,c,PRIMARY KEY(a,b,a,c))
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t68' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t68' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t4(a, b, c)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT sql FROM "main".sqlite_schema WHERE type='index'
+;CREATE INDEX t1a ON t1(a)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1a' AND type='index' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1a' AND type='index' ORDER BY rowid
+;CREATE INDEX t1bc ON t1(b,c)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1bc' AND type='index' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t1bc' AND type='index' ORDER BY rowid
+;CREATE INDEX t3i1 ON t3(a,b)
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t3i1' AND type='index' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE name='t3i1' AND type='index' ORDER BY rowid
+;SELECT'INSERT INTO vacuum_db.'||quote(name)||' SELECT*FROM"main".'||quote(name)FROM vacuum_db.sqlite_schema WHERE type='table'AND coalesce(rootpage,1)>0
+;INSERT INTO vacuum_db.'t1' SELECT*FROM"main".'t1'
+;INSERT INTO vacuum_db.'t2' SELECT*FROM"main".'t2'
+;INSERT INTO vacuum_db.'t5' SELECT*FROM"main".'t5'
+;INSERT INTO vacuum_db.'t2_3' SELECT*FROM"main".'t2_3'
+;INSERT INTO vacuum_db.'t3' SELECT*FROM"main".'t3'
+;INSERT INTO vacuum_db.'trial' SELECT*FROM"main".'trial'
+;INSERT INTO vacuum_db.'test_table' SELECT*FROM"main".'test_table'
+;INSERT INTO vacuum_db.'t68' SELECT*FROM"main".'t68'
+;INSERT INTO vacuum_db.'t4' SELECT*FROM"main".'t4'
+;INSERT INTO vacuum_db.sqlite_schema SELECT*FROM "main".sqlite_schema WHERE type IN('view','trigger') OR(type='table'AND rootpage=0)
+;
+;
+;ATTACH 'test2.db' AS aux
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;PRAGMA aux.user_version;
+;
+;PRAGMA aux.user_version = 3;
+;
+;
+;PRAGMA main.user_version;
+;
+;BEGIN;
+;PRAGMA aux.user_version = 10;
+;PRAGMA user_version = 11;
+;
+;PRAGMA aux.user_version;
+;
+;PRAGMA main.user_version;
+;
+;ROLLBACK;
+;
+;
+;PRAGMA user_version = -450;
+;
+;PRAGMA user_version;
+;
+;PRAGMA application_id;
+;
+;PRAGMA Application_ID(12345);
+;

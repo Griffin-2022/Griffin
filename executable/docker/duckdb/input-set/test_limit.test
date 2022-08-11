@@ -1,0 +1,184 @@
+# name: test/sql/order/test_limit.test
+# description: Test LIMIT keyword
+# group: [order]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 22), (12, 21), (13, 22)
+
+# constant limit
+;
+SELECT a FROM test LIMIT 1
+;
+11
+
+# decimal limit
+;
+SELECT a FROM test LIMIT 1.5
+;
+11
+
+# LIMIT with operation
+;
+SELECT a FROM test LIMIT 2-1
+;
+11
+
+# LIMIT with non-scalar should fail
+;
+SELECT a FROM test LIMIT a
+
+# LIMIT with non-scalar operation should also fail
+;
+SELECT a FROM test LIMIT a+1
+
+# aggregate in limit
+;
+SELECT a FROM test LIMIT SUM(42)
+
+# window function in limit
+;
+SELECT a FROM test LIMIT row_number() OVER ()
+
+# LIMIT Bug #321 Crazy Result
+;
+CREATE TABLE test2 (a STRING);
+
+;
+INSERT INTO test2 VALUES ('Hello World')
+
+;
+PREPARE v1 AS SELECT * FROM test2 LIMIT 3
+
+;
+EXECUTE v1
+;
+Hello World
+
+# can only limit by integers
+;
+select 1 limit date '1992-01-01';
+
+
+# Test limits with no constants
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (1), (2), (3), (4), (5);
+
+;
+CREATE SEQUENCE seq START 3;
+
+;
+PRAGMA disable_verification;
+
+;
+SELECT * FROM integers LIMIT nextval('seq');
+;
+1
+2
+3
+
+;
+SELECT * FROM integers LIMIT nextval('seq');
+;
+1
+2
+3
+4
+
+
+# non-foldable expression in limit
+;
+SELECT * FROM integers LIMIT RANDOM();
+
+# subquery in limit
+;
+SELECT * FROM integers as int LIMIT (SELECT MIN(integers.i) FROM integers);
+;
+1
+
+;
+CREATE SEQUENCE of_seq START 1;
+
+;
+SELECT * FROM integers OFFSET nextval('of_seq');
+;
+2
+3
+4
+5
+
+;
+SELECT * FROM integers OFFSET nextval('of_seq');
+;
+3
+4
+5
+
+# non-foldable expression in limit
+;
+SELECT * FROM integers OFFSET RANDOM();
+
+# subquery in limit
+;
+SELECT * FROM integers as int OFFSET (SELECT MIN(integers.i) FROM integers);
+;
+2
+3
+4
+5
+
+#Both LIMIT and OFFSET together with subqueries
+;
+SELECT * FROM integers as int LIMIT (SELECT MAX(integers.i) FROM integers) OFFSET (SELECT MIN(integers.i) FROM integers);
+;
+2
+3
+4
+5
+
+#Subqueries that return zero rows = Same as ommiting limit clause
+;
+SELECT * FROM integers as int LIMIT (SELECT max(integers.i) FROM integers where i > 5)
+;
+1
+2
+3
+4
+5
+
+#Limit of NULL, offset of NULL
+;
+SELECT * FROM integers as int LIMIT (SELECT max(integers.i) FROM integers where i > 5)
+;
+1
+2
+3
+4
+5
+
+#Subqueries that return NULL
+;
+SELECT * FROM integers as int LIMIT (SELECT NULL)
+;
+1
+2
+3
+4
+5
+
+
+#Subqueries that return negative values
+;
+SELECT * FROM integers as int LIMIT (SELECT -1);
+
+#Subqueries that return strings that can't be converted to integers
+;
+SELECT * FROM integers as int LIMIT (SELECT 'ab');

@@ -1,0 +1,109 @@
+# name: test/optimizer/like_optimizer.test
+# description: Test Like Optimization Rules
+# group: [optimizer]
+
+;
+CREATE TABLE test(S VARCHAR);
+
+;
+INSERT INTO test VALUES ('aaa');
+
+;
+PRAGMA explain_output = OPTIMIZED_ONLY;
+
+# no special symbols optimization: aaa -> S=a
+;
+EXPLAIN SELECT S LIKE 'aaa' FROM test
+;
+
+;
+EXPLAIN SELECT S='aaa' FROM test
+;
+
+# prefix optimization: aaa% -> prefix(aaa)
+;
+EXPLAIN SELECT S LIKE 'aaa%' FROM test
+;
+
+;
+EXPLAIN SELECT prefix(S, 'aaa') FROM test
+;
+
+;
+EXPLAIN SELECT S LIKE 'aaa%%%%' FROM test
+;
+
+# suffix optimization: %aaa -> suffix(aaa)
+;
+EXPLAIN SELECT S LIKE '%aaa' FROM test
+;
+
+;
+EXPLAIN SELECT suffix(S, 'aaa') FROM test
+;
+
+;
+EXPLAIN SELECT S LIKE '%%%%aaa' FROM test
+;
+
+# contains optimization: %aaa% -> contains(aaa)
+;
+EXPLAIN SELECT S LIKE '%aaa%' FROM test
+;
+
+;
+EXPLAIN SELECT contains(S, 'aaa') FROM test
+;
+
+;
+EXPLAIN SELECT S LIKE '%%%%aaa%%' FROM test
+;
+
+# NOT LIKE
+# no special symbols optimization: aaa -> S<>a
+;
+EXPLAIN SELECT S NOT LIKE 'aaa' FROM test
+;
+
+;
+EXPLAIN SELECT S<>'aaa' FROM test
+;
+
+# prefix optimization: aaa% -> prefix(aaa)
+;
+EXPLAIN SELECT S NOT LIKE 'aaa%' FROM test
+;
+
+;
+EXPLAIN SELECT NOT(prefix(S, 'aaa')) FROM test
+;
+
+;
+EXPLAIN SELECT S NOT LIKE 'aaa%%%%' FROM test
+;
+
+# suffix optimization: %aaa -> suffix(aaa)
+;
+EXPLAIN SELECT S NOT LIKE '%aaa' FROM test
+;
+
+;
+EXPLAIN SELECT NOT(suffix(S, 'aaa')) FROM test
+;
+
+;
+EXPLAIN SELECT S NOT LIKE '%%%%aaa' FROM test
+;
+
+# contains optimization: %aaa% -> contains(aaa)
+;
+EXPLAIN SELECT S NOT LIKE '%aaa%' FROM test
+;
+
+;
+EXPLAIN SELECT NOT(contains(S, 'aaa')) FROM test
+;
+
+;
+EXPLAIN SELECT S NOT LIKE '%%%%aaa%%' FROM test
+;

@@ -1,0 +1,70 @@
+# name: test/sql/prepared/test_prepare_delete_update.test
+# description: PREPARE for DELETE/UPDATE
+# group: [prepared]
+
+# DELETE
+;
+CREATE TABLE b (i TINYINT)
+
+;
+INSERT INTO b VALUES (1), (2), (3), (4), (5)
+
+;
+PREPARE s1 AS DELETE FROM b WHERE i=$1
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+3
+4
+5
+
+;
+EXECUTE s1(3)
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+4
+5
+
+;
+DROP TABLE b CASCADE
+
+# UPDATE
+;
+CREATE TABLE b (i TINYINT)
+
+;
+INSERT INTO b VALUES (1), (2), (3), (4), (5)
+
+;
+PREPARE s1 AS UPDATE b SET i=$1 WHERE i=$2
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+3
+4
+5
+
+;
+EXECUTE s1(6, 3)
+
+;
+SELECT * FROM b ORDER BY 1
+;
+1
+2
+4
+5
+6
+
+;
+DROP TABLE b CASCADE

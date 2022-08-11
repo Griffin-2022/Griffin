@@ -1,0 +1,48 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000026,sig:11,src:019199+011044,time:995436,execs:114045,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7ffdbeb98380, p=0x1a9ce00) at sqlite3.c:146356
+146356	      pSublist = exprListAppendList(pParse, pSublist, pWin->pOwner->x.pList);
+(gdb) #0  0x00000000003a15d8 in sqlite3WindowRewrite (pParse=0x7ffdbeb98380, p=0x1a9ce00) at sqlite3.c:146356
+#1  0x00000000002fc6de in sqlite3Select (pParse=0x7ffdbeb98380, p=0x1a9ce00, pDest=0x7ffdbeb96d90) at sqlite3.c:130281
+#2  0x0000000000355337 in sqlite3CodeRhsOfIN (pParse=0x7ffdbeb98380, pExpr=0x1a87c80, iTab=2) at sqlite3.c:99650
+#3  0x0000000000353c7b in sqlite3FindInIndex (pParse=0x7ffdbeb98380, pX=0x1a87c80, inFlags=4, prRhsHasNull=0x0, aiMap=0x1a93800, piTab=0x7ffdbeb96fc4) at sqlite3.c:99448
+#4  0x00000000003795bd in codeEqualityTerm (pParse=0x7ffdbeb98380, pTerm=0x1a9b2f0, pLevel=0x1a9b578, iEq=0, bRev=0, iTarget=1) at sqlite3.c:136693
+#5  0x0000000000374503 in sqlite3WhereCodeOneLoopStart (pParse=0x7ffdbeb98380, v=0x1a84da0, pWInfo=0x1a9b1e0, iLevel=0, pLevel=0x1a9b578, notReady=18446744073709551615) at sqlite3.c:137510
+#6  0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7ffdbeb98380, pTabList=0x1aa0190, pWhere=0x1a96b90, pOrderBy=0x0, pResultSet=0x1a91280, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#7  0x00000000002fdcea in sqlite3Select (pParse=0x7ffdbeb98380, p=0x1a89d50, pDest=0x7ffdbeb97770) at sqlite3.c:130695
+#8  0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffdbeb979a0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffdbeb98380) at sqlite3.c:151581
+#9  0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffdbeb979a0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#10 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffdbeb98380, 
+    zSql=0x1a95484 ";;CREATE TABLE preceding(t1 INTEGER, x INTEGER, test001 INTEGER);;INSERT INTO v0 VALUES(3, 3, 3);SELECT following, sum(following) OVER win1 FROM v0 \n  WINDOW win1 AS (PARTITION BY 1 ORDER BY following"..., pzErrMsg=0x7ffdbeb98560) at sqlite3.c:154013
+#11 0x00000000002a1683 in sqlite3Prepare (db=0x1a801a0, 
+    zSql=0x1a82dd0 ";\n;SELECT * FROM v0 WHERE \n      (0, v0.over) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM v0);;CREATE TABLE preceding(t1 INTEGER, x INTEGER, test001 INTEGER);;INSERT INTO v0 VALUES(3, 3, 3);SEL"..., nBytes=304, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffdbeb98698, pzTail=0x7ffdbeb98680) at sqlite3.c:124303
+#12 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x1a801a0, 
+    zSql=0x1a82dd0 ";\n;SELECT * FROM v0 WHERE \n      (0, v0.over) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM v0);;CREATE TABLE preceding(t1 INTEGER, x INTEGER, test001 INTEGER);;INSERT INTO v0 VALUES(3, 3, 3);SEL"..., nBytes=304, prepFlags=128, pOld=0x0, ppStmt=0x7ffdbeb98698, pzTail=0x7ffdbeb98680) at sqlite3.c:124403
+#13 0x000000000029247f in sqlite3_prepare_v2 (db=0x1a801a0, 
+    zSql=0x1a82dd0 ";\n;SELECT * FROM v0 WHERE \n      (0, v0.over) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM v0);;CREATE TABLE preceding(t1 INTEGER, x INTEGER, test001 INTEGER);;INSERT INTO v0 VALUES(3, 3, 3);SEL"..., nBytes=304, ppStmt=0x7ffdbeb98698, pzTail=0x7ffdbeb98680) at sqlite3.c:124487
+#14 0x0000000000256bd0 in main (argc=1, argv=0x7ffdbeb98848) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 55048] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

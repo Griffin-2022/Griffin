@@ -1,0 +1,83 @@
+# name: test/sql/constraints/foreignkey/test_fk_self_referencing.test
+# description: Test self referencing foreign key constraint
+# group: [foreignkey]
+
+;
+CREATE TABLE employee(id INTEGER PRIMARY KEY, managerid INTEGER, name VARCHAR, FOREIGN KEY(managerid) REFERENCES employee(emp_id));
+
+;
+CREATE TABLE employee(id INTEGER PRIMARY KEY, managerid INTEGER, name VARCHAR, FOREIGN KEY(managerid) REFERENCES employee(id));
+
+;
+INSERT INTO employee VALUES (1, NULL, 'Smith'), (2, NULL, 'Jhon'), (3, NULL, 'Romeo');
+
+;
+INSERT INTO employee VALUES (4, 4, 'Mark');
+
+;
+INSERT INTO employee VALUES (4, 2, 'Mark');
+
+;
+UPDATE employee SET id=5 WHERE id=2;
+
+;
+DELETE FROM employee WHERE id=2;
+
+;
+DELETE FROM employee WHERE id=4;
+
+;
+UPDATE employee SET name='Juliet' WHERE id=3;
+
+# update the indexed column
+;
+UPDATE employee SET id=2 WHERE id=3;
+
+;
+UPDATE employee SET id=4 WHERE id=3;
+
+;
+SELECT * FROM employee;
+;
+1	NULL	Smith	
+2	NULL	Jhon	
+4	NULL	Juliet	
+
+;
+UPDATE employee SET managerid=5 WHERE id=4;
+
+# this is failed because the update is transformed into a delete and an insert
+;
+UPDATE employee SET managerid=2 WHERE id=4;
+
+;
+UPDATE employee SET id=5, managerid=2 WHERE id=4;
+
+;
+SELECT * FROM employee WHERE managerid=2;
+;
+5	2	Juliet	
+
+;
+ALTER TABLE employee RENAME COLUMN managerid TO managerid_new;
+
+;
+ALTER TABLE employee RENAME COLUMN name TO name_new;
+
+;
+ALTER TABLE employee ALTER COLUMN id SET DATA TYPE TEXT;
+
+;
+ALTER TABLE employee ALTER COLUMN name_new SET DATA TYPE TEXT;
+
+;
+ALTER TABLE employee DROP COLUMN id;
+
+;
+ALTER TABLE employee DROP COLUMN managerid;
+
+;
+ALTER TABLE employee DROP COLUMN name_new;
+
+;
+DROP TABLE employee;

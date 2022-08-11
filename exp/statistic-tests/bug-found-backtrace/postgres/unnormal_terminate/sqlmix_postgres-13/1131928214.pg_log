@@ -1,0 +1,111 @@
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  SELECT comp();
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  DROP TABLE gexec_test_b_idx;
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  select array_agg(a order by a desc)
+	  from (values (1,4),(2,3),(3,1),(4,2)) v(a,b);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  select string_agg(a,',') from (values('aaaa'),('bbbb'),('cccc')) g(a);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  select percent_rank(3) within group (order by x)
+	from (values (1),(1),(2),(2),(3),(3),(4),(5)) v(x);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  select pg_collation_for(percentile_disc(1) within group (order by x collate "POSIX"))
+	  from (values ('fred'),('jim')) v(x);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  ALTER TABLE tbl_heap ADD COLUMN logdate INT NOT NULL DEFAULT -1;
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  INSERT INTO tbl_heap VALUES (3), (4);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  column "d" does not exist at character 42
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  create table testtable_orange as
+	select (d/2)::numeric as testpart_apple, sum(7::int4) as testtable_apple_index, count(*) as testtable_orange_index
+	  from c group by d/2;
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  relation "testtable_orange" does not exist at character 16
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  (select * from testtable_orange except select * from testtable_orange)
+	  union all
+	(select * from testtable_orange except select * from testtable_orange);
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  relation "testtable_orange" does not exist at character 15
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  SELECT * FROM testtable_orange;
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  relation "testpart_orange" does not exist
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  ALTER TABLE testpart_orange ADD COLUMN t int NOT NULL DEFAULT 5;
+2022-08-02 02:58:31.972 UTC [21190] ERROR:  relation "child_20_30" does not exist
+2022-08-02 02:58:31.972 UTC [21190] STATEMENT:  ALTER TABLE child_20_30 ADD COLUMN now int;
+2022-08-02 02:58:31.976 UTC [21190] ERROR:  relation "tbl_heap" does not exist at character 15
+2022-08-02 02:58:31.976 UTC [21190] STATEMENT:  SELECT * FROM tbl_heap;
+2022-08-02 02:58:31.979 UTC [21190] ERROR:  relation "testtable_orange" does not exist at character 13
+2022-08-02 02:58:31.979 UTC [21190] STATEMENT:  INSERT INTO testtable_orange VALUES (2);
+2022-08-02 02:58:31.979 UTC [21190] ERROR:  relation "tbl_heap" does not exist at character 8
+2022-08-02 02:58:31.979 UTC [21190] STATEMENT:  UPDATE tbl_heap SET view_heap_psql = NULL;
+2022-08-02 02:58:31.979 UTC [21190] ERROR:  foreign-data wrapper "dummy" does not exist
+2022-08-02 02:58:31.979 UTC [21190] STATEMENT:  CREATE SERVER s0 FOREIGN DATA WRAPPER dummy;
+2022-08-02 02:58:31.979 UTC [21190] ERROR:  server "s0" does not exist
+2022-08-02 02:58:31.979 UTC [21190] STATEMENT:  DROP SERVER s0;
+2022-08-02 02:58:31.980 UTC [21190] WARNING:  there is no transaction in progress
+=================================================================
+==21190==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffdcc43ef90 sp 0x7ffdcc43ef88
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f8221394082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==21190==ABORTING
+2022-08-02 02:58:32.020 UTC [20659] LOG:  server process (PID 21190) was terminated by signal 6: Aborted
+2022-08-02 02:58:32.020 UTC [20659] LOG:  terminating any other active server processes
+2022-08-02 02:58:32.026 UTC [20659] LOG:  all server processes terminated; reinitializing
+2022-08-02 02:58:32.039 UTC [22026] LOG:  database system was interrupted; last known up at 2022-08-02 02:58:26 UTC
+2022-08-02 02:58:32.040 UTC [22027] FATAL:  the database system is in recovery mode
+2022-08-02 02:58:32.042 UTC [22030] FATAL:  the database system is in recovery mode
+2022-08-02 02:58:32.044 UTC [22031] FATAL:  the database system is in recovery mode
+2022-08-02 02:58:32.049 UTC [20659] LOG:  received smart shutdown request
+2022-08-02 02:58:32.054 UTC [22026] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 02:58:32.054 UTC [22026] LOG:  redo starts at 0/16EA688
+2022-08-02 02:58:32.058 UTC [20659] LOG:  abnormal database system shutdown

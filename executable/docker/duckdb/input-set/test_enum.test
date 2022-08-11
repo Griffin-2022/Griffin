@@ -1,0 +1,163 @@
+# name: test/sql/types/enum/test_enum.test
+# description: ENUM tests
+# group: [enum]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+# Casts should work
+;
+select 'happy'::mood;
+;
+happy
+
+# Casts should fail if not in the enum
+;
+select 'awesome-bro'::mood;
+
+# Non-String keys should fail
+;
+select 0::mood;
+
+# Postgres accept empty ENUMs
+;
+CREATE TYPE bla AS ENUM ();
+
+#Enums with the same name shouldn't work
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+# We should only accept strings
+;
+CREATE TYPE bla AS ENUM (1,2,3);
+
+# Shouldn't accept NULL
+;
+CREATE TYPE bla AS ENUM ('sad',NULL);
+
+# We don't accept repeated elements?
+;
+CREATE TYPE bla AS ENUM ('sad','sad');
+
+# This should be case sensitive
+;
+CREATE TYPE mood_2 AS ENUM ('sad','Sad','SAD');
+
+mode skip
+#We should be able to update enums eventually
+;
+ALTER TYPE mood ADD VALUE 'depressive';
+
+;
+ALTER TYPE mood REMOVE VALUE 'depressive';
+
+mode unskip
+
+# Delete ENUMs
+;
+DROP TYPE mood;
+
+;
+DROP TYPE mood_2;
+
+#This won't work because mood was already deleted
+;
+DROP TYPE mood;
+
+# We can create mood again
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+#This will drop mood
+;
+DROP TYPE IF EXISTS mood;
+
+#Nothing to drop but won't break
+;
+DROP TYPE IF EXISTS mood;
+
+# We can create mood again
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+;
+DROP TYPE IF EXISTS mood;
+
+# We shouldn't be able to add NULL values to ENUMs
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy', NULL);
+
+mode skip
+
+# CREATE TEMPORARY TYPE (Fixme : Parser doesn't support this yet)
+;
+CREATE TEMPORARY TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+mode unskip
+
+#Enums in structs/lists/maps
+;
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+;
+select ['happy']::mood[]
+;
+[happy]
+
+;
+select [NULL,'happy',NULL]::mood[]
+;
+[NULL, happy, NULL]
+
+;
+select ['happy','ok','ok']::mood[]
+;
+[happy, ok, ok]
+
+;
+select ['bla']::mood[]
+
+;
+select [1]::mood[]
+
+;
+select []::mood[]
+;
+[]
+
+;
+select [NULL]::mood[]
+;
+[NULL]
+
+;
+select {'a': 'happy'::mood};
+;
+{'a': happy}
+
+;
+select {'a': 'happy'::mood, 'b': 'ok'::mood};
+;
+{'a': happy, 'b': ok}
+
+;
+select {'a': 'happy'::mood, 'b': 1, 'c': 'ok'::mood};
+;
+{'a': happy, 'b': 1, 'c': ok}
+
+;
+select {'a': 'happy'::mood, 'b': 'bla'::mood};
+
+;
+select {'a': 'bla'::mood};
+
+;
+select MAP([1,2,3,4],['happy','ok','ok','sad']::mood[])
+;
+{1=happy, 2=ok, 3=ok, 4=sad}
+
+;
+select MAP([1,2,3,4],['bla','ok','ok','sad']::mood[])

@@ -1,0 +1,47 @@
+# name: test/sql/function/operator/test_comparison.test
+# description: Test basic comparison statements
+# group: [operator]
+
+;
+PRAGMA enable_verification
+
+# = and == are the same
+;
+SELECT 1 == 1, 1 = 1, 1 == 0, 1 = 0, 1 == NULL
+;
+1	1	0	0	NULL
+
+# != and <> are the same
+;
+SELECT 1 <> 1, 1 != 1, 1 <> 0, 1 != 0, 1 <> NULL
+;
+0	0	1	1	NULL
+
+# Test auto casting of comparison statements
+# string <> number comparisons should result in the string being cast to a number
+;
+select ('abc' between 20 and True);
+
+;
+select 'abc' > 10
+
+;
+select 20.0 = 'abc'
+
+# 1000 > 20
+;
+select '1000' > 20
+;
+1
+
+# ... but '1000' < '20'!
+;
+select '1000' > '20'
+;
+0
+
+;
+select ('abc' between '20' and 'true');
+;
+1
+

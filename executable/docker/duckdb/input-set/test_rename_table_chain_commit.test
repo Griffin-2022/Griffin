@@ -1,0 +1,77 @@
+# name: test/sql/alter/rename_table/test_rename_table_chain_commit.test
+# description: test a chain of table creates and renames in a transaction, followed by a commit
+# group: [rename_table]
+
+;
+CREATE TABLE entry(i INTEGER);
+
+;
+INSERT INTO entry VALUES (1)
+
+;
+SELECT * FROM entry
+;
+1
+
+;
+BEGIN TRANSACTION;
+
+;
+ALTER TABLE entry RENAME TO entry2;
+
+;
+CREATE TABLE entry(j INTEGER);
+
+;
+INSERT INTO entry VALUES (2)
+
+;
+ALTER TABLE entry2 RENAME TO entry3;
+
+;
+ALTER TABLE entry RENAME TO entry2;
+
+;
+CREATE TABLE entry(k INTEGER);
+
+;
+ALTER TABLE entry3 RENAME TO entry4;
+
+;
+ALTER TABLE entry2 RENAME TO entry3;
+
+;
+ALTER TABLE entry RENAME TO entry2;
+
+;
+SELECT * FROM entry
+;
+1
+
+;
+SELECT * FROM entry2
+
+;
+SELECT * FROM entry3
+
+;
+SELECT * FROM entry4
+
+;
+COMMIT
+
+;
+SELECT * FROM entry
+
+;
+SELECT * FROM entry4
+;
+1
+
+;
+SELECT * FROM entry3
+;
+2
+
+;
+SELECT * FROM entry2

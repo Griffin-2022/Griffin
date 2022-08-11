@@ -1,0 +1,218 @@
+# name: test/sql/types/numeric/smallint_try_cast.test
+# description: Smallint try cast
+# group: [numeric]
+
+;
+PRAGMA enable_verification
+
+# smallint casts
+;
+CREATE TABLE smallints AS SELECT i::SMALLINT i FROM (VALUES (-32768), (0), (32767)) tbl(i)
+
+# -> unsigned
+;
+SELECT i::UTINYINT FROM smallints
+
+;
+SELECT i::USMALLINT FROM smallints
+
+;
+SELECT i::UINTEGER FROM smallints
+
+;
+SELECT i::UBIGINT FROM smallints
+
+;
+SELECT i::UTINYINT FROM smallints WHERE i>=0 ORDER BY i
+
+;
+SELECT i::USMALLINT FROM smallints WHERE i>=0 ORDER BY i
+;
+0
+32767
+
+;
+SELECT i::UINTEGER FROM smallints WHERE i>=0 ORDER BY i
+;
+0
+32767
+
+;
+SELECT i::UBIGINT FROM smallints WHERE i>=0 ORDER BY i
+;
+0
+32767
+
+;
+SELECT TRY_CAST(i AS UTINYINT)::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS USMALLINT)::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+32767
+
+;
+SELECT TRY_CAST(i AS UINTEGER)::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+32767
+
+;
+SELECT TRY_CAST(i AS UBIGINT)::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+32767
+
+# -> signed
+;
+SELECT i::TINYINT FROM smallints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS TINYINT)::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT i::INTEGER::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::BIGINT::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::HUGEINT::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+# -> float
+;
+SELECT i::FLOAT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::DOUBLE FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+# -> bool
+;
+SELECT i::BOOL FROM smallints ORDER BY i
+;
+True
+False
+True
+
+# -> varchar
+;
+SELECT i::VARCHAR FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+# from string casts
+;
+CREATE TABLE strings AS SELECT * FROM (VALUES ('   '), ('blablabla'), ('-100000'), ('-32768'), ('0'), ('32767'), ('100000')) tbl(s)
+
+;
+SELECT s::SMALLINT FROM strings
+
+;
+SELECT TRY_CAST(s AS SMALLINT) FROM strings
+;
+NULL
+NULL
+NULL
+-32768
+0
+32767
+NULL
+
+# -> decimal casts
+;
+SELECT i::DECIMAL(3,0)::SMALLINT FROM smallints ORDER BY i
+
+;
+SELECT i::DECIMAL(9,0)::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::DECIMAL(18,0)::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::DECIMAL(38,0)::SMALLINT FROM smallints ORDER BY i
+;
+-32768
+0
+32767
+
+;
+SELECT i::DECIMAL(3,0)::SMALLINT FROM smallints ORDER BY i
+
+;
+SELECT i::DECIMAL(9,5)::SMALLINT FROM smallints ORDER BY i
+
+;
+SELECT i::DECIMAL(18,14)::SMALLINT FROM smallints ORDER BY i
+
+;
+SELECT i::DECIMAL(38,34)::SMALLINT FROM smallints ORDER BY i
+
+;
+SELECT TRY_CAST(i AS DECIMAL(3,0))::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(9,5))::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(18,14))::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL
+
+;
+SELECT TRY_CAST(i AS DECIMAL(38,34))::SMALLINT FROM smallints ORDER BY i
+;
+NULL
+0
+NULL

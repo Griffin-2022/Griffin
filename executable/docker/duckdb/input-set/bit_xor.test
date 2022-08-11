@@ -1,0 +1,46 @@
+# name: test/sql/function/list/aggregates/bit_xor.test
+# description: Test the list_bit_xor aggregate function
+# group: [aggregates]
+
+# bit_xor on a sequence
+;
+CREATE SEQUENCE seq;
+
+;
+SELECT list_bit_xor([nextval('seq')])
+;
+1
+
+;
+SELECT list_bit_xor([nextval('seq')])
+;
+2
+
+# list of integers
+;
+CREATE TABLE integers (i INTEGER[]);
+
+;
+INSERT INTO integers VALUES ([3, 7, 15, 31, 3, 15]);
+
+# empty list
+;
+SELECT list_bit_xor([]) FROM integers
+;
+NULL
+
+;
+INSERT INTO integers VALUES ([]), (NULL), ([NULL]), ([3, 7, NULL, 15, 31, 3, 15, NULL]);
+
+;
+SELECT list_bit_xor(i), list_bit_xor([1, 1, 1, 1, 1, 1]), list_bit_xor(NULL) FROM integers
+;
+24	0	NULL
+NULL	0	NULL
+NULL	0	NULL
+NULL	0	NULL
+24	0	NULL
+
+# incorrect usage
+;
+SELECT list_bit_xor()

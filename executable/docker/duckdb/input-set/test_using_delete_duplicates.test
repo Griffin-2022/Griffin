@@ -1,0 +1,53 @@
+# name: test/sql/delete/test_using_delete_duplicates.test
+# description: Test USING deletion with duplicates
+# group: [delete]
+
+;
+create table integers as select * from generate_series(0, 9, 1);
+
+;
+create table integers2 as select * from generate_series(0, 9, 1);
+
+;
+DELETE FROM integers USING integers2;
+;
+10
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+# the same but with transaction local storage
+;
+DROP TABLE integers
+
+;
+DROP TABLE integers2
+
+;
+BEGIN transaction
+
+;
+create table integers as select * from generate_series(0, 9, 1);
+
+;
+create table integers2 as select * from generate_series(0, 9, 1);
+
+;
+DELETE FROM integers USING integers2;
+;
+10
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+COMMIT
+
+;
+SELECT COUNT(*) FROM integers
+;
+0

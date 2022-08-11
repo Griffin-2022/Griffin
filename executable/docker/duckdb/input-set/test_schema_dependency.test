@@ -1,0 +1,96 @@
+# name: test/sql/catalog/dependencies/test_schema_dependency.test
+# description: Schema dependencies
+# group: [dependencies]
+
+# single schema and dependencies
+;
+CREATE SCHEMA s1
+
+;
+CREATE TABLE s1.integers(i INTEGER)
+
+;
+SELECT * FROM s1.integers
+;
+
+# can't drop: dependency
+;
+DROP SCHEMA s1
+
+;
+SELECT * FROM s1.integers
+;
+
+# we can drop with cascade though
+;
+DROP SCHEMA s1 CASCADE
+
+# this also drops the table
+;
+SELECT * FROM s1.integers
+
+# schemas and dependencies
+# create a schema and a table inside the schema
+;
+CREATE SCHEMA s1
+
+;
+CREATE TABLE s1.integers(i INTEGER)
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# drop the table in con1
+;
+DROP TABLE s1.integers
+
+# we can't drop the schema from con2 because the table still exists for con2!
+;
+DROP SCHEMA s1
+
+# now rollback the table drop
+;
+ROLLBACK
+
+;
+ROLLBACK
+
+# the table exists again
+;
+SELECT * FROM s1.integers
+;
+
+# try again, but this time we commit
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# drop the schema entirely now
+;
+DROP SCHEMA s1 CASCADE
+
+# we can still query the table from con2
+;
+SELECT * FROM s1.integers
+;
+
+# even after we commit
+;
+COMMIT
+
+;
+SELECT * FROM s1.integers
+;
+
+# however if we end the transaction in con2 the schema is gone
+;
+ROLLBACK
+
+;
+CREATE TABLE s1.dummy(i INTEGER)
+

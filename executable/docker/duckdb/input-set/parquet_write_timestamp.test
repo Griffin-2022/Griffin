@@ -1,0 +1,43 @@
+# name: test/sql/copy/parquet/writer/parquet_write_timestamp.test
+# description: Parquet timestamp round trip
+# group: [writer]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+foreach type TIMESTAMP TIMESTAMP_MS TIMESTAMP_NS TIMESTAMP_S
+
+;
+CREATE OR REPLACE TABLE timestamps(d ${type})
+
+;
+INSERT INTO timestamps VALUES
+    (TIMESTAMP '1992-01-01 12:03:27'),
+    (TIMESTAMP '1900-01-01 03:08:47'),
+    (NULL),
+    (TIMESTAMP '2020-09-27 13:12:01')
+
+;
+SELECT * FROM timestamps
+;
+
+;
+COPY timestamps TO '__TEST_DIR__/timestamps.parquet' (FORMAT 'parquet');
+
+;
+SELECT * FROM '__TEST_DIR__/timestamps.parquet'
+;
+
+;
+SELECT * FROM '__TEST_DIR__/timestamps.parquet' WHERE d='1992-01-01 12:03:27'
+;
+1992-01-01 12:03:27
+
+;
+SELECT typeof(d) FROM '__TEST_DIR__/timestamps.parquet' LIMIT 1
+;
+TIMESTAMP
+
+endloop

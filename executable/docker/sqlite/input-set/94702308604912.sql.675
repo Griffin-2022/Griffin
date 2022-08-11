@@ -1,0 +1,151 @@
+CREATE VIRTUAL TABLE temp.zz USING zipfile('test.zip');
+;SELECT*FROM"temp".sqlite_master WHERE name='zz' AND sql='CREATE VIRTUAL TABLE zz USING zipfile(''test.zip'')' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE name='zz' AND sql='CREATE VIRTUAL TABLE zz USING zipfile(''test.zip'')' ORDER BY rowid
+;PRAGMA table_info(zz);
+;
+;INSERT INTO zz(name, mode, mtime, sz, rawdata, method) 
+  VALUES('f.txt', '-rw-r--r--', 1000000000, 5, 'abcde', 0);
+;INSERT INTO zz(name, mtime, sz, data, method) 
+  VALUES('g.txt', 1000000002, 5, '12345', 0);
+;INSERT INTO zz(name, mtime, rawdata, method) 
+  VALUES('g.txt', 1000000002, '12345', 0);
+;INSERT INTO zz(name, data, method) 
+  VALUES('g.txt', '12345', 7);
+;INSERT INTO zz(name, mode, mtime, data, method) 
+  VALUES('f.txt', '-rw-r--r--', 1000000000, 'abcde', 0);
+;
+;INSERT INTO zz(name, mode, mtime, data, method) 
+  VALUES('g.txt', NULL, 1000000002, '12345', 0);
+;
+;SELECT name, mtime, data FROM zipfile('test.zip')
+
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;INSERT INTO zz(name, mode, mtime, data) VALUES('h.txt', 
+    '-rw-r--r--', 1000000004, 'aaaaaaaaaabbbbbbbbbb'
+  );
+;
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;SELECT name, mtime, data, method FROM zipfile('test.zip');
+;
+;SELECT zipfile_cds(mode) FROM zipfile('test.zip');
+;
+;BEGIN;
+;INSERT INTO zz(name, mode, mtime, data, method)
+    VALUES('i.txt', '-rw-r--r--', 1000000006, 'zxcvb', 0);
+;SELECT name FROM zz;
+;COMMIT;
+;
+;
+;SELECT data FROM zz WHERE name='i.txt';
+;
+;DELETE FROM zz WHERE name='g.txt';
+;
+;SELECT name, mode, mtime, data, method FROM zipfile('test.zip');
+;
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;UPDATE zz SET mtime=4 WHERE name='i.txt';
+;SELECT name, mode, mtime, data, method FROM zipfile('test.zip');
+;
+;UPDATE zz SET mode=$modes WHERE name='h.txt';
+;
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;UPDATE zz SET name = 'blue.txt' WHERE name='f.txt';
+;SELECT name, mode, mtime, data, method FROM zipfile('test.zip');
+;
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile($file)
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile( r($file) )
+;SELECT name,mode,mtime,method,quote(data) FROM zipfile(
+    ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+  )
+;SELECT writefile('test_unzip.zip',
+        ( SELECT zipfile(name,mode,mtime,data,method) FROM zipfile($file) )
+    );
+;
+;SELECT sss(name),mode,mtime,data FROM zipfile($file) ORDER BY name
+  
+;SELECT replace(name,'test_unzip/',''),modefix(name,mode),mtime,data
+      FROM fsdir('test_unzip') 
+      WHERE name!='test_unzip'
+      ORDER BY name
+    
+;UPDATE zz SET data = 'edcba' WHERE name='blue.txt';
+;SELECT name, mode, mtime, data, method FROM zipfile('test.zip');
+;
+;UPDATE zz SET mode=NULL, data = NULL WHERE name='blue.txt';
+;
+;UPDATE zz SET data=NULL WHERE name='i.txt'
+
+;
+;UPDATE zz SET data = '' WHERE name='i.txt';
+;SELECT name,mode,mtime,data,method from zipfile('test.zip');
+;
+;SELECT a.name, a.data 
+  FROM zz AS a, zz AS b 
+  WHERE a.name=+b.name AND +a.mode=b.mode
+
+;SELECT name, data FROM zz WHERE name LIKE '%txt'
+
+;DELETE FROM zz;
+;SELECT * FROM zz;
+;
+;

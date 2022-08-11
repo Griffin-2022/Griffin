@@ -1,0 +1,100 @@
+fk CHAR;
+name CHAR;
+tid CHAR;
+iid CHAR;
+DECLARE FUNCTION fk_report;
+DECLARE CURSOR fkf IS
+SELECT ID FROM SYS_FOREIGN WHERE ID >= :db FOR UPDATE;
+DECLARE CURSOR fkr IS
+SELECT REF_NAME,ID FROM SYS_FOREIGN WHERE REF_NAME >= :db FOR UPDATE
+ORDER BY REF_NAME;
+DECLARE CURSOR tab IS
+SELECT ID,NAME FROM SYS_TABLES WHERE NAME >= :db FOR UPDATE;
+DECLARE CURSOR idx IS
+SELECT ID FROM SYS_INDEXES WHERE TABLE_ID = tid FOR UPDATE;
+BEGIN
+OPEN fkf;
+WHILE 1 = 1 LOOP
+  FETCH fkf INTO fk;
+  IF (SQL % NOTFOUND) THEN EXIT; END IF;
+  IF TO_BINARY(SUBSTR(fk, 0, LENGTH(:db)))<>TO_BINARY(:db) THEN EXIT; END IF;
+  DELETE FROM SYS_FOREIGN_COLS WHERE TO_BINARY(ID)=TO_BINARY(fk);
+  DELETE FROM SYS_FOREIGN WHERE CURRENT OF fkf;
+END LOOP;
+CLOSE fkf;
+OPEN fkr;
+FETCH fkr INTO fk_report();
+CLOSE fkr;
+OPEN tab;
+WHILE 1 = 1 LOOP
+  FETCH tab INTO tid,name;
+  IF (SQL % NOTFOUND) THEN EXIT; END IF;
+  IF SUBSTR(name, 0, LENGTH(:db)) <> :db THEN EXIT; END IF;
+  DELETE FROM SYS_COLUMNS WHERE TABLE_ID=tid;
+  D
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_FOREIGN'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_FOREIGN'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_TABLES'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_INDEXES'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_FOREIGN_COLS'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_FOREIGN'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_COLUMNS'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_TABLES'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_FIELDS'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | >dict_table_open_on_name
+| | | | | | | | dict_table_open_on_name: table: 'SYS_INDEXES'
+| | | | | | | <dict_table_open_on_name
+| | | | | | | ib_que: Execute 9 (QUERY THREAD) at 0x625001b4cbe0
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 25 (OPEN) at 0x6290014e4888
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 1046 (WHILE) at 0x6250015aa3c8
+| | | | | | | ib_que: Execute 24 (FETCH) at 0x6290014e4d10
+| | | | | | | ib_que: Execute 6 (SELECT) at 0x6290014e1fe0
+| | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | ib_que: Execute 24 (FETCH) at 0x6290014e4d10
+| | | | | | | ib_que: Execute 1046 (WHILE) at 0x6250015aa3c8
+| | | | | | | ib_que: Execute 1045 (IF) at 0x6290014e4f10
+| | | | | | | ib_que: Execute 32 (EXIT) at 0x6290014e4ed0
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 25 (OPEN) at 0x6250015aa508
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 25 (OPEN) at 0x6250015aa648
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 24 (FETCH) at 0x6250015aa880
+| | | | | | | ib_que: Execute 6 (SELECT) at 0x6290014e2a50
+| | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | mutex: mutex (0x69a4520) locking
+| | | | | | | | mutex: mutex (0x69a4520) locked
+| | | | | | | | mutex: mutex (0x69a4520) unlocking
+| | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | ib_que: Execute 24 (FETCH) at 0x6250015aa880
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 25 (OPEN) at 0x6250015aa9c8
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 25 (OPEN) at 0x6250015aab08
+| | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x625001b4cc88
+| | | | | | | ib_que: Execute 1046 (WHILE) at 0x625001b4c998
+| | | | | | | 

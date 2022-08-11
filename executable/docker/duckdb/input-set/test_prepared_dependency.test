@@ -1,0 +1,40 @@
+# name: test/sql/catalog/dependencies/test_prepared_dependency.test
+# description: Prepared statement dependencies
+# group: [dependencies]
+
+# prepared statements and dependencies
+# dependency on a bound table
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+PREPARE v AS SELECT * FROM integers
+
+;
+EXECUTE v
+
+;
+DROP TABLE integers CASCADE
+
+# after the drop the prepared statement is invalidated
+;
+EXECUTE v
+
+# dependency on a sequence for prepare
+;
+CREATE SEQUENCE seq
+
+;
+PREPARE v AS SELECT nextval('seq')
+
+;
+EXECUTE v
+
+# drop the sequence
+;
+DROP SEQUENCE seq CASCADE
+
+# after the drop the prepared statement is invalidated
+;
+EXECUTE v
+

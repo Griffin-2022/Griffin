@@ -1,0 +1,77 @@
+# name: test/optimizer/statistics/statistics_varchar.test
+# description: Statistics propagation test with varchars
+# group: [statistics]
+
+;
+CREATE TABLE varchars AS SELECT * FROM (VALUES ('Mark'), ('Hannes'), ('World')) tbl(v);
+
+;
+PRAGMA enable_verification;
+
+;
+PRAGMA explain_output = OPTIMIZED_ONLY;
+
+# no unicode
+;
+SELECT LENGTH(v), STRLEN(v) FROM varchars
+;
+4	4
+6	6
+5	5
+
+;
+SELECT STRPOS(v, 'e') FROM varchars
+;
+0
+5
+0
+
+;
+SELECT UPPER(v), LOWER(v) FROM varchars
+;
+MARK	mark
+HANNES	hannes
+WORLD	world
+
+;
+SELECT SUBSTR(v, 2, 2) FROM varchars
+;
+ar
+an
+or
+
+# unicode
+;
+INSERT INTO varchars VALUES ('Mühleisen');
+
+;
+SELECT LENGTH(v), STRLEN(v) FROM varchars
+;
+4	4
+6	6
+5	5
+9	10
+
+;
+SELECT STRPOS(v, 'e') FROM varchars
+;
+0
+5
+0
+5
+
+;
+SELECT UPPER(v), LOWER(v) FROM varchars
+;
+MARK	mark
+HANNES	hannes
+WORLD	world
+MÜHLEISEN	mühleisen
+
+;
+SELECT SUBSTR(v, 2, 2) FROM varchars
+;
+ar
+an
+or
+üh

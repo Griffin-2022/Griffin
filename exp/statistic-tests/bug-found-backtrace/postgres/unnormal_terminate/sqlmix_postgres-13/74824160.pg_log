@@ -1,0 +1,111 @@
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  CREATE SCHEMA deptest;
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  DROP OWNED BY regress_dep_user1;
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  DROP USER regress_dep_user1;
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT E'1&(''2''&('' 4''&(\\|5 | ''6 \\'' !|&'')))'::tsquery;
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  COMMENT ON CONSTRAINT no_constraint ON b IS 'yes, the comment';
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  COMMENT ON CONSTRAINT the_constraint ON DOMAIN no_comments_dom IS 'another bad comment';
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT 'wa:1A'::tsvector @@ 'w:*A'::tsquery as "true";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT strip('wa:1A'::tsvector) @@ 'w:*D'::tsquery as "true";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT 'supernova'::tsvector @@ 'super'::tsquery AS "false";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT to_tsvector('simple', '1 2 3 1') @@ '1 <-> 3' AS "false";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT to_tsvector('simple', '1 2 11 3') @@ '1:* <-> 3' AS "true";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  select to_tsvector('simple', 'x y z') @@ '(x | y <-> z) <-> q' AS "false";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT ts_rank(' a:1 s:2B d g'::tsvector, 'a & s');
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT ts_rank(' a:1 s:2 d g'::tsvector, 'a & s');
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT 'a:1 b:2'::tsvector @@ 'a <1> b'::tsquery AS "true";
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT ts_delete(to_tsvector('english', 'Rebel spaceships, striking from a hidden base'), 'spaceship');
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  SELECT setweight('a:1,3A asd:1C w:5,6,12B,13A zxc:81,222A,567'::tsvector, 'c');
+2022-08-02 00:38:23.038 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.038 UTC [51283] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 00:38:23.040 UTC [51283] ERROR:  function a(integer) does not exist
+2022-08-02 00:38:23.040 UTC [51283] STATEMENT:  
+	
+	drop function a(int);
+2022-08-02 00:38:23.040 UTC [51283] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:38:23.040 UTC [51283] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 00:38:23.042 UTC [51283] WARNING:  there is no transaction in progress
+2022-08-02 00:38:23.042 UTC [51283] WARNING:  there is no transaction in progress
+=================================================================
+==51283==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd7d841b70 sp 0x7ffd7d841b68
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f89e3f89082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==51283==ABORTING
+2022-08-02 00:38:23.084 UTC [42994] LOG:  server process (PID 51283) was terminated by signal 6: Aborted
+2022-08-02 00:38:23.084 UTC [42994] LOG:  terminating any other active server processes
+2022-08-02 00:38:23.223 UTC [42994] LOG:  all server processes terminated; reinitializing
+2022-08-02 00:38:23.239 UTC [52132] LOG:  database system was interrupted; last known up at 2022-08-02 00:38:06 UTC
+2022-08-02 00:38:23.240 UTC [52133] FATAL:  the database system is in recovery mode
+2022-08-02 00:38:23.242 UTC [52136] FATAL:  the database system is in recovery mode
+2022-08-02 00:38:23.244 UTC [52137] FATAL:  the database system is in recovery mode
+2022-08-02 00:38:23.249 UTC [42994] LOG:  received smart shutdown request
+2022-08-02 00:38:23.256 UTC [52132] LOG:  recovered replication state of node 3 to 0/0
+2022-08-02 00:38:23.256 UTC [52132] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 00:38:23.257 UTC [52132] LOG:  redo starts at 0/210D8808

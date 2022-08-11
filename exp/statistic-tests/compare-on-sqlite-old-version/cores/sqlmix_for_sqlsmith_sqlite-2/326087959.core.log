@@ -1,0 +1,45 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000552,sig:11,src:025110+000179,time:35365119,execs:12244739,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+selectExpander (pWalker=<optimized out>, p=0xeeafc0) at sqlite3.c:27279
+27279	    c = (int)UpperToLower[*a] - (int)UpperToLower[*b];
+(gdb) #0  selectExpander (pWalker=<optimized out>, p=0xeeafc0) at sqlite3.c:27279
+#1  0x000000000035e404 in sqlite3WalkSelect (pWalker=0x7ffda3682068, p=0xeeafc0) at sqlite3.c:87438
+#2  0x000000000035f324 in selectExpander (pWalker=<optimized out>, p=0xeeab40) at sqlite3.c:117164
+#3  0x000000000035e404 in sqlite3WalkSelect (pWalker=0x7ffda3682068, p=0xeeab40) at sqlite3.c:87438
+#4  0x000000000035dd73 in sqlite3SelectPrep (pParse=0xeeb450, p=0xeeab40, pOuterNC=0x0) at sqlite3.c:117392
+#5  0x0000000000325c11 in sqlite3Select (pParse=0xeeb450, p=0xeeab40, pDest=0x7ffda36823b0) at sqlite3.c:117722
+#6  0x00000000003034ae in yy_reduce (yypParser=0x17861e0, yyruleno=<optimized out>) at sqlite3.c:133175
+#7  0x00000000002fef8e in sqlite3Parser (yyp=0x17861e0, yymajor=<optimized out>, yyminor=..., pParse=<optimized out>) at sqlite3.c:134258
+#8  0x00000000002fc544 in sqlite3RunParser (pParse=0xeeb450, 
+    zSql=0xef4610 ";SELECT * FROM t2 AS one, t2 AS two WHERE one.mx=1;;\n;WITH v17(x,y) AS (SELECT max(t1w), min(t1w) FROM c GROUP BY t1w)\n  SELECT * FROM v17 AS one, v17 AS two WHERE one.x=1;ROLLBACK TO _tcl_transaction"..., pzErrMsg=0x7ffda3682528) at sqlite3.c:135186
+#9  0x00000000002fac4e in sqlite3Prepare (db=0xed8850, 
+    zSql=0xed9653 ";SELECT * FROM t2 AS one, t2 AS two WHERE one.mx=1;;\n;WITH v17(x,y) AS (SELECT max(t1w), min(t1w) FROM c GROUP BY t1w)\n  SELECT * FROM v17 AS one, v17 AS two WHERE one.x=1;ROLLBACK TO _tcl_transaction"..., nBytes=<optimized out>, saveSqlFlag=1, pReprepare=<optimized out>, ppStmt=0x7ffda3682658, pzTail=0x7ffda3682640) at sqlite3.c:112589
+#10 0x00000000002fa0f4 in sqlite3LockAndPrepare (db=0xed8850, 
+    zSql=0xed9653 ";SELECT * FROM t2 AS one, t2 AS two WHERE one.mx=1;;\n;WITH v17(x,y) AS (SELECT max(t1w), min(t1w) FROM c GROUP BY t1w)\n  SELECT * FROM v17 AS one, v17 AS two WHERE one.x=1;ROLLBACK TO _tcl_transaction"..., nBytes=447, saveSqlFlag=1, pOld=0x0, ppStmt=<optimized out>, pzTail=0x7ffda3682640) at sqlite3.c:112688
+#11 0x000000000028f38c in sqlite3_prepare_v2 (db=0xeeb450, zSql=0xedb790 "\002", nBytes=15638592, ppStmt=0x7ffda3682658, pzTail=<optimized out>) at sqlite3.c:112764
+#12 0x000000000024b100 in main (argc=1, argv=0x7ffda3682808) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 32833] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

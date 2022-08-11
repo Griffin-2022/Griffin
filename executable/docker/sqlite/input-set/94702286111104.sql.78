@@ -1,0 +1,57 @@
+ATTACH 'test.db2' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;ATTACH 'test.db3' AS aux2;
+;SELECT*FROM"aux2".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux2".sqlite_master ORDER BY rowid
+;ATTACH 'test.db4' AS aux3;
+;SELECT*FROM"aux3".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux3".sqlite_master ORDER BY rowid
+;CREATE TABLE t1(x);
+;CREATE TABLE aux.t2(x);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE aux2.t3(x);
+;SELECT*FROM"aux2".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux2".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE aux3.t4(x);
+;SELECT*FROM"aux3".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux3".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;PRAGMA main.journal_mode = WAL;
+;PRAGMA aux.journal_mode = WAL;
+;PRAGMA aux2.journal_mode = WAL;
+;/* Leave aux4 in rollback mode */
+  
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA main.wal_checkpoint = passive
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA aux.wal_checkpoint = passive
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA aux2.wal_checkpoint = passive
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA wal_checkpoint = passive
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA wal_checkpoint = passive
+;INSERT INTO t1 VALUES(1);
+;INSERT INTO t2 VALUES(2);
+;INSERT INTO t3 VALUES(3);
+;
+;PRAGMA temp.wal_checkpoint = passive
+;PRAGMA notadb.wal_checkpoint = passive
+;PRAGMA aux3.wal_checkpoint = passive
+;

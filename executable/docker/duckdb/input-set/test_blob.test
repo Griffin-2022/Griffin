@@ -1,0 +1,98 @@
+# name: test/sql/types/blob/test_blob.test
+# description: BLOB tests
+# group: [blob]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE blobs (b BYTEA);
+
+# Insert valid hex strings
+;
+INSERT INTO blobs VALUES('\xaa\xff\xaa'), ('\xAA\xFF\xAA\xAA\xFF\xAA'), ('\xAA\xFF\xAA\xAA\xFF\xAA\xAA\xFF\xAA')
+
+;
+SELECT * FROM blobs
+;
+\xAA\xFF\xAA
+\xAA\xFF\xAA\xAA\xFF\xAA
+\xAA\xFF\xAA\xAA\xFF\xAA\xAA\xFF\xAA
+
+# Insert valid hex strings, lower case
+;
+DELETE FROM blobs
+
+;
+INSERT INTO blobs VALUES('\xaa\xff\xaa'), ('\xaa\xff\xaa\xaa\xff\xaa'), ('\xaa\xff\xaa\xaa\xff\xaa\xaa\xff\xaa')
+
+;
+SELECT * FROM blobs
+;
+\xAA\xFF\xAA
+\xAA\xFF\xAA\xAA\xFF\xAA
+\xAA\xFF\xAA\xAA\xFF\xAA\xAA\xFF\xAA
+
+# Insert valid hex strings with number and letters
+;
+DELETE FROM blobs
+
+;
+INSERT INTO blobs VALUES('\xaa1199'), ('\xaa1199aa1199'), ('\xaa1199aa1199aa1199')
+
+;
+SELECT * FROM blobs
+;
+\xAA1199
+\xAA1199aa1199
+\xAA1199aa1199aa1199
+
+# Insert invalid hex strings (invalid hex chars: G, H, I)
+;
+INSERT INTO blobs VALUES('\xGA\xFF\xAA')
+
+# Insert invalid hex strings (odd # of chars)
+;
+INSERT INTO blobs VALUES('\xA')
+
+;
+INSERT INTO blobs VALUES('\xAA\xA')
+
+;
+INSERT INTO blobs VALUES('blablabla\x')
+
+# BLOB with “non-printable” octets
+;
+SELECT 'abc �'::BYTEA;
+
+# BLOB null and empty values
+;
+SELECT ''::BLOB
+;
+(empty)
+
+;
+SELECT NULL::BLOB
+;
+NULL
+
+;
+CREATE TABLE blob_empty (b BYTEA);
+
+;
+INSERT INTO blob_empty VALUES(''), (''::BLOB)
+
+;
+INSERT INTO blob_empty VALUES(NULL), (NULL::BLOB)
+
+;
+SELECT * FROM blob_empty
+;
+(empty)
+(empty)
+NULL
+NULL
+
+# convert non-ascii string to blob using cat
+;
+select 'ü'::blob;

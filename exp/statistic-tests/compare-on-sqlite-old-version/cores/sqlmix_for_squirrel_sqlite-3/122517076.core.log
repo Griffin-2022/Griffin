@@ -1,0 +1,348 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000145,sig:06,src:021192+017806,time:2365928,execs:369492,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT CAST (zeroblob(100) AS REAL);]
+VDBE Trace:
+   0 Init             0    6    0               00 Start at 6
+   6 Integer        100    3    0               00 r[3]=100
+REG[3] =  i:100
+   7 Function0        1    3    2 zeroblob(1)   01 r[2]=func(r[3])
+REG[3] =  i:100
+REG[2] =  sx0[|]+100z
+   8 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 SCopy            2    1    0               00 r[1]=r[2]
+REG[1] =  ex0[|]+100z
+   3 Cast             1   69    0               00 affinity(r[1])
+REG[1] =  ex0[|]+100z
+   4 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  r:0
+   5 Halt             0    0    0               00 
+SQL: [;INSERT INTO test(t1) VALUES(NULL),('xyz'),(5),(x'303132'),(4.75);]
+VDBE Trace:
+   0 Init             0   24    0               00 Start at 24
+  24 Transaction      0    1    2 0             01 usesStmtJournal=1
+  25 Goto             0    1    0               00 
+   1 InitCoroutine    3   14    2               00 
+  14 OpenWrite        0    2    0 1             00 root=2 iDb=0; test
+  15 Yield            3   23    0               00 
+REG[3] =  i:1
+REG[3] =  i:15
+   2 Explain          2    0    0 SCAN 5 CONSTANT ROWS 00 
+   3 Null             0    2    0               00 r[2]=NULL
+REG[2] =  NULL
+   4 Yield            3    0    0               00 
+REG[3] =  i:15
+REG[3] =  i:4
+  16 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+  17 Abortable        0    0    0               00 
+  18 Ne               2   20    2 (BINARY)      52 if r[2]!=r[2] goto 20
+REG[2] =  NULL
+REG[2] =  NULL
+  20 MakeRecord       2    1    4 B             00 r[4]=mkrec(r[2])
+REG[2] =  NULL
+REG[4] =  sx2[0200|..]
+  21 Insert           0    4    1 test          39 intkey=r[1] data=r[4]
+REG[4] =  sx2[0200|..]
+REG[1] =  i:1
+  22 Goto             0   15    0               00 
+  15 Yield            3   23    0               00 
+REG[3] =  i:4
+REG[3] =  i:15
+   5 String8          0    2    0 xyz           00 r[2]='xyz'
+REG[2] =   t3[xyz](8)
+   6 Yield            3    0    0               00 
+REG[3] =  i:15
+REG[3] =  i:6
+  16 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+  17 Abortable        0    0    0               00 
+  18 Ne               2   20    2 (BINARY)      52 if r[2]!=r[2] goto 20
+REG[2] =   t3[xyz](8)
+REG[2] =   t3[xyz](8)
+  19 Halt           275    2    0 test          03 
+SQL: [;SELECT (SELECT 3,4 UNION SELECT 5,6 ORDER BY 1 DESC) IN (SELECT 3,4);]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   3 Noop             0    0    0               00 begin IN expr
+   4 Integer         13    2    0               00 r[2]=13; return address
+REG[2] =  i:13
+   5 Once             0   13    0               00 
+   6 OpenEphemeral    0    2    0 k(2,,)        00 nColumn=2; Result of SELECT 3
+   7 Explain          7    0    0 LIST SUBQUERY 3 00 
+   8 Explain          8    7    0 SCAN CONSTANT ROW 00 
+   9 Integer          3    3    0               00 r[3]=3
+REG[3] =  i:3
+  10 Integer          4    4    0               00 r[4]=4
+REG[4] =  i:4
+  11 MakeRecord       3    2    5 @@            00 r[5]=mkrec(r[3..4])
+REG[3] =  i:3
+REG[4] =  i:4
+REG[5] =  sx5[0301010304|.....]
+  12 IdxInsert        0    5    3 2             00 key=r[5]
+REG[5] =  sx5[0301010304|.....]
+  13 Return           2    0    0               00 
+REG[2] =  i:13
+  14 Integer         79    6    0               00 r[6]=79; return address
+REG[6] =  i:79
+  15 Once             0   79    0               00 
+  16 Explain         16    0    0 SCALAR SUBQUERY 2 00 
+  17 Null             0    7    8               00 r[7..8]=NULL; Init subquery result
+REG[7] =  NULL
+  18 Integer          0    9    0               00 r[9]=0
+REG[9] =  i:0
+  19 Integer          1   12    0               00 r[12]=1; LIMIT counter
+REG[12] =  i:1
+  20 Explain         20   16    0 MERGE (UNION) 00 
+  21 InitCoroutine   13   29   22               00 left SELECT
+  29 InitCoroutine   14   74   30               00 right SELECT
+  74 Yield           13   57    0               00 
+REG[13] =  i:21
+REG[13] =  i:74
+  22 Explain         22   20    0 LEFT          00 
+  23 Noop             1    5    0               00 
+  24 Explain         24   22    0 SCAN CONSTANT ROW 00 
+  25 Integer          3   17    0               00 r[17]=3
+REG[17] =  i:3
+  26 Integer          4   18    0               00 r[18]=4
+REG[18] =  i:4
+  27 Yield           13    0    0               00 
+REG[13] =  i:74
+REG[13] =  i:27
+  75 Yield           14   60    0               00 
+REG[14] =  i:29
+REG[14] =  i:75
+  30 Explain         30   20    0 RIGHT         00 
+  31 Noop             2    5    0               00 
+  32 Explain         32   30    0 SCAN CONSTANT ROW 00 
+  33 Integer          5   19    0               00 r[19]=5
+REG[19] =  i:5
+  34 Integer          6   20    0               00 r[20]=6
+REG[20] =  i:6
+  35 Yield           14    0    0               00 
+REG[14] =  i:75
+REG[14] =  i:35
+  76 Permutation      0    0    0 [0,1]         00 
+  77 Compare         17   19    2 k(3,-B,B,)    01 r[17..18] <-> r[19..20]
+REG[17] =  i:3
+REG[19] =  i:5
+  78 Jump            64   68   71               00 
+  71 Gosub           16   47    0               00 
+REG[16] =  i:71
+  47 IfNot            9   50    0               00 
+REG[9] =  i:0
+  50 Copy            19   10    1               00 r[10..11]=r[19..20]
+REG[10] =  i:5
+REG[11] =  i:6
+  51 Integer          1    9    0               00 r[9]=1
+REG[9] =  i:1
+  52 Move            19    7    2               00 r[7..8]=r[19..20]
+REG[7] =  i:5
+REG[8] =  i:6
+  53 DecrJumpZero    12   79    0               00 if (--r[12])==0 goto 79
+REG[12] =  i:1
+  79 Return           6    0    0               00 
+REG[6] =  i:79
+  80 Affinity         7    2    0 @@            00 affinity(r[7..8])
+REG[7] =  i:5
+REG[8] =  i:6
+  81 Found            0   90    7 2             00 key=r[7..8]
+REG[7] =  i:5
+REG[8] =  i:6
+  82 Rewind           0   91    0               00 
+  83 Column           0    0   21               00 r[21]=
+REG[21] =  i:3
+  84 Ne               7   88   21               00 if r[21]!=r[7] goto 88
+REG[7] =  i:5
+REG[21] =  i:3
+  88 Next             0   83    0               00 
+  89 Goto             0   91    0               00 end IN expr
+  91 AddImm           1    0    0               00 r[1]=r[1]+0
+REG[1] =  NULL
+  92 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:0
+  93 Halt             0    0    0               00 
+SQL: [;
+;select zeroblob(-1)
+;]
+VDBE Trace:
+   0 Init             0    5    0               00 Start at 5
+   5 Integer         -1    3    0               00 r[3]=-1
+REG[3] =  i:-1
+   6 Function0        1    3    2 zeroblob(1)   01 r[2]=func(r[3])
+REG[3] =  i:-1
+REG[2] =  sx0[|]+0z
+   7 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             2    1    0               00 r[1]=r[2]
+REG[1] =  sx0[|]
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  sx0[|]
+   4 Halt             0    0    0               00 
+SQL: [SELECT typeof( 
+    CAST (X'2D0039002E0038003700' AS REAL) ),  
+    CAST (X'2D0039002E0038003700' AS REAL) 
+;]
+VDBE Trace:
+   0 Init             0    7    0               00 Start at 7
+   7 Blob            10    4    0 -             00 r[4]=- (len=10)
+REG[4] =  tx10[2D0039002E0038003700|-.9...8.7.]
+   8 Cast             4   69    0               00 affinity(r[4])
+REG[4] =  tx10[2D0039002E0038003700|-.9...8.7.]
+   9 Function0        1    4    3 typeof(1)     01 r[3]=func(r[4])
+REG[4] =  r:-0
+REG[3] =   t4[real](8)
+  10 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Copy             3    1    0               00 r[1]=r[3]
+REG[1] =   t4[real](8)
+   3 Blob            10    2    0 -             00 r[2]=- (len=10)
+REG[2] =  tx10[2D0039002E0038003700|-.9...8.7.]
+   4 Cast             2   69    0               00 affinity(r[2])
+REG[2] =  tx10[2D0039002E0038003700|-.9...8.7.]
+   5 ResultRow        1    2    0               00 output=r[1..2]
+REG[1] =   t4[real](8)
+REG[2] =  r:-0
+   6 Halt             0    0    0               00 
+SQL: [;
+;SELECT x'0000' IN (x'000000')
+;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Blob             2    2    0               00 r[2]= (len=2)
+REG[2] =  tx2[0000|..]
+  13 Blob             3    4    0               00 r[4]= (len=3)
+REG[4] =  tx3[000000|...]
+  14 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   3 Noop             0    0    0               00 begin IN expr
+   4 BitAnd           2    2    3               00 r[3]=r[2]&r[2]
+REG[2] =  tx2[0000|..]
+REG[2] =  tx2[0000|..]
+REG[3] =  i:0
+   5 Eq               2    8    4               00 if r[4]==r[2] goto 8
+REG[2] =  tx2[0000|..]
+REG[4] =  tx3[000000|...]
+   6 IsNull           3   10    0               00 if r[3]==NULL goto 10
+REG[3] =  i:0
+   7 Goto             0    9    0               00 end IN expr
+   9 AddImm           1    0    0               00 r[1]=r[1]+0
+REG[1] =  NULL
+  10 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:0
+  11 Halt             0    0    0               00 
+SQL: [SELECT zeroblob(2) IN (x'0000')
+;]
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Integer          2    5    0               00 r[5]=2
+REG[5] =  i:2
+  13 Function0        1    5    2 zeroblob(1)   01 r[2]=func(r[5])
+REG[5] =  i:2
+REG[2] =  sx0[|]+2z
+  14 Blob             2    4    0               00 r[4]= (len=2)
+REG[4] =  tx2[0000|..]
+  15 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   3 Noop             0    0    0               00 begin IN expr
+   4 BitAnd           2    2    3               00 r[3]=r[2]&r[2]
+REG[2] =  sx0[|]+2z
+REG[2] =  sx0[|]+2z
+REG[3] =  i:0
+   5 Eq               2    8    4               00 if r[4]==r[2] goto 8
+REG[2] =  sx0[|]+2z
+REG[4] =  tx2[0000|..]
+   8 Integer          1    1    0               00 r[1]=1
+REG[1] =  i:1
+   9 AddImm           1    0    0               00 r[1]=r[1]+0
+REG[1] =  i:1
+  10 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  i:1
+  11 Halt             0    0    0               00 
+SQL: [;INSERT INTO test(t1) VALUES(NULL),(5);]
+VDBE Trace:
+   0 Init             0   18    0               00 Start at 18
+  18 Transaction      0    1    2 0             01 usesStmtJournal=1
+  19 Goto             0    1    0               00 
+   1 InitCoroutine    3    8    2               00 
+   8 OpenWrite        0    2    0 1             00 root=2 iDb=0; test
+   9 Yield            3   17    0               00 
+REG[3] =  i:1
+REG[3] =  i:9
+   2 Explain          2    0    0 SCAN 2 CONSTANT ROWS 00 
+   3 Null             0    2    0               00 r[2]=NULL
+REG[2] =  NULL
+   4 Yield            3    0    0               00 
+REG[3] =  i:9
+REG[3] =  i:4
+  10 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+  11 Abortable        0    0    0               00 
+  12 Ne               2   14    2 (BINARY)      52 if r[2]!=r[2] goto 14
+REG[2] =  NULL
+REG[2] =  NULL
+  14 MakeRecord       2    1    4 B             00 r[4]=mkrec(r[2])
+REG[2] =  NULL
+REG[4] =  sx2[0200|..]
+  15 Insert           0    4    1 test          39 intkey=r[1] data=r[4]
+REG[4] =  sx2[0200|..]
+REG[1] =  i:1
+  16 Goto             0    9    0               00 
+   9 Yield            3   17    0               00 
+REG[3] =  i:4
+REG[3] =  i:9
+   5 Integer          5    2    0               00 r[2]=5
+REG[2] =  i:5
+   6 Yield            3    0    0               00 
+REG[3] =  i:9
+REG[3] =  i:6
+  10 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:2
+  11 Abortable        0    0    0               00 
+  12 Ne               2   14    2 (BINARY)      52 if r[2]!=r[2] goto 14
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fb712d3a859 in __GI_abort () at abort.c:79
+#2  0x00007fb712d3a729 in __assert_fail_base (fmt=0x7fb712ed0588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21dc88 "pIn1!=pIn3", file=0x2291f4 "sqlite3.c", line=86002, function=<optimized out>) at assert.c:92
+#3  0x00007fb712d4bfd6 in __GI___assert_fail (assertion=0x21dc88 "pIn1!=pIn3", file=0x2291f4 "sqlite3.c", line=86002, function=0x216a86 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003cf4ad in sqlite3VdbeExec (p=0x11ad840) at sqlite3.c:86002
+#5  0x000000000041ba74 in sqlite3Step (p=0x11ad840) at sqlite3.c:82300
+#6  0x0000000000293d5d in sqlite3_step (pStmt=0x11ad840) at sqlite3.c:82365
+#7  0x0000000000258a39 in main (argc=1, argv=0x7ffcedc03b48) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 51469] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

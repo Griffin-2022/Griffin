@@ -1,0 +1,42 @@
+# name: test/sql/alter/add_col/test_add_col_index.test
+# description: Test ALTER TABLE ADD COLUMN: ADD COLUMN with index
+# group: [add_col]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE test ADD COLUMN k INTEGER DEFAULT 2
+
+;
+CREATE INDEX i_index ON test(k)
+
+;
+COMMIT
+
+;
+INSERT INTO test VALUES (3, 3, 3)
+
+;
+SELECT * FROM test WHERE k=2
+;
+1
+1
+2
+2
+2
+2
+
+;
+SELECT * FROM test WHERE k=3
+;
+3
+3
+3
+

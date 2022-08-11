@@ -1,0 +1,73 @@
+# name: test/sql/transactions/test_basic_transactions.test
+# description: Simple table creation transaction tests
+# group: [transactions]
+
+# start transactions
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# create a table on connection one
+;
+CREATE TABLE integers(i INTEGER)
+
+# connection one should be able to query the table
+;
+SELECT * FROM integers
+;
+
+# connection two should not be able to
+;
+SELECT * FROM integers
+
+# if we rollback, nobody should be able to query the table
+;
+ROLLBACK
+
+;
+SELECT * FROM integers
+
+;
+SELECT * FROM integers
+
+# now if we commit the table
+;
+BEGIN TRANSACTION
+
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+COMMIT
+
+# con two STILL should not see it because it was started before the
+# transaction committed
+;
+SELECT * FROM integers
+
+# but if we rollback and start a new transaction it should see it
+;
+ROLLBACK
+
+;
+SELECT * FROM integers
+;
+
+# serialize conflict
+# start transactions
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# create a table on connection one
+;
+CREATE TABLE integers2(i INTEGER)
+
+# create a table on connection two with the same name
+;
+CREATE TABLE integers2(i INTEGER)
+

@@ -1,0 +1,98 @@
+# name: test/sql/alter/rename_table/test_rename_table_many_transactions.test
+# description: Test RENAME TABLE four table rename and four parallel transactions
+# group: [rename_table]
+
+;
+CREATE TABLE tbl1(i INTEGER)
+
+;
+INSERT INTO tbl1 VALUES (999), (100)
+
+# rename chain
+# con2 starts a transaction now
+;
+BEGIN TRANSACTION
+
+# rename in con1, con2 should still see "tbl1"
+;
+ALTER TABLE tbl1 RENAME TO tbl2
+
+# con3 starts a transaction now
+;
+BEGIN TRANSACTION
+
+# rename in con1, con3 should still see "tbl2"
+;
+ALTER TABLE tbl2 RENAME TO tbl3
+
+# con4 starts a transaction now
+;
+BEGIN TRANSACTION
+
+# rename in con1, con4 should still see "tbl3"
+;
+ALTER TABLE tbl3 RENAME TO tbl4
+
+# con2 sees ONLY tbl1
+;
+SELECT * FROM tbl1
+;
+999
+100
+
+;
+SELECT * FROM tbl2
+
+;
+SELECT * FROM tbl3
+
+;
+SELECT * FROM tbl4
+
+# con3 sees ONLY tbl2
+;
+SELECT * FROM tbl1
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl3
+
+;
+SELECT * FROM tbl4
+
+# con4 sees ONLY tbl3
+;
+SELECT * FROM tbl1
+
+;
+SELECT * FROM tbl2
+
+;
+SELECT * FROM tbl3
+;
+999
+100
+
+;
+SELECT * FROM tbl4
+
+# con1 sees ONLY tbl4
+;
+SELECT * FROM tbl1
+
+;
+SELECT * FROM tbl2
+
+;
+SELECT * FROM tbl3
+
+;
+SELECT * FROM tbl4
+;
+999
+100

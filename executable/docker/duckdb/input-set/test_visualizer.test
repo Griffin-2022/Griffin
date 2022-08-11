@@ -1,0 +1,71 @@
+# name: test/sql/visualizer/test_visualizer.test
+# description: Profiler Visualizer
+# group: [visualizer]
+
+require visualizer
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+PRAGMA enable_profiling='json'
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+PRAGMA profiling_output='__TEST_DIR__/first.json'
+
+;
+PRAGMA profiling_mode = detailed
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+CREATE TABLE t1 AS SELECT i as v1, i as v2 from range (0,10) t(i)
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+CREATE TABLE t2 AS SELECT i as v1, i as v2 from range (0,5) t(i)
+
+;
+SELECT t1.v1 FROM t1 JOIN t2 USING (v1)
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+SELECT t1.v1 FROM t1 JOIN t2 USING (v1)
+
+;
+Pragma visualize_json_profiling_output('__TEST_DIR__/test.html','__TEST_DIR__/first.json')
+
+;
+PRAGMA profiling_output='__TEST_DIR__/second.json'
+
+;
+SELECT t1.v1 FROM t1 JOIN t2 USING (v1)
+
+;
+Pragma visualize_diff_profiling_output('__TEST_DIR__/test.html','__TEST_DIR__/first.json','__TEST_DIR__/second.json')
+
+;
+Pragma visualize_last_profiling_output('__TEST_DIR__/test.html')
+
+;
+Pragma visualize_json_profiling_output('__TEST_DIR__/test.html','__TEST_DIR__/DOESNOTEXIST.json')
+
+;
+Pragma visualize_diff_profiling_output('__TEST_DIR__/test.html','__TEST_DIR__/first.json', '__TEST_DIR__/DOESNOTEXIST.json')
+
+;
+Pragma visualize_diff_profiling_output('__TEST_DIR__/test.html','__TEST_DIR__/DOESNOTEXIST.json', '__TEST_DIR__/DOESNOTEXIST.json')

@@ -1,0 +1,111 @@
+2022-08-02 08:51:02.162 UTC [72407] STATEMENT:  
+	
+	CREATE FUNCTION changing_test(OUT n integer, OUT test1) RETURNS SETOF record AS $$
+	return [(1, {'test1_a_idx': 1, 'b': 2}),
+	        (1, (3, 4))]
+	$$ LANGUAGE plpythonu;
+2022-08-02 08:51:02.166 UTC [72407] ERROR:  language "plpythonu" does not exist
+2022-08-02 08:51:02.166 UTC [72407] STATEMENT:  
+	
+	-- check what happens if the output record descriptor changes
+	CREATE FUNCTION return_record(objsubid text) RETURNS record AS $$
+	return {'objsubid': objsubid, 'val': 10}
+	$$ LANGUAGE plpythonu;
+2022-08-02 08:51:02.167 UTC [72407] ERROR:  function return row and query-specified return row do not match
+2022-08-02 08:51:02.167 UTC [72407] STATEMENT:  select * from json_populate_recordset(row(0::int),'[{"a":"1","b":"2"},{"a":"3"}]') q (a text, b text);
+2022-08-02 08:51:02.169 UTC [72407] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 08:51:02.169 UTC [72407] STATEMENT:  COPY test1 FROM STDIN NULL 'null';
+2022-08-02 08:51:02.172 UTC [72407] ERROR:  table "sqlsim16" does not exist
+2022-08-02 08:51:02.172 UTC [72407] STATEMENT:  drop table sqlsim16;
+2022-08-02 08:51:02.174 UTC [72407] ERROR:  function aggfns(integer, integer, text) does not exist at character 35
+2022-08-02 08:51:02.174 UTC [72407] STATEMENT:  create view agg_view1 as
+	  select aggfns(a,b,c)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-02 08:51:02.174 UTC [72407] ERROR:  function aggfns(integer, integer, text) does not exist at character 46
+2022-08-02 08:51:02.174 UTC [72407] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(a,b,c order by b+1)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(a,b,c);
+2022-08-02 08:51:02.175 UTC [72407] ERROR:  relation "tenk1" does not exist at character 290
+2022-08-02 08:51:02.175 UTC [72407] STATEMENT:  create view aggordview1 as
+	select ten,
+	       percentile_disc(0.5) within group (order by thousand) as p50,
+	       percentile_disc(0.5) within group (order by thousand) filter (where hundred=1) as px,
+	       rank(5,'AZZZZ',50) within group (order by hundred, string4 desc, hundred)
+	  from tenk1
+	 group by ten order by ten;
+2022-08-02 08:51:02.175 UTC [72407] ERROR:  relation "aggordview1" does not exist
+2022-08-02 08:51:02.175 UTC [72407] STATEMENT:  select pg_get_viewdef('aggordview1');
+2022-08-02 08:51:02.175 UTC [72407] ERROR:  view "aggordview1" does not exist
+2022-08-02 08:51:02.175 UTC [72407] STATEMENT:  drop view aggordview1;
+2022-08-02 08:51:02.178 UTC [72407] ERROR:  table "sqlsim40" does not exist
+2022-08-02 08:51:02.178 UTC [72407] STATEMENT:  drop table sqlsim40;
+2022-08-02 08:51:02.178 UTC [72407] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:51:02.178 UTC [72407] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 08:51:02.186 UTC [72407] ERROR:  INSERT has more expressions than target columns at character 37
+2022-08-02 08:51:02.186 UTC [72407] STATEMENT:  INSERT INTO test1
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-02 08:51:02.188 UTC [72407] ERROR:  role "regress_priv_user10" does not exist
+2022-08-02 08:51:02.188 UTC [72407] STATEMENT:  DROP USER regress_priv_user10;
+2022-08-02 08:51:02.189 UTC [72407] ERROR:  relation "atest2" does not exist
+2022-08-02 08:51:02.189 UTC [72407] STATEMENT:  GRANT UPDATE ON atest2 TO regress_priv_user3;
+2022-08-02 08:51:02.189 UTC [72407] ERROR:  role "regress_priv_user1" does not exist
+2022-08-02 08:51:02.189 UTC [72407] STATEMENT:  SET SESSION AUTHORIZATION regress_priv_user1;
+2022-08-02 08:51:02.189 UTC [72407] ERROR:  role "regress_priv_user1" does not exist
+2022-08-02 08:51:02.189 UTC [72407] STATEMENT:  SET SESSION AUTHORIZATION regress_priv_user1;
+2022-08-02 08:51:02.190 UTC [72407] ERROR:  relation "t1" does not exist
+2022-08-02 08:51:02.190 UTC [72407] STATEMENT:  GRANT INSERT (c1, c2, c3) ON t1 TO regress_priv_user2;
+2022-08-02 08:51:02.190 UTC [72407] ERROR:  relation "t1" does not exist
+2022-08-02 08:51:02.190 UTC [72407] STATEMENT:  ALTER TABLE t1 ADD COLUMN ìÞÙ¸æñÕè integer;
+2022-08-02 08:51:02.190 UTC [72407] ERROR:  no schema has been selected to create in at character 14
+2022-08-02 08:51:02.190 UTC [72407] STATEMENT:  CREATE TABLE objoid (classoid int, t2 int);
+2022-08-02 08:51:02.191 UTC [72407] WARNING:  there is no transaction in progress
+2022-08-02 08:51:02.194 UTC [72407] ERROR:  function return row and query-specified return row do not match
+2022-08-02 08:51:02.194 UTC [72407] STATEMENT:  select * from json_populate_recordset(row(0::int),'[{"a":"1","b":"2"},{"a":"3"}]') q (a text, b text);
+2022-08-02 08:51:02.194 UTC [72407] WARNING:  there is no transaction in progress
+2022-08-02 08:51:02.197 UTC [72407] ERROR:  relation "sro_mv" does not exist
+2022-08-02 08:51:02.197 UTC [72407] STATEMENT:  REFRESH MATERIALIZED VIEW sro_mv;
+2022-08-02 08:51:02.422 UTC [72407] ERROR:  relation "test1" does not exist
+2022-08-02 08:51:02.422 UTC [72407] STATEMENT:  
+	CREATE INDEX t1 ON test1 USING brin (b) WITH (pages_per_range = 2);
+2022-08-02 08:51:02.422 UTC [72407] ERROR:  role "regress_priv_user1" does not exist
+2022-08-02 08:51:02.422 UTC [72407] STATEMENT:  ALTER DEFAULT PRIVILEGES IN SCHEMA testns REVOKE INSERT ON TABLES FROM regress_priv_user1;
+2022-08-02 08:51:02.422 UTC [72407] ERROR:  schema "testns3" does not exist
+2022-08-02 08:51:02.422 UTC [72407] STATEMENT:  SELECT has_schema_privilege('regress_priv_user2', 'testns3', 'CREATE');
+2022-08-02 08:51:02.423 UTC [72407] ERROR:  schema "testns" does not exist
+2022-08-02 08:51:02.423 UTC [72407] STATEMENT:  SELECT has_function_privilege('regress_priv_user2', 'testns.agg1(int)', 'EXECUTE');
+2022-08-02 08:51:02.423 UTC [72407] ERROR:  schema "testns" does not exist
+2022-08-02 08:51:02.423 UTC [72407] STATEMENT:  SELECT has_function_privilege('regress_priv_user2', 'testns.bar()', 'EXECUTE');
+2022-08-02 08:51:02.441 UTC [72407] ERROR:  schema "testns2" does not exist
+2022-08-02 08:51:02.441 UTC [72407] STATEMENT:  DROP SCHEMA testns2 CASCADE;
+2022-08-02 08:51:02.441 UTC [72407] WARNING:  there is no transaction in progress
+2022-08-02 08:51:02.453 UTC [72407] ERROR:  returned record type does not match expected record type
+2022-08-02 08:51:02.453 UTC [72407] STATEMENT:  
+	select returnssetofholes();
+2022-08-02 08:51:02.454 UTC [72407] ERROR:  function return row and query-specified return row do not match
+2022-08-02 08:51:02.454 UTC [72407] STATEMENT:  select * from json_populate_recordset(row(0::int),'[{"a":"1","b":"2"},{"a":"3"}]') q (a text, b text);
+2022-08-02 08:51:02.455 UTC [72407] ERROR:  "red" is not an existing enum label
+2022-08-02 08:51:02.455 UTC [72407] STATEMENT:  ALTER TYPE objsubid RENAME VALUE 'red' TO 'crimson';
+2022-08-02 08:51:02.455 UTC [72407] WARNING:  there is no transaction in progress
+2022-08-02 08:51:02.455 UTC [72407] ERROR:  type "classoid" does not exist
+2022-08-02 08:51:02.455 UTC [72407] STATEMENT:  DROP TYPE classoid;
+2022-08-02 08:51:02.455 UTC [72407] WARNING:  there is no transaction in progress
+2022-08-02 08:51:02.460 UTC [72407] ERROR:  SAVEPOINT can only be used in transaction blocks
+2022-08-02 08:51:02.460 UTC [72407] STATEMENT:  
+	-- ERROR:  could not open relation with OID 16xxx
+	SAVEPOINT q;
+2022-08-02 08:51:02.650 UTC [72407] PANIC:  could not write to file "pg_wal/xlogtemp.72407": No space left on device
+2022-08-02 08:51:02.650 UTC [72407] STATEMENT:  INSERT INTO test1
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-02 08:51:02.672 UTC [63397] LOG:  server process (PID 72407) was terminated by signal 6: Aborted
+2022-08-02 08:51:02.672 UTC [63397] LOG:  terminating any other active server processes
+2022-08-02 08:51:02.679 UTC [73014] FATAL:  the database system is in recovery mode
+2022-08-02 08:51:02.681 UTC [73017] FATAL:  the database system is in recovery mode
+2022-08-02 08:51:02.683 UTC [73018] FATAL:  the database system is in recovery mode
+2022-08-02 08:51:02.686 UTC [63397] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:51:02.702 UTC [63397] LOG:  received smart shutdown request
+2022-08-02 08:51:02.702 UTC [73024] LOG:  database system was interrupted; last known up at 2022-08-02 08:50:38 UTC
+2022-08-02 08:51:02.732 UTC [73024] LOG:  recovered replication state of node 1 to 0/0
+2022-08-02 08:51:02.732 UTC [73024] LOG:  recovered replication state of node 7 to 0/1
+2022-08-02 08:51:02.732 UTC [73024] LOG:  database system was not properly shut down; automatic recovery in progress

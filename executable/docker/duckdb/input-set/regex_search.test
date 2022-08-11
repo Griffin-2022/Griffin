@@ -1,0 +1,186 @@
+# name: test/sql/function/string/regex_search.test
+# description: regex search test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# constant strings
+;
+SELECT regexp_matches('asdf', '.*sd.*')
+;
+1
+
+;
+SELECT regexp_matches('asdf', '.*yu.*')
+;
+0
+
+;
+SELECT regexp_matches('asdf', '')
+;
+1
+
+# partial matches okay
+;
+SELECT regexp_matches('asdf', 'sd')
+;
+1
+
+;
+SELECT regexp_full_match('asdf', 'sd')
+;
+0
+
+;
+SELECT regexp_full_match('asdf', '.sd.')
+;
+1
+
+;
+SELECT regexp_matches('asdf', '^sdf$')
+;
+0
+
+# empty strings
+;
+SELECT regexp_matches('', '.*yu.*')
+;
+0
+
+;
+SELECT regexp_matches('', '.*')
+;
+1
+
+# NULLs
+;
+SELECT regexp_matches('asdf', CAST(NULL AS STRING))
+;
+NULL
+
+;
+SELECT regexp_matches(CAST(NULL AS STRING), '.*sd.*')
+;
+NULL
+
+;
+SELECT regexp_matches(CAST(NULL AS STRING), CAST(NULL AS STRING))
+;
+NULL
+
+;
+SELECT regexp_matches('foobarbequebaz', '(bar)(beque)')
+;
+1
+
+# postgres says throw error on invalid regex
+;
+SELECT regexp_matches('', '\X')
+
+;
+CREATE TABLE regex(s STRING, p STRING)
+
+;
+INSERT INTO regex VALUES ('asdf', 'sd'), ('asdf', '^sd'), (NULL, '^sd'), ('asdf', NULL)
+
+;
+SELECT regexp_matches(s, '.*') FROM regex
+;
+1
+1
+NULL
+1
+
+;
+SELECT regexp_matches(s, p) FROM regex
+;
+1
+0
+NULL
+NULL
+
+# test regex_matches with options
+# case sensitivity
+;
+SELECT regexp_matches('asdf', '.*SD.*', 'i')
+;
+1
+
+;
+SELECT regexp_matches('asdf', '.*SD.*', 'c')
+;
+0
+
+# literal match
+;
+SELECT regexp_matches('as^/$df', '^/$', 'l')
+;
+1
+
+;
+SELECT regexp_matches('as^/$df', '^/$')
+;
+0
+
+# dot matches newline
+;
+SELECT regexp_matches('hello
+world', '.*', 's')
+;
+1
+
+;
+SELECT regexp_full_match('hello
+world', '.*', 'n')
+;
+0
+
+# whitespace is ignored
+;
+SELECT regexp_matches('asdf', '.*SD.*', ' i 	')
+;
+1
+
+# NULL in options is ignored
+;
+SELECT regexp_matches('asdf', '.*SD.*', NULL)
+;
+0
+
+# this also works with tables
+;
+CREATE TABLE test(v VARCHAR);
+
+;
+INSERT INTO test VALUES ('hello'), ('HELLO');
+
+;
+SELECT regexp_matches(v, 'h.*', 'i') FROM test ORDER BY v
+;
+1
+1
+
+;
+SELECT regexp_matches(v, 'h.*', 'c') FROM test ORDER BY v
+;
+0
+1
+
+;
+SELECT regexp_matches(v, 'h.*', v) FROM test ORDER BY v
+
+# throw on invalid options
+;
+SELECT regexp_matches('asdf', '.*SD.*', 'q')
+
+# can only use "g" with regexp replace
+;
+SELECT regexp_matches('asdf', '.*SD.*', 'g')
+
+# error in non-constant regex
+;
+INSERT INTO regex VALUES ('asdf', '(')
+
+;
+SELECT regexp_matches(s, p) FROM regex

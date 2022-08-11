@@ -1,0 +1,111 @@
+2022-08-02 04:26:49.625 UTC [67201] STATEMENT:  SET SESSION AUTHORIZATION regress_range_parted_user;
+2022-08-02 04:26:49.625 UTC [67201] ERROR:  table "d4_primary1" does not exist
+2022-08-02 04:26:49.625 UTC [67201] STATEMENT:   -- fail
+	
+	-- cleanup
+	drop table d4_primary1;
+2022-08-02 04:26:49.626 UTC [67201] ERROR:  hour "15" is invalid for the 12-hour clock
+2022-08-02 04:26:49.626 UTC [67201] STATEMENT:  SELECT to_timestamp('2016-06-13 15:50:55', 'YYYY-MM-DD HH:MI:SS');
+2022-08-02 04:26:49.627 UTC [67201] ERROR:  constraint "nonexistent" of domain "test1" does not exist
+2022-08-02 04:26:49.627 UTC [67201] STATEMENT:  
+	
+	alter domain test1 drop constraint nonexistent;
+2022-08-02 04:26:49.627 UTC [67201] ERROR:  constraint "meow" for domain "test1" already exists
+2022-08-02 04:26:49.627 UTC [67201] STATEMENT:  
+	ALTER DOMAIN test1 ADD CONSTRAINT meow CHECK (VALUE < 11) NOT VALID;
+2022-08-02 04:26:49.628 UTC [67201] ERROR:  relation "d4_primary2_pkey" does not exist at character 58
+2022-08-02 04:26:49.628 UTC [67201] STATEMENT:  
+	create view sqlsim11 as select cast(sqlsim12 as a) from d4_primary2_pkey;
+2022-08-02 04:26:49.628 UTC [67201] ERROR:  type "a" does not exist
+2022-08-02 04:26:49.628 UTC [67201] STATEMENT:  
+	create domain b a check (substring(VALUE, 1, 1) = 'x');
+2022-08-02 04:26:49.629 UTC [67201] ERROR:  function substring(test1, integer, integer) does not exist
+2022-08-02 04:26:49.629 UTC [67201] STATEMENT:  
+	create domain sqlsim15 test1 check (substring(VALUE, 2, 1) = '1');
+2022-08-02 04:26:49.629 UTC [67201] ERROR:  invalid input syntax for type integer: "yz23" at character 17
+2022-08-02 04:26:49.629 UTC [67201] STATEMENT:   -- fail
+	select 'yz23'::test1;
+2022-08-02 04:26:49.629 UTC [67201] ERROR:  type "b[]" does not exist
+2022-08-02 04:26:49.629 UTC [67201] STATEMENT:  
+	
+	-- Likewise for domains within domains over array of composite
+	create domain ìÞÙ¸æñÕèindex2 as b[];
+2022-08-02 04:26:49.629 UTC [67201] ERROR:  type "test1_a_idx" does not exist
+2022-08-02 04:26:49.629 UTC [67201] STATEMENT:  
+	
+	alter domain test1_a_idx add constraint c2 check(value >= 10);
+2022-08-02 04:26:49.630 UTC [67201] ERROR:  type "b" does not exist
+2022-08-02 04:26:49.630 UTC [67201] STATEMENT:  
+	alter domain b drop constraint unsigned_foo;
+2022-08-02 04:26:49.630 UTC [67201] WARNING:  there is no transaction in progress
+2022-08-02 04:26:49.641 UTC [67201] ERROR:  type "test1" already exists
+2022-08-02 04:26:49.641 UTC [67201] STATEMENT:  
+	
+	create domain test1 as int[];
+=================================================================
+==67201==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc99e41350 sp 0x7ffc99e41348
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f58ed4c8082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==67201==ABORTING
+2022-08-02 04:26:49.685 UTC [59313] LOG:  server process (PID 67201) was terminated by signal 6: Aborted
+2022-08-02 04:26:49.685 UTC [59313] LOG:  terminating any other active server processes
+2022-08-02 04:26:49.690 UTC [59313] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:26:49.703 UTC [68834] LOG:  database system was interrupted; last known up at 2022-08-02 04:25:59 UTC
+2022-08-02 04:26:49.704 UTC [68835] FATAL:  the database system is in recovery mode
+2022-08-02 04:26:49.707 UTC [68838] FATAL:  the database system is in recovery mode
+2022-08-02 04:26:49.709 UTC [68839] FATAL:  the database system is in recovery mode
+2022-08-02 04:26:49.714 UTC [59313] LOG:  received smart shutdown request
+2022-08-02 04:26:49.726 UTC [68834] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:26:49.727 UTC [68834] LOG:  redo starts at 0/451F150
+2022-08-02 04:26:49.731 UTC [59313] LOG:  abnormal database system shutdown

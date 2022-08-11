@@ -1,0 +1,46 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000358,sig:06,src:021480+023618,time:10797178,execs:2761065,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f28345eb859 in __GI_abort () at abort.c:79
+#2  0x00007f28345eb729 in __assert_fail_base (fmt=0x7f2834781588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x2174e8 "p->p!=pPtr", file=0x22873d "sqlite3.c", line=103013, function=<optimized out>) at assert.c:92
+#3  0x00007f28345fcfd6 in __GI___assert_fail (assertion=0x2174e8 "p->p!=pPtr", file=0x22873d "sqlite3.c", line=103013, function=0x2262bc "void renameTokenCheckAll(Parse *, void *)") at assert.c:101
+#4  0x000000000031c228 in renameTokenCheckAll (pParse=0x7fffc30227b8, pPtr=0x91b2d0) at sqlite3.c:103013
+#5  0x0000000000302530 in sqlite3RenameTokenMap (pParse=0x7fffc30227b8, pPtr=0x91b2d0, pToken=0x7fffc3021ac8) at sqlite3.c:103038
+#6  0x00000000002f6133 in tokenExpr (pParse=0x7fffc30227b8, op=59, t=...) at sqlite3.c:148261
+#7  0x00000000002ee968 in yy_reduce (yypParser=0x7fffc3021d70, yyruleno=163, yyLookahead=76, yyLookaheadToken=..., pParse=0x7fffc30227b8) at sqlite3.c:151971
+#8  0x00000000002e92f8 in sqlite3Parser (yyp=0x7fffc3021d70, yymajor=76, yyminor=...) at sqlite3.c:152877
+#9  0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fffc30227b8, 
+    zSql=0x8de535 "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW),\nw3 AS\n(PARTITION BY b ORDER BY b\nROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)\n;\nSELECT b, sum(b) w2,max(b)OVER FROM t1\nWINDOW\nw1 AS\n(PARTITION B"..., pzErrMsg=0x7fffc3022770) at sqlite3.c:154013
+#10 0x000000000041b7ab in renameParseSql (p=0x7fffc30227b8, zDb=0x8e0460 "main", bTable=0, db=0x8d32b0, 
+    zSql=0x8de390 "CREATE TRIGGER aaa INSERT ON t1 WHEN new.b NOT NULL BEGIN\n\nSELECT b () OVER , dense_rank() OVER b, b () OVER w1\nFROM t1\nWINDOW\nw1 AS\n( w1 ORDER BY b\nROWS BETWEEN 2 NOT IN(SELECT b, sum(b) w2,max(b)OVE"..., bTemp=0) at sqlite3.c:103308
+#11 0x0000000000419c80 in renameColumnFunc (context=0x8e82f0, NotUsed=9, argv=0x8e8320) at sqlite3.c:103612
+#12 0x00000000003df844 in sqlite3VdbeExec (p=0x8e3340) at sqlite3.c:90923
+#13 0x0000000000411104 in sqlite3Step (p=0x8e3340) at sqlite3.c:81930
+#14 0x000000000029128d in sqlite3_step (pStmt=0x8e3340) at sqlite3.c:81995
+#15 0x00000000002570b9 in main (argc=1, argv=0x7fffc3023628) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 53319] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

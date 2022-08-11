@@ -1,0 +1,100 @@
+intern_plugin_lock: lock: thd: 0x62b00015e288  plugin: "InnoDB" LOCK ref_count: 40
+my_malloc: my: size: 8 flags: 16
+my_malloc: info: global thd memory_used: -115688  size: 32
+my_malloc: exit: ptr: 0x60e0001b0a08
+intern_plugin_lock: lock: thd: 0x62b00015e288  plugin: "SQL_SEQUENCE" LOCK ref_count: 1
+my_malloc: my: size: 8 flags: 16
+my_malloc: info: global thd memory_used: -115656  size: 32
+my_malloc: exit: ptr: 0x60e000096628
+intern_plugin_lock: lock: thd: 0x62b00015e288  plugin: "PERFORMANCE_SCHEMA" LOCK ref_count: 45
+plugin_foreach_with_mask: mutex: LOCK_plugin (0x6022f20) unlocking
+my_malloc: my: size: 10 flags: 0
+my_malloc: info: global thd memory_used: -115624  size: 40
+my_malloc: exit: ptr: 0x60e00015f788
+innobase_trx_allocate: mutex: mutex (0x611000001480) locking
+innobase_trx_allocate: mutex: mutex (0x611000001480) locked
+innobase_trx_allocate: mutex: mutex (0x611000001480) unlocking
+innobase_trx_allocate: mutex: mutex (0x6120000012a0) locking
+innobase_trx_allocate: mutex: mutex (0x6120000012a0) locked
+innobase_trx_allocate: mutex: mutex (0x6120000012a0) unlocking
+innobase_trx_allocate: trx: Create: 0x7fb94152db80
+innobase_trx_allocate: mutex: mutex (0x52b5200) locking
+innobase_trx_allocate: mutex: mutex (0x52b5200) locked
+innobase_trx_allocate: mutex: mutex (0x52b5200) unlocking
+dict_table_open_on_name: dict_table_open_on_name: table: 'mysql/innodb_table_stats'
+filename_to_tablename: enter: from 'mysql'
+filename_to_tablename: exit: to 'mysql'
+filename_to_tablename: enter: from 'innodb_table_stats'
+filename_to_tablename: exit: to 'innodb_table_stats'
+MDL_context::acquire_lock: enter: lock_type: MDL_SHARED  timeout: 86400.000000
+MDL_context::acquire_lock: info: Got lock without waiting
+filename_to_tablename: enter: from 'mysql'
+filename_to_tablename: exit: to 'mysql'
+filename_to_tablename: enter: from 'innodb_table_stats'
+filename_to_tablename: exit: to 'innodb_table_stats'
+dict_table_open_on_name: dict_table_open_on_name: table: 'mysql/innodb_index_stats'
+dict_load_table_one: dict_load_table_one: table: mysql/innodb_index_stats
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locked
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) unlocking
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719118, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001cd320, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719020, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719b98, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001d2020, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719aa0, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719f18, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001cda20, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000719e20, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700074ff98, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001ce120, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700074fea0, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700071a998, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001e2a20, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700071a8a0, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700074f898, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001e0020, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61700074f7a0, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000750318, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x61b0001ce820, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x617000750220, type: 6
+que_eval_sql: que_eval_sql: query: PROCEDURE DROP_DATABASE_PROC () IS
+fk CHAR;
+name CHAR;
+tid CHAR;
+iid CHAR;
+DECLARE FUNCTION fk_report;
+DECLARE CURSOR fkf IS
+SELECT ID FROM SYS_FOREIGN WHERE ID >= :db FOR UPDATE;
+DECLARE CURSOR fkr IS
+SELECT REF_NAME,ID FROM SYS_FOREIGN WHERE REF_NAME >= :db FOR UPDATE
+ORDER BY REF_NAME;
+DECLARE CURSOR tab IS
+SELECT ID,NAME FROM SYS_TABLES WHERE NAME >= :db FOR UPDATE;
+DECLARE CURSOR idx IS
+SELECT ID FROM SYS_INDEXES WHERE TABLE_ID = tid FOR UPDATE;
+BEGIN
+OPEN fkf;
+WHILE 1 = 1 LOOP
+  FETCH fkf INTO fk;
+  IF (SQL % NOTFOUND) THEN EXIT; END IF;
+  IF TO_BINARY(SUBSTR(fk, 0, LENGTH(:db)))<>TO_BINARY(:db) THEN EXIT; END IF;
+  DELETE FROM SYS_FOREIGN_COLS WHERE TO_BINARY(ID)=TO_BINARY(fk);
+  DELETE FROM SYS_FOREIGN WHERE CURRENT OF fkf;
+END LOOP;
+CLOSE fkf;
+OPEN fkr;
+FETCH fkr INTO fk_report();
+CLOSE fkr;
+OPEN tab;
+WHILE 1 = 1 LOOP
+  FETCH tab INTO tid,name;
+  IF (SQL % NOTFOUND) THEN EXIT; END IF;
+  IF SUBSTR(name, 0, LENGTH(:db)) <> :db THEN EXIT; END IF;
+  DELETE FROM SYS_COLUMNS WHERE TABLE_ID=tid;
+  D
+dict_table_open_on_name: dict_table_open_on_name: table: 'SYS_FOREIGN'
+dict_table_open_on_name: dict_table_open_on_name: table: 'SYS_FOREIGN'
+dict_table_open_on_name: dict_table_open_on_name: table: 'SYS_TABLES'
+dict_table_open_on_name: dict_table_open_on_name: table: 'SYS_INDEXES'
+dict_table_open_on_name: dict_table_open_on_name: table: 'SYS_FOREIGN_COLS'

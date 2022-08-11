@@ -1,0 +1,47 @@
+PRAGMA page_size=1024;
+;PRAGMA auto_vacuum=incremental;
+;CREATE TABLE t1(x);
+;INSERT INTO t1 VALUES(zeroblob(30000));
+;DELETE FROM t1;
+;
+;PRAGMA incremental_vacuum(1);
+;
+;PRAGMA incremental_vacuum(5);
+;
+;PRAGMA incremental_vacuum(1000);
+;
+;ATTACH DATABASE 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;PRAGMA aux.auto_vacuum=incremental;
+;CREATE TABLE aux.t2(x);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;INSERT INTO t2 VALUES(zeroblob(30000));
+;INSERT INTO t1 SELECT * FROM t2;
+;DELETE FROM t2;
+;DELETE FROM t1;
+;
+;PRAGMA aux.incremental_vacuum(1)
+    
+;PRAGMA aux.incremental_vacuum(5)
+    
+;PRAGMA main.incremental_vacuum(5)
+    
+;PRAGMA aux.incremental_vacuum
+    
+;PRAGMA incremental_vacuum(1)
+    
+;PRAGMA auto_vacuum = 'full';
+;BEGIN;
+;CREATE TABLE abc(a);
+;INSERT INTO abc VALUES(randstr(1500,1500));
+;COMMIT;
+;
+;BEGIN;
+;DELETE FROM abc;
+;PRAGMA incremental_vacuum;
+;COMMIT;
+;
+;PRAGMA integrity_check
+;

@@ -1,0 +1,62 @@
+# name: test/sql/aggregate/qualify/test_qualify_view.test
+# description: Test QUALIFY clause in a view over different runs
+# group: [qualify]
+
+# load the DB from disk
+load __TEST_DIR__/view_storage.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a schema and view
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test.t VALUES (11, 22), (13, 22), (12, 21)
+
+;
+CREATE VIEW test.v AS SELECT * FROM test.t QUALIFY row_number() OVER (PARTITION BY b) = 1;
+
+;
+SELECT b, SUM(a) FROM test.v GROUP BY b QUALIFY row_number() OVER (PARTITION BY b) = 1
+;
+21	12
+22	11
+
+# drop the table the view is based on
+;
+DROP TABLE test.t
+
+loop i 0 2
+
+# restart the system
+restart
+
+# after recreating the table, we can query the view again
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test.t VALUES (11, 22), (13, 22), (12, 21)
+
+;
+SELECT b, SUM(a) FROM test.v GROUP BY b QUALIFY row_number() OVER (PARTITION BY b) = 1
+;
+21	12
+22	11
+
+# drop the table again
+;
+DROP TABLE test.t
+
+;
+SELECT * FROM test.v
+
+endloop

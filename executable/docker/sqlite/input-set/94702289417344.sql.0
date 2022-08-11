@@ -1,0 +1,79 @@
+PRAGMA auto_vacuum = 'incremental' 
+;BEGIN;
+;CREATE TABLE t1(a, b);
+;CREATE TABLE t2(a, b);
+;CREATE INDEX t1_i ON t1(a);
+;CREATE INDEX t2_i ON t2(a);
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t2
+;PRAGMA integrity_check;
+;
+;INSERT INTO t1 VALUES($::str1, $::str2);
+;INSERT INTO t1 VALUES($::str1||$::str2, $::str2||$::str1);
+;INSERT INTO t2 SELECT b, a FROM t1;
+;INSERT INTO t2 SELECT a, b FROM t1;
+;INSERT INTO t1 SELECT b, a FROM t2;
+;UPDATE t2 SET b = '';
+;PRAGMA incremental_vacuum;
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t2
+;PRAGMA integrity_check;
+;
+;UPDATE t2 SET b = (SELECT b FROM t1 WHERE t1.oid = t2.oid);
+;PRAGMA incremental_vacuum;
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t2
+;PRAGMA integrity_check;
+;
+;CREATE TABLE t3(a, b);
+;INSERT INTO t3 SELECT * FROM t2;
+;DROP TABLE t2;
+;PRAGMA incremental_vacuum;
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t3
+;PRAGMA integrity_check;
+;
+;CREATE INDEX t3_i ON t3(a);
+;COMMIT;
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t3
+;PRAGMA integrity_check;
+;
+;BEGIN;
+;DROP INDEX t3_i;
+;PRAGMA incremental_vacuum;
+;INSERT INTO t3 VALUES('hello', 'world');
+;ROLLBACK;
+;
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t3
+;PRAGMA integrity_check;
+;
+;INSERT INTO t3 VALUES('hello', 'world');
+;
+;SELECT tbl_name FROM sqlite_master WHERE type = 'table'
+    
+;SELECT * FROM t1
+;SELECT * FROM t3
+;PRAGMA integrity_check;
+;
+;

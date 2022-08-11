@@ -1,0 +1,108 @@
+PRAGMA temp_store=memory;
+;PRAGMA temp_store;
+;
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;PRAGMA temp.cache_size = 1;
+;CREATE TEMP TABLE IF NOT EXISTS a(b);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='a' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='a' AND type!='trigger' ORDER BY rowid
+;DELETE FROM a;
+;INSERT INTO a VALUES(randomblob(1000));
+;INSERT INTO a SELECT * FROM a;
+;
+;PRAGMA database_list
+;PRAGMA temp_store_directory;
+;
+;PRAGMA temp_store_directory='/home/fuboat/sqlite/bld_test/testdir';
+;
+;
+;PRAGMA temp_store_directory='/NON/EXISTENT/PATH/FOOBAR';
+;PRAGMA temp_store_directory='';
+;
+;PRAGMA temp_store=FILE;
+;CREATE TEMP TABLE temp_store_directory_test(a integer);
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='temp_store_directory_test' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='temp_store_directory_test' AND type!='trigger' ORDER BY rowid
+;INSERT INTO temp_store_directory_test values (2);
+;SELECT * FROM temp_store_directory_test;
+;
+;PRAGMA temp_store_directory='/home/fuboat/sqlite/bld_test/testdir';
+;PRAGMA temp_store = 0;
+;PRAGMA temp_store;
+;
+;PRAGMA temp_store = 1;
+;
+;PRAGMA temp_store = 2;
+;
+;PRAGMA temp_store = 3;
+;
+;BEGIN EXCLUSIVE;
+;CREATE TEMP TABLE temp_table(t);
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='temp_table' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='temp_table' AND type!='trigger' ORDER BY rowid
+;INSERT INTO temp_table VALUES('valuable data');
+;PRAGMA temp_store = 1;
+;SELECT * FROM temp_table;
+;COMMIT;
+;
+;INSERT INTO temp_table VALUES('valuable data II');
+;
+;SELECT t FROM temp_table
+;pragma temp_store = 1
+;DROP TABLE main.t1;
+;
+;PRAGMA count_changes = 1;
+;CREATE TABLE t1(a PRIMARY KEY);
+;CREATE TABLE t1_mirror(a);
+;CREATE TABLE t1_mirror2(a);
+;CREATE TRIGGER t1_bi BEFORE INSERT ON t1 BEGIN 
+      INSERT INTO t1_mirror VALUES(new.a);
+    END;
+;CREATE TRIGGER t1_ai AFTER INSERT ON t1 BEGIN 
+      INSERT INTO t1_mirror2 VALUES(new.a);
+    END;
+;CREATE TRIGGER t1_bu BEFORE UPDATE ON t1 BEGIN 
+      UPDATE t1_mirror SET a = new.a WHERE a = old.a;
+    END;
+;CREATE TRIGGER t1_au AFTER UPDATE ON t1 BEGIN 
+      UPDATE t1_mirror2 SET a = new.a WHERE a = old.a;
+    END;
+;CREATE TRIGGER t1_bd BEFORE DELETE ON t1 BEGIN 
+      DELETE FROM t1_mirror WHERE a = old.a;
+    END;
+;CREATE TRIGGER t1_ad AFTER DELETE ON t1 BEGIN 
+      DELETE FROM t1_mirror2 WHERE a = old.a;
+    END;
+;
+;INSERT INTO t1 VALUES(randstr(10,10));
+;
+;UPDATE t1 SET a = randstr(10,10);
+;
+;DELETE FROM t1;
+;
+;pragma collation_list;
+;
+;
+;DROP TABLE IF EXISTS t4;
+;PRAGMA vdbe_trace=on;
+;PRAGMA vdbe_listing=on;
+;PRAGMA sql_trace=on;
+;CREATE TABLE t4(a INTEGER PRIMARY KEY,b);
+;INSERT INTO t4(b) VALUES(x'0123456789abcdef0123456789abcdef0123456789');
+;INSERT INTO t4(b) VALUES(randstr(30,30));
+;INSERT INTO t4(b) VALUES(1.23456);
+;INSERT INTO t4(b) VALUES(NULL);
+;INSERT INTO t4(b) VALUES(0);
+;INSERT INTO t4(b) SELECT b||b||b||b FROM t4;
+;SELECT * FROM t4;
+;
+;PRAGMA vdbe_trace=off;
+;PRAGMA vdbe_listing=off;
+;PRAGMA sql_trace=off;
+;
+;

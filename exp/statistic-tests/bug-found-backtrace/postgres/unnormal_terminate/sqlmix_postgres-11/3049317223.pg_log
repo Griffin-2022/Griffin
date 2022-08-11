@@ -1,0 +1,111 @@
+			WHERE aggfns('newavg') AND aggfns(newavg);
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  relation "aggfns_trans" does not exist at character 35
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  EXPLAIN (COSTS OFF) SELECT * FROM aggfns_trans WHERE sumdouble(least_agg);
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  relation "aggfns_trans" does not exist at character 15
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  SELECT * FROM aggfns_trans WHERE my_rank(least_accum);
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  function aggfns(text) does not exist at character 48
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  EXPLAIN (COSTS OFF) SELECT * FROM int_nn WHERE aggfns(newavg);
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  prepared statement "p2" does not exist
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  EXECUTE p2;
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  prepared statement "p1" does not exist
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  EXECUTE p1;
+2022-08-01 18:21:50.848 UTC [63315] ERROR:  prepared statement "p2" does not exist
+2022-08-01 18:21:50.848 UTC [63315] STATEMENT:  EXECUTE p2;
+2022-08-01 18:21:50.848 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:50.853 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:51.725 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:51.728 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:51.735 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:51.950 UTC [63315] ERROR:  function pg_backend_pid must return type event_trigger
+2022-08-01 18:21:51.950 UTC [63315] STATEMENT:  -- should fail, return type mismatch
+	create event trigger regress_event_trigger
+	   on ddl_command_start
+	   execute procedure pg_backend_pid();
+2022-08-01 18:21:52.309 UTC [63315] ERROR:  unrecognized filter variable "food"
+2022-08-01 18:21:52.309 UTC [63315] STATEMENT:  
+	
+	-- should fail, food is not a valid filter variable
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when food in ('sandwich')
+	   execute procedure test_event_trigger();
+2022-08-01 18:21:52.309 UTC [63315] ERROR:  event triggers are not supported for CREATE TABLESPACE
+2022-08-01 18:21:52.309 UTC [63315] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE TABLESPACE')
+	   execute procedure test_event_trigger();
+2022-08-01 18:21:52.309 UTC [63315] ERROR:  filter variable "tag" specified more than once
+2022-08-01 18:21:52.309 UTC [63315] STATEMENT:  
+	
+	-- should fail, can't have same filter variable twice
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('create table') and tag in ('CREATE FUNCTION')
+	   execute procedure test_event_trigger();
+2022-08-01 18:21:52.309 UTC [63315] ERROR:  function test_event_trigger() does not exist
+2022-08-01 18:21:52.309 UTC [63315] STATEMENT:  
+	
+	-- OK
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('create table', 'CREATE FUNCTION')
+	   execute procedure test_event_trigger();
+2022-08-01 18:21:52.309 UTC [63315] ERROR:  event trigger "regress_event_trigger" does not exist
+2022-08-01 18:21:52.309 UTC [63315] STATEMENT:  
+	
+	-- test enabling and disabling
+	alter event trigger regress_event_trigger disable;
+2022-08-01 18:21:52.310 UTC [63315] ERROR:  event trigger "regress_event_trigger" does not exist
+2022-08-01 18:21:52.310 UTC [63315] STATEMENT:  
+	
+	-- clean up
+	alter event trigger regress_event_trigger disable;
+2022-08-01 18:21:52.311 UTC [63315] ERROR:  role "regress_evt_user" does not exist
+2022-08-01 18:21:52.311 UTC [63315] STATEMENT:  
+	create user mapping for regress_evt_user server useless_server;
+2022-08-01 18:21:52.311 UTC [63315] ERROR:  role "regress_evt_user" does not exist
+2022-08-01 18:21:52.311 UTC [63315] STATEMENT:  
+	
+	-- test support for dropped objects
+	CREATE SCHEMA schema_one authorization regress_evt_user;
+2022-08-01 18:21:52.312 UTC [63315] ERROR:  schema "audit_tbls" does not exist at character 15
+2022-08-01 18:21:52.312 UTC [63315] STATEMENT:  
+	CREATE TABLE audit_tbls.keycol(hash_split_index text);
+2022-08-01 18:21:52.313 UTC [63315] ERROR:  function undroppable() does not exist
+2022-08-01 18:21:52.313 UTC [63315] STATEMENT:  
+	
+	CREATE EVENT TRIGGER undroppable ON sql_drop
+		EXECUTE PROCEDURE undroppable();
+2022-08-01 18:21:52.314 UTC [63315] ERROR:  schema "schema_one" does not exist
+2022-08-01 18:21:52.314 UTC [63315] STATEMENT:  
+	DROP SCHEMA schema_one, schema_two CASCADE;
+2022-08-01 18:21:52.341 UTC [63315] ERROR:  schema "evttrig" does not exist
+2022-08-01 18:21:52.341 UTC [63315] STATEMENT:  
+	ALTER TABLE evttrig.var_record ALTER COLUMN var_record_colnn DROP DEFAULT;
+2022-08-01 18:21:52.344 UTC [63315] ERROR:  function drop_sql_command() does not exist
+2022-08-01 18:21:52.344 UTC [63315] STATEMENT:  
+	
+	CREATE EVENT TRIGGER sql_drop_command ON sql_drop
+	    WHEN TAG IN ('DROP POLICY') EXECUTE PROCEDURE drop_sql_command();
+2022-08-01 18:21:52.344 UTC [63315] ERROR:  event trigger "start_rls_command" does not exist
+2022-08-01 18:21:52.344 UTC [63315] STATEMENT:  
+	
+	DROP EVENT TRIGGER start_rls_command;
+2022-08-01 18:21:52.344 UTC [63315] ERROR:  event trigger "end_rls_command" does not exist
+2022-08-01 18:21:52.344 UTC [63315] STATEMENT:  
+	DROP EVENT TRIGGER end_rls_command;
+2022-08-01 18:21:52.344 UTC [63315] WARNING:  there is no transaction in progress
+2022-08-01 18:21:52.545 UTC [63315] PANIC:  could not write to file "pg_wal/xlogtemp.63315": No space left on device
+2022-08-01 18:21:52.545 UTC [63315] STATEMENT:  INSERT INTO var_record
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-01 18:21:52.569 UTC [58479] LOG:  server process (PID 63315) was terminated by signal 6: Aborted
+2022-08-01 18:21:52.569 UTC [58479] LOG:  terminating any other active server processes
+2022-08-01 18:21:52.576 UTC [58479] LOG:  all server processes terminated; reinitializing
+2022-08-01 18:21:52.600 UTC [63483] LOG:  database system was interrupted; last known up at 2022-08-01 18:21:33 UTC
+2022-08-01 18:21:52.601 UTC [63484] FATAL:  the database system is in recovery mode
+2022-08-01 18:21:52.601 UTC [63485] FATAL:  the database system is in recovery mode
+2022-08-01 18:21:52.604 UTC [63486] FATAL:  the database system is in recovery mode
+2022-08-01 18:21:52.612 UTC [58479] LOG:  received smart shutdown request
+2022-08-01 18:21:52.629 UTC [63483] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 18:21:52.630 UTC [63483] LOG:  redo starts at 0/15E842D0
+2022-08-01 18:21:52.635 UTC [58479] LOG:  abnormal database system shutdown

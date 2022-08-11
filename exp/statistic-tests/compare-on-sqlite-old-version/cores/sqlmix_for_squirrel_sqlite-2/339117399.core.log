@@ -1,0 +1,53 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000022,sig:11,src:016812+019531,time:926863,execs:117790,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+__strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+(gdb) #0  __strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+#1  0x0000000000350080 in sqlite3ExprCodeTarget (pParse=0x10d9520, pExpr=0x10d6190, target=8) at sqlite3.c:101145
+#2  0x00000000003544de in sqlite3ExprCodeExprList (pParse=0x10d9520, pList=0x10e0f00, target=8, srcReg=0, flags=1 '\001') at sqlite3.c:101924
+#3  0x00000000003b6480 in pushOntoSorter (pParse=0x10d9520, pSort=0x7fff15255b88, pSelect=0x10e21c0, regData=9, regOrigData=0, nData=1, nPrefixReg=1) at sqlite3.c:126256
+#4  0x00000000003b1dff in selectInnerLoop (pParse=0x10d9520, p=0x10e21c0, srcTab=-1, pSort=0x7fff15255b88, pDistinct=0x7fff15255c48, pDest=0x7fff15255d38, iContinue=-4, iBreak=-2) at sqlite3.c:126809
+#5  0x0000000000301bc2 in sqlite3Select (pParse=0x10d9520, p=0x10e21c0, pDest=0x7fff15255d38) at sqlite3.c:131815
+#6  0x0000000000300cd3 in sqlite3Select (pParse=0x10d9520, p=0x10dac90, pDest=0x7fff15256060) at sqlite3.c:131596
+#7  0x000000000030db43 in sqlite3Insert (pParse=0x10d9520, pTabList=0x10d8710, pSelect=0x10dac90, pColumn=0x0, onError=11, pUpsert=0x0) at sqlite3.c:118113
+#8  0x000000000039c1d6 in codeTriggerProgram (pParse=0x10d9520, pStepList=0x10e91a0, orconf=11) at sqlite3.c:133349
+#9  0x000000000039ba29 in codeRowTrigger (pParse=0x7fff15257230, pTrigger=0x10e84d0, pTab=0x10e85a0, orconf=11) at sqlite3.c:133502
+#10 0x000000000039b15d in getRowTrigger (pParse=0x7fff15257230, pTrigger=0x10e84d0, pTab=0x10e85a0, orconf=11) at sqlite3.c:133559
+#11 0x000000000039ac73 in sqlite3CodeRowTriggerDirect (pParse=0x7fff15257230, p=0x10e84d0, pTab=0x10e85a0, reg=5, orconf=11, ignoreJump=-1) at sqlite3.c:133581
+#12 0x0000000000369ad5 in sqlite3CodeRowTrigger (pParse=0x7fff15257230, pTrigger=0x10e84d0, op=123, pChanges=0x0, tr_tm=1, pTab=0x10e85a0, reg=5, orconf=11, ignoreJump=-1) at sqlite3.c:133675
+#13 0x000000000030ee8c in sqlite3Insert (pParse=0x7fff15257230, pTabList=0x10de020, pSelect=0x0, pColumn=0x10e4290, onError=11, pUpsert=0x0) at sqlite3.c:118344
+#14 0x00000000002f20e7 in yy_reduce (yypParser=0x7fff15256850, yyruleno=154, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff15257230) at sqlite3.c:153570
+#15 0x00000000002eca18 in sqlite3Parser (yyp=0x7fff15256850, yymajor=1, yyminor=...) at sqlite3.c:154496
+#16 0x00000000002a9df3 in sqlite3RunParser (pParse=0x7fff15257230, 
+    zSql=0x10e4770 ";;INSERT INTO t3(a,b,a,i1,a) VALUES(1,2,3,4,5);;CREATE UNIQUE INDEX c1 ON t3(b);;CREATE UNIQUE INDEX c2 ON t3(i1);;CREATE TABLE c3(c5 REAL UNIQUE, c4);;INSERT INTO t1(x) VALUES (1) ON CONFLICT(x) DO U"..., pzErrMsg=0x7fff15257410) at sqlite3.c:155636
+#17 0x00000000002a77e3 in sqlite3Prepare (db=0x10c7060, 
+    zSql=0x10c6f0e ";INSERT INTO t1(t2,t2,t2,x,t2) VALUES(1,2,3,4,5);;INSERT INTO t3(a,b,a,i1,a) VALUES(1,2,3,4,5);;CREATE UNIQUE INDEX c1 ON t3(b);;CREATE UNIQUE INDEX c2 ON t3(i1);;CREATE TABLE c3(c5 REAL UNIQUE, c4);;"..., nBytes=271, prepFlags=128, pReprepare=0x0, ppStmt=0x7fff15257548, pzTail=0x7fff15257530) at sqlite3.c:125299
+#18 0x00000000002a6eae in sqlite3LockAndPrepare (db=0x10c7060, 
+    zSql=0x10c6f0e ";INSERT INTO t1(t2,t2,t2,x,t2) VALUES(1,2,3,4,5);;INSERT INTO t3(a,b,a,i1,a) VALUES(1,2,3,4,5);;CREATE UNIQUE INDEX c1 ON t3(b);;CREATE UNIQUE INDEX c2 ON t3(i1);;CREATE TABLE c3(c5 REAL UNIQUE, c4);;"..., nBytes=271, prepFlags=128, pOld=0x0, ppStmt=0x7fff15257548, pzTail=0x7fff15257530) at sqlite3.c:125402
+#19 0x0000000000294f4f in sqlite3_prepare_v2 (db=0x10c7060, 
+    zSql=0x10c6f0e ";INSERT INTO t1(t2,t2,t2,x,t2) VALUES(1,2,3,4,5);;INSERT INTO t3(a,b,a,i1,a) VALUES(1,2,3,4,5);;CREATE UNIQUE INDEX c1 ON t3(b);;CREATE UNIQUE INDEX c2 ON t3(i1);;CREATE TABLE c3(c5 REAL UNIQUE, c4);;"..., nBytes=271, ppStmt=0x7fff15257548, pzTail=0x7fff15257530) at sqlite3.c:125486
+#20 0x0000000000258550 in main (argc=1, argv=0x7fff152576f8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 38206] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

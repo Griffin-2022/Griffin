@@ -1,0 +1,111 @@
+	
+	-- Test transaction in procedure with output parameters.  This uses a
+	-- different portal strategy and different code paths in pquery.test1_a_idx.
+	CREATE PROCEDURE ìÞÙ¸æñÕèindex1(INOUT x int)
+	LANGUAGE plpgsql
+	AS $$
+	BEGIN
+	  x := x + 1;
+	  COMMIT;
+	END;
+	$$;
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT * FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 64
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT      n.nspname as schema, t.typname as type FROM        pg_type t LEFT JOIN   pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE       (t.typrelid = 0 OR (SELECT c.relkind = 'c' FROM pg_catalog.pg_class c WHERE c.oid = t.typrelid)) AND     NOT EXISTS(SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid) AND     n.nspname NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 89
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT routines.routine_name, parameters.data_type, parameters.ordinal_position 
+	  FROM information_schema.routines 
+	  LEFT JOIN information_schema.parameters ON routines.specific_name=parameters.specific_name 
+	  WHERE routines.specific_schema='public' 
+	  ORDER BY routines.routine_name, parameters.ordinal_position;
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 123
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT event_object_table      ,trigger_name       ,event_manipulation       ,action_statement       ,action_timing FROM  information_schema.triggers ORDER BY event_object_table      ,event_manipulation;
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  select * from pg_indexes where tablename not like 'pg%';
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  select rulename
+	from pg_rewrite r  
+	  join pg_class c on r.ev_class = c.oid 
+	  left join pg_namespace n on n.oid = c.relnamespace 
+	  left join pg_description d on r.oid = d.objoid
+	where n.nspname = 'public';
+	
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  select viewname from pg_catalog.pg_views
+	where schemaname NOT IN ('pg_catalog', 'information_schema')
+	order by schemaname, viewname;
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 115
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  
+	
+	--
+	-- Check we don't misoptimize pg_description NOT IN where the subquery returns no rows.
+	--
+	create temp table ìÞÙ¸æñÕèindex2 (pg_description int);
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT * FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 64
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT      n.nspname as schema, t.typname as type FROM        pg_type t LEFT JOIN   pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE       (t.typrelid = 0 OR (SELECT c.relkind = 'c' FROM pg_catalog.pg_class c WHERE c.oid = t.typrelid)) AND     NOT EXISTS(SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid) AND     n.nspname NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.625 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 89
+2022-08-02 01:54:43.625 UTC [70255] STATEMENT:  SELECT routines.routine_name, parameters.data_type, parameters.ordinal_position 
+	  FROM information_schema.routines 
+	  LEFT JOIN information_schema.parameters ON routines.specific_name=parameters.specific_name 
+	  WHERE routines.specific_schema='public' 
+	  ORDER BY routines.routine_name, parameters.ordinal_position;
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 123
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  SELECT event_object_table      ,trigger_name       ,event_manipulation       ,action_statement       ,action_timing FROM  information_schema.triggers ORDER BY event_object_table      ,event_manipulation;
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select * from pg_indexes where tablename not like 'pg%';
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select rulename
+	from pg_rewrite r  
+	  join pg_class c on r.ev_class = c.oid 
+	  left join pg_namespace n on n.oid = c.relnamespace 
+	  left join pg_description d on r.oid = d.objoid
+	where n.nspname = 'public';
+	
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select viewname from pg_catalog.pg_views
+	where schemaname NOT IN ('pg_catalog', 'information_schema')
+	order by schemaname, viewname;
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 20
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  
+	create temp table description (objsubid int not null);
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  SELECT * FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 64
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  SELECT      n.nspname as schema, t.typname as type FROM        pg_type t LEFT JOIN   pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE       (t.typrelid = 0 OR (SELECT c.relkind = 'c' FROM pg_catalog.pg_class c WHERE c.oid = t.typrelid)) AND     NOT EXISTS(SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid) AND     n.nspname NOT IN ('pg_catalog', 'information_schema');
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 89
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  SELECT routines.routine_name, parameters.data_type, parameters.ordinal_position 
+	  FROM information_schema.routines 
+	  LEFT JOIN information_schema.parameters ON routines.specific_name=parameters.specific_name 
+	  WHERE routines.specific_schema='public' 
+	  ORDER BY routines.routine_name, parameters.ordinal_position;
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 123
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  SELECT event_object_table      ,trigger_name       ,event_manipulation       ,action_statement       ,action_timing FROM  information_schema.triggers ORDER BY event_object_table      ,event_manipulation;
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select * from pg_indexes where tablename not like 'pg%';
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select rulename
+	from pg_rewrite r  
+	  join pg_class c on r.ev_class = c.oid 
+	  left join pg_namespace n on n.oid = c.relnamespace 
+	  left join pg_description d on r.oid = d.objoid
+	where n.nspname = 'public';
+	
+2022-08-02 01:54:43.626 UTC [70255] ERROR:  could not find pg_class tuple for index 2662 at character 22
+2022-08-02 01:54:43.626 UTC [70255] STATEMENT:  select viewname from pg_catalog.pg_views
+	where schemaname NOT IN ('pg_catalog', 'information_schema')
+	order by schemaname, viewname;
+2022-08-02 01:54:46.749 UTC [70900] PANIC:  could not open critical system index 2662
+2022-08-02 01:54:46.750 UTC [69920] LOG:  server process (PID 70900) was terminated by signal 6: Aborted
+2022-08-02 01:54:46.750 UTC [69920] LOG:  terminating any other active server processes
+2022-08-02 01:54:46.750 UTC [70903] FATAL:  the database system is in recovery mode
+2022-08-02 01:54:46.751 UTC [69920] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:54:46.781 UTC [70904] LOG:  database system was interrupted; last known up at 2022-08-02 01:54:43 UTC
+2022-08-02 01:54:46.781 UTC [70905] FATAL:  the database system is in recovery mode
+2022-08-02 01:54:46.789 UTC [70904] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:54:46.790 UTC [70904] LOG:  redo starts at 0/167ADF8
+2022-08-02 01:54:46.791 UTC [70904] LOG:  invalid record length at 0/16BA8D0: wanted 24, got 0
+2022-08-02 01:54:46.791 UTC [70904] LOG:  redo done at 0/16B5DB0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 01:54:46.793 UTC [69920] LOG:  database system is ready to accept connections

@@ -1,0 +1,76 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000121,sig:06,src:020824+011057,time:2528006,execs:391353,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [SELECT randomblob($pgsz)
+;]
+VDBE Trace:
+   0 Init             0    5    0               00 Start at 5
+   5 Variable         1    2    0 $pgsz         00 r[2]=parameter(1,$pgsz)
+REG[2] =  NULL
+   6 Goto             0    1    0               00 
+   1 Explain          1    0    0 SCAN CONSTANT ROW 00 
+   2 Function0        1    2    1 randomblob(1) 01 r[1]=func(r[2])
+REG[2] =  NULL
+REG[1] =  z1[A3.]
+   3 ResultRow        1    1    0               00 output=r[1]
+REG[1] =  z1[A3.]
+   4 Halt             0    0    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fc37f0f1859 in __GI_abort () at abort.c:79
+#2  0x00007fc37f0f1729 in __assert_fail_base (fmt=0x7fc37f287588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fc37f102fd6 in __GI___assert_fail (assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d160 in sqlite3ColumnsFromExprList (pParse=0x7ffecbbd8040, pEList=0xb1cc70, pnCol=0xb1b9f6, paCol=0xb1b9b8) at sqlite3.c:126590
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7ffecbbd8040, pFrom=0xb1be68) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7ffecbbd8040, p=0xb1da80) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7ffecbbd8040, p=0xb1da80, pDest=0x7ffecbbd6d38) at sqlite3.c:130281
+#8  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffecbbd8040, pExpr=0xb212c0) at sqlite3.c:99820
+#9  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffecbbd8040, pExpr=0xb212c0, target=5) at sqlite3.c:100770
+#10 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffecbbd8040, pList=0xb21770, target=5, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#11 0x00000000003addca in innerLoopLoadRow (pParse=0x7ffecbbd8040, pSelect=0xb22a30, pInfo=0x7ffecbbd7080) at sqlite3.c:125172
+#12 0x00000000003a92ea in selectInnerLoop (pParse=0x7ffecbbd8040, p=0xb22a30, srcTab=-1, pSort=0x0, pDistinct=0x0, pDest=0x7ffecbbd7430, iContinue=-2, iBreak=-2) at sqlite3.c:125624
+#13 0x00000000002fffb0 in sqlite3Select (pParse=0x7ffecbbd8040, p=0xb22a30, pDest=0x7ffecbbd7430) at sqlite3.c:131196
+#14 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffecbbd7660, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffecbbd8040) at sqlite3.c:151581
+#15 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffecbbd7660, yymajor=1, yyminor=...) at sqlite3.c:152877
+#16 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffecbbd8040, zSql=0xb1f701 ";SELECT * FROM t1 WHERE  1   -  (34 BETWEEN x AND 33) ORDER BY x\n;", pzErrMsg=0x7ffecbbd8220) at sqlite3.c:154013
+#17 0x00000000002a1683 in sqlite3Prepare (db=0xb0b5c0, 
+    zSql=0xb0b4e3 "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT * FROM t1 WHERE  1   -  (34 BETWEEN x AND 33) ORDER BY x\n;", nBytes=163, prepFlags=128, 
+    pReprepare=0x0, ppStmt=0x7ffecbbd8358, pzTail=0x7ffecbbd8340) at sqlite3.c:124303
+#18 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xb0b5c0, 
+    zSql=0xb0b4e3 "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT * FROM t1 WHERE  1   -  (34 BETWEEN x AND 33) ORDER BY x\n;", nBytes=163, prepFlags=128, 
+    pOld=0x0, ppStmt=0x7ffecbbd8358, pzTail=0x7ffecbbd8340) at sqlite3.c:124403
+#19 0x000000000029247f in sqlite3_prepare_v2 (db=0xb0b5c0, 
+    zSql=0xb0b4e3 "SELECT (\n    SELECT count(x) OVER ( ORDER BY sum(x) )\n         + total(x) OVER() \n  )\n  FROM t1\n\n;SELECT * FROM t1 WHERE  1   -  (34 BETWEEN x AND 33) ORDER BY x\n;", nBytes=163, 
+    ppStmt=0x7ffecbbd8358, pzTail=0x7ffecbbd8340) at sqlite3.c:124487
+#20 0x0000000000256bd0 in main (argc=1, argv=0x7ffecbbd8508) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 58222] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

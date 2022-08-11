@@ -1,0 +1,85 @@
+SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+;SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+;EXPLAIN QUERY PLAN SELECT count(*) FROM t1
+;EXPLAIN QUERY PLAN SELECT count(*) FROM t2
+;PRAGMA foreign_keys
+;PRAGMA foreign_keys = OFF
+;PRAGMA database_list
+;SELECT name, type FROM main.sqlite_master
+      WHERE type IN('table', 'view') AND name NOT LIKE 'sqliteX_%' ESCAPE 'X'
+    
+;DROP table "t1"
+;DROP table "t2"
+;PRAGMA foreign_keys = 0
+;CREATE TABLE t1(a, b, c, PRIMARY KEY(b, c)) WITHOUT ROWID;
+;CREATE TABLE t2(a, b, c);
+;
+;EXPLAIN QUERY PLAN SELECT * FROM t2
+;EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE rowid=?
+;EXPLAIN QUERY PLAN SELECT count(*) FROM t2
+;EXPLAIN QUERY PLAN SELECT * FROM t1
+;EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=?
+;EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=? AND c=?
+;EXPLAIN QUERY PLAN SELECT count(*) FROM t1
+;-- Schema from Fossil 2018-08-16
+  CREATE TABLE forumpost(
+    fpid INTEGER PRIMARY KEY,
+    froot INT,
+    fprev INT,
+    firt INT,
+    fmtime REAL
+  );
+;CREATE INDEX forumthread ON forumpost(froot,fmtime);
+;CREATE TABLE blob(
+    rid INTEGER PRIMARY KEY,
+    rcvid INTEGER,
+    size INTEGER,
+    uuid TEXT UNIQUE NOT NULL,
+    content BLOB,
+    CHECK( length(uuid)>=40 AND rid>0 )
+  );
+;CREATE TABLE event(
+    type TEXT,
+    mtime DATETIME,
+    objid INTEGER PRIMARY KEY,
+    tagid INTEGER,
+    uid INTEGER REFERENCES user,
+    bgcolor TEXT,
+    euser TEXT,
+    user TEXT,
+    ecomment TEXT,
+    comment TEXT,
+    brief TEXT,
+    omtime DATETIME
+  );
+;CREATE INDEX event_i1 ON event(mtime);
+;CREATE TABLE private(rid INTEGER PRIMARY KEY);
+;
+;EXPLAIN QUERY PLAN 
+  WITH thread(age,duration,cnt,root,last) AS (
+    SELECT
+      julianday('now') - max(fmtime) AS age,
+      max(fmtime) - min(fmtime) AS duration,
+      sum(fprev IS NULL) AS msg_count,
+      froot,
+      (SELECT fpid FROM forumpost
+        WHERE froot=x.froot
+          AND fpid NOT IN private
+        ORDER BY fmtime DESC LIMIT 1)
+    FROM forumpost AS x
+    WHERE fpid NOT IN private  --- Ensure this table mentioned in EQP output!
+    GROUP BY froot
+    ORDER BY 1 LIMIT 26 OFFSET 5
+  )
+  SELECT
+    thread.age,
+    thread.duration,
+    thread.cnt,
+    blob.uuid,
+    substr(event.comment,instr(event.comment,':')+1)
+  FROM thread, blob, event
+  WHERE blob.rid=thread.last
+    AND event.objid=thread.last
+  ORDER BY 1;
+;
+;

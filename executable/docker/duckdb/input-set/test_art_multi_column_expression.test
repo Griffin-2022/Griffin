@@ -1,0 +1,52 @@
+# name: test/sql/index/art/test_art_multi_column_expression.test
+# description: Test ART index that requires multiple columns for expression
+# group: [art]
+
+;
+CREATE TABLE integers(i BIGINT, j INTEGER, k VARCHAR, l BIGINT)
+
+;
+CREATE INDEX i_index ON integers using art((j+l))
+
+;
+INSERT INTO integers VALUES (10, 1, 'hello', 4), (11, 2, 'world', 6)
+
+;
+SELECT * FROM integers WHERE j+l=5
+;
+10	1	hello	4
+
+;
+SELECT * FROM integers WHERE k='hello'
+;
+10	1	hello	4
+
+# update that uses both columns in the index
+;
+UPDATE integers SET j=5, l=l WHERE j=1
+
+# update that only uses one of the columns
+;
+UPDATE integers SET j=5 WHERE j=5
+
+;
+SELECT * FROM integers WHERE j+l=9
+;
+10	5	hello	4
+
+;
+DELETE FROM integers WHERE j+l=8
+
+;
+DELETE FROM integers WHERE j+l=9
+
+;
+SELECT COUNT(*) FROM integers
+;
+0
+
+;
+SELECT COUNT(*) FROM integers WHERE j+l>0
+;
+0
+

@@ -1,0 +1,108 @@
+	
+	SELECT count(*) FROM var_record WHERE newsum >= '2018-12-18 10:59:54 GMT+3'::timestamptz;
+2022-08-01 23:52:08.061 UTC [18933] ERROR:  could not access file "$libdir/tablefunc": No such file or directory
+2022-08-01 23:52:08.061 UTC [18933] STATEMENT:  
+	
+	CREATE FUNCTION crosstab_named(text, text)
+	RETURNS setof sum2
+	AS '$libdir/tablefunc','crosstab_hash'
+	LANGUAGE C STABLE STRICT;
+2022-08-01 23:52:08.061 UTC [18933] ERROR:  relation "var_record" does not exist at character 25
+2022-08-01 23:52:08.061 UTC [18933] STATEMENT:  
+	
+	
+	SELECT count(*) FROM var_record WHERE newsum <  '2018-12-18 10:59:54 GMT+4'::timestamptz;
+2022-08-01 23:52:08.061 UTC [18933] WARNING:  there is no transaction in progress
+2022-08-01 23:52:08.073 UTC [18933] ERROR:  no partition of relation "var_record_nn" found for row
+2022-08-01 23:52:08.073 UTC [18933] STATEMENT:  
+	  INSERT INTO var_record_nn VALUES (1);
+2022-08-01 23:52:08.073 UTC [18933] ERROR:  unsupported XML feature
+2022-08-01 23:52:08.073 UTC [18933] STATEMENT:  SELECT xmlparse(document '<invalidns xmlns=''&lt;''/>');
+2022-08-01 23:52:08.077 UTC [18933] ERROR:  prepared statement "foo" does not exist
+2022-08-01 23:52:08.077 UTC [18933] STATEMENT:  EXECUTE foo ('bad');
+2022-08-01 23:52:08.078 UTC [18933] ERROR:  relation "newavg" already exists
+2022-08-01 23:52:08.078 UTC [18933] STATEMENT:  
+	  CREATE TABLE newavg (newsum int) PARTITION BY LIST(newsum);
+2022-08-01 23:52:08.079 UTC [18933] ERROR:  type "content" does not exist at character 35
+2022-08-01 23:52:08.079 UTC [18933] STATEMENT:  CREATE VIEW newcnt AS SELECT sum3(content '<abc>x</abc>');
+2022-08-01 23:52:08.080 UTC [18933] ERROR:  relation "least_accum" does not exist
+2022-08-01 23:52:08.080 UTC [18933] STATEMENT:  
+	  CREATE TABLE cleast_accum PARTITION OF least_accum FOR VALUES IN (1);
+2022-08-01 23:52:08.082 UTC [18933] ERROR:  unsupported XML feature
+2022-08-01 23:52:08.082 UTC [18933] STATEMENT:  SELECT xml_is_well_formed('<pg:foo xmlns:pg="http://postgresql.org/stuff">bar</my:foo>');
+2022-08-01 23:52:08.082 UTC [18933] ERROR:  unsupported XML feature
+2022-08-01 23:52:08.082 UTC [18933] STATEMENT:  SELECT xml_is_well_formed('abc');
+2022-08-01 23:52:08.082 UTC [18933] ERROR:  unsupported XML feature
+2022-08-01 23:52:08.082 UTC [18933] STATEMENT:  SELECT XMLPARSE(DOCUMENT '<!DOCTYPE foo [<!ENTITY c SYSTEM "/etc/passwd">]><foo>&c;</foo>');
+2022-08-01 23:52:08.082 UTC [18933] ERROR:  unsupported XML feature at character 158
+2022-08-01 23:52:08.082 UTC [18933] STATEMENT:  CREATE VIEW xmltableview2 AS SELECT * FROM XMLTABLE(XMLNAMESPACES('http://x.y' AS zz),
+	                      '/zz:rows/zz:row'
+	                      PASSING '<rows xmlns="http://x.y"><row><a>10</a></row></rows>'
+	                      COLUMNS a int PATH 'zz:a');
+2022-08-01 23:52:08.083 UTC [18933] WARNING:  there is no transaction in progress
+2022-08-01 23:52:08.087 UTC [18933] ERROR:  SAVEPOINT can only be used in transaction blocks
+2022-08-01 23:52:08.087 UTC [18933] STATEMENT:  SAVEPOINT q;
+=================================================================
+==18933==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffdd7daf630 sp 0x7ffdd7daf628
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f853b0e5082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==18933==ABORTING
+2022-08-01 23:52:08.132 UTC [17624] LOG:  server process (PID 18933) was terminated by signal 6: Aborted
+2022-08-01 23:52:08.132 UTC [17624] LOG:  terminating any other active server processes
+2022-08-01 23:52:08.138 UTC [22394] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:08.140 UTC [22397] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:08.142 UTC [22398] FATAL:  the database system is in recovery mode
+2022-08-01 23:52:08.147 UTC [17624] LOG:  received smart shutdown request
+2022-08-01 23:52:08.147 UTC [17624] LOG:  abnormal database system shutdown
+2022-08-01 23:52:08.153 UTC [17624] LOG:  database system is shut down

@@ -1,0 +1,122 @@
+# name: test/sql/transactions/test_index_transaction_local.test
+# description: Test index with transaction local commits
+# group: [transactions]
+
+# first test simple index usage
+;
+CREATE TABLE integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO integers VALUES (1), (2), (3)
+
+# inserting a duplicate value fails
+;
+INSERT INTO integers VALUES (1)
+
+# inserting a non-duplicate value works
+;
+INSERT INTO integers VALUES (4)
+
+# updating a primary key to an existing value fails
+;
+UPDATE integers SET i=1 WHERE i=4
+
+# but updating to a non-existing value works
+;
+UPDATE integers SET i=5 WHERE i=4
+
+# if we first delete a value, we can insert that value again
+;
+DELETE FROM integers WHERE i=1
+
+;
+INSERT INTO integers VALUES (1)
+
+;
+DELETE FROM integers WHERE i >= 4
+
+;
+SELECT COUNT(*) FROM integers
+;
+3
+
+;
+SELECT COUNT(*) FROM integers
+;
+3
+
+# now test with multiple transactions
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# both transactions can insert the same value
+;
+INSERT INTO integers VALUES (4)
+
+;
+INSERT INTO integers VALUES (4)
+
+;
+SELECT COUNT(*) FROM integers
+;
+4
+
+;
+SELECT COUNT(*) FROM integers
+;
+4
+
+# also using the index is fine
+;
+SELECT COUNT(*) FROM integers WHERE i=1
+;
+1
+
+;
+SELECT COUNT(*) FROM integers WHERE i=1
+;
+1
+
+;
+SELECT COUNT(*) FROM integers WHERE i=4
+;
+1
+
+;
+SELECT COUNT(*) FROM integers WHERE i=4
+;
+1
+
+# conflict happens on commit
+# we can commit con
+;
+COMMIT
+
+# but then con2 fails to commit
+;
+COMMIT
+
+# Issue #2241: Delete and reinsert fails on unique/indexed column
+;
+BEGIN TRANSACTION;
+
+;
+CREATE TABLE issue2241 (id text primary key);
+
+;
+INSERT INTO issue2241 VALUES ('Alice');
+
+;
+INSERT INTO issue2241 VALUES ('Bob');
+
+;
+DELETE FROM issue2241 WHERE id = 'Bob';
+
+;
+INSERT INTO issue2241 VALUES ('Bob');
+
+;
+COMMIT;

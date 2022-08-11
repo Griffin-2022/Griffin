@@ -1,0 +1,79 @@
+# name: test/sql/alter/rename_table/test_rename_table_transactions.test
+# description: Test RENAME TABLE two parallel transactions
+# group: [rename_table]
+
+;
+CREATE TABLE tbl(i INTEGER)
+
+;
+INSERT INTO tbl VALUES (999), (100)
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE tbl RENAME TO tbl2
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl
+
+;
+SELECT * FROM tbl
+;
+999
+100
+
+;
+SELECT * FROM tbl2
+
+;
+COMMIT
+
+;
+COMMIT
+
+;
+SELECT * FROM tbl
+
+;
+SELECT * FROM tbl
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+# we can create "tbl" again
+;
+CREATE TABLE tbl(i INTEGER);
+
+# tbl2 is still occupied though
+;
+CREATE TABLE tbl2(i INTEGER);
+
+# we can drop and re-create the table
+;
+DROP TABLE tbl2;
+
+;
+CREATE TABLE tbl2(i INTEGER);
+
+# a rename fails now
+;
+ALTER TABLE tbl RENAME TO tbl2

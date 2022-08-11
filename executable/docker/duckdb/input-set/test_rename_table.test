@@ -1,0 +1,122 @@
+# name: test/sql/alter/rename_table/test_rename_table.test
+# description: Test RENAME TABLE single transaction
+# group: [rename_table]
+
+;
+CREATE TABLE tbl(i INTEGER);
+
+;
+INSERT INTO tbl VALUES (999), (100);
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE tbl RENAME TO tbl2
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl
+
+;
+ROLLBACK
+
+;
+SELECT * FROM tbl;
+;
+999
+100
+
+;
+SELECT * FROM tbl2
+
+;
+BEGIN TRANSACTION;
+
+;
+ALTER TABLE tbl RENAME TO tbl2
+
+;
+COMMIT
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl
+
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+# multiple renames in the same transaction
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE tbl2 RENAME TO tbl3
+
+;
+ALTER TABLE tbl3 RENAME TO tbl4
+
+;
+ALTER TABLE tbl4 RENAME TO tbl5
+
+;
+ROLLBACK
+
+# everything was rolled back
+;
+SELECT * FROM tbl2
+;
+999
+100
+
+;
+SELECT * FROM tbl5
+
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE tbl2 RENAME TO tbl3
+
+;
+ALTER TABLE tbl3 RENAME TO tbl4
+
+;
+ALTER TABLE tbl4 RENAME TO tbl5
+
+;
+COMMIT
+
+# everything was committed
+;
+SELECT * FROM tbl2
+
+;
+SELECT * FROM tbl5
+;
+999
+100
+
+# we can create these tables again
+;
+CREATE TABLE tbl2(i INTEGER);
+
+;
+CREATE TABLE tbl3(i INTEGER);
+
+;
+CREATE TABLE tbl4(i INTEGER);
+

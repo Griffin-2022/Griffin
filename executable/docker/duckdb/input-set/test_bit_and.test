@@ -1,0 +1,56 @@
+# name: test/sql/aggregate/aggregates/test_bit_and.test
+# description: Test BIT_AND operator
+# group: [aggregates]
+
+# test on scalar values
+;
+SELECT BIT_AND(3), BIT_AND(NULL)
+;
+3
+NULL
+
+# test on a sequence
+;
+CREATE SEQUENCE seq;
+
+;
+SELECT BIT_AND(nextval('seq'))
+;
+1
+
+;
+SELECT BIT_AND(nextval('seq'))
+;
+2
+
+# test on a set of integers
+;
+CREATE TABLE integers(i INTEGER);
+
+;
+INSERT INTO integers VALUES (3), (7), (15), (31), (3), (15)
+
+;
+SELECT BIT_AND(i), BIT_AND(1), BIT_AND(DISTINCT i), BIT_AND(NULL) FROM integers
+;
+3
+1
+3
+NULL
+
+# test on an empty set
+;
+SELECT BIT_AND(i) FROM integers WHERE i > 100
+;
+NULL
+
+# test incorrect usage
+;
+SELECT BIT_AND()
+
+;
+SELECT BIT_AND(1, 2, 3)
+
+;
+SELECT BIT_AND(BIT_AND(1))
+

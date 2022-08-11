@@ -1,0 +1,98 @@
+# name: test/sql/types/unsigned/test_unsigned_arithmetic.test
+# description: Test various operations with unsigned
+# group: [unsigned]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE unsigned(a UTINYINT,b USMALLINT, c UINTEGER, d UBIGINT);
+
+;
+INSERT INTO unsigned VALUES (1,1,1,1), (2,2,2,2);
+
+;
+select * from unsigned;
+;
+1	1	1	1
+2	2	2	2
+
+
+# Test arithmetic
+# Addition
+;
+SELECT (200)::UTINYINT + (200)::UTINYINT;
+
+
+;
+SELECT (20)::UTINYINT + (200)::USMALLINT;
+;
+220
+
+;
+SELECT (20)::UBIGINT + (200)::UBIGINT;
+;
+220
+
+;
+SELECT (18446744073709551615)::UBIGINT + (18446744073709551615)::UBIGINT;
+
+# Multiplication
+;
+SELECT (200)::UTINYINT * (200)::UTINYINT;
+
+;
+SELECT (200)::UTINYINT * (200)::USMALLINT;
+;
+40000
+
+;
+SELECT (200)::UBIGINT * (200)::UBIGINT;
+;
+40000
+
+;
+SELECT (18446744073709551615)::UBIGINT * (3)::UBIGINT;
+
+# Subtraction
+;
+SELECT (200)::UTINYINT - (201)::UTINYINT;
+
+;
+SELECT (200)::UTINYINT - (201)::USMALLINT;
+
+;
+SELECT (200)::UTINYINT - (20)::USMALLINT;
+;
+180
+
+# Division
+;
+SELECT 100::UTINYINT / 20::UTINYINT, 90::UTINYINT / 20::UTINYINT
+;
+5	4
+
+;
+SELECT 100::UTINYINT / 20::UBIGINT, 90::UTINYINT / 20::UBIGINT
+;
+5	4
+
+
+# division by zero
+;
+SELECT 100::UTINYINT / 0::UTINYINT
+;
+NULL
+
+# modulo
+;
+SELECT 100::UTINYINT % 20::UTINYINT, 90::UTINYINT % 20::UTINYINT
+;
+0	10
+
+
+# modulo by zero
+;
+SELECT 100::UTINYINT % 0::UTINYINT
+;
+NULL

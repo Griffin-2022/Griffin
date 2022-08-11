@@ -1,0 +1,111 @@
+	SELECT * FROM pg_xact_commit_timestamp_origin(NULL);
+2022-08-02 04:12:16.326 UTC [21945] ERROR:  cursor "_psql_cursor" does not exist
+2022-08-02 04:12:16.326 UTC [21945] STATEMENT:  FETCH FORWARD 2 FROM _psql_cursor
+	;
+2022-08-02 04:12:16.326 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.326 UTC [21945] STATEMENT:  create role regress_partitioning_role;
+2022-08-02 04:12:16.326 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.326 UTC [21945] STATEMENT:  set search_path to testpart;
+2022-08-02 04:12:16.326 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.326 UTC [21945] STATEMENT:  drop table b;
+2022-08-02 04:12:16.326 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.326 UTC [21945] STATEMENT:  create table var_record (int_nn int) partition by range (int_nn);
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  create table q partition of var_record
+	  for values from (20) to (30);
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:   -- ok, NULL
+	SELECT * FROM pg_xact_commit_timestamp_origin('0'::xid);
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  create table var_record_nn partition of var_record
+	   for values from (35) to (40);
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT c.oid,
+	  n.nspname,
+	  c.relname
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relname OPERATOR(pg_catalog.~) '^(pg_toast_2619)$' COLLATE pg_catalog.default
+	  AND n.nspname OPERATOR(pg_catalog.~) '^(pg_toast)$' COLLATE pg_catalog.default
+	ORDER BY 2, 3;
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT c2.relname, i.indisprimary, i.indisunique, i.indisclustered, i.indisvalid, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true),
+	  pg_catalog.pg_get_constraintdef(con.oid, true), contype, condeferrable, condeferred, i.indisreplident, c2.reltablespace
+	FROM pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_index i
+	  LEFT JOIN pg_catalog.pg_constraint con ON (conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x'))
+	WHERE c.oid = '2840' AND c.oid = i.indrelid AND i.indexrelid = c2.oid
+	ORDER BY i.indisprimary DESC, c2.relname;
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT amname AS "Name",
+	  CASE amtype WHEN 'i' THEN 'Index' WHEN 't' THEN 'Table' END AS "Type"
+	FROM pg_catalog.pg_am
+	WHERE amname OPERATOR(pg_catalog.~) '^(foo)$' COLLATE pg_catalog.default
+	ORDER BY 1;
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT amname AS "Name",
+	  CASE amtype WHEN 'i' THEN 'Index' WHEN 't' THEN 'Table' END AS "Type",
+	  amhandler AS "Handler",
+	  pg_catalog.obj_description(oid, 'pg_am') AS "Description"
+	FROM pg_catalog.pg_am
+	WHERE amname OPERATOR(pg_catalog.~) '^(h.*)$' COLLATE pg_catalog.default
+	ORDER BY 1;
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT
+	  am.amname AS "AM",
+	  CASE
+	    WHEN pg_catalog.pg_opfamily_is_visible(f.oid)
+	    THEN pg_catalog.format('%I', f.opfname)
+	    ELSE pg_catalog.format('%I.%I', n.nspname, f.opfname)
+	  END AS "Operator family",
+	  (SELECT
+	     pg_catalog.string_agg(pg_catalog.format_type(oc.opcintype, NULL), ', ')
+	   FROM pg_catalog.pg_opclass oc
+	   WHERE oc.opcfamily = f.oid) "Applicable types"
+	FROM pg_catalog.pg_opfamily f
+	  LEFT JOIN pg_catalog.pg_am am on am.oid = f.opfmethod
+	  LEFT JOIN pg_catalog.pg_namespace n ON n.oid = f.opfnamespace
+	WHERE am.amname OPERATOR(pg_catalog.~) '^(spgist)$' COLLATE pg_catalog.default
+	ORDER BY 1, 2;
+2022-08-02 04:12:16.327 UTC [21945] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 04:12:16.327 UTC [21945] STATEMENT:  SELECT n.nspname as "Schema",
+	  p.proname as "Name",
+	  pg_catalog.pg_get_function_result(p.oid) as "Result data type",
+	  pg_catalog.pg_get_function_arguments(p.oid) as "Argument data types",
+	 CASE p.prokind
+	  WHEN 'a' THEN 'agg'
+	  WHEN 'w' THEN 'window'
+	  WHEN 'p' THEN 'proc'
+	  ELSE 'func'
+	 END as "Type"
+	FROM pg_catalog.pg_proc p
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	     LEFT JOIN pg_catalog.pg_type t0 ON t0.oid = p.proargtypes[0]
+	     LEFT JOIN pg_catalog.pg_namespace nt0 ON nt0.oid = t0.typnamespace
+	WHERE p.proname OPERATOR(pg_catalog.~) '^(.*sqrt)$' COLLATE pg_catalog.default
+	  AND pg_catalog.pg_function_is_visible(p.oid)
+	  AND (t0.typname OPERATOR(pg_catalog.~) '^(num.*)$' COLLATE pg_catalog.default
+	        OR pg_catalog.format_type(t0.oid, NULL) OPERATOR(pg_catalog.~) '^(num.*)$' COLLATE pg_catalog.default)
+	  AND pg_catalog.pg_type_is_visible(t0.oid)
+	ORDER BY 1, 2, 4;
+2022-08-02 04:12:16.327 UTC [21945] WARNING:  there is no transaction in progress
+2022-08-02 04:12:16.327 UTC [21945] WARNING:  there is no transaction in progress
+2022-08-02 04:12:16.328 UTC [21945] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:12:16.328 UTC [21945] STATEMENT:  DISCARD ALL;
+2022-08-02 04:12:16.328 UTC [21945] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 04:12:16.328 UTC [21945] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 04:12:16.328 UTC [21945] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 04:12:16.328 UTC [21945] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 04:12:16.634 UTC [32571] PANIC:  could not open critical system index 2662
+2022-08-02 04:12:16.636 UTC [21276] LOG:  server process (PID 32571) was terminated by signal 6: Aborted
+2022-08-02 04:12:16.636 UTC [21276] LOG:  terminating any other active server processes
+2022-08-02 04:12:16.679 UTC [21276] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:12:16.691 UTC [32580] LOG:  database system was interrupted; last known up at 2022-08-02 04:12:16 UTC
+2022-08-02 04:12:16.705 UTC [32580] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:12:16.706 UTC [32580] LOG:  redo starts at 0/629F430
+2022-08-02 04:12:16.706 UTC [32580] LOG:  invalid record length at 0/629F4E0: wanted 24, got 0
+2022-08-02 04:12:16.706 UTC [32580] LOG:  redo done at 0/629F468 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 04:12:16.717 UTC [21276] LOG:  database system is ready to accept connections
+2022-08-02 04:12:17.486 UTC [32637] WARNING:  there is no transaction in progress
+2022-08-02 04:12:17.568 UTC [32664] ERROR:  no replication origin is configured

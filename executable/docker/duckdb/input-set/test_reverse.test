@@ -1,0 +1,52 @@
+# name: test/sql/function/string/test_reverse.test
+# description: REVERSE test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# test reverse on scalars
+;
+select REVERSE(''), REVERSE('Hello'), REVERSE('MotörHead'), REVERSE(NULL)
+;
+(empty)	olleH	daeHrötoM	NULL
+
+# test reverse on tables
+;
+CREATE TABLE strings(a STRING, b STRING)
+
+;
+INSERT INTO strings VALUES ('Hello', 'World'), ('HuLlD', NULL), ('MotörHead','RÄcks'), ('', NULL)
+
+;
+select REVERSE(a) FROM strings
+;
+olleH
+DlLuH
+daeHrötoM
+(empty)
+
+;
+select REVERSE(b) FROM strings
+;
+dlroW
+NULL
+skcÄR
+NULL
+
+;
+select REVERSE(a) FROM strings WHERE b IS NOT NULL
+;
+olleH
+daeHrötoM
+
+# test incorrect usage of reverse
+;
+select REVERSE()
+
+;
+select REVERSE(1, 2)
+
+;
+select REVERSE('hello', 'world')
+

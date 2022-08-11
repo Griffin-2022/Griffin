@@ -1,0 +1,142 @@
+# name: test/sql/constraints/foreignkey/test_fk_multiple.test
+# description: Test multiple foreign key constraint
+# group: [foreignkey]
+
+;
+CREATE TABLE pkt1(i1 INTEGER PRIMARY KEY CHECK(i1 < 3), j1 INTEGER UNIQUE);
+
+;
+CREATE TABLE pkt2(i2 INTEGER PRIMARY KEY, j2 INTEGER UNIQUE CHECK (j2 > 1000));
+
+;
+CREATE TABLE fkt1(k1 INTEGER, l1 INTEGER, FOREIGN KEY(k1) REFERENCES pkt1(i1), FOREIGN KEY(l1) REFERENCES pkt2(i2));
+
+;
+CREATE TABLE fkt2(k2 INTEGER, l2 INTEGER, FOREIGN KEY(k2) REFERENCES pkt1(j1), FOREIGN KEY(l2) REFERENCES pkt2(j2));
+
+# ensure the constraints are being correctly copied
+;
+INSERT INTO pkt1 VALUES (3, 11);
+
+;
+INSERT INTO pkt2 VALUES (101, 1000);
+
+# test multiple foreign key constraints
+;
+INSERT INTO pkt1 VALUES (1, 11), (2, 12);
+
+;
+INSERT INTO pkt2 VALUES (101, 1001), (102, 1002);
+
+;
+INSERT INTO fkt1 VALUES (3, 101);
+
+;
+INSERT INTO fkt1 VALUES (2, 103);
+
+;
+INSERT INTO fkt1 VALUES (1, 102), (2, 101);
+
+;
+INSERT INTO fkt2 VALUES (13, 1002);
+
+;
+INSERT INTO fkt1 VALUES (12, 1003);
+
+;
+INSERT INTO fkt2 VALUES (12, 1001), (11, 1002);
+
+;
+DELETE FROM pkt1 WHERE i1=1
+
+;
+DELETE FROM pkt2 WHERE i2=102
+
+;
+DELETE FROM fkt1 WHERE k1=1
+
+;
+DELETE FROM pkt1 WHERE i1=1
+
+;
+DELETE FROM fkt2 WHERE k2=11
+
+;
+DELETE FROM pkt1 WHERE i1=1
+
+;
+SELECT * FROM pkt1;
+;
+2	12	
+
+;
+SELECT * FROM pkt2;
+;
+101	1001	
+102	1002	
+
+;
+SELECT * FROM fkt1;
+;
+2	101	
+
+;
+SELECT * FROM fkt2;
+;
+12	1001	
+
+;
+UPDATE pkt1 SET i1=3, j1=13 WHERE i1=2;
+
+;
+UPDATE pkt2 SET i2=103, j2=1003 WHERE i2=101;
+
+;
+UPDATE pkt2 SET i2=103, j2=1003 WHERE i2=102;
+
+;
+DELETE FROM fkt1 WHERE k1=2
+
+;
+DELETE FROM fkt2 WHERE k2=12
+
+;
+UPDATE pkt1 SET i1=1, j1=11 WHERE i1=2;
+
+;
+UPDATE pkt2 SET i2=104, j2=1004 WHERE i2=101;
+
+;
+SELECT * FROM pkt1;
+;
+1	11	
+
+;
+SELECT * FROM pkt2;
+;
+103	1003	
+104	1004	
+
+;
+DROP TABLE pkt1
+
+;
+DROP TABLE pkt2
+
+;
+DROP TABLE fkt2
+
+;
+DROP TABLE pkt1
+
+;
+DROP TABLE pkt2
+
+;
+DROP TABLE fkt1
+
+;
+DROP TABLE pkt1
+
+;
+DROP TABLE pkt2

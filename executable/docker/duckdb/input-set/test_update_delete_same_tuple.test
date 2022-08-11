@@ -1,0 +1,43 @@
+# name: test/sql/update/test_update_delete_same_tuple.test
+# description: Test update and delete of the same tuple
+# group: [update]
+
+# on a normal table, we can update and delete the same tuple concurrently without a conflict
+;
+CREATE TABLE test (a INTEGER);
+
+;
+INSERT INTO test VALUES (1), (2), (3);
+
+;
+BEGIN TRANSACTION;
+
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET a=a+1;
+
+;
+DELETE FROM test
+
+;
+SELECT * FROM test ORDER BY a
+;
+2
+3
+4
+
+;
+SELECT * FROM test ORDER BY a
+;
+
+;
+COMMIT;
+
+;
+COMMIT;
+
+;
+DROP TABLE test;
+

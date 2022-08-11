@@ -1,0 +1,121 @@
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  ALTER TABLE t2 ADD COLUMN credential TEXT DEFAULT 'hello';
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  INSERT INTO hash_temp_heap SELECT b, b - 10, (b + 10)::text FROM generate_series(21, 30) a(b);
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  SELECT uname, credential FROM t2 WHERE uname = -1 LIMIT 1;
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  EXPLAIN (VERBOSE TRUE, COSTS FALSE)
+	SELECT * FROM t2 ORDER BY uname, credential, auth_tbl LIMIT 10;
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  EXPLAIN (VERBOSE TRUE, COSTS FALSE)
+	SELECT * FROM t2 WHERE uname > -1 ORDER BY uname, credential, auth_tbl LIMIT 10;
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  relation "hash_split_heap" does not exist at character 13
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  DELETE FROM hash_split_heap WHERE keycol BETWEEN 10 AND 20 RETURNING *;
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  SELECT * FROM t2 WHERE credential LIKE '"%"' ORDER BY auth_tbl;
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 13
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  INSERT INTO y VALUES (3), (4);
+2022-08-02 06:46:32.221 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.221 UTC [90369] STATEMENT:  ALTER TABLE hash_split_heap ADD COLUMN label TEXT DEFAULT 'Hello';
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  DROP TABLE t2;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE FUNCTION in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE FUNCTION test_trigger()
+	RETURNS trigger
+	LANGUAGE plpgsql
+	AS $$
+	
+	begin
+	    raise notice 'old tuple: %', to_json(OLD)::text;
+	    if TG_OP = 'DELETE'
+	    then
+	       return OLD;
+	    else
+	       return NEW;
+	    end if;
+	end;
+	
+	$$;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE TABLE in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE TABLE foo_tbl (o serial PRIMARY KEY, var_tbl int, foo_ptbl int, p int);
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  SELECT * FROM foo_tbl;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  SELECT * FROM y;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE TRIGGER var_tbl BEFORE UPDATE ON foo_tbl FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  ALTER TABLE hash_temp_heap ADD COLUMN foo_ptbl_ones int NOT NULL DEFAULT 5;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE TRIGGER hash_idx BEFORE UPDATE ON y FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  SELECT * FROM foo_tbl;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  DROP TABLE hash_temp_heap;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  ALTER TABLE foo_tbl ADD COLUMN foo_ptbl_ones int;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE TRIGGER hash_idx BEFORE UPDATE ON y FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  SELECT * FROM foo_tbl;
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  CREATE TRIGGER t4 BEFORE UPDATE ON p FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-02 06:46:32.222 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.222 UTC [90369] STATEMENT:  SELECT * FROM y;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  SELECT * FROM foo_tbl;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute CREATE TRIGGER in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  CREATE TRIGGER hash_idx BEFORE UPDATE ON y FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  SELECT * FROM foo_tbl;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  DROP TABLE foo_tbl;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  ALTER TABLE vw ADD COLUMN fooarr int NOT NULL DEFAULT 5;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  ALTER TABLE vw ADD COLUMN f3 int;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute ALTER TABLE in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  ALTER TABLE y DROP hash_heap_float4;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  SELECT * FROM y;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  relation "hash_split_heap" does not exist at character 15
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  SELECT * FROM hash_split_heap;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute DROP TABLE in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  DROP TABLE y;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute DROP FUNCTION in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  DROP FUNCTION test_trigger();
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  cannot execute DROP FUNCTION in a read-only transaction
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  DROP FUNCTION log_rewrite;
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  relation "hash_split_heap" does not exist at character 7
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  table hash_split_heap;
+2022-08-02 06:46:32.223 UTC [90369] WARNING:  there is no transaction in progress
+2022-08-02 06:46:32.223 UTC [90369] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:46:32.223 UTC [90369] STATEMENT:  DISCARD ALL;
+2022-08-02 06:46:32.224 UTC [90369] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:46:32.224 UTC [90369] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:46:32.224 UTC [90369] ERROR:  cannot execute CREATE SCHEMA in a read-only transaction
+2022-08-02 06:46:32.224 UTC [90369] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:46:32.520 UTC [95942] PANIC:  could not open critical system index 2662
+2022-08-02 06:46:32.522 UTC [87668] LOG:  server process (PID 95942) was terminated by signal 6: Aborted
+2022-08-02 06:46:32.522 UTC [87668] LOG:  terminating any other active server processes
+2022-08-02 06:46:32.556 UTC [87668] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:46:32.574 UTC [95947] LOG:  database system was interrupted; last known up at 2022-08-02 06:46:31 UTC
+2022-08-02 06:46:32.589 UTC [95947] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:46:32.590 UTC [95947] LOG:  redo starts at 0/142725D8
+2022-08-02 06:46:32.590 UTC [95947] LOG:  invalid record length at 0/14272688: wanted 24, got 0
+2022-08-02 06:46:32.590 UTC [95947] LOG:  redo done at 0/14272610 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 06:46:32.601 UTC [87668] LOG:  database system is ready to accept connections
+2022-08-02 06:46:33.478 UTC [95971] PANIC:  could not open critical system index 2662
+2022-08-02 06:46:33.480 UTC [87668] LOG:  server process (PID 95971) was terminated by signal 6: Aborted
+2022-08-02 06:46:33.480 UTC [87668] LOG:  terminating any other active server processes
+2022-08-02 06:46:33.484 UTC [95975] FATAL:  the database system is in recovery mode
+2022-08-02 06:46:33.488 UTC [87668] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:46:33.499 UTC [87668] LOG:  received smart shutdown request
+2022-08-02 06:46:33.500 UTC [95981] LOG:  database system was interrupted; last known up at 2022-08-02 06:46:32 UTC
+2022-08-02 06:46:33.516 UTC [95981] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:46:33.517 UTC [95981] LOG:  invalid record length at 0/14272700: wanted 24, got 0
+2022-08-02 06:46:33.517 UTC [95981] LOG:  redo is not required
+2022-08-02 06:46:33.523 UTC [87668] LOG:  abnormal database system shutdown
+2022-08-02 06:46:33.525 UTC [87668] LOG:  database system is shut down

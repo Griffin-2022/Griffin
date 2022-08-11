@@ -1,0 +1,64 @@
+# name: test/sql/function/string/test_concat_function.test
+# description: CONCAT test
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE strings(a STRING, b STRING)
+
+;
+INSERT INTO strings VALUES ('Hello', 'World'), ('HuLlD', NULL), ('MotörHead','RÄcks')
+
+;
+select CONCAT(a, 'SUFFIX') FROM strings
+;
+HelloSUFFIX
+HuLlDSUFFIX
+MotörHeadSUFFIX
+
+;
+select CONCAT('PREFIX', b) FROM strings
+;
+PREFIXWorld
+PREFIX
+PREFIXRÄcks
+
+;
+select CONCAT(a, b) FROM strings
+;
+HelloWorld
+HuLlD
+MotörHeadRÄcks
+
+;
+select CONCAT(a, b, 'SUFFIX') FROM strings
+;
+HelloWorldSUFFIX
+HuLlDSUFFIX
+MotörHeadRÄcksSUFFIX
+
+;
+select CONCAT(a, b, a) FROM strings
+;
+HelloWorldHello
+HuLlDHuLlD
+MotörHeadRÄcksMotörHead
+
+;
+select CONCAT('1', '2', '3', '4', '5', '6', '7', '8', '9', '0')
+;
+1234567890
+
+# concat a long string
+;
+select '1234567890' || '1234567890', '1234567890' || NULL
+;
+12345678901234567890	NULL
+
+;
+select CONCAT('1234567890', '1234567890'), CONCAT('1234567890', NULL)
+;
+12345678901234567890	1234567890
+

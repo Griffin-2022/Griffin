@@ -1,0 +1,111 @@
+2022-08-02 00:04:30.171 UTC [86372] ERROR:  cursor "tablesample_cur" does not exist
+2022-08-02 00:04:30.171 UTC [86372] STATEMENT:  
+	FETCH NEXT FROM tablesample_cur;
+2022-08-02 00:04:30.171 UTC [86372] ERROR:  relation "sequence_test9" does not exist
+2022-08-02 00:04:30.171 UTC [86372] STATEMENT:    -- ok now
+	ALTER SEQUENCE sequence_test9 AS smallint;
+2022-08-02 00:04:30.171 UTC [86372] ERROR:  sample percentage must be between 0 and 100
+2022-08-02 00:04:30.171 UTC [86372] STATEMENT:  
+	SELECT int_nn FROM var_record TABLESAMPLE BERNOULLI (200);
+2022-08-02 00:04:30.171 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.172 UTC [86372] ERROR:  "var_record" is not partitioned
+2022-08-02 00:04:30.172 UTC [86372] STATEMENT:  
+	create table t2 partition of var_record for values in (1);
+2022-08-02 00:04:30.173 UTC [86372] ERROR:  relation "hash_heap_float4" does not exist
+2022-08-02 00:04:30.173 UTC [86372] STATEMENT:  
+	CREATE OR REPLACE RULE y_rule AS ON INSERT TO hash_heap_float4
+	  DO INSTEAD (NOTIFY foo; NOTIFY bar);
+2022-08-02 00:04:30.174 UTC [86372] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 00:04:30.174 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.179 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.179 UTC [86372] ERROR:  table "bmscantest" does not exist
+2022-08-02 00:04:30.179 UTC [86372] STATEMENT:  drop table bmscantest;
+2022-08-02 00:04:30.179 UTC [86372] ERROR:  function explain_parallel_sort_stats() does not exist
+2022-08-02 00:04:30.179 UTC [86372] STATEMENT:  drop function explain_parallel_sort_stats();
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  function keycol(integer) does not exist
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  drop function keycol(integer);
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  ROLLBACK TO SAVEPOINT settings;
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  ROLLBACK TO SAVEPOINT settings;
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  ROLLBACK TO SAVEPOINT settings;
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  SAVEPOINT can only be used in transaction blocks
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  SAVEPOINT settings;
+2022-08-02 00:04:30.180 UTC [86372] ERROR:  ROLLBACK TO SAVEPOINT can only be used in transaction blocks
+2022-08-02 00:04:30.180 UTC [86372] STATEMENT:  ROLLBACK TO SAVEPOINT settings;
+2022-08-02 00:04:30.180 UTC [86372] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 00:04:30.181 UTC [86372] ERROR:  relation "tenk1" does not exist at character 67
+2022-08-02 00:04:30.181 UTC [86372] STATEMENT:  CREATE VIEW tenk1_vw_sec WITH (security_barrier) AS SELECT * FROM tenk1;
+2022-08-02 00:04:30.181 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.181 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.193 UTC [86372] ERROR:  pg_lsn out of range
+2022-08-02 00:04:30.193 UTC [86372] STATEMENT:  SELECT '0/1'::pg_lsn - 2::numeric;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  cursor "foo25" does not exist
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  FETCH ABSOLUTE -1 FROM foo25;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  SELECT name, statement, is_holdable, is_binary, is_scrollable FROM pg_cursors;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  
+	
+	WITH cte (x) AS (
+	        select 1 union all select 1 union all select 1 union all
+	        SELECT * FROM generate_series(5, 49, 2)
+	)
+	SELECT x, (sum(x) over w)
+	FROM cte
+	WINDOW w AS (ORDER BY x groups between 1 preceding and 1 following);
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  SELECT name, statement, is_holdable, is_binary, is_scrollable FROM pg_cursors;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  CLOSE foo25ns;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  
+	
+	--
+	-- Test various built-in aggregates that have moving-aggregate support
+	--
+	
+	-- test inverse transition functions handle NULLs properly
+	SELECT i,AVG(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
+	  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  insert into var_record values(2);
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  DECLARE CURSOR can only be used in transaction blocks
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  DECLARE foo2 CURSOR WITHOUT HOLD FOR SELECT 1;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  cursor "c1" does not exist
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  FETCH 2 FROM c1;
+2022-08-02 00:04:30.196 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  cursor "c1" does not exist
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  FETCH c1;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  DELETE FROM int_nn WHERE var_record_nn = 10;
+2022-08-02 00:04:30.196 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.196 UTC [86372] STATEMENT:  CREATE TEMP TABLE aggf_trans () inherits (var_record);
+2022-08-02 00:04:30.197 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.197 UTC [86372] STATEMENT:  BEGIN;
+2022-08-02 00:04:30.197 UTC [86372] ERROR:  cursor "c1" does not exist
+2022-08-02 00:04:30.197 UTC [86372] STATEMENT:  FETCH 1 FROM c1;
+2022-08-02 00:04:30.197 UTC [86372] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 00:04:30.197 UTC [86372] STATEMENT:  DELETE FROM int_nn WHERE CURRENT OF c1;
+2022-08-02 00:04:30.197 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.197 UTC [86372] ERROR:  relation "aggf_trans" does not exist at character 56
+2022-08-02 00:04:30.197 UTC [86372] STATEMENT:  DECLARE c CURSOR FOR SELECT aggfns_trans,count(*) FROM aggf_trans GROUP BY aggfns_trans;
+2022-08-02 00:04:30.197 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.197 UTC [86372] WARNING:  there is already a transaction in progress
+2022-08-02 00:04:30.197 UTC [86372] ERROR:  table "cursor" does not exist
+2022-08-02 00:04:30.197 UTC [86372] STATEMENT:  DROP TABLE cursor;
+2022-08-02 00:04:30.197 UTC [86372] WARNING:  there is no transaction in progress
+2022-08-02 00:04:30.204 UTC [86372] PANIC:  could not write to file "pg_wal/xlogtemp.86372": No space left on device
+2022-08-02 00:04:30.204 UTC [86372] STATEMENT:  DROP SCHEMA IF EXISTS public CASCADE;
+2022-08-02 00:04:30.232 UTC [85960] LOG:  server process (PID 86372) was terminated by signal 6: Aborted
+2022-08-02 00:04:30.232 UTC [85960] LOG:  terminating any other active server processes
+2022-08-02 00:04:30.238 UTC [85960] LOG:  all server processes terminated; reinitializing
+2022-08-02 00:04:30.251 UTC [87693] LOG:  database system was interrupted; last known up at 2022-08-02 00:04:24 UTC
+2022-08-02 00:04:30.268 UTC [87693] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 00:04:30.269 UTC [87693] LOG:  redo starts at 0/44001F58
+2022-08-02 00:04:30.465 UTC [87693] LOG:  redo done at 0/7A00D990 system usage: CPU: user: 0.16 s, system: 0.02 s, elapsed: 0.19 s
+2022-08-02 00:04:30.480 UTC [87693] PANIC:  could not write to file "pg_wal/xlogtemp.87693": No space left on device
+2022-08-02 00:04:30.482 UTC [85960] LOG:  startup process (PID 87693) was terminated by signal 6: Aborted
+2022-08-02 00:04:30.482 UTC [85960] LOG:  aborting startup due to startup process failure
+2022-08-02 00:04:30.485 UTC [85960] LOG:  database system is shut down

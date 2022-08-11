@@ -1,0 +1,100 @@
+| | | | | | | | | | | | | | | | | | | | | <intern_sys_var_ptr
+| | | | | | | | | | | | | | | | | | | | <innobase_trx_init
+| | | | | | | | | | | | | | | | | | | <ha_innobase::update_thd
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x3253e80) locking
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x3253e80) locked
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x3253e80) unlocking
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x32550e0) locking
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x32550e0) locked
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x32550e0) unlocking
+| | | | | | | | | | | | | | | | | | | trx: Create: 0x7f59d321a390
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x22d2b00) locking
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x22d2b00) locked
+| | | | | | | | | | | | | | | | | | | mutex: mutex (0x22d2b00) unlocking
+| | | | | | | | | | | | | | | | | | | >que_eval_sql
+| | | | | | | | | | | | | | | | | | | | que_eval_sql: query: PROCEDURE FETCH_STATS () IS
+found INT;
+DECLARE FUNCTION fetch_table_stats_step;
+DECLARE FUNCTION fetch_index_stats_step;
+DECLARE CURSOR table_stats_cur IS
+  SELECT
+  n_rows,
+  clustered_index_size,
+  sum_of_other_index_sizes
+  FROM "mysql/innodb_table_stats"
+  WHERE
+  database_name = :database_name AND
+  table_name = :table_name;
+DECLARE CURSOR index_stats_cur IS
+  SELECT
+  index_name,
+  stat_name,
+  stat_value,
+  sample_size
+  FROM "mysql/innodb_index_stats"
+  WHERE
+  database_name = :database_name AND
+  table_name = :table_name;
+BEGIN
+OPEN table_stats_cur;
+FETCH table_stats_cur INTO
+  fetch_table_stats_step();
+IF (SQL % NOTFOUND) THEN
+  CLOSE table_stats_cur;
+  RETURN;
+END IF;
+CLOSE table_stats_cur;
+OPEN index_stats_cur;
+found := 1;
+WHILE found = 1 LOOP
+  FETCH index_stats_cur INTO
+    fetch_index_stats_step();
+  IF (SQL % NOTFOUND) THEN
+    found := 0;
+  END IF;
+END LOOP;
+CLOSE index_stats_cur;
+END;
+| | | | | | | | | | | | | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | | | | | | | | | | | | dict_table_open_on_name: table: 'mysql/innodb_table_stats'
+| | | | | | | | | | | | | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | | | | | | | | | | | | >dict_table_open_on_name
+| | | | | | | | | | | | | | | | | | | | | dict_table_open_on_name: table: 'mysql/innodb_index_stats'
+| | | | | | | | | | | | | | | | | | | | <dict_table_open_on_name
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 9 (QUERY THREAD) at 0x7f59841ebe80
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 25 (OPEN) at 0x7f59841eaa68
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 24 (FETCH) at 0x7f59841eac88
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 6 (SELECT) at 0x7f59841e90b8
+| | | | | | | | | | | | | | | | | | | | mutex: m_mutex (0x7f59d321b268) locking
+| | | | | | | | | | | | | | | | | | | | mutex: m_mutex (0x7f59d321b268) locked
+| | | | | | | | | | | | | | | | | | | | mutex: mutex (0x7f59840a1590) locking
+| | | | | | | | | | | | | | | | | | | | mutex: mutex (0x7f59840a1590) locked
+| | | | | | | | | | | | | | | | | | | | mutex: mutex (0x7f59840a1590) unlocking
+| | | | | | | | | | | | | | | | | | | | mutex: m_mutex (0x7f59d321b268) unlocking
+| | | | | | | | | | | | | | | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) locking
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) locked
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) unlocking
+| | | | | | | | | | | | | | | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 24 (FETCH) at 0x7f59841eac88
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1045 (IF) at 0x7f59841eaf90
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 25 (OPEN) at 0x7f59841eb0d0
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 25 (OPEN) at 0x7f59841eb200
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 23 (ASSIGNMENT) at 0x7f59841eb408
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1044 (STORED PROCEDURE) at 0x7f59841ebf20
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 1046 (WHILE) at 0x7f59841ebc58
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 24 (FETCH) at 0x7f59841eb858
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 6 (SELECT) at 0x7f59841e9f60
+| | | | | | | | | | | | | | | | | | | | >btr_cur_search_to_nth_level
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) locking
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) locked
+| | | | | | | | | | | | | | | | | | | | | mutex: mutex (0x2d7c7f8) unlocking
+| | | | | | | | | | | | | | | | | | | | <btr_cur_search_to_nth_level
+| | | | | | | | | | | | | | | | | | | | ib_que: Execute 24 (FETCH) at 0x7f59841eb858
+| 

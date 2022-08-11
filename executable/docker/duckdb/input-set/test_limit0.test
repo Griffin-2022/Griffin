@@ -1,0 +1,17 @@
+# name: test/sql/limit/test_limit0.test
+# description: Test limit 0
+# group: [limit]
+
+# not running with verification on purpose, since running this without the optimizer will take forever
+;
+SELECT * FROM (SELECT SUM(i) FROM range(100000000000) tbl(i)) LIMIT 0;
+;
+
+;
+PRAGMA explain_output='OPTIMIZED_ONLY'
+
+;
+EXPLAIN SELECT * FROM (SELECT SUM(i) FROM range(100000000000) tbl(i)) LIMIT 0;
+
+;
+EXPLAIN SELECT * FROM (SELECT SUM(i) FROM range(100000000000) tbl(i)) WHERE 1=0;

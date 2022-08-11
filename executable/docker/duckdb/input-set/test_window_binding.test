@@ -1,0 +1,33 @@
+# name: test/sql/window/test_window_binding.test
+# description: Test errors in binding window functions
+# group: [window]
+
+require vector_size 512
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER)
+
+# we use columns here that are not part of the table
+;
+SELECT MIN(a) OVER (PARTITION BY i ORDER BY i) FROM integers
+
+;
+SELECT MIN(i) OVER (PARTITION BY a ORDER BY i) FROM integers
+
+;
+SELECT MIN(i) OVER (PARTITION BY i ORDER BY a) FROM integers
+
+;
+SELECT MIN(i) OVER (PARTITION BY i, a ORDER BY i) FROM integers
+
+;
+SELECT MIN(i) OVER (PARTITION BY i ORDER BY i, a) FROM integers
+
+# now we only use the "proper" columns
+;
+SELECT MIN(i) OVER (PARTITION BY i ORDER BY i) FROM integers
+;
+

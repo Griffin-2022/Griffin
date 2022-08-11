@@ -1,0 +1,183 @@
+# name: test/issues/general/test_2416.test
+# description: Issue 2416: Segmentation fault on macro creation
+# group: [general]
+
+;
+PRAGMA enable_verification
+
+;
+select list_extract(null, null);
+;
+NULL
+
+;
+select list_extract(null, 1);
+;
+NULL
+
+;
+select list_extract([1, 2, 3], NULL);
+;
+NULL
+
+;
+SELECT list_extract([1, 2, 3], 2)
+;
+2
+
+;
+SELECT list_extract([1, 2, 3], 1)
+;
+1
+
+;
+PREPARE v1 AS SELECT list_extract($1::int[], 1)
+
+;
+EXECUTE v1([1, 2, 3])
+;
+1
+
+;
+EXECUTE v1(NULL)
+;
+NULL
+
+;
+PREPARE v2 AS SELECT list_extract([1, 2, 3], $1)
+
+;
+EXECUTE v2(2)
+;
+2
+
+;
+EXECUTE v2(NULL)
+;
+NULL
+
+;
+create macro extract_field(my_struct, my_field) as my_struct[my_field];
+
+;
+SELECT extract_field([1, 2, 3], 1)
+;
+1
+
+# the same but with array_length
+;
+select array_length(null);
+;
+NULL
+
+;
+PREPARE v3 AS SELECT array_length($1::int[])
+
+;
+EXECUTE v3([1, 2, 3])
+;
+3
+
+;
+EXECUTE v3(NULL)
+;
+NULL
+
+;
+PREPARE v4 AS SELECT array_length($1)
+
+;
+create macro array_l(my_arr) as array_length(my_arr);
+
+;
+SELECT array_l([1, 2, 3])
+;
+3
+
+;
+CREATE MACRO my_extract(my_nested_type, index_or_field) AS my_nested_type[index_or_field]
+
+;
+SELECT my_extract('1234', 2)
+;
+2
+
+;
+SELECT my_extract([1, 2, 3, 4], 2)
+;
+2
+
+;
+SELECT my_extract({a: 1, b: 2, c: 3, d: 4}, 'd')
+;
+4
+
+;
+CREATE MACRO my_list_or_string_extract_2(my_list_or_string) AS my_list_or_string[3]
+
+;
+SELECT my_list_or_string_extract_2('1234')
+;
+3
+
+;
+SELECT my_list_or_string_extract_2('12')
+;
+(empty)
+
+;
+SELECT my_list_or_string_extract_2([1, 2, 3, 4])
+;
+3
+
+;
+SELECT my_list_or_string_extract_2([1, 2])
+;
+NULL
+
+;
+SELECT my_list_or_string_extract_2({a: 1, b: 2, c: 3, d: 4})
+
+;
+CREATE MACRO my_struct_extract_c(my_struct) AS my_struct['c']
+
+;
+SELECT my_struct_extract_c({a: 1, b: 2, c: 3, d: 4})
+;
+3
+
+;
+SELECT my_struct_extract_c({a: 1, b: 2, d: 4})
+
+;
+CREATE MACRO my_specific_struct_extract(field) AS struct_pack(a:= 1, b:= 2, c:= 3, d:= 4)[field]
+
+;
+SELECT my_specific_struct_extract('c')
+;
+3
+
+;
+SELECT my_specific_struct_extract(2)
+
+;
+CREATE MACRO my_specific_list_extract(index) AS list_value(1, 2, 3, 4)[index]
+
+;
+SELECT my_specific_list_extract(2)
+;
+2
+
+;
+SELECT my_specific_list_extract('c')
+
+;
+CREATE MACRO my_specific_string_extract(index) AS '1234'[index]
+
+;
+SELECT my_specific_string_extract(2)
+;
+2
+
+;
+SELECT my_specific_string_extract('c')

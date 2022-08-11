@@ -1,0 +1,111 @@
+	select '"int8alias1"'::jsonb - 1;
+2022-08-01 21:06:04.148 UTC [4426] ERROR:  path element at position 3 is not an integer: "non_integer"
+2022-08-01 21:06:04.148 UTC [4426] STATEMENT:  
+	select jsonb_set('{"int8alias1": {"b": [1, 2, 3]}}', '{int8alias1, b, non_integer}', '"new_value"');
+2022-08-01 21:06:04.149 UTC [4426] ERROR:  flag array element is not a string
+2022-08-01 21:06:04.149 UTC [4426] STATEMENT:  
+	select jsonb_to_tsvector('english', '{"int8alias1": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::jsonb, 'null');
+2022-08-01 21:06:04.150 UTC [4426] ERROR:  cannot cast jsonb array to type double precision
+2022-08-01 21:06:04.150 UTC [4426] STATEMENT:  
+	select '[1.0]'::jsonb::float;
+2022-08-01 21:06:04.150 UTC [4426] WARNING:  there is no transaction in progress
+2022-08-01 21:06:04.165 UTC [4426] ERROR:  invalid input syntax for type json
+2022-08-01 21:06:04.165 UTC [4426] STATEMENT:  SELECT repeat('{"a":', 10000)::json;
+2022-08-01 21:06:04.175 UTC [4426] ERROR:  could not determine row type for result of json_populate_record
+2022-08-01 21:06:04.175 UTC [4426] STATEMENT:  SELECT json_populate_record(null::record, '{"x": 0, "y": 1}');
+2022-08-01 21:06:04.176 UTC [4426] ERROR:  invalid input syntax for type integer: "blurfl"
+2022-08-01 21:06:04.176 UTC [4426] STATEMENT:  select * from json_populate_recordset(null::int8alias2,'[{"a":"blurfl","x":43.2},{"b":3,"c":"2012-01-20 10:42:53"}]') q;
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  function return row and query-specified return row do not match
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  select * from json_populate_recordset(row(1000000000::int,50::int),'[{"b":"2"},{"a":"3"}]') q (a text, b text);
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  "int8alias2" is not a domain
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  DROP DOMAIN int8alias2;
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  "int8alias2" is not a domain
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  DROP DOMAIN int8alias2;
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  argument list must have even number of elements
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  SELECT json_build_object('{a,b,c}'::text[]);
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  argument 1 cannot be null
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  SELECT json_build_object(NULL, 'a');
+2022-08-01 21:06:04.177 UTC [4426] ERROR:  key value must be scalar, not array, composite, or json
+2022-08-01 21:06:04.177 UTC [4426] STATEMENT:  SELECT json_build_object(r,2) FROM (SELECT 1 AS a, 2 AS b) r;
+2022-08-01 21:06:04.178 UTC [4426] ERROR:  key value must be scalar, not array, composite, or json
+2022-08-01 21:06:04.178 UTC [4426] STATEMENT:  SELECT json_build_object(json '{"a":1,"b":2}', 3);
+2022-08-01 21:06:04.178 UTC [4426] ERROR:  key value must be scalar, not array, composite, or json
+2022-08-01 21:06:04.178 UTC [4426] STATEMENT:  SELECT json_build_object('{1,2,3}'::int[], 3);
+2022-08-01 21:06:04.178 UTC [4426] ERROR:  mismatched array dimensions
+2022-08-01 21:06:04.178 UTC [4426] STATEMENT:  select json_object('{a,b,c,"d e f",g}','{1,2,3,"a b c"}');
+2022-08-01 21:06:04.178 UTC [4426] ERROR:  mismatched array dimensions
+2022-08-01 21:06:04.178 UTC [4426] STATEMENT:  select json_object('{a,b,c,"d e f"}','{1,2,3,"a b c",g}');
+2022-08-01 21:06:04.179 UTC [4426] ERROR:  wrong flag in flag array: ""
+2022-08-01 21:06:04.179 UTC [4426] STATEMENT:  select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '""');
+2022-08-01 21:06:04.180 UTC [4426] ERROR:  flag array element is not a string
+2022-08-01 21:06:04.180 UTC [4426] STATEMENT:  select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, 'null');
+2022-08-01 21:06:04.180 UTC [4426] ERROR:  flag array element is not a string
+2022-08-01 21:06:04.180 UTC [4426] STATEMENT:  select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '["all", null]');
+2022-08-01 21:06:04.180 UTC [4426] WARNING:  there is no transaction in progress
+=================================================================
+==4426==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd3d182eb0 sp 0x7ffd3d182ea8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7feaf9fca082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==4426==ABORTING
+2022-08-01 21:06:04.226 UTC [124230] LOG:  server process (PID 4426) was terminated by signal 6: Aborted
+2022-08-01 21:06:04.226 UTC [124230] LOG:  terminating any other active server processes
+2022-08-01 21:06:04.232 UTC [8286] FATAL:  the database system is in recovery mode
+2022-08-01 21:06:04.234 UTC [8289] FATAL:  the database system is in recovery mode
+2022-08-01 21:06:04.236 UTC [8290] FATAL:  the database system is in recovery mode
+2022-08-01 21:06:04.241 UTC [124230] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:06:04.254 UTC [124230] LOG:  received smart shutdown request
+2022-08-01 21:06:04.254 UTC [8296] LOG:  database system was interrupted; last known up at 2022-08-01 21:06:04 UTC
+2022-08-01 21:06:04.269 UTC [8296] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 21:06:04.270 UTC [8296] LOG:  redo starts at 0/8055250
+2022-08-01 21:06:04.274 UTC [124230] LOG:  abnormal database system shutdown

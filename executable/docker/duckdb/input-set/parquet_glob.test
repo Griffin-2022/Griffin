@@ -1,0 +1,87 @@
+# name: test/sql/copy/parquet/parquet_glob.test
+# description: Test basic globbing of parquet files
+# group: [parquet]
+
+require parquet
+
+;
+PRAGMA enable_verification
+
+;
+select * from parquet_scan('data/parquet-testing/glob*/t?.parquet') order by i
+;
+1	a
+2	b
+3	c
+
+;
+select * from parquet_scan('data/parquet-testing/glob/t[0-9].parquet') order by i
+;
+1	a
+2	b
+
+;
+select * from parquet_scan('data/parquet-testing/glob/*') order by i
+;
+1	a
+2	b
+
+;
+select * from parquet_scan('data/parquet-testing/glob/*.parquet') order by i
+;
+1	a
+2	b
+
+;
+select * from parquet_scan('data/parquet-testing/g*/*.parquet') order by i
+;
+1	a
+2	b
+3	c
+
+;
+select * from parquet_scan('data/parquet-testing/g*/t1.parquet') order by i
+;
+1	a
+3	c
+
+# abs path
+;
+select * from parquet_scan('__WORKING_DIRECTORY__/data/parquet-testing/g*/t1.parquet') order by i
+;
+1	a
+3	c
+
+# forward slashes
+;
+select * from parquet_scan('data\parquet-testing\g*\t1.parquet') order by i
+;
+1	a
+3	c
+
+;
+select count(*) from parquet_scan('')
+
+# schema mismatch in parquet glob
+;
+select count(*) from parquet_scan('data/parquet-testing/*.parquet')
+
+# parquet glob with COPY FROM
+;
+CREATE TABLE vals (i INTEGER, j BLOB)
+
+;
+COPY vals FROM 'data/parquet-testing/glob/t?.parquet' (FORMAT PARQUET);
+
+;
+SELECT * FROM vals ORDER BY 1
+;
+1	a
+2	b
+
+# failed to copy: incorrect types found in parquet file
+;
+CREATE TABLE vals2 (i INTEGER, j INTEGER)
+
+;
+COPY vals2 FROM '*/sql/*/parquet/*/glob/t?.parquet' (FORMAT PARQUET);

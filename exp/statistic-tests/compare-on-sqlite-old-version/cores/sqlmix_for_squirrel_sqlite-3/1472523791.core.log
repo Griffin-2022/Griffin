@@ -1,0 +1,55 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000572,sig:06,src:021623+023792,time:31943282,execs:6252838,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f3d03003859 in __GI_abort () at abort.c:79
+#2  0x00007f3d0306e26e in __libc_message (action=action@entry=do_abort, fmt=fmt@entry=0x7f3d03198298 "%s\n") at ../sysdeps/posix/libc_fatal.c:155
+#3  0x00007f3d030762fc in malloc_printerr (str=str@entry=0x7f3d031964c1 "free(): invalid pointer") at malloc.c:5347
+#4  0x00007f3d03077b2c in _int_free (av=<optimized out>, p=<optimized out>, have_lock=0) at malloc.c:4173
+#5  0x0000000000273b99 in sqlite3MemFree (pPrior=0x236f4a0) at sqlite3.c:23079
+#6  0x000000000025e7f6 in sqlite3_free (p=0x236f4a0) at sqlite3.c:27000
+#7  0x000000000025e64b in sqlite3DbFreeNN (db=0x0, p=0x236f4a0) at sqlite3.c:27043
+#8  0x000000000025e25f in sqlite3DbFree (db=0x0, p=0x236f4a0) at sqlite3.c:27047
+#9  0x000000000029f7e2 in deleteTable (db=0x0, pTable=0x2390310) at sqlite3.c:108310
+#10 0x000000000029f313 in sqlite3DeleteTable (db=0x0, pTable=0x2390310) at sqlite3.c:108326
+#11 0x00000000002a87e1 in sqlite3SchemaClear (p=0x236fab0) at sqlite3.c:112936
+#12 0x00000000002de462 in sqlite3ResetAllSchemasOfConnection (db=0x236f4c0) at sqlite3.c:108217
+#13 0x0000000000362da5 in invalidateTempStorage (pParse=0x7ffc23392890) at sqlite3.c:122305
+#14 0x0000000000362c0a in changeTempStorage (pParse=0x7ffc23392890, zStorageType=0x238ba30 "memory") at sqlite3.c:122321
+#15 0x0000000000313c65 in sqlite3Pragma (pParse=0x7ffc23392890, pId1=0x7ffc23391ef8, pId2=0x7ffc23391f10, pValue=0x7ffc23391f40, minusFlag=0) at sqlite3.c:123054
+#16 0x00000000002f3e91 in yy_reduce (yypParser=0x7ffc23391eb0, yyruleno=238, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffc23392890) at sqlite3.c:153935
+#17 0x00000000002eca18 in sqlite3Parser (yyp=0x7ffc23391eb0, yymajor=1, yyminor=...) at sqlite3.c:154496
+#18 0x00000000002a9df3 in sqlite3RunParser (pParse=0x7ffc23392890, 
+    zSql=0x23971da ";;CREATE TABLE b(c TEXT, CHECK(c NOT BETWEEN +c AND 999999));;\n;DELETE FROM b;SELECT*FROM\"temp\".sqlite_temp_master ORDER BY rowid\n;;PRAGMA vdbe_trace=on;;INSERT INTO test(a,a,a,a,a) VALUES(1,2,3,4,5);"..., pzErrMsg=0x7ffc23392a70) at sqlite3.c:155636
+#19 0x00000000002a77e3 in sqlite3Prepare (db=0x236f4c0, 
+    zSql=0x2370446 "PRAGMA temp_store = memory;;CREATE TABLE b(c TEXT, CHECK(c NOT BETWEEN +c AND 999999));;\n;DELETE FROM b;SELECT*FROM\"temp\".sqlite_temp_master ORDER BY rowid\n;;PRAGMA vdbe_trace=on;;INSERT INTO test(a,a"..., nBytes=1700, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffc23392ba8, pzTail=0x7ffc23392b90) at sqlite3.c:125299
+#20 0x00000000002a6eae in sqlite3LockAndPrepare (db=0x236f4c0, 
+    zSql=0x2370446 "PRAGMA temp_store = memory;;CREATE TABLE b(c TEXT, CHECK(c NOT BETWEEN +c AND 999999));;\n;DELETE FROM b;SELECT*FROM\"temp\".sqlite_temp_master ORDER BY rowid\n;;PRAGMA vdbe_trace=on;;INSERT INTO test(a,a"..., nBytes=1700, prepFlags=128, pOld=0x0, ppStmt=0x7ffc23392ba8, pzTail=0x7ffc23392b90) at sqlite3.c:125402
+#21 0x0000000000294f4f in sqlite3_prepare_v2 (db=0x236f4c0, 
+    zSql=0x2370446 "PRAGMA temp_store = memory;;CREATE TABLE b(c TEXT, CHECK(c NOT BETWEEN +c AND 999999));;\n;DELETE FROM b;SELECT*FROM\"temp\".sqlite_temp_master ORDER BY rowid\n;;PRAGMA vdbe_trace=on;;INSERT INTO test(a,a"..., nBytes=1700, ppStmt=0x7ffc23392ba8, pzTail=0x7ffc23392b90) at sqlite3.c:125486
+#22 0x0000000000258550 in main (argc=1, argv=0x7ffc23392d58) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 56067] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

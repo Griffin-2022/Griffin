@@ -1,0 +1,114 @@
+# name: test/optimizer/pushdown_set_op.test
+# description: Pushdown set operations
+# group: [optimizer]
+
+;
+PRAGMA explain_output = 'OPTIMIZED_ONLY'
+
+;
+explain select 42 intersect select 42;
+;
+logical_opt	<REGEX>:.*INTERSECT.*
+
+# intersect is empty if either side is empty
+;
+explain select 42 intersect select 42 where 1=0;
+;
+logical_opt	<!REGEX>:.*INTERSECT.*
+
+;
+explain select 42 where 1=0 intersect select 42;
+;
+logical_opt	<!REGEX>:.*INTERSECT.*
+
+# except is empty if LHS is empty
+;
+explain select 42 where 1=0 except select 42;
+;
+logical_opt	<!REGEX>:.*EXCEPT.*
+
+# if RHS is empty we can optimize away the except
+;
+explain select 42 except select 42 where 1=0;
+;
+logical_opt	<!REGEX>:.*EXCEPT.*
+
+# now pushdown subquery with set ops
+;
+explain select * from (select 42 intersect select 42) tbl(i) where i=42;
+;
+logical_opt	<REGEX>:.*INTERSECT.*
+
+;
+explain select * from (select 42 intersect select 43) tbl(i) where i=42;
+;
+logical_opt	<!REGEX>:.*INTERSECT.*
+
+;
+explain select * from (select 43 intersect select 42) tbl(i) where i=42;
+;
+logical_opt	<!REGEX>:.*INTERSECT.*
+
+;
+explain select * from (select 42 except select 42) tbl(i) where i=42;
+;
+logical_opt	<REGEX>:.*EXCEPT.*
+
+;
+explain select * from (select 42 except select 43) tbl(i) where i=42;
+;
+logical_opt	<!REGEX>:.*EXCEPT.*
+
+;
+explain select * from (select 43 except select 42) tbl(i) where i=42;
+;
+logical_opt	<!REGEX>:.*EXCEPT.*
+
+;
+select 42 intersect select 42;
+;
+42
+
+;
+select 42 intersect select 42 where 1=0;
+;
+
+;
+select 42 where 1=0 intersect select 42;
+;
+
+;
+select 42 where 1=0 except select 42;
+;
+
+;
+select 42 except select 42 where 1=0;
+;
+42
+
+;
+select * from (select 42 intersect select 42) tbl(i) where i=42;
+;
+42
+
+;
+select * from (select 42 intersect select 43) tbl(i) where i=42;
+;
+
+;
+select * from (select 43 intersect select 42) tbl(i) where i=42;
+;
+
+;
+select * from (select 42 except select 42) tbl(i) where i=42;
+;
+
+;
+select * from (select 42 except select 43) tbl(i) where i=42;
+;
+42
+
+;
+select * from (select 43 except select 42) tbl(i) where i=42;
+;
+

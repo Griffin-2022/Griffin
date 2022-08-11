@@ -1,0 +1,134 @@
+CREATE TABLE t1(a,b,c);
+;WITH RECURSIVE
+      c(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM c WHERE i<100)
+    INSERT INTO t1(a,b,c) SELECT i, printf('xyz%08x',i), 2000-i FROM c;
+;CREATE INDEX t1a ON t1(a);
+;CREATE INDEX t1bc ON t1(b,c);
+;
+;PRAGMA integrity_check
+;DELETE FROM t1
+;ATTACH 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;pragma aux.cache_size;
+;pragma aux.default_cache_size;
+;
+;pragma aux.cache_size = 50;
+;
+;pragma aux.default_cache_size = 456;
+;
+;pragma cache_size;
+;pragma default_cache_size;
+;
+;DETACH aux;
+;ATTACH 'test3.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;pragma aux.cache_size;
+;pragma aux.default_cache_size;
+;
+;DETACH aux;
+;ATTACH 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;pragma aux.cache_size;
+;pragma aux.default_cache_size;
+;
+;pragma synchronous;
+;
+;BEGIN;
+;pragma synchronous = OFF;
+;
+;COMMIT;
+;SELECT * FROM sqlite_temp_master
+;pragma database_list
+;CREATE TABLE t2(a TYPE_X, b [TYPE_Y], c "TYPE_Z");
+;pragma table_info(t2)
+  
+;pragma table_info;
+;
+;CREATE TABLE t5(
+      a TEXT DEFAULT CURRENT_TIMESTAMP, 
+      b DEFAULT (5+3),
+      c TEXT,
+      d INTEGER DEFAULT NULL,
+      e TEXT DEFAULT '',
+      UNIQUE(b,c,d),
+      PRIMARY KEY(e,b,c)
+    );
+;PRAGMA table_info(t5);
+;
+;CREATE TABLE t2_3(a,b INTEGER PRIMARY KEY,c);
+;pragma table_info(t2_3)
+  
+;CREATE TABLE t3(a int references t2(b), b UNIQUE);
+;pragma foreign_key_list(t3);
+;
+;pragma foreign_key_list;
+;
+;pragma foreign_key_list(t3_bogus);
+;
+;pragma foreign_key_list(t5);
+;
+;DROP TABLE IF EXISTS temp.out
+;pragma index_list(t3);
+;CREATE TEMP TABLE out ("seq","name","unique","origin","partial")
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;INSERT INTO out VALUES($x(seq),$x(name),$x(unique),$x(origin),$x(partial))
+;
+;SELECT seq, "name", "unique" FROM out ORDER BY seq
+;CREATE INDEX t3i1 ON t3(a,b);
+;
+;DROP TABLE IF EXISTS temp.out
+;pragma index_info(t3i1);
+;CREATE TEMP TABLE out ("seqno","cid","name")
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;INSERT INTO out VALUES($x(seqno),$x(cid),$x(name))
+;
+;SELECT seqno, cid, name FROM out ORDER BY seqno
+;DROP TABLE IF EXISTS temp.out
+;PRAGMA index_xinfo(t3i1)
+;CREATE TEMP TABLE out ("seqno","cid","name","desc","coll","key")
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;INSERT INTO out VALUES($x(seqno),$x(cid),$x(name),$x(desc),$x(coll),$x(key))
+;SELECT seqno, cid, name FROM out ORDER BY seqno
+;CREATE INDEX t3i2 ON t3(b,a);
+;PRAGMA index_info='t3i2';
+;DROP INDEX t3i2;
+;
+;pragma index_info(t3i1_bogus);
+;
+;CREATE TABLE trial(col_main);
+;CREATE TEMP TABLE trial(col_temp);
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='trial' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='trial' AND type!='trigger' ORDER BY rowid
+;
+;PRAGMA table_info(trial);
+;
+;PRAGMA temp.table_info(trial);
+;
+;PRAGMA main.table_info(trial);
+;
+;CREATE TABLE test_table(
+      one INT NOT NULL DEFAULT -1, 
+      two text,
+      three VARCHAR(45, 65) DEFAULT 'abcde',
+      four REAL DEFAULT X'abcdef',
+      five DEFAULT CURRENT_TIME
+    );
+;
+;DROP TABLE IF EXISTS temp.out
+;PRAGMA table_info(test_table)
+;CREATE TEMP TABLE out ("cid","name","type","notnull","dflt_value","pk")
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE tbl_name='out' AND type!='trigger' ORDER BY rowid
+;INSERT INTO out VALUES($x(cid),$x(name),$x(type),$x(notnull),$x(dflt_value),$x(pk))
+;SELECT cid, "name", type, "notnull", dflt_value, pk FROM out
+            ORDER BY cid
+;CREATE TABLE t68(a,b,c,PRIMARY KEY(a,b,a,c));
+;PRAGMA table_info(t68);
+;
+;

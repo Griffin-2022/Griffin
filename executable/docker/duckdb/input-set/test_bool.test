@@ -1,0 +1,95 @@
+# name: test/sql/aggregate/aggregates/test_bool.test
+# description: Test Bool operator
+# group: [aggregates]
+
+# Corner Cases
+;
+select bool_or(0)
+
+;
+select bool_and(0)
+
+;
+select bool_or(NULL)
+;
+NULL
+
+;
+select bool_and(NULL)
+;
+NULL
+
+;
+select bool_or()
+
+;
+select bool_and()
+
+;
+select bool_or(*)
+
+;
+select bool_and(*)
+
+;
+SELECT bool_or(True) FROM range(100);
+;
+1
+
+;
+SELECT bool_and(True) FROM range(100);
+;
+1
+
+;
+SELECT bool_or(True) FROM range(100) tbl(i) WHERE 1=0;
+;
+NULL
+
+;
+SELECT bool_and(True) FROM range(100) tbl(i) WHERE 1=0;
+;
+NULL
+
+;
+create table t (d date)
+
+;
+insert into t values (DATE'2021-02-09'-1),(DATE'2021-02-09'+1),(NULL)
+
+;
+select bool_or(d > '2021-02-09') AS or_result,
+       bool_and(d > '2021-02-09') AS and_result
+from t;
+;
+1	0
+
+;
+select d,bool_or(d > '2021-02-09') AS or_result,
+       bool_and(d > '2021-02-09') AS and_result
+from t
+group by d;
+;
+NULL	NULL	NULL
+2021-02-08	0	0
+2021-02-10	1	1
+
+# Window Function
+require vector_size 512
+
+;
+select bool_or(d > '2021-02-09') over (partition by d)
+    from t order by d;
+;
+NULL
+0
+1
+
+;
+select bool_and(d > '2021-02-09') over (partition by d)
+    from t order by d;
+;
+NULL
+0
+1
+

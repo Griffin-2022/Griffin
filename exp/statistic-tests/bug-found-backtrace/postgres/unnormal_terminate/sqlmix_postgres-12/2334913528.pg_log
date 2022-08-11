@@ -1,0 +1,111 @@
+2022-08-01 22:28:04.809 UTC [61312] STATEMENT:  
+	
+	DROP TRIGGER test_null_trigger ON sqlsim3;
+2022-08-01 22:28:04.810 UTC [61312] ERROR:  function set_modif_time() does not exist
+2022-08-01 22:28:04.810 UTC [61312] STATEMENT:  
+	
+	CREATE TRIGGER set_modif_time BEFORE UPDATE ON sqlsim8
+	  FOR EACH ROW EXECUTE PROCEDURE set_modif_time();
+2022-08-01 22:28:04.811 UTC [61312] ERROR:  column "int8alias1lt" of relation "tab_int" does not exist
+2022-08-01 22:28:04.811 UTC [61312] STATEMENT:  
+	ALTER TABLE tab_int ALTER COLUMN int8alias1lt DROP EXPRESSION;
+2022-08-01 22:28:04.811 UTC [61312] ERROR:  function composite_trigger_noop_f() does not exist
+2022-08-01 22:28:04.811 UTC [61312] STATEMENT:  
+	
+	CREATE TRIGGER composite_trigger_noop BEFORE INSERT ON sqlsim3
+	  FOR EACH ROW EXECUTE PROCEDURE composite_trigger_noop_f();
+2022-08-01 22:28:04.811 UTC [61312] ERROR:  relation "gtest30" does not exist
+2022-08-01 22:28:04.811 UTC [61312] STATEMENT:  
+	CREATE TABLE gtest30_1 () INHERITS (gtest30);
+2022-08-01 22:28:04.812 UTC [61312] ERROR:  column "current_check_1" of relation "temptest" does not exist
+2022-08-01 22:28:04.812 UTC [61312] STATEMENT:  
+	ALTER TABLE ONLY temptest ALTER COLUMN current_check_1 DROP EXPRESSION;
+2022-08-01 22:28:04.812 UTC [61312] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:28:04.812 UTC [61312] STATEMENT:  
+	
+	CREATE FUNCTION composite_trigger_nested_f() RETURNS trigger AS $$
+	    return 'MODIFY'
+	$$ LANGUAGE plpythonu;
+2022-08-01 22:28:04.812 UTC [61312] ERROR:  function composite_trigger_nested_f() does not exist
+2022-08-01 22:28:04.812 UTC [61312] STATEMENT:  
+	
+	CREATE TRIGGER composite_trigger_nested BEFORE INSERT ON sqlsim3
+	  FOR EACH ROW EXECUTE PROCEDURE composite_trigger_nested_f();
+2022-08-01 22:28:04.813 UTC [61312] ERROR:  null value in column "current_check_1" of relation "payload" violates not-null constraint
+2022-08-01 22:28:04.813 UTC [61312] STATEMENT:  
+	
+	INSERT INTO payload VALUES (NULL);
+2022-08-01 22:28:04.813 UTC [61312] ERROR:  function trig1234() does not exist
+2022-08-01 22:28:04.813 UTC [61312] STATEMENT:   -- different type conversion
+	
+	CREATE TRIGGER a_t BEFORE INSERT ON nochange FOR EACH ROW EXECUTE PROCEDURE trig1234();
+2022-08-01 22:28:04.813 UTC [61312] ERROR:  function trig1234() does not exist
+2022-08-01 22:28:04.813 UTC [61312] STATEMENT:  
+	CREATE TRIGGER b_t BEFORE INSERT ON payload FOR EACH ROW EXECUTE PROCEDURE trig1234();
+2022-08-01 22:28:04.813 UTC [61312] ERROR:  null value in column "sqlsim9" of relation "sqlsim8" violates not-null constraint
+2022-08-01 22:28:04.813 UTC [61312] STATEMENT:  
+	
+	INSERT INTO sqlsim8 DEFAULT VALUES;
+2022-08-01 22:28:04.813 UTC [61312] ERROR:  null value in column "sqlsim0" of relation "nochange" violates not-null constraint
+2022-08-01 22:28:04.813 UTC [61312] STATEMENT:  
+	INSERT INTO nochange DEFAULT VALUES;
+2022-08-01 22:28:04.814 UTC [61312] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:28:04.814 UTC [61312] STATEMENT:  
+	
+	CREATE FUNCTION transition_table_test_f() RETURNS trigger LANGUAGE plpythonu AS
+	$$
+	    rv = plpy.execute("SELECT * FROM old_table")
+	    assert(rv.nrows() == 1)
+	    plpy.info("old: " + str(rv[0]["id"]) + " -> " + rv[0]["name"])
+	    rv = plpy.execute("SELECT * FROM new_table")
+	    assert(rv.nrows() == 1)
+	    plpy.info("new: " + str(rv[0]["id"]) + " -> " + rv[0]["name"])
+	    return None
+	$$;
+2022-08-01 22:28:04.814 UTC [61312] ERROR:  function transition_table_test_f() does not exist
+2022-08-01 22:28:04.814 UTC [61312] STATEMENT:  
+	
+	CREATE TRIGGER a_t AFTER UPDATE ON payload
+	  REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table
+	  FOR EACH STATEMENT EXECUTE PROCEDURE transition_table_test_f();
+2022-08-01 22:28:04.815 UTC [61312] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:28:04.815 UTC [61312] STATEMENT:  
+	
+	
+	-- dealing with generated columns
+	
+	CREATE FUNCTION generated_test_func1() RETURNS trigger
+	LANGUAGE plpythonu
+	AS $$
+	TD['new']['j'] = 5  # not allowed
+	return 'MODIFY'
+	$$;
+2022-08-01 22:28:04.815 UTC [61312] WARNING:  there is no transaction in progress
+2022-08-01 22:28:04.830 UTC [61312] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:28:04.830 UTC [61312] STATEMENT:  
+	
+	
+	CREATE FUNCTION users_update() returns trigger
+		AS
+	'if TD["event"] == "UPDATE":
+		if TD["old"]["fname"] != TD["new"]["fname"] and TD["old"]["fname"] == TD["args"][0]:
+			return "SKIP"
+	return None'
+		LANGUAGE plpythonu;
+2022-08-01 22:28:05.028 UTC [61312] PANIC:  could not write to file "pg_wal/xlogtemp.61312": No space left on device
+2022-08-01 22:28:05.028 UTC [61312] STATEMENT:  
+	
+	INSERT INTO tab_int
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-01 22:28:05.143 UTC [60419] LOG:  server process (PID 61312) was terminated by signal 6: Aborted
+2022-08-01 22:28:05.143 UTC [60419] LOG:  terminating any other active server processes
+2022-08-01 22:28:05.148 UTC [60419] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:28:05.162 UTC [62512] LOG:  database system was interrupted; last known up at 2022-08-01 22:27:36 UTC
+2022-08-01 22:28:05.180 UTC [62512] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:28:05.181 UTC [62512] LOG:  redo starts at 0/167A560
+2022-08-01 22:28:08.061 UTC [62760] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:08.063 UTC [62763] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:08.168 UTC [62764] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:08.174 UTC [60419] LOG:  received smart shutdown request
+2022-08-01 22:28:08.201 UTC [60419] LOG:  abnormal database system shutdown

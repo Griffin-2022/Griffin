@@ -1,0 +1,55 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000057,sig:06,src:019651+004606,time:1691779,execs:203011,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fbc88ea9859 in __GI_abort () at abort.c:79
+#2  0x00007fbc88ea9729 in __assert_fail_base (fmt=0x7fbc8903f588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007fbc88ebafd6 in __GI___assert_fail (assertion=0x211bd9 "pColExpr->op!=TK_AGG_COLUMN", file=0x22873d "sqlite3.c", line=126590, 
+    function=0x221122 "int sqlite3ColumnsFromExprList(Parse *, ExprList *, i16 *, Column **)") at assert.c:101
+#4  0x000000000032d160 in sqlite3ColumnsFromExprList (pParse=0x7ffd269b7ae0, pEList=0xaa86d0, pnCol=0xa9c236, paCol=0xa9c1f8) at sqlite3.c:126590
+#5  0x000000000033cf65 in sqlite3ExpandSubquery (pParse=0x7ffd269b7ae0, pFrom=0xa9c6a8) at sqlite3.c:129416
+#6  0x00000000003a17f2 in sqlite3WindowRewrite (pParse=0x7ffd269b7ae0, p=0xa92290) at sqlite3.c:146385
+#7  0x00000000002fc6de in sqlite3Select (pParse=0x7ffd269b7ae0, p=0xa92290, pDest=0x7ffd269b6598) at sqlite3.c:130281
+#8  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7ffd269b7ae0, pExpr=0xa93550) at sqlite3.c:99820
+#9  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7ffd269b7ae0, pExpr=0xa93550, target=5) at sqlite3.c:100770
+#10 0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x7ffd269b7ae0, pList=0xa94360, target=5, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#11 0x00000000003aad9a in updateAccumulator (pParse=0x7ffd269b7ae0, regAcc=0, pAggInfo=0x7ffd269b69d8) at sqlite3.c:129951
+#12 0x00000000002ffdf9 in sqlite3Select (pParse=0x7ffd269b7ae0, p=0xaa2910, pDest=0x7ffd269b6be8) at sqlite3.c:131183
+#13 0x00000000002fd24a in sqlite3Select (pParse=0x7ffd269b7ae0, p=0xaa4080, pDest=0x7ffd269b6ed0) at sqlite3.c:130524
+#14 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffd269b7100, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffd269b7ae0) at sqlite3.c:151581
+#15 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffd269b7100, yymajor=1, yyminor=...) at sqlite3.c:152877
+#16 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffd269b7ae0, 
+    zSql=0xaaac7a ";;SELECT x FROM t1 WHERE x LIKE 'ab/%d%' ESCAPE '/';;CREATE VIEW collate4i1(c) AS SELECT max((SELECT count(collate4t1)OVER(ORDER BY 1234))) FROM t1;;\n;EXPLAIN QUERY PLAN\n  SELECT x FROM t1 WHERE x LIK"..., pzErrMsg=0x7ffd269b7cc0) at sqlite3.c:154013
+#17 0x00000000002a1683 in sqlite3Prepare (db=0xa8be00, 
+    zSql=0xa8bb72 ";SELECT c FROM a WHERE c BETWEEN 10 AND 20;;SELECT x FROM t1 WHERE x LIKE 'ab/%d%' ESCAPE '/';;CREATE VIEW collate4i1(c) AS SELECT max((SELECT count(collate4t1)OVER(ORDER BY 1234))) FROM t1;;\n;EXPLAIN"..., nBytes=508, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffd269b7df8, pzTail=0x7ffd269b7de0) at sqlite3.c:124303
+#18 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xa8be00, 
+    zSql=0xa8bb72 ";SELECT c FROM a WHERE c BETWEEN 10 AND 20;;SELECT x FROM t1 WHERE x LIKE 'ab/%d%' ESCAPE '/';;CREATE VIEW collate4i1(c) AS SELECT max((SELECT count(collate4t1)OVER(ORDER BY 1234))) FROM t1;;\n;EXPLAIN"..., nBytes=508, prepFlags=128, pOld=0x0, ppStmt=0x7ffd269b7df8, pzTail=0x7ffd269b7de0) at sqlite3.c:124403
+#19 0x000000000029247f in sqlite3_prepare_v2 (db=0xa8be00, 
+    zSql=0xa8bb72 ";SELECT c FROM a WHERE c BETWEEN 10 AND 20;;SELECT x FROM t1 WHERE x LIKE 'ab/%d%' ESCAPE '/';;CREATE VIEW collate4i1(c) AS SELECT max((SELECT count(collate4t1)OVER(ORDER BY 1234))) FROM t1;;\n;EXPLAIN"..., nBytes=508, ppStmt=0x7ffd269b7df8, pzTail=0x7ffd269b7de0) at sqlite3.c:124487
+#20 0x0000000000256bd0 in main (argc=1, argv=0x7ffd269b7fa8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 56969] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

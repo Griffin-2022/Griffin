@@ -1,0 +1,1016 @@
+# name: test/sql/types/list/list_comparison.test
+# description: Test LIST comparisons
+# group: [list]
+
+;
+PRAGMA enable_verification
+
+# Constant single integer column comparisons
+;
+SELECT [1] < [2]
+;
+true
+
+;
+SELECT [1] < [1]
+;
+false
+
+;
+SELECT NULL < [1]
+;
+NULL
+
+;
+SELECT [1] < NULL
+;
+NULL
+
+;
+SELECT [1] <= [2]
+;
+true
+
+;
+SELECT [1] <= [1]
+;
+true
+
+;
+SELECT NULL <= [1]
+;
+NULL
+
+;
+SELECT [1] <= NULL
+;
+NULL
+
+;
+SELECT [1] = [2]
+;
+false
+
+;
+SELECT [1] = [1]
+;
+true
+
+;
+SELECT NULL = [1]
+;
+NULL
+
+;
+SELECT [1] = NULL
+;
+NULL
+
+;
+SELECT [1] <> [2]
+;
+true
+
+;
+SELECT [1] <> [1]
+;
+false
+
+;
+SELECT NULL <> [1]
+;
+NULL
+
+;
+SELECT [1] <> NULL
+;
+NULL
+
+;
+SELECT [1] >= [2]
+;
+false
+
+;
+SELECT [1] >= [1]
+;
+true
+
+;
+SELECT NULL >= [1]
+;
+NULL
+
+;
+SELECT [1] >= NULL
+;
+NULL
+
+;
+SELECT [1] > [2]
+;
+false
+
+;
+SELECT [1] > [1]
+;
+false
+
+;
+SELECT NULL > [1]
+;
+NULL
+
+;
+SELECT [1] > NULL
+;
+NULL
+
+;
+CREATE VIEW list_int1 AS SELECT * FROM (VALUES
+	([1], [1]),
+	([1], [2]),
+	([2], [1]),
+	(NULL, [1]),
+	([2], NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_int1
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_int1
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_int1
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_int1
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_int1
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_int1
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Constant multiple integer column comparisons
+;
+SELECT [1] < [1, 2]
+;
+true
+
+;
+SELECT [1] < [1]
+;
+false
+
+;
+SELECT NULL < [1]
+;
+NULL
+
+;
+SELECT [1] < NULL
+;
+NULL
+
+;
+SELECT [1] <= [1, 2]
+;
+true
+
+;
+SELECT [1] <= [1]
+;
+true
+
+;
+SELECT NULL <= [1]
+;
+NULL
+
+;
+SELECT [1] <= NULL
+;
+NULL
+
+;
+SELECT [1] = [1, 2]
+;
+false
+
+;
+SELECT [1] = [1]
+;
+true
+
+;
+SELECT NULL = [1]
+;
+NULL
+
+;
+SELECT [1] = NULL
+;
+NULL
+
+;
+SELECT [1] <> [1, 2]
+;
+true
+
+;
+SELECT [1] <> [1]
+;
+false
+
+;
+SELECT NULL <> [1]
+;
+NULL
+
+;
+SELECT [1] <> NULL
+;
+NULL
+
+;
+SELECT [1] >= [1, 2]
+;
+false
+
+;
+SELECT [1] >= [1]
+;
+true
+
+;
+SELECT NULL >= [1]
+;
+NULL
+
+;
+SELECT [1] >= NULL
+;
+NULL
+
+;
+SELECT [1] > [1, 2]
+;
+false
+
+;
+SELECT [1] > [1]
+;
+false
+
+;
+SELECT NULL > [1]
+;
+NULL
+
+;
+SELECT [1] > NULL
+;
+NULL
+
+;
+CREATE VIEW list_int AS SELECT * FROM (VALUES
+	([1], [1]),
+	([1], [1, 2]),
+	([1, 2], [1]),
+	(NULL, [1]),
+	([1, 2], NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_int
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_int
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_int
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_int
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_int
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_int
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Constant empty integer column comparisons
+;
+SELECT [] < [1, 2]
+;
+true
+
+;
+SELECT [] < []
+;
+false
+
+;
+SELECT NULL < []
+;
+NULL
+
+;
+SELECT [] < NULL
+;
+NULL
+
+;
+SELECT [] <= [1, 2]
+;
+true
+
+;
+SELECT [] <= []
+;
+true
+
+;
+SELECT NULL <= []
+;
+NULL
+
+;
+SELECT [] <= NULL
+;
+NULL
+
+;
+SELECT [] = [1, 2]
+;
+false
+
+;
+SELECT [] = []
+;
+true
+
+;
+SELECT NULL = []
+;
+NULL
+
+;
+SELECT [] = NULL
+;
+NULL
+
+;
+SELECT [] <> [1, 2]
+;
+true
+
+;
+SELECT [] <> []
+;
+false
+
+;
+SELECT NULL <> []
+;
+NULL
+
+;
+SELECT [] <> NULL
+;
+NULL
+
+;
+SELECT [] >= [1, 2]
+;
+false
+
+;
+SELECT [] >= []
+;
+true
+
+;
+SELECT NULL >= []
+;
+NULL
+
+;
+SELECT [] >= NULL
+;
+NULL
+
+;
+SELECT [] > [1, 2]
+;
+false
+
+;
+SELECT [] > []
+;
+false
+
+;
+SELECT NULL > []
+;
+NULL
+
+;
+SELECT [] > NULL
+;
+NULL
+
+;
+CREATE VIEW list_int_empty AS SELECT * FROM (VALUES
+	([], []),
+	([], [1, 2]),
+	([1, 2], []),
+	(NULL, []),
+	([1, 2], NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_int_empty
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_int_empty
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_int_empty
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_int_empty
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_int_empty
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_int_empty
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Constant multiple string column comparisons
+;
+SELECT ['duck'] < ['duck', 'goose']
+;
+true
+
+;
+SELECT ['duck'] < ['duck']
+;
+false
+
+;
+SELECT NULL < ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] < NULL
+;
+NULL
+
+;
+SELECT ['duck'] <= ['duck', 'goose']
+;
+true
+
+;
+SELECT ['duck'] <= ['duck']
+;
+true
+
+;
+SELECT NULL <= ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] <= NULL
+;
+NULL
+
+;
+SELECT ['duck'] = ['duck', 'goose']
+;
+false
+
+;
+SELECT ['duck'] = ['duck']
+;
+true
+
+;
+SELECT NULL = ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] = NULL
+;
+NULL
+
+;
+SELECT ['duck'] <> ['duck', 'goose']
+;
+true
+
+;
+SELECT ['duck'] <> ['duck']
+;
+false
+
+;
+SELECT NULL <> ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] <> NULL
+;
+NULL
+
+;
+SELECT ['duck'] >= ['duck', 'goose']
+;
+false
+
+;
+SELECT ['duck'] >= ['duck']
+;
+true
+
+;
+SELECT NULL >= ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] >= NULL
+;
+NULL
+
+;
+SELECT ['duck'] > ['duck', 'goose']
+;
+false
+
+;
+SELECT ['duck'] > ['duck']
+;
+false
+
+;
+SELECT NULL > ['duck']
+;
+NULL
+
+;
+SELECT ['duck'] > NULL
+;
+NULL
+
+;
+CREATE VIEW list_str AS SELECT * FROM (VALUES
+	(['duck'], ['duck']),
+	(['duck'], ['duck', 'goose']),
+	(['duck', 'goose'], ['duck']),
+	(NULL, ['duck']),
+	(['duck', 'goose'], NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_str
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_str
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_str
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_str
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_str
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_str
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# List of structs
+;
+SELECT [{'x': 'duck', 'y': 1}] < [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+true
+
+;
+SELECT [{'x': 'duck', 'y': 1}] < [{'x': 'duck', 'y': 1}]
+;
+false
+
+;
+SELECT NULL < [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] < NULL
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <= [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+true
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <= [{'x': 'duck', 'y': 1}]
+;
+true
+
+;
+SELECT NULL <= [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <= NULL
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] = [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+false
+
+;
+SELECT [{'x': 'duck', 'y': 1}] = [{'x': 'duck', 'y': 1}]
+;
+true
+
+;
+SELECT NULL = [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] = NULL
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <> [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+true
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <> [{'x': 'duck', 'y': 1}]
+;
+false
+
+;
+SELECT NULL <> [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] <> NULL
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] >= [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+false
+
+;
+SELECT [{'x': 'duck', 'y': 1}] >= [{'x': 'duck', 'y': 1}]
+;
+true
+
+;
+SELECT NULL >= [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] >= NULL
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] > [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]
+;
+false
+
+;
+SELECT [{'x': 'duck', 'y': 1}] > [{'x': 'duck', 'y': 1}]
+;
+false
+
+;
+SELECT NULL > [{'x': 'duck', 'y': 1}]
+;
+NULL
+
+;
+SELECT [{'x': 'duck', 'y': 1}] > NULL
+;
+NULL
+
+;
+CREATE VIEW list_of_struct AS SELECT * FROM (VALUES
+	([{'x': 'duck', 'y': 1}], [{'x': 'duck', 'y': 1}]),
+	([{'x': 'duck', 'y': 1}], [{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}]),
+	([{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}], [{'x': 'duck', 'y': 1}]),
+	(NULL, [{'x': 'duck', 'y': 1}]),
+	([{'x': 'duck', 'y': 1}, {'x': 'goose', 'y': 2}], NULL),
+	(NULL, NULL)
+	) tbl(l, r);
+
+;
+SELECT l < r FROM list_of_struct
+;
+false
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <= r FROM list_of_struct
+;
+true
+true
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l = r FROM list_of_struct
+;
+true
+false
+false
+NULL
+NULL
+NULL
+
+;
+SELECT l <> r FROM list_of_struct
+;
+false
+true
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l >= r FROM list_of_struct
+;
+true
+false
+true
+NULL
+NULL
+NULL
+
+;
+SELECT l > r FROM list_of_struct
+;
+false
+false
+true
+NULL
+NULL
+NULL
+
+# Filter by constant
+;
+select [a,a+1,a+2]<[1,2,3] from range(5) tbl(a);
+;
+true
+false
+false
+false
+false
+
+;
+select [a,a+1,a+2]<=[1,2,3] from range(5) tbl(a);
+;
+true
+true
+false
+false
+false
+
+;
+select [a,a+1,a+2]=[1,2,3] from range(5) tbl(a);
+;
+false
+true
+false
+false
+false
+
+;
+select [a,a+1,a+2]<>[1,2,3] from range(5) tbl(a);
+;
+true
+false
+true
+true
+true
+
+;
+select [a,a+1,a+2]>=[1,2,3] from range(5) tbl(a);
+;
+false
+true
+true
+true
+true
+
+;
+select [a,a+1,a+2]>[1,2,3] from range(5) tbl(a);
+;
+false
+false
+true
+true
+true

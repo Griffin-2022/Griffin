@@ -1,0 +1,48 @@
+# name: test/sql/storage/test_store_nulls_strings.test
+# description: Test storing NULLs and strings
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/test_store_null_string.db
+
+foreach compression <compression>
+
+;
+PRAGMA force_compression='${compression}'
+
+# create a database and insert values
+;
+CREATE TABLE test (a INTEGER, b STRING);
+
+;
+INSERT INTO test VALUES (NULL, 'hello'), (13, 'abcdefgh'), (12, NULL)
+
+;
+CHECKPOINT
+
+;
+SELECT a, b FROM test ORDER BY a
+;
+NULL	hello
+12	NULL
+13	abcdefgh
+
+restart
+
+;
+SELECT a, b FROM test ORDER BY a
+;
+NULL	hello
+12	NULL
+13	abcdefgh
+
+;
+CREATE TABLE test (a INTEGER, b STRING);
+
+;
+CREATE TABLE IF NOT EXISTS test (a INTEGER, b STRING);
+
+;
+DROP TABLE test
+
+endloop

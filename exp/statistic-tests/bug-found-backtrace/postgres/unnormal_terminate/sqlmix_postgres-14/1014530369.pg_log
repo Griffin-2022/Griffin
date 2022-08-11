@@ -1,0 +1,126 @@
+	select current_schemas(false);
+2022-08-02 01:48:58.668 UTC [35014] ERROR:  schema "not_there_initially" does not exist
+2022-08-02 01:48:58.668 UTC [35014] STATEMENT:  
+	drop schema not_there_initially;
+2022-08-02 01:48:58.668 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.668 UTC [35014] STATEMENT:  
+	select current_schemas(false);
+2022-08-02 01:48:58.668 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.668 UTC [35014] STATEMENT:  
+	
+	create function classoid(text) returns text as
+	$$ select current_setting($1) $$ language sql
+	set work_mem = '1MB';
+2022-08-02 01:48:58.668 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.668 UTC [35014] STATEMENT:  
+	
+	alter function classoid(text) set work_mem = '2MB';
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select classoid('work_mem'), current_setting('work_mem');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	alter function classoid(text) reset all;
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	-- SET LOCAL is restricted by a function SET option
+	create or replace function t2(int) returns text as $$
+	begin
+	  set local work_mem = '2MB';
+	  return current_setting('work_mem');
+	end $$
+	language plpgsql
+	set work_mem = '1MB';
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select objsubid(0), current_setting('work_mem');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	alter function b(int) reset all;
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select objsubid(0), current_setting('work_mem');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select objsubid(0), current_setting('work_mem');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select objsubid(0);
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	select objsubid(1), current_setting('work_mem');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 75
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	-- check current_setting()'s behavior with invalid setting name
+	
+	select current_setting('nosuch.setting');
+2022-08-02 01:48:58.669 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.669 UTC [35014] STATEMENT:  
+	
+	select current_setting('nosuch.setting');
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  
+	select current_setting('nosuch.setting', true);
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  
+	
+	set check_function_bodies = off;
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 10
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  
+	
+	select func_with_bad_set();
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  
+	
+	reset check_function_bodies;
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  
+	-- Should not allow to set it to true.
+	set default_with_oids to t;
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 01:48:58.670 UTC [35014] WARNING:  there is no transaction in progress
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  DISCARD ALL;
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 01:48:58.670 UTC [35014] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:48:58.670 UTC [35014] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 01:49:01.213 UTC [36795] PANIC:  could not open critical system index 2662
+2022-08-02 01:49:01.216 UTC [31429] LOG:  server process (PID 36795) was terminated by signal 6: Aborted
+2022-08-02 01:49:01.216 UTC [31429] LOG:  terminating any other active server processes
+2022-08-02 01:49:01.243 UTC [31429] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:49:01.256 UTC [36796] LOG:  database system was interrupted; last known up at 2022-08-02 01:48:52 UTC
+2022-08-02 01:49:01.274 UTC [36796] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 01:49:01.274 UTC [36796] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:49:01.275 UTC [36796] LOG:  redo starts at 0/51FC838
+2022-08-02 01:49:01.407 UTC [36796] LOG:  invalid record length at 0/5716810: wanted 24, got 0
+2022-08-02 01:49:01.407 UTC [36796] LOG:  redo done at 0/57167D8 system usage: CPU: user: 0.11 s, system: 0.01 s, elapsed: 0.13 s
+2022-08-02 01:49:01.421 UTC [31429] LOG:  database system is ready to accept connections
+2022-08-02 01:49:01.439 UTC [36803] LOG:  logical replication apply worker for subscription "regress_testsub_foo" has started
+2022-08-02 01:49:01.440 UTC [36803] ERROR:  could not connect to the publisher: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+		Is the server running locally and accepting connections on that socket?
+2022-08-02 01:49:01.444 UTC [31429] LOG:  background worker "logical replication worker" (PID 36803) exited with exit code 1
+2022-08-02 01:49:01.832 UTC [36839] PANIC:  could not open critical system index 2662
+2022-08-02 01:49:01.834 UTC [31429] LOG:  server process (PID 36839) was terminated by signal 6: Aborted
+2022-08-02 01:49:01.834 UTC [31429] LOG:  terminating any other active server processes
+2022-08-02 01:49:01.838 UTC [36843] FATAL:  the database system is in recovery mode
+2022-08-02 01:49:01.842 UTC [31429] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:49:01.851 UTC [31429] LOG:  received smart shutdown request
+2022-08-02 01:49:01.852 UTC [36849] LOG:  database system was interrupted; last known up at 2022-08-02 01:49:01 UTC
+2022-08-02 01:49:01.869 UTC [36849] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 01:49:01.869 UTC [36849] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:49:01.870 UTC [36849] LOG:  invalid record length at 0/5716888: wanted 24, got 0
+2022-08-02 01:49:01.870 UTC [36849] LOG:  redo is not required
+2022-08-02 01:49:01.876 UTC [31429] LOG:  abnormal database system shutdown

@@ -1,0 +1,111 @@
+2022-08-02 01:57:20.565 UTC [2444] STATEMENT:  ALTER TYPE newcnt SET (storage = plain);
+2022-08-02 01:57:20.565 UTC [2444] ERROR:  aggfns_trans is not a base type
+2022-08-02 01:57:20.565 UTC [2444] STATEMENT:  ALTER TYPE aggfns_trans SET (storage = extended);
+2022-08-02 01:57:20.567 UTC [2444] WARNING:  there is no transaction in progress
+2022-08-02 01:57:20.578 UTC [2444] ERROR:  type "widget" does not exist
+2022-08-02 01:57:20.578 UTC [2444] STATEMENT:  CREATE TYPE widget (
+	   internallength = 24,
+	   input = widget_in,
+	   output = widget_out,
+	   typmod_in = numerictypmodin,
+	   typmod_out = numerictypmodout,
+	   alignment = double
+	);
+2022-08-02 01:57:20.578 UTC [2444] ERROR:  type "city_budget" does not exist
+2022-08-02 01:57:20.578 UTC [2444] STATEMENT:  CREATE TYPE city_budget (
+	   internallength = 16,
+	   input = int44in,
+	   output = int44out,
+	   element = int4,
+	   category = 'x',   -- just to verify the system will take it
+	   preferred = true  -- ditto
+	);
+2022-08-02 01:57:20.578 UTC [2444] WARNING:  wal_level is insufficient to publish logical changes
+2022-08-02 01:57:20.580 UTC [2444] ERROR:  type "shell" does not exist
+2022-08-02 01:57:20.580 UTC [2444] STATEMENT:  DROP TYPE shell;
+2022-08-02 01:57:20.581 UTC [2444] ERROR:  syntax error at or near "int_nn" at character 106
+2022-08-02 01:57:20.581 UTC [2444] STATEMENT:  CREATE FUNCTION var_record_nn(tabname name) RETURNS VOID
+	AS $$
+	BEGIN
+	  UPDATE var_record
+	  var_record_nn int_nn = (SELECT c.relfilenode
+	            FROM pg_class AS c, pg_namespace AS s
+	            WHERE c.relname = tabname
+	                AND c.relnamespace = s.oid
+	                AND s.nspname = 'fast_default');
+	END;
+	$$ LANGUAGE 'plpgsql';
+2022-08-02 01:57:20.581 UTC [2444] ERROR:  syntax error at or near "newavg" at character 96
+2022-08-02 01:57:20.581 UTC [2444] STATEMENT:  
+	
+	CREATE FUNCTION fn_x_after () RETURNS TRIGGER AS '
+	  BEGIN
+			UPDATE var_record var_record_nn newavg=''after trigger fired'' where newavg=''stuff'';
+			return NULL;
+		END;
+	' LANGUAGE plpgsql;
+2022-08-02 01:57:20.585 UTC [2444] ERROR:  function fn_x_after() does not exist
+2022-08-02 01:57:20.585 UTC [2444] STATEMENT:  
+	
+	CREATE TRIGGER sum2 AFTER INSERT ON newsum
+	FOR EACH ROW EXECUTE PROCEDURE fn_x_after();
+2022-08-02 01:57:20.585 UTC [2444] ERROR:  conflicting or redundant options at character 60
+2022-08-02 01:57:20.585 UTC [2444] STATEMENT:  
+	
+	-- redundant options
+	COPY newsum from stdin (format CSV, FORMAT CSV);
+2022-08-02 01:57:20.586 UTC [2444] ERROR:  type "var_record_colnn" already exists
+2022-08-02 01:57:20.586 UTC [2444] STATEMENT:  CREATE TYPE var_record_colnn (
+	   internallength = variable,
+	   input = newavg,
+	   output = aggtype,
+	   alignment = int4,
+	   default = 'zippo'
+	);
+2022-08-02 01:57:20.587 UTC [2444] ERROR:  syntax error at or near "var_record_nn" at character 99
+2022-08-02 01:57:20.587 UTC [2444] STATEMENT:  ALTER TABLE newsum ADD COLUMN aggfns BPCHAR(5) DEFAULT 'hello',
+	              ALTER COLUMN newcnt var_record_nn DEFAULT 2;
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Internallength" not recognized at character 28
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Input" not recognized at character 51
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Output" not recognized at character 70
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Alignment" not recognized at character 96
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Default" not recognized at character 117
+2022-08-02 01:57:20.588 UTC [2444] WARNING:  type attribute "Passedbyvalue" not recognized at character 134
+2022-08-02 01:57:20.588 UTC [2444] ERROR:  type input function must be specified
+2022-08-02 01:57:20.588 UTC [2444] STATEMENT:  CREATE TYPE least_accum (
+		"Internallength" = 4,
+		"Input" = newavg,
+		"Output" = aggfns_trans,
+		"Alignment" = int4,
+		"Default" = 42,
+		"Passedbyvalue"
+	);
+2022-08-02 01:57:20.588 UTC [2444] ERROR:  type input function array_in must return type least_accum
+2022-08-02 01:57:20.588 UTC [2444] STATEMENT:  CREATE TYPE least_accum (INPUT = array_in,
+	    OUTPUT = array_out,
+	    ELEMENT = int,
+	    INTERNALLENGTH = 32);
+2022-08-02 01:57:20.589 UTC [2444] ERROR:  conflicting or redundant options at character 53
+2022-08-02 01:57:20.589 UTC [2444] STATEMENT:  
+	COPY var_record from stdin (force_quote (aggfstr), force_quote *);
+2022-08-02 01:57:20.589 UTC [2444] ERROR:  COPY from stdin failed: COPY terminated by new PQexec
+2022-08-02 01:57:20.589 UTC [2444] STATEMENT:  
+	
+	-- missing data: should fail
+	COPY aggf_trans from stdin;
+2022-08-02 01:57:20.589 UTC [2444] ERROR:  type "bogus_type" does not exist
+2022-08-02 01:57:20.589 UTC [2444] STATEMENT:  CREATE TYPE bogus_type (INPUT = array_in,
+	    OUTPUT = array_out,
+	    ELEMENT = int,
+	    INTERNALLENGTH = 32);
+2022-08-02 01:57:20.613 UTC [121558] LOG:  server process (PID 2444) was terminated by signal 11: Segmentation fault
+2022-08-02 01:57:20.613 UTC [121558] LOG:  terminating any other active server processes
+2022-08-02 01:57:20.619 UTC [121558] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:57:20.635 UTC [2876] LOG:  database system was interrupted; last known up at 2022-08-02 01:57:10 UTC
+2022-08-02 01:57:20.636 UTC [2877] LOG:  connection received: host=127.0.0.1 port=60776
+2022-08-02 01:57:20.636 UTC [2877] FATAL:  the database system is in recovery mode
+2022-08-02 01:57:20.638 UTC [2882] LOG:  connection received: host=127.0.0.1 port=60778
+2022-08-02 01:57:20.638 UTC [2882] FATAL:  the database system is in recovery mode
+2022-08-02 01:57:20.640 UTC [2883] LOG:  connection received: host=127.0.0.1 port=60780
+2022-08-02 01:57:20.640 UTC [2883] FATAL:  the database system is in recovery mode
+2022-08-02 01:57:20.646 UTC [121558] LOG:  received smart shutdown request

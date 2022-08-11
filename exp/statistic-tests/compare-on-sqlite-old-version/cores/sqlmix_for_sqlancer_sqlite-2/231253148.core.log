@@ -1,0 +1,116 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000168,sig:06,src:021052+021204,time:2340584,execs:337337,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [ATTACH 'test.db3' AS aux2;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 String8          0    1    0 test.db3      00 r[1]='test.db3'
+   2 String8          0    2    0 aux2          00 r[2]='aux2'
+   3 Null             0    3    0               00 r[3]=NULL
+   4 Function0        0    1    4 sqlite_attach(3) 03 r[4]=func(r[1..3])
+   5 Expire           1    0    0               00 
+   6 Halt             0    0    0               00 
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    3 5             00 root=1 iDb=3; sqlite_master
+   3 Explain          3    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Halt             0    0    0               00 
+  11 Transaction      3    0  232 0             00 usesStmtJournal=0
+  12 TableLock        3    1    0 sqlite_master 00 iDb=3 root=1 write=0
+  13 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   10    0               00 Start at 10
+   1 OpenRead         0   15    3 3             00 root=15 iDb=3; sqlite_stat1
+   2 Explain          2    0    0 SCAN TABLE sqlite_stat1 00 
+   3 Rewind           0    9    0               00 
+   4 Column           0    0    1               00 r[1]=sqlite_stat1.tbl
+   5 Column           0    1    2               00 r[2]=sqlite_stat1.idx
+   6 Column           0    2    3               00 r[3]=sqlite_stat1.stat
+   7 ResultRow        1    3    0               00 output=r[1..3]
+   8 Next             0    4    0               01 
+   9 Halt             0    0    0               00 
+  10 Transaction      3    0  232 0             00 usesStmtJournal=0
+  11 TableLock        3   15    0 sqlite_stat1  00 iDb=3 root=15 write=0
+  12 Goto             0    1    0               00 
+SQL: [;PRAGMA journal_mode = invalid;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 JournalMode      0    1   -1               00 
+   2 ResultRow        1    1    0               00 output=r[1]
+   3 Halt             0    0    0               00 
+SQL: [PRAGMA main.journal_mode = WAL;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 JournalMode      0    1    5               00 
+   2 ResultRow        1    1    0               00 output=r[1]
+   3 Halt             0    0    0               00 
+SQL: [
+;
+;PRAGMA main.wal_checkpoint = passive
+;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Checkpoint       0    0    1               00 
+   2 ResultRow        1    3    0               00 output=r[1..3]
+   3 Halt             0    0    0               00 
+SQL: [INSERT INTO t0 VALUES(1);]
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 OpenWrite        0    2    0 1             00 root=2 iDb=0; t0
+   2 NewRowid         0    1    0               00 r[1]=rowid
+   3 Integer          1    2    0               00 r[2]=1
+   4 Abortable        0    0    0               00 
+   5 Lt               4    7    2 (BINARY)      42 if r[2]<r[4] goto 7
+   6 Le               2    8    2 (BINARY)      52 if r[2]<=r[2] goto 8
+   7 Halt           275    2    0 t0            03 
+   8 MakeRecord       2    1    3 B             00 r[3]=mkrec(r[2])
+   9 Insert           0    3    1 t0            39 intkey=r[1] data=r[3]
+  10 Halt             0    0    0               00 
+  11 Transaction      0    1    2 0             01 usesStmtJournal=0
+  12 Integer          0    4    0               00 r[4]=0
+  13 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007fcd10c11859 in __GI_abort () at abort.c:79
+#2  0x00007fcd10c11729 in __assert_fail_base (fmt=0x7fcd10da7588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21d368 "pIn1!=pIn3", file=0x22873d "sqlite3.c", line=85580, function=<optimized out>) at assert.c:92
+#3  0x00007fcd10c22fd6 in __GI___assert_fail (assertion=0x21d368 "pIn1!=pIn3", file=0x22873d "sqlite3.c", line=85580, function=0x216524 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003c5c6a in sqlite3VdbeExec (p=0x25991c0) at sqlite3.c:85580
+#5  0x0000000000411104 in sqlite3Step (p=0x25991c0) at sqlite3.c:81930
+#6  0x000000000029128d in sqlite3_step (pStmt=0x25991c0) at sqlite3.c:81995
+#7  0x00000000002570b9 in main (argc=1, argv=0x7ffe4f1d4738) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 56310] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

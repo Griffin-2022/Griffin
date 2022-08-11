@@ -1,0 +1,91 @@
+# name: test/sql/storage/types/test_unsigned_storage.test
+# description: Test unsigned types with persistent storage
+# group: [types]
+
+# load the DB from disk
+load __TEST_DIR__/unsigned_storage_test.db
+
+# create a table with all unsigned types
+;
+CREATE TABLE unsigned (a utinyint, b usmallint, c uinteger, d ubigint);
+
+;
+INSERT INTO unsigned VALUES (1,1,1,1), (42,42,42,42), (NULL,NULL,NULL,NULL), (255,65535,4294967295,18446744073709551615);
+
+# reload the database from disk a few times, and check that the data is still there
+loop i 0 2
+
+restart
+
+;
+SELECT * FROM unsigned
+;
+1	1	1	1
+42	42	42	42
+NULL	NULL	NULL	NULL
+255	65535	4294967295	18446744073709551615
+
+;
+SELECT * FROM unsigned WHERE a = 42
+;
+42	42	42	42
+
+;
+SELECT a FROM unsigned WHERE a < 10 ORDER BY 1;
+;
+1
+
+;
+SELECT * FROM unsigned WHERE b = 42
+;
+42	42	42	42
+
+;
+SELECT b FROM unsigned WHERE b < 10 ORDER BY 1;
+;
+1
+
+;
+SELECT * FROM unsigned WHERE c = 42
+;
+42	42	42	42
+
+;
+SELECT c FROM unsigned WHERE c < 10 ORDER BY 1;
+;
+1
+
+;
+SELECT * FROM unsigned WHERE d = 42
+;
+42	42	42	42
+
+;
+SELECT d FROM unsigned WHERE d < 10 ORDER BY 1;
+;
+1
+
+endloop
+
+;
+UPDATE unsigned
+SET a = 10, b = 9, c = 8, d = 7
+WHERE a = 1;
+
+;
+SELECT * FROM unsigned
+;
+10	9	8	7
+42	42	42	42
+NULL	NULL	NULL	NULL
+255	65535	4294967295	18446744073709551615
+
+restart
+
+;
+SELECT * FROM unsigned
+;
+10	9	8	7
+42	42	42	42
+NULL	NULL	NULL	NULL
+255	65535	4294967295	18446744073709551615

@@ -1,0 +1,66 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000009,sig:06,src:005557+005497,time:1779107,execs:148704,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;
+PRAGMA sql_trace=on;
+SQL-trace: ;
+ROLLBACK;
+SQL-trace: ;
+SELECT 1 AS y FROM t1, t1 ORDER BY y;
+SQL-trace: CREATE TRIGGER t2 AFTER INSERT ON t1 WHEN new.y=1 BEGIN
+       INSERT INTO t1(y) VALUES(new.y);
+     END;
+SQL-trace: SELECT 'abc' MATCH 'def' ;
+SQL-trace: ;
+INSERT INTO t1(y) VALUES(1.23456);
+SQL-trace: -- TRIGGER t2
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;
+SQL-trace: INSERT INTO t1 VALUES(11,44),(33,22);
+SQL-trace: -- TRIGGER t2
+SQL-trace: -- TRIGGER t2
+SQL-trace: ;
+PRAGMA main.page_count;
+SQL-trace: ;
+SELECT 2 AS y FROM t1, t1 ORDER BY y COLLATE nocase;
+SQL-trace: INSERT INTO t1 VALUES(zeroblob(5000), zeroblob(5000));
+SQL-trace: -- TRIGGER t2
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f432deb4859 in __GI_abort () at abort.c:79
+#2  0x00007f432deb4729 in __assert_fail_base (fmt=0x7f432e04a588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", 
+    assertion=0x216480 "((p->szMalloc>0 && p->z==p->zMalloc)? 1 : 0) + ((p->flags&MEM_Dyn)!=0 ? 1 : 0) + ((p->flags&MEM_Ephem)!=0 ? 1 : 0) + ((p->flags&MEM_Static)!=0 ? 1 : 0) == 1", file=0x222c23 "sqlite3.c", line=68297, 
+    function=<optimized out>) at assert.c:92
+#3  0x00007f432dec5fd6 in __GI___assert_fail (
+    assertion=0x216480 "((p->szMalloc>0 && p->z==p->zMalloc)? 1 : 0) + ((p->flags&MEM_Dyn)!=0 ? 1 : 0) + ((p->flags&MEM_Ephem)!=0 ? 1 : 0) + ((p->flags&MEM_Static)!=0 ? 1 : 0) == 1", file=0x222c23 "sqlite3.c", line=68297, 
+    function=0x21e154 "int sqlite3VdbeCheckMemInvariants(Mem *)") at assert.c:101
+#4  0x00000000002795e3 in sqlite3VdbeCheckMemInvariants (p=0x9aae30) at sqlite3.c:68292
+#5  0x00000000002c8632 in releaseMemArray (p=0x9aae30, N=<optimized out>) at sqlite3.c:71417
+#6  0x00000000002e366e in sqlite3VdbeHalt (p=0x9a3a00) at sqlite3.c:71458
+#7  0x00000000003e1666 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:77673
+#8  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#9  0x000000000024b5e9 in main (argc=1, argv=0x7ffddd192178) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 118776] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

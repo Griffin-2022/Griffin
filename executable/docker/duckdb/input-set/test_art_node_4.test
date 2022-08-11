@@ -1,0 +1,57 @@
+# name: test/sql/index/art/test_art_node_4.test
+# description: ART Node 4
+# group: [art]
+
+;
+CREATE TABLE integers(i integer)
+
+;
+CREATE INDEX i_index ON integers(i)
+
+# insert elements
+loop i 0 4
+
+;
+INSERT INTO integers VALUES (${i} + 1);
+
+endloop
+
+# verify counts
+loop i 0 4
+
+;
+SELECT COUNT(*) FROM integers WHERE i = ${i} + 1
+;
+1
+
+endloop
+
+# verify sums
+
+;
+SELECT sum(i) FROM integers WHERE i <= 2
+;
+3
+
+;
+SELECT sum(i) FROM integers WHERE i > 1
+;
+9
+
+# now delete all elements
+
+loop i 0 4
+
+;
+DELETE FROM integers WHERE i = ${i} + 1
+
+endloop
+
+;
+DELETE FROM integers WHERE i = 0
+
+;
+DROP INDEX i_index
+
+;
+DROP TABLE integers

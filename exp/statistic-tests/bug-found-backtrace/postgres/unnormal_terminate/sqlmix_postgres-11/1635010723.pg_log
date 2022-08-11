@@ -1,0 +1,111 @@
+2022-08-02 01:46:20.433 UTC [61680] ERROR:  relation "var_record" does not exist
+2022-08-02 01:46:20.433 UTC [61680] STATEMENT:  
+	
+	
+	TRUNCATE var_record;
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  could not find pg_class tuple for index 2662 at character 605
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  
+	
+	CREATE VIEW aggf_trans AS
+	    SELECT
+	        N.nspname AS test_percentile_disc,
+	        C.relname AS my_percentile_disc,
+	        pg_get_userbyid(C.relowner) AS my_rank,
+	        S.seqtypid::regtype AS test_rank,
+	        S.seqstart AS cleast_accum,
+	        S.seqmin AS aggfns,
+	        S.seqmax AS least_accum,
+	        S.seqincrement AS aggfns_trans,
+	        S.seqcycle AS cleast_agg,
+	        S.seqcache AS aggfstr,
+	        CASE
+	            WHEN has_sequence_privilege(C.oid, 'SELECT,USAGE'::text)
+	                THEN pg_sequence_last_value(C.oid)
+	            ELSE NULL
+	        END AS least_agg
+	    FROM pg_sequence S JOIN pg_class C ON (C.oid = S.seqrelid)
+	         LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+	    WHERE NOT pg_is_other_temp_schema(N.oid)
+	          AND relkind = 'S';
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  --
+	-- Tests for things affected by allow_system_table_mods
+	--
+	-- We run the same set of commands once with allow_system_table_mods
+	-- off and then again with on.
+	--
+	-- The "on" tests should where possible be wrapped in BEGIN/ROLLBACK
+	-- blocks so as to not leave a mess around.
+	
+	CREATE USER regress_user_ast;
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  unsupported XML feature at character 44
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  CREATE VIEW xmlview7 AS SELECT xmlroot(xml '<foo/>', version no value, standalone yes);
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  relation "var_record" does not exist at character 29
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  PREPARE p2 AS SELECT * FROM var_record WHERE s(sum2);
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  set gin_fuzzy_search_limit = 1000;
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  no schema has been selected to create in
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  
+	create domain sumdouble    varchar(15);
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  
+	alter domain sumdouble set not null;
+2022-08-02 01:46:20.434 UTC [61680] WARNING:  there is no transaction in progress
+2022-08-02 01:46:20.434 UTC [61680] ERROR:  relation "aggf_trans" does not exist
+2022-08-02 01:46:20.434 UTC [61680] STATEMENT:  
+	
+	
+	-- commit inside block with exception handler
+	TRUNCATE aggf_trans;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  table "s" does not exist
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  
+	
+	drop table s;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  no schema has been selected to create in
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  
+	
+	create or replace function myavg(int) returns int as $$
+	declare
+	  x sumdouble := '{1,2}';
+	begin
+	  x[2] := $1;
+	  return x[2];
+	end$$ language plpgsql;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  reset enable_bitmapscan;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  relation "aggf_trans" does not exist
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  analyze aggf_trans;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  
+	
+	REVOKE ALL ON pg_user_mapping FROM public;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  relation "aggf_trans" does not exist
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  VACUUM ANALYZE aggf_trans;
+2022-08-02 01:46:20.435 UTC [61680] ERROR:  relation "var_record" does not exist at character 35
+2022-08-02 01:46:20.435 UTC [61680] STATEMENT:  EXPLAIN (COSTS OFF)
+	SELECT * FROM var_record WHERE int_nn < '0';
+2022-08-02 01:46:20.436 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.436 UTC [61680] STATEMENT:  select '100'::int2 * '9223372036854775800'::int8;
+2022-08-02 01:46:20.436 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.436 UTC [61680] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 01:46:20.436 UTC [61680] WARNING:  there is no transaction in progress
+2022-08-02 01:46:20.436 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.436 UTC [61680] STATEMENT:  DISCARD ALL;
+2022-08-02 01:46:20.436 UTC [61680] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 01:46:20.436 UTC [61680] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 01:46:20.436 UTC [61680] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 01:46:20.436 UTC [61680] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 01:46:22.360 UTC [70606] PANIC:  could not open critical system index 2662
+2022-08-02 01:46:22.362 UTC [60890] LOG:  server process (PID 70606) was terminated by signal 6: Aborted
+2022-08-02 01:46:22.362 UTC [60890] LOG:  terminating any other active server processes
+2022-08-02 01:46:22.393 UTC [60890] LOG:  all server processes terminated; reinitializing
+2022-08-02 01:46:22.403 UTC [70607] LOG:  database system was interrupted; last known up at 2022-08-02 01:46:04 UTC
+2022-08-02 01:46:22.418 UTC [70607] LOG:  recovered replication state of node 4 to 0/0
+2022-08-02 01:46:22.418 UTC [70607] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 01:46:22.419 UTC [70607] LOG:  redo starts at 0/5C32448
+2022-08-02 01:46:22.546 UTC [70607] LOG:  invalid record length at 0/6196628: wanted 24, got 0
+2022-08-02 01:46:22.546 UTC [70607] LOG:  redo done at 0/61965F0 system usage: CPU: user: 0.12 s, system: 0.00 s, elapsed: 0.12 s
+2022-08-02 01:46:22.683 UTC [60890] LOG:  database system is ready to accept connections
+2022-08-02 01:46:22.837 UTC [70620] WARNING:  there is no transaction in progress

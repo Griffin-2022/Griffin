@@ -1,0 +1,102 @@
+# name: test/sql/update/test_update.test
+# description: Test standard update behavior
+# group: [update]
+
+;
+PRAGMA enable_verification
+
+# create a table
+;
+CREATE TABLE test (a INTEGER);
+
+;
+INSERT INTO test VALUES (3)
+
+;
+SELECT * FROM test
+;
+3
+
+;
+SELECT * FROM test WHERE a=3
+;
+3
+
+# test simple update
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET a=1
+
+# not seen yet by con2, only by con1
+;
+SELECT * FROM test
+;
+1
+
+;
+SELECT * FROM test WHERE a=1
+;
+1
+
+;
+SELECT * FROM test
+;
+3
+
+;
+SELECT * FROM test WHERE a=3
+;
+3
+
+# commit
+;
+COMMIT
+
+;
+SELECT * FROM test
+;
+1
+
+;
+SELECT * FROM test
+;
+1
+
+# now test a rollback
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET a=4
+
+# not seen yet by con2, only by con1
+;
+SELECT * FROM test
+;
+4
+
+;
+SELECT * FROM test
+;
+1
+
+;
+ROLLBACK
+
+;
+SELECT * FROM test
+;
+1
+
+;
+SELECT * FROM test WHERE a=1
+;
+1
+
+;
+SELECT * FROM test
+;
+1
+

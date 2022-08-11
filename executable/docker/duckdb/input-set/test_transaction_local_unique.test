@@ -1,0 +1,30 @@
+# name: test/sql/transactions/test_transaction_local_unique.test
+# description: Test appends on transaction local data with unique indices
+# group: [transactions]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER PRIMARY KEY, j INTEGER)
+
+;
+INSERT INTO integers VALUES (1, 3)
+
+# append only
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (1, 2)
+
+;
+ROLLBACK
+
+# if we delete we can insert that value again
+;
+DELETE FROM integers
+
+;
+INSERT INTO integers VALUES (1, 2)
+

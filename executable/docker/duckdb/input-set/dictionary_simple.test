@@ -1,0 +1,26 @@
+# name: test/sql/storage/compression/dictionary/dictionary_simple.test
+# description: Test dictionary compression
+# group: [dictionary]
+
+# load the DB from disk
+load __TEST_DIR__/test_dictionary.db
+
+;
+PRAGMA force_compression='dictionary'
+
+# simple compression with few values
+;
+CREATE TABLE test (a VARCHAR);
+
+;
+INSERT INTO test SELECT (i%5)::VARCHAR FROM range(0,1025) tbl(i);
+
+;
+checkpoint
+
+;
+select avg(a::INT) from test;
+;
+2.0
+
+

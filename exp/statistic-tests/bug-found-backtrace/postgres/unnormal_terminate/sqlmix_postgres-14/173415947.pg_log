@@ -1,0 +1,111 @@
+2022-08-01 22:32:30.445 UTC [71327] ERROR:  column g.alter_op_test_fn does not exist at character 202
+2022-08-01 22:32:30.445 UTC [71327] STATEMENT:  create temp view ìÞÙ¸æñÕèindex1 as
+	with recursive search_graph(alter_op_test_fn, customcontsel, ìÞÙ¸æñÕèindex2) as (
+		select * from test1 g
+		union all
+		select g.*
+		from test1 g, search_graph sg
+		where g.alter_op_test_fn = sg.customcontsel
+	) search depth first by alter_op_test_fn, customcontsel set seq
+	select alter_op_test_fn, customcontsel, ìÞÙ¸æñÕèindex2 from search_graph;
+2022-08-01 22:32:30.445 UTC [71327] ERROR:  duplicate key value violates unique constraint "test1_pkey"
+2022-08-01 22:32:30.445 UTC [71327] STATEMENT:  insert into test1 values
+		(1, 2, 'arc 1 -> 2'),
+		(1, 3, 'arc 1 -> 3'),
+		(2, 3, 'arc 2 -> 3'),
+		(1, 4, 'arc 1 -> 4'),
+		(4, 5, 'arc 4 -> 5'),
+		(5, 1, 'arc 5 -> 1');
+2022-08-01 22:32:30.445 UTC [71327] ERROR:  relation "a" does not exist
+2022-08-01 22:32:30.445 UTC [71327] STATEMENT:  CREATE RULE r2 AS ON INSERT TO a DO INSTEAD NOTHING;
+2022-08-01 22:32:30.447 UTC [71327] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 22:32:30.447 UTC [71327] ERROR:  column "foo" does not exist at character 90
+2022-08-01 22:32:30.447 UTC [71327] STATEMENT:  
+	
+	-- Without ORDER BY clause, to test Gather at top-most path
+	EXPLAIN (COSTS OFF)
+	SELECT foo, sum(foo), array_agg(distinct a), count(*) FROM test1 GROUP BY foo HAVING avg(foo) < 3;
+2022-08-01 22:32:30.448 UTC [71327] ERROR:  relation "pg_description" does not exist
+2022-08-01 22:32:30.448 UTC [71327] STATEMENT:  
+	CREATE TABLE ÄüÆ³Íñó¤ PARTITION OF pg_description FOR VALUES FROM (22) TO (30);
+2022-08-01 22:32:30.448 UTC [71327] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-01 22:32:30.448 UTC [71327] ERROR:  10000 ms is outside the valid range for parameter "vacuum_cost_delay" (0 .. 100)
+2022-08-01 22:32:30.448 UTC [71327] STATEMENT:  SET vacuum_cost_delay TO '10s';
+2022-08-01 22:32:30.448 UTC [71327] WARNING:  there is already a transaction in progress
+2022-08-01 22:32:30.448 UTC [71327] WARNING:  there is already a transaction in progress
+2022-08-01 22:32:30.448 UTC [71327] ERROR:  relation "description" does not exist
+2022-08-01 22:32:30.448 UTC [71327] STATEMENT:  CREATE INDEX pg_description_test_index ON description (description);
+2022-08-01 22:32:30.448 UTC [71327] ERROR:  rule "r2" for relation "test1" does not exist
+2022-08-01 22:32:30.448 UTC [71327] STATEMENT:  DROP RULE r2 ON test1;
+2022-08-01 22:32:30.448 UTC [71327] WARNING:  there is no transaction in progress
+2022-08-01 22:32:30.459 UTC [71327] ERROR:  large object 2002 does not exist
+2022-08-01 22:32:30.459 UTC [71327] STATEMENT:  REVOKE ALL ON LARGE OBJECT 2001, 2002 FROM PUBLIC;
+2022-08-01 22:32:30.464 UTC [71327] ERROR:  time zone "Nehwon/Lankhmar" not recognized
+2022-08-01 22:32:30.464 UTC [71327] STATEMENT:  SELECT make_timestamptz(1910, 12, 24, 0, 0, 0, 'Nehwon/Lankhmar');
+=================================================================
+==71327==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7fff97838710 sp 0x7fff97838708
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f49b87bd082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==71327==ABORTING
+2022-08-01 22:32:30.513 UTC [67615] LOG:  server process (PID 71327) was terminated by signal 6: Aborted
+2022-08-01 22:32:30.513 UTC [67615] LOG:  terminating any other active server processes
+2022-08-01 22:32:30.519 UTC [67615] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:32:30.532 UTC [73455] LOG:  database system was interrupted; last known up at 2022-08-01 22:32:11 UTC
+2022-08-01 22:32:30.533 UTC [73456] LOG:  connection received: host=127.0.0.1 port=51026
+2022-08-01 22:32:30.533 UTC [73456] FATAL:  the database system is in recovery mode
+2022-08-01 22:32:30.535 UTC [73459] LOG:  connection received: host=127.0.0.1 port=51028
+2022-08-01 22:32:30.535 UTC [73459] FATAL:  the database system is in recovery mode
+2022-08-01 22:32:30.537 UTC [73460] LOG:  connection received: host=127.0.0.1 port=51030
+2022-08-01 22:32:30.537 UTC [73460] FATAL:  the database system is in recovery mode
+2022-08-01 22:32:30.544 UTC [67615] LOG:  received smart shutdown request

@@ -1,0 +1,77 @@
+# name: test/sql/storage/catalog/test_view_storage.test
+# description: Create and drop a view over different runs
+# group: [catalog]
+
+# load the DB from disk
+load __TEST_DIR__/view_storage.db
+
+# create a schema and view
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+;
+CREATE VIEW test.v AS SELECT * FROM test.t;
+
+# read the info from the view
+;
+PRAGMA table_info('test.v')
+;
+0	a	INTEGER	0	NULL	0
+1	b	INTEGER	0	NULL	0
+
+# drop the table the view is based on
+;
+DROP TABLE test.t
+
+# we can still query the types and column names
+;
+PRAGMA table_info('test.v')
+;
+0	a	INTEGER	0	NULL	0
+1	b	INTEGER	0	NULL	0
+
+# but querying the view fails
+;
+SELECT * FROM test.v
+
+
+loop i 0 2
+
+# restart the system
+restart
+
+# the view still exists, but the table does not
+# we can check the types, but not query it
+;
+PRAGMA table_info('test.v')
+;
+0	a	INTEGER	0	NULL	0
+1	b	INTEGER	0	NULL	0
+
+;
+SELECT * FROM test.v
+
+# after recreating the table, we can query the view again
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+;
+SELECT * FROM test.t
+
+;
+SELECT * FROM test.v
+
+;
+PRAGMA table_info('test.v')
+;
+0	a	INTEGER	0	NULL	0
+1	b	INTEGER	0	NULL	0
+
+# drop the table again
+;
+DROP TABLE test.t
+
+endloop

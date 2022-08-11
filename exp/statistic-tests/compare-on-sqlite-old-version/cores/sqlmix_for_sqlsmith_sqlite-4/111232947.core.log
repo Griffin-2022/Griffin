@@ -1,0 +1,105 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000061,sig:06,src:020392+021608,time:2818550,execs:377043,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      0    0    4 1             00 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+REG[1] =   s2[v2](8)
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+REG[3] =   s57[CREATE TABLE v2](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[v2](8)
+REG[2] =  i:2
+REG[3] =   s57[CREATE TABLE v2](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+VDBE Trace:
+   0 Init             0   12    0               00 Start at 12
+  12 Transaction      1    0    1 1             00 usesStmtJournal=0
+  13 TableLock        1    1    0 sqlite_temp_master 00 iDb=1 root=1 write=0
+  14 Goto             0    1    0               00 
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    1 5             00 root=1 iDb=1; sqlite_temp_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_temp_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_temp_master.name
+REG[1] =   s2[v0](8)
+   6 Column           0    3    2               00 r[2]=sqlite_temp_master.rootpage
+REG[2] =  i:2
+   7 Column           0    4    3               00 r[3]=sqlite_temp_master.sql
+REG[3] =   s19[CREATE TABLE v0](8)
+   8 ResultRow        1    3    0               00 output=r[1..3]
+REG[1] =   s2[v0](8)
+REG[2] =  i:2
+REG[3] =   s19[CREATE TABLE v0](8)
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+SQL: [;INSERT INTO v2 VALUES(1);]
+VDBE Trace:
+   0 Init             0   14    0               00 Start at 14
+  14 Transaction      0    1    4 1             01 usesStmtJournal=0
+  15 TableLock        0    2    1 v2            00 iDb=0 root=2 write=1
+  16 Integer          0    5    0               00 r[5]=0
+REG[5] =  i:0
+  17 Goto             0    1    0               00 
+   1 Integer          0    3    0               00 r[3]=0
+REG[3] =  i:0
+   2 OpenWrite        0    2    0 1             00 root=2 iDb=0; v2
+   3 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   4 Integer          1    2    0               00 r[2]=1
+REG[2] =  i:1
+   5 Lt               5    8    2 (BINARY)      52 if r[5]<r[2] goto 8
+REG[5] =  i:0
+REG[2] =  i:1
+   6 Gt               2    8    2 (BINARY)      52 if r[2]>r[2] goto 8
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f03b034e859 in __GI_abort () at abort.c:79
+#2  0x00007f03b034e729 in __assert_fail_base (fmt=0x7f03b04e4588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f03b035ffd6 in __GI___assert_fail (assertion=0x20a915 "!(fg&(MEM_Str|MEM_Blob))", file=0x222c23 "sqlite3.c", line=68526, function=0x21067c "int sqlite3VdbeMemStringify(Mem *, u8, u8)") at assert.c:101
+#4  0x000000000027a9de in sqlite3VdbeMemStringify (pMem=0x1e7a3b8, enc=1 '\001', bForce=1 '\001') at sqlite3.c:68526
+#5  0x00000000003c7fc0 in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:78710
+#6  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#7  0x000000000024b5e9 in main (argc=1, argv=0x7ffcc4a05e68) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 34442] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

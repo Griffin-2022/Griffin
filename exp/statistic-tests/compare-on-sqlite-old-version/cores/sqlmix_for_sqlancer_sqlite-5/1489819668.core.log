@@ -1,0 +1,72 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000181,sig:06,src:022320+021401,time:3286828,execs:572511,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;SELECT c0,c0,t1 FROM t0 ORDER BY c0;]
+VDBE Trace:
+   0 Init             0   21    0               00 Start at 21
+  21 Transaction      0    0    5 1             01 usesStmtJournal=0
+  22 Goto             0    1    0               00 
+   1 SorterOpen       1    5    0 k(1,B)        00 
+   2 OpenRead         0    2    0 3             00 root=2 iDb=0; t0
+   3 Explain          3    0    0 SCAN TABLE t0 00 
+   4 Rewind           0   11    0               00 
+  11 Explain         11    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+  12 OpenPseudo       2    6    5               00 5 columns in r[6]
+  13 SorterSort       1   20    0               00 
+  20 Halt             0    0    0               00 
+SQL: [;
+;INSERT INTO t1bc(t2,t2,t2) VALUES(3,2,5);]
+VDBE Trace:
+   0 Init             0   11    0               00 Start at 11
+  11 Transaction      0    1    5 1             01 usesStmtJournal=0
+  12 Integer          0    4    0               00 r[4]=0
+REG[4] =  i:0
+  13 Goto             0    1    0               00 
+   1 OpenWrite        0    6    0 1             00 root=6 iDb=0; t1bc
+   2 NewRowid         0    1    0               00 r[1]=rowid
+REG[1] =  i:1
+   3 Integer          3    2    0               00 r[2]=3
+REG[2] =  i:3
+   4 Abortable        0    0    0               00 
+   5 Lt               4    8    2 (BINARY)      52 if r[2]<r[4] goto 8
+REG[4] =  i:0
+REG[2] =  i:3
+   6 Gt               2    8    2 (BINARY)      52 if r[2]>r[2] goto 8
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f89ffc53859 in __GI_abort () at abort.c:79
+#2  0x00007f89ffc53729 in __assert_fail_base (fmt=0x7f89ffde9588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21d368 "pIn1!=pIn3", file=0x22873d "sqlite3.c", line=85580, function=<optimized out>) at assert.c:92
+#3  0x00007f89ffc64fd6 in __GI___assert_fail (assertion=0x21d368 "pIn1!=pIn3", file=0x22873d "sqlite3.c", line=85580, function=0x216524 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003c5c6a in sqlite3VdbeExec (p=0x25480c0) at sqlite3.c:85580
+#5  0x0000000000411104 in sqlite3Step (p=0x25480c0) at sqlite3.c:81930
+#6  0x000000000029128d in sqlite3_step (pStmt=0x25480c0) at sqlite3.c:81995
+#7  0x00000000002570b9 in main (argc=1, argv=0x7fff02193a48) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 51579] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

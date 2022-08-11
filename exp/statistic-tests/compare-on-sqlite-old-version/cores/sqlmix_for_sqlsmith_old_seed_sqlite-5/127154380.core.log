@@ -1,0 +1,157 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000088,sig:06,src:008324+006378,time:6346699,execs:700759,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;
+PRAGMA sql_trace=on;
+SQL-trace: ;
+CREATE TABLE t1(x integer primary key, y str unique);
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: PRAGMA locking_mode = exclusive;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: PRAGMA page_size = 1024;
+SQL-trace: PRAGMA auto_vacuum = none;
+SQL-trace: ;
+PRAGMA auto_vacuum = 1;
+SQL-trace: CREATE TABLE t2(i1y PRIMARY KEY, a UNIQUE);
+SQL-trace: ;
+PRAGMA temp_store=2;
+SQL-trace: INSERT INTO t1 VALUES(1, randomblob(400));
+SQL-trace: ;
+INSERT INTO t1 SELECT x+2,  randomblob(400) FROM t1;
+SQL-trace: ;
+ATTACH 'test.db' AS 'aux';
+SQL-trace: ;
+PRAGMA auto_vacuum = 1;
+SQL-trace: ;
+INSERT INTO t1 SELECT x+8,  randomblob(400) FROM t1;
+SQL-trace: ;
+CREATE TEMP TABLE b(sqlsim0, sqlsim1, sqlsim2);
+SQL-trace: ;
+INSERT INTO t2 SELECT i1y+32, randomblob(400) FROM t2;
+SQL-trace: ATTACH 'test.db' as db12;
+SQL-trace: pragma auto_vacuum=2;
+SQL-trace: ;
+SELECT name FROM (
+        SELECT * FROM sqlite_master UNION ALL SELECT * FROM sqlite_temp_master)
+      WHERE type='table'
+      ORDER BY name
+    ;
+SQL-trace: ;
+pragma locking_mode=exclusive ;
+SQL-trace: PRAGMA page_size = 1024;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='b' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: PRAGMA auto_vacuum = full;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;
+PRAGMA journal_mode = off;
+SQL-trace: BEGIN EXCLUSIVE;
+SQL-trace: PRAGMA page_size = 1024;
+SQL-trace: PRAGMA integrity_check;
+SQL-trace: ;
+PRAGMA page_size;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;
+SQL-trace: ;CREATE TABLE sqlsim3
+          (sqlsim4 INTEGER NOT NULL PRIMARY KEY,
+           sqlsim5 TEXT NOT NULL,
+           t4 TEXT NOT NULL,
+           t5 TEXT
+               CHECK (t5 IS NULL OR t5 <> ''),
+           o INTEGER NOT NULL DEFAULT 0,
+           n TEXT NOT NULL,
+           p TEXT NOT NULL DEFAULT 'unknown',
+           m TEXT NOT NULL,
+           t TEXT NOT NULL DEFAULT '');
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='sqlsim3' AND type!='trigger' ORDER BY rowid;
+SQL-trace: DELETE FROM t2 WHERE a%2;
+SQL-trace: ;
+INSERT INTO t1 SELECT y, y FROM t1 WHERE y%2;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM 'temp'.sqlite_temp_master WHERE name='stat' AND type='table' ORDER BY rowid;
+SQL-trace: ;
+PRAGMA page_size=2048;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM 'temp'.sqlite_temp_master WHERE name='stat' AND type='table' ORDER BY rowid;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SAVEPOINT _tcl_transaction;
+SQL-trace: ;
+PRAGMA page_size = 1024 ;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='sqlsim3' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT 1 FROM sqlite_master ;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: PRAGMA page_size ;
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: PRAGMA journal_mode = wal ;
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: INSERT INTO b(sqlsim0) VALUES('sqlsim0');
+SQL-trace: ;
+INSERT INTO b(sqlsim2) VALUES('y');
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: ;
+VACUUM;
+SQL-trace: CREATE TABLE i1(t a, id INTEGER PRIMARY KEY);
+SQL-trace: INSERT INTO t2(a) VALUES('a');
+SQL-trace: ;
+INSERT INTO t2(a) VALUES('z');
+SQL-trace: BEGIN ;
+SQL-trace: VACUUM 
+;
+SQL-trace: SAVEPOINT x ;
+SQL-trace: VACUUM 
+;
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;
+COMMIT;
+SQL-trace: PRAGMA auto_vacuum = FULL ;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid;
+SQL-trace: ;
+COMMIT;
+SQL-trace: PRAGMA auto_vacuum ;
+SQL-trace: PRAGMA auto_vacuum = FULL ;
+SQL-trace: ;
+INSERT INTO t1 SELECT x+16, randomblob(400) FROM t1;
+SQL-trace: ;
+COMMIT;
+SQL-trace: ;
+DELETE FROM i1;
+SQL-trace: PRAGMA journal_mode = WAL;
+SQL-trace: PRAGMA locking_mode = EXCLUSIVE ;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: PRAGMA locking_mode = EXCLUSIVE;
+[Inferior 1 (process 119396) exited normally]
+(gdb) (gdb) quit

@@ -1,0 +1,111 @@
+2022-08-01 21:18:19.160 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.160 UTC [65829] STATEMENT:  SELECT jsonb_path_match('1', '$', silent => false);
+2022-08-01 21:18:19.160 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.160 UTC [65829] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-01 21:18:19.166 UTC [65829] ERROR:  schema "testns" already exists
+2022-08-01 21:18:19.166 UTC [65829] STATEMENT:  CREATE SCHEMA testns;
+2022-08-01 21:18:19.167 UTC [65829] ERROR:  cursor "c" does not exist
+2022-08-01 21:18:19.167 UTC [65829] STATEMENT:  FETCH ALL FROM c;
+2022-08-01 21:18:19.167 UTC [65829] ERROR:  cursor "c" does not exist
+2022-08-01 21:18:19.167 UTC [65829] STATEMENT:  FETCH BACKWARD 1 FROM c;
+2022-08-01 21:18:19.167 UTC [65829] ERROR:  role "regress_priv_user1" does not exist
+2022-08-01 21:18:19.167 UTC [65829] STATEMENT:  SELECT has_table_privilege('regress_priv_user1', 'testns.tab_int', 'INSERT');
+2022-08-01 21:18:19.167 UTC [65829] ERROR:  role "regress_priv_user1" does not exist
+2022-08-01 21:18:19.167 UTC [65829] STATEMENT:  SELECT has_table_privilege('regress_priv_user1', 'testns.tab_int', 'SELECT');
+2022-08-01 21:18:19.167 UTC [65829] ERROR:  role "regress_priv_user1" does not exist
+2022-08-01 21:18:19.167 UTC [65829] STATEMENT:  ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT INSERT ON TABLES TO regress_priv_user1;
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  role "regress_priv_user1" does not exist
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  SELECT has_table_privilege('regress_priv_user1', 'testns.tab_int', 'SELECT');
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
+	UPDATE tab_int SET a = -a WHERE CURRENT OF c RETURNING *;
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  FETCH NEXT FROM c;
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  SELECT has_table_privilege('regress_priv_user1', 'testns.tab_int', 'INSERT');
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  SELECT has_table_privilege('regress_priv_user1', 'testns.tab_int', 'SELECT');
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  ALTER DEFAULT PRIVILEGES FOR ROLE regress_priv_user1 REVOKE EXECUTE ON FUNCTIONS FROM public;
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  RESET enable_hashjoin;
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  DROP FUNCTION testns.foo();
+2022-08-01 21:18:19.168 UTC [65829] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 21:18:19.168 UTC [65829] STATEMENT:  ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT USAGE ON TYPES to public;
+2022-08-01 21:18:19.169 UTC [65829] ERROR:  role "regress_priv_user2" does not exist
+2022-08-01 21:18:19.169 UTC [65829] STATEMENT:  SELECT has_function_privilege('regress_priv_user2', 'testns.bar()', 'EXECUTE');
+2022-08-01 21:18:19.169 UTC [65829] ERROR:  function testns.foo() does not exist
+2022-08-01 21:18:19.169 UTC [65829] STATEMENT:  DROP FUNCTION testns.foo();
+2022-08-01 21:18:19.169 UTC [65829] ERROR:  aggregate testns.agg1(integer) does not exist
+2022-08-01 21:18:19.169 UTC [65829] STATEMENT:  DROP AGGREGATE testns.agg1(int);
+2022-08-01 21:18:19.170 UTC [65829] ERROR:  schema "testns2" does not exist
+2022-08-01 21:18:19.170 UTC [65829] STATEMENT:  DROP SCHEMA testns2 CASCADE;
+2022-08-01 21:18:19.170 UTC [65829] WARNING:  there is no transaction in progress
+=================================================================
+==65829==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7fff327197d0 sp 0x7fff327197c8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fa6ad8c3082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==65829==ABORTING
+2022-08-01 21:18:19.203 UTC [64350] LOG:  server process (PID 65829) was terminated by signal 6: Aborted
+2022-08-01 21:18:19.203 UTC [64350] LOG:  terminating any other active server processes
+2022-08-01 21:18:19.210 UTC [64350] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:18:19.222 UTC [66194] LOG:  database system was interrupted; last known up at 2022-08-01 21:18:17 UTC
+2022-08-01 21:18:19.223 UTC [66195] FATAL:  the database system is in recovery mode
+2022-08-01 21:18:19.225 UTC [66198] FATAL:  the database system is in recovery mode
+2022-08-01 21:18:19.228 UTC [66199] FATAL:  the database system is in recovery mode
+2022-08-01 21:18:19.233 UTC [64350] LOG:  received smart shutdown request
+2022-08-01 21:18:19.237 UTC [66194] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 21:18:19.238 UTC [66194] LOG:  redo starts at 0/1E3A6D8
+2022-08-01 21:18:19.242 UTC [64350] LOG:  abnormal database system shutdown

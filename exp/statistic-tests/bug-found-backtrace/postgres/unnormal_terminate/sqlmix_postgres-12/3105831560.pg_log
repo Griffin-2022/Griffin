@@ -1,0 +1,111 @@
+2022-08-02 10:53:09.460 UTC [63701] ERROR:  relation "current_check_2" does not exist
+2022-08-02 10:53:09.460 UTC [63701] STATEMENT:  
+	ALTER TABLE ONLY current_check_2 ALTER COLUMN payload DROP EXPRESSION;
+2022-08-02 10:53:09.460 UTC [63701] ERROR:  function gtest_trigger_func() does not exist
+2022-08-02 10:53:09.460 UTC [63701] STATEMENT:  
+	
+	CREATE TRIGGER gtest2b BEFORE INSERT OR UPDATE ON ucview
+	  FOR EACH ROW
+	  WHEN (NEW.* IS NOT NULL)  -- error
+	  EXECUTE PROCEDURE gtest_trigger_func();
+2022-08-02 10:53:09.460 UTC [63701] WARNING:  there is no transaction in progress
+2022-08-02 10:53:09.498 UTC [63701] ERROR:  column "a" is of type integer[] but expression is of type bit at character 29
+2022-08-02 10:53:09.498 UTC [63701] STATEMENT:  INSERT INTO tab_int VALUES (B'01010101010');
+2022-08-02 10:53:09.498 UTC [63701] ERROR:  cannot XOR bit strings of different sizes
+2022-08-02 10:53:09.498 UTC [63701] STATEMENT:  select B'0010' # B'011101';
+2022-08-02 10:53:09.499 UTC [63701] ERROR:  column u.n_dead_tup does not exist at character 877
+2022-08-02 10:53:09.499 UTC [63701] STATEMENT:  
+	
+	CREATE VIEW idx_tup_fetch AS
+	    SELECT
+	        U.oid       AS n_tup_hot_upd,
+	        S.oid       AS n_live_tup,
+	        S.n_tup_del   AS n_tup_del,
+	        U.n_dead_tup    AS n_dead_tup,
+	        CASE WHEN U.n_dead_tup = 0 THEN
+	            'public'
+	        ELSE
+	            A.rolname
+	        END AS n_tup_upd,
+	        CASE WHEN (U.n_dead_tup <> 0 AND A.rolname = current_user
+	                     AND (pg_has_role(S.srvowner, 'USAGE')
+	                          OR has_server_privilege(S.oid, 'USAGE')))
+	                    OR (U.n_dead_tup = 0 AND pg_has_role(S.srvowner, 'USAGE'))
+	                    OR (SELECT rolsuper FROM pg_authid WHERE rolname = current_user)
+	                    THEN U.n_tup_ins
+	                 ELSE NULL END AS n_tup_ins
+	    FROM pg_user_mapping U
+	        JOIN pg_foreign_server S ON (U.umserver = S.oid)
+	        LEFT JOIN pg_authid A ON (A.oid = U.n_dead_tup);
+2022-08-02 10:53:09.502 UTC [63701] WARNING:  there is no transaction in progress
+2022-08-02 10:53:09.508 UTC [63701] ERROR:  negative substring length not allowed
+2022-08-02 10:53:09.508 UTC [63701] STATEMENT:  SELECT SUBSTRING('01010101'::varbit FROM -10 FOR -2147483646) AS "error";
+2022-08-02 10:53:09.509 UTC [63701] ERROR:  cannot XOR bit strings of different sizes
+2022-08-02 10:53:09.509 UTC [63701] STATEMENT:  select B'0010' # B'011101';
+=================================================================
+==63701==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc29c441b0 sp 0x7ffc29c441a8
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f907505b082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==63701==ABORTING
+2022-08-02 10:53:09.551 UTC [30378] LOG:  server process (PID 63701) was terminated by signal 6: Aborted
+2022-08-02 10:53:09.551 UTC [30378] LOG:  terminating any other active server processes
+2022-08-02 10:53:09.558 UTC [68396] FATAL:  the database system is in recovery mode
+2022-08-02 10:53:09.560 UTC [68399] FATAL:  the database system is in recovery mode
+2022-08-02 10:53:09.562 UTC [68400] FATAL:  the database system is in recovery mode
+2022-08-02 10:53:09.566 UTC [30378] LOG:  all server processes terminated; reinitializing
+2022-08-02 10:53:09.589 UTC [30378] LOG:  received smart shutdown request
+2022-08-02 10:53:09.590 UTC [68406] LOG:  database system was interrupted; last known up at 2022-08-02 10:53:08 UTC
+2022-08-02 10:53:09.630 UTC [68406] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 10:53:09.630 UTC [68406] LOG:  recovered replication state of node 6 to 0/0
+2022-08-02 10:53:09.630 UTC [68406] LOG:  database system was not properly shut down; automatic recovery in progress

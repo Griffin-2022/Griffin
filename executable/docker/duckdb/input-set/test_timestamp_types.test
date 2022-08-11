@@ -1,0 +1,217 @@
+# name: test/sql/types/timestamp/test_timestamp_types.test
+# description: Test TIMESTAMP types
+# group: [timestamp]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE IF NOT EXISTS timestamp (sec TIMESTAMP_S, milli TIMESTAMP_MS,micro TIMESTAMP_US, nano TIMESTAMP_NS );
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:01','2008-01-01 00:00:01.594','2008-01-01 00:00:01.88926','2008-01-01 00:00:01.889268321' )
+
+#FIXME: The timestamp->string string->timestamp functions go only up to microsec right now
+;
+SELECT * from timestamp;
+;
+2008-01-01 00:00:01	2008-01-01 00:00:01.594	2008-01-01 00:00:01.88926	2008-01-01 00:00:01.889268
+
+# Apply Year Function
+;
+SELECT YEAR(sec),YEAR(milli),YEAR(nano) from timestamp;
+;
+2008	2008	2008
+
+# Do some conversions
+;
+SELECT nano::TIMESTAMP, milli::TIMESTAMP,sec::TIMESTAMP from timestamp;
+;
+2008-01-01 00:00:01.889268	2008-01-01 00:00:01.594	2008-01-01 00:00:01
+
+;
+SELECT micro::TIMESTAMP_S, micro::TIMESTAMP_MS,micro::TIMESTAMP_NS from timestamp;
+;
+2008-01-01 00:00:01	2008-01-01 00:00:01.889	2008-01-01 00:00:01.88926
+
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:51','2008-01-01 00:00:01.894','2008-01-01 00:00:01.99926','2008-01-01 00:00:01.999268321' )
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:11','2008-01-01 00:00:01.794','2008-01-01 00:00:01.98926','2008-01-01 00:00:01.899268321' )
+
+
+# Overflow from US to NS
+;
+select '90000-01-19 03:14:07.999999'::TIMESTAMP_US::TIMESTAMP_NS
+
+#DATE/TIME conversions are not directly supported yet
+;
+select sec::DATE from timestamp;
+
+;
+select milli::DATE from timestamp;
+
+;
+select nano::DATE from timestamp;
+
+;
+select sec::TIME from timestamp;
+
+;
+select milli::TIME from timestamp;
+
+;
+select nano::TIME from timestamp;
+
+# Some timestamp direct conversions are not yet supported
+;
+select sec::TIMESTAMP_MS from timestamp;
+
+;
+select sec::TIMESTAMP_NS from timestamp;
+
+
+;
+select milli::TIMESTAMP_SEC from timestamp;
+
+
+;
+select milli::TIMESTAMP_NS from timestamp;
+
+
+;
+select nano::TIMESTAMP_SEC from timestamp;
+
+;
+select nano::TIMESTAMP_MS from timestamp;
+
+#Sorting on the timestamps
+;
+select sec from timestamp order by sec;
+;
+2008-01-01 00:00:01
+2008-01-01 00:00:11
+2008-01-01 00:00:51
+
+;
+select milli from timestamp order by milli;
+;
+2008-01-01 00:00:01.594
+2008-01-01 00:00:01.794
+2008-01-01 00:00:01.894
+
+;
+select nano from timestamp order by nano;
+;
+2008-01-01 00:00:01.889268
+2008-01-01 00:00:01.899268
+2008-01-01 00:00:01.999268
+
+#GROUP BY on each of these timestamp types
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:51','2008-01-01 00:00:01.894','2008-01-01 00:00:01.99926','2008-01-01 00:00:01.999268321' )
+
+;
+INSERT INTO timestamp VALUES ('2008-01-01 00:00:11','2008-01-01 00:00:01.794','2008-01-01 00:00:01.98926','2008-01-01 00:00:01.899268321' )
+
+;
+select count(*), nano from timestamp group by nano order by nano;
+;
+1	2008-01-01 00:00:01.889268
+2	2008-01-01 00:00:01.899268
+2	2008-01-01 00:00:01.999268
+
+;
+select count(*), sec from timestamp group by sec order by sec;
+;
+1	2008-01-01 00:00:01
+2	2008-01-01 00:00:11
+2	2008-01-01 00:00:51
+
+;
+select count(*), milli from timestamp group by milli order by milli;
+;
+1	2008-01-01 00:00:01.594
+2	2008-01-01 00:00:01.794
+2	2008-01-01 00:00:01.894
+
+#Joins on the timestamps
+;
+CREATE TABLE IF NOT EXISTS timestamp_two (sec TIMESTAMP_S, milli TIMESTAMP_MS,micro TIMESTAMP_US, nano TIMESTAMP_NS );
+
+;
+INSERT INTO timestamp_two VALUES ('2008-01-01 00:00:11','2008-01-01 00:00:01.794','2008-01-01 00:00:01.98926','2008-01-01 00:00:01.899268321' )
+
+;
+select timestamp.sec from timestamp inner join  timestamp_two on (timestamp.sec = timestamp_two.sec);
+;
+2008-01-01 00:00:11
+2008-01-01 00:00:11
+
+;
+select timestamp.milli from timestamp inner join  timestamp_two on (timestamp.milli = timestamp_two.milli);
+;
+2008-01-01 00:00:01.794
+2008-01-01 00:00:01.794
+
+;
+select timestamp.nano from timestamp inner join  timestamp_two on (timestamp.nano = timestamp_two.nano);
+;
+2008-01-01 00:00:01.899268
+2008-01-01 00:00:01.899268
+
+#Comparisons between all the different timestamp types (e.g. TIMESTAMP = TIMESTAMP_MS, etc)
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_US = '2008-01-01 00:00:11'::TIMESTAMP_MS
+;
+true
+
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_US = '2008-01-01 00:00:11'::TIMESTAMP_NS
+;
+true
+
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_US = '2008-01-01 00:00:11'::TIMESTAMP_S
+;
+true
+
+
+
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_US = '2008-01-01 00:00:11'::TIMESTAMP_MS
+;
+false
+
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_US = '2008-01-01 00:00:11'::TIMESTAMP_NS
+;
+false
+
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_US = '2008-01-01 00:00:11.1'::TIMESTAMP_S
+;
+false
+
+# Missing casts
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_MS = '2008-01-01 00:00:11'::TIMESTAMP_NS
+
+
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_MS = '2008-01-01 00:00:11'::TIMESTAMP_S
+
+
+;
+select '2008-01-01 00:00:11.1'::TIMESTAMP_NS = '2008-01-01 00:00:11'::TIMESTAMP_S
+
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_MS = '2008-01-01 00:00:11'::TIMESTAMP_NS
+
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_MS = '2008-01-01 00:00:11'::TIMESTAMP_S
+
+;
+select '2008-01-01 00:00:11'::TIMESTAMP_NS = '2008-01-01 00:00:11'::TIMESTAMP_S

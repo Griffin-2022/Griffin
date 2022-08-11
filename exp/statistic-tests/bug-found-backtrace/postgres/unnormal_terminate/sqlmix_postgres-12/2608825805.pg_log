@@ -1,0 +1,111 @@
+	   (with z as not materialized (select * from x)
+	    select z.a || z1.a as a from z cross join z as z1
+	    where length(z.a || z1.a) < 5))
+	select * from x;
+2022-08-01 22:25:38.063 UTC [53611] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 22:25:38.063 UTC [53611] STATEMENT:  explain (verbose, costs off)
+	with x as (select 1 as y)
+	select * from (with x as (select 2 as y) select * from x) ss;
+2022-08-01 22:25:38.063 UTC [53611] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 22:25:38.063 UTC [53611] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-01 22:25:38.071 UTC [53611] ERROR:  table "inet_tbl" does not exist
+2022-08-01 22:25:38.071 UTC [53611] STATEMENT:  DROP TABLE INET_TBL;
+2022-08-01 22:25:38.073 UTC [53611] WARNING:  there is no transaction in progress
+2022-08-01 22:25:38.075 UTC [53611] ERROR:  role "regress_user_ectest" does not exist
+2022-08-01 22:25:38.075 UTC [53611] STATEMENT:  
+	
+	set session authorization regress_user_ectest;
+2022-08-01 22:25:38.075 UTC [53611] ERROR:  role "regress_user_ectest" does not exist
+2022-08-01 22:25:38.075 UTC [53611] STATEMENT:  
+	
+	drop user regress_user_ectest;
+2022-08-01 22:25:38.075 UTC [53611] WARNING:  there is no transaction in progress
+2022-08-01 22:25:38.078 UTC [53611] ERROR:  syntax error at or near "int8alias1in" at character 57
+2022-08-01 22:25:38.078 UTC [53611] STATEMENT:  
+	  CREATE TABLE int8alias1 (
+		int8alias1in		int PRIMARY int8alias1in,
+		int8alias1out	int
+	  );
+2022-08-01 22:25:38.079 UTC [53611] ERROR:  relation "int8alias1" does not exist at character 17
+2022-08-01 22:25:38.079 UTC [53611] STATEMENT:  
+	
+	  INSERT INTO int8alias1 VALUES (1, 1);
+2022-08-01 22:25:38.081 UTC [53611] ERROR:  table "int8alias1" does not exist
+2022-08-01 22:25:38.081 UTC [53611] STATEMENT:  
+	  DROP TABLE int8alias1;
+2022-08-01 22:25:38.081 UTC [53611] ERROR:  syntax error at or near "int8alias2in" at character 57
+2022-08-01 22:25:38.081 UTC [53611] STATEMENT:  
+	  CREATE TABLE int8alias2 (
+		int8alias2in		int PRIMARY int8alias2in,
+		int8alias2out	int
+	  );
+2022-08-01 22:25:38.081 UTC [53611] ERROR:  table "int8alias2" does not exist
+2022-08-01 22:25:38.081 UTC [53611] STATEMENT:  
+	  DROP TABLE int8alias2;
+2022-08-01 22:25:38.082 UTC [53611] ERROR:  syntax error at or near "int8alias2eq" at character 59
+2022-08-01 22:25:38.082 UTC [53611] STATEMENT:  
+	  CREATE TABLE int8alias1eq (
+		int8alias2eq		int PRIMARY int8alias2eq,
+		int8alias1lt	int
+	  );
+2022-08-01 22:25:38.082 UTC [53611] ERROR:  relation "int8alias1eq" does not exist at character 17
+2022-08-01 22:25:38.082 UTC [53611] STATEMENT:  
+	
+	  INSERT INTO int8alias1eq VALUES (1, 1);
+2022-08-01 22:25:38.082 UTC [53611] ERROR:  syntax error at or near "ec0" at character 51
+2022-08-01 22:25:38.082 UTC [53611] STATEMENT:  
+	  CREATE TABLE int8alias1cmp (
+		ec0		int PRIMARY ec0,
+		ff	int
+	  );
+2022-08-01 22:25:38.082 UTC [53611] ERROR:  syntax error at or near "f2" at character 39
+2022-08-01 22:25:38.082 UTC [53611] STATEMENT:  
+	  CREATE TABLE f1 (
+		f2		int PRIMARY f2,
+		ec0_pkey	int
+	  );
+2022-08-01 22:25:38.082 UTC [53611] WARNING:  there is no transaction in progress
+2022-08-01 22:25:38.091 UTC [53611] ERROR:  column "int8alias2in" does not exist at character 60
+2022-08-01 22:25:38.091 UTC [53611] STATEMENT:  
+	CREATE TABLE int8alias2 AS SELECT * FROM int8alias1 WHERE int8alias2in % 2 = 0;
+2022-08-01 22:25:38.136 UTC [53611] ERROR:  stack depth limit exceeded
+2022-08-01 22:25:38.136 UTC [53611] STATEMENT:  
+	SELECT int8alias1eq(257);
+2022-08-01 22:25:38.137 UTC [53611] ERROR:  function sepgsql_getcon() does not exist at character 53
+2022-08-01 22:25:38.137 UTC [53611] STATEMENT:  
+	
+	CREATE FUNCTION f1 () RETURNS text
+	    AS 'SELECT sepgsql_getcon()'
+	    LANGUAGE sql;
+2022-08-01 22:25:38.137 UTC [53611] ERROR:  no security label providers have been loaded
+2022-08-01 22:25:38.137 UTC [53611] STATEMENT:  
+	SECURITY LABEL ON FUNCTION f2()
+	    IS 'system_u:object_r:sepgsql_trusted_proc_exec_t:s0';
+2022-08-01 22:25:38.137 UTC [53611] WARNING:  there is no transaction in progress
+2022-08-01 22:25:38.137 UTC [53611] ERROR:  no security label providers have been loaded
+2022-08-01 22:25:38.137 UTC [53611] STATEMENT:  
+	SECURITY LABEL ON FUNCTION f3()
+	    IS 'system_u:object_r:sepgsql_trusted_proc_exec_t:s0';
+2022-08-01 22:25:38.137 UTC [53611] ERROR:  no security label providers have been loaded
+2022-08-01 22:25:38.137 UTC [53611] STATEMENT:  
+	SECURITY LABEL ON FUNCTION f4()
+	    IS 'system_u:object_r:sepgsql_nosuch_trusted_proc_exec_t:s0';
+2022-08-01 22:25:38.137 UTC [53611] ERROR:  no security label providers have been loaded
+2022-08-01 22:25:38.137 UTC [53611] STATEMENT:  
+	SECURITY LABEL ON FUNCTION f5(text)
+	    IS 'system_u:object_r:sepgsql_regtest_trusted_proc_exec_t:s0';
+2022-08-01 22:25:38.160 UTC [53611] PANIC:  could not write to file "pg_wal/xlogtemp.53611": No space left on device
+2022-08-01 22:25:38.160 UTC [53611] STATEMENT:  
+	
+	CREATE TABLE ec0(ff int, f1 text) PARTITION BY RANGE (ff);
+2022-08-01 22:25:38.177 UTC [53229] LOG:  server process (PID 53611) was terminated by signal 6: Aborted
+2022-08-01 22:25:38.177 UTC [53229] LOG:  terminating any other active server processes
+2022-08-01 22:25:38.184 UTC [53895] FATAL:  the database system is in recovery mode
+2022-08-01 22:25:38.187 UTC [53898] FATAL:  the database system is in recovery mode
+2022-08-01 22:25:38.191 UTC [53229] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:25:38.202 UTC [53899] LOG:  database system was interrupted; last known up at 2022-08-01 22:25:30 UTC
+2022-08-01 22:25:38.203 UTC [53900] FATAL:  the database system is in recovery mode
+2022-08-01 22:25:38.208 UTC [53229] LOG:  received smart shutdown request
+2022-08-01 22:25:38.213 UTC [53899] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:25:38.213 UTC [53899] LOG:  redo starts at 0/167D7A8
+2022-08-01 22:25:38.217 UTC [53229] LOG:  abnormal database system shutdown

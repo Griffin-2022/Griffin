@@ -1,0 +1,111 @@
+	        FOR EACH ROW
+	        EXECUTE PROCEDURE update_using_indirect();
+2022-08-01 22:27:13.968 UTC [58908] ERROR:  function update_using_indirect() does not exist
+2022-08-01 22:27:13.968 UTC [58908] STATEMENT:  
+	DROP FUNCTION update_using_indirect();
+2022-08-01 22:27:13.968 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:13.973 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:13.979 UTC [58908] ERROR:  column "int8alias2" specified more than once at character 52
+2022-08-01 22:27:13.979 UTC [58908] STATEMENT:  
+	INSERT INTO int8alias1(int8alias2, int8alias1out, int8alias2) VALUES('two-toasted', repeat('1234567890',30000), repeat('1234567890',50000));
+2022-08-01 22:27:13.979 UTC [58908] ERROR:  could not open extension control file "/root/bin_aflpp_asan/usr/local/pgsql/share/extension/ltree_plpython2u.control": No such file or directory
+2022-08-01 22:27:13.979 UTC [58908] STATEMENT:  CREATE EXTENSION ltree_plpython2u CASCADE;
+2022-08-01 22:27:13.979 UTC [58908] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:27:13.979 UTC [58908] STATEMENT:  
+	
+	
+	CREATE FUNCTION test1(val ltree) RETURNS int
+	LANGUAGE plpythonu
+	TRANSFORM FOR TYPE ltree
+	AS $$
+	plpy.info(repr(val))
+	return len(val)
+	$$;
+2022-08-01 22:27:13.979 UTC [58908] ERROR:  column "int8alias2in" specified more than once at character 39
+2022-08-01 22:27:13.979 UTC [58908] STATEMENT:  
+	INSERT INTO int8alias1(int8alias2in, int8alias2in, int8alias1out) VALUES('one-compressed,one-null', NULL, repeat('1234567890',1000));
+2022-08-01 22:27:13.979 UTC [58908] ERROR:  language "plpythonu" does not exist
+2022-08-01 22:27:13.979 UTC [58908] STATEMENT:  
+	
+	
+	CREATE FUNCTION test2() RETURNS ltree
+	LANGUAGE plpythonu
+	TRANSFORM FOR TYPE ltree
+	AS $$
+	return ['foo', 'bar', 'baz']
+	$$;
+2022-08-01 22:27:13.999 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:14.004 UTC [58908] ERROR:  column u.n_dead_tup does not exist at character 877
+2022-08-01 22:27:14.004 UTC [58908] STATEMENT:  
+	
+	CREATE VIEW idx_tup_fetch AS
+	    SELECT
+	        U.oid       AS n_tup_hot_upd,
+	        S.oid       AS n_live_tup,
+	        S.n_tup_del   AS n_tup_del,
+	        U.n_dead_tup    AS n_dead_tup,
+	        CASE WHEN U.n_dead_tup = 0 THEN
+	            'public'
+	        ELSE
+	            A.rolname
+	        END AS n_tup_upd,
+	        CASE WHEN (U.n_dead_tup <> 0 AND A.rolname = current_user
+	                     AND (pg_has_role(S.srvowner, 'USAGE')
+	                          OR has_server_privilege(S.oid, 'USAGE')))
+	                    OR (U.n_dead_tup = 0 AND pg_has_role(S.srvowner, 'USAGE'))
+	                    OR (SELECT rolsuper FROM pg_authid WHERE rolname = current_user)
+	                    THEN U.n_tup_ins
+	                 ELSE NULL END AS n_tup_ins
+	    FROM pg_user_mapping U
+	        JOIN pg_foreign_server S ON (U.umserver = S.oid)
+	        LEFT JOIN pg_authid A ON (A.oid = U.n_dead_tup);
+2022-08-01 22:27:14.005 UTC [58908] ERROR:  set-returning functions are not allowed in column generation expressions at character 75
+2022-08-01 22:27:14.005 UTC [58908] STATEMENT:  
+	CREATE TABLE gtest_err_7d (a int PRIMARY KEY, b int GENERATED ALWAYS AS (generate_series(1, a)) STORED);
+2022-08-01 22:27:14.008 UTC [58908] ERROR:  function update_using_indirect() does not exist
+2022-08-01 22:27:14.008 UTC [58908] STATEMENT:  
+	
+	CREATE TRIGGER int8alias1eq
+	        BEFORE INSERT OR UPDATE
+	        ON int8alias1
+	        FOR EACH ROW
+	        EXECUTE PROCEDURE update_using_indirect();
+2022-08-01 22:27:14.009 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:14.018 UTC [58908] ERROR:  "time" units "fortnight" not recognized
+2022-08-01 22:27:14.018 UTC [58908] STATEMENT:  SELECT EXTRACT(FORTNIGHT   FROM TIME '2020-05-26 13:30:25.575401');
+2022-08-01 22:27:14.019 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:14.026 UTC [58908] ERROR:  column "int8alias1out" specified more than once at character 40
+2022-08-01 22:27:14.026 UTC [58908] STATEMENT:  
+	INSERT INTO int8alias1(int8alias1out, int8alias1out, int8alias1out) VALUES('two-toasted', repeat('1234567890',30000), repeat('1234567890',50000));
+2022-08-01 22:27:14.026 UTC [58908] ERROR:  column "int8alias1out" specified more than once at character 40
+2022-08-01 22:27:14.026 UTC [58908] STATEMENT:  
+	INSERT INTO int8alias1(int8alias1out, int8alias1out, int8alias2) VALUES('one-compressed,one-null', NULL, repeat('1234567890',1000));
+2022-08-01 22:27:14.026 UTC [58908] ERROR:  column "int8alias2in" specified more than once at character 54
+2022-08-01 22:27:14.026 UTC [58908] STATEMENT:  
+	INSERT INTO int8alias1(int8alias2in, int8alias1out, int8alias2in) VALUES('one-toasted,one-null', NULL, repeat('1234567890',50000));
+2022-08-01 22:27:14.026 UTC [58908] ERROR:  event trigger functions cannot have declared arguments
+2022-08-01 22:27:14.026 UTC [58908] STATEMENT:  
+	
+	-- should fail, event triggers cannot have declared arguments
+	create function test_event_trigger_arg(name text)
+	returns event_trigger as $$ BEGIN RETURN 1; END $$ language plpgsql;
+2022-08-01 22:27:14.027 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:14.027 UTC [58908] ERROR:  ON COMMIT can only be used on temporary tables
+2022-08-01 22:27:14.027 UTC [58908] STATEMENT:  CREATE TABLE temptest(col int) ON COMMIT DELETE ROWS;
+2022-08-01 22:27:14.027 UTC [58908] WARNING:  there is no transaction in progress
+2022-08-01 22:27:14.327 UTC [58908] PANIC:  could not write to file "pg_wal/xlogtemp.58908": No space left on device
+2022-08-01 22:27:14.327 UTC [58908] STATEMENT:  
+	
+	-- modification without modifying assigned value
+	UPDATE int8alias1 SET int8alias1in = int8alias1in +1, int8alias2 = int8alias2 RETURNING substring(int8alias1::text, 1, 200);
+2022-08-01 22:27:14.351 UTC [58733] LOG:  server process (PID 58908) was terminated by signal 6: Aborted
+2022-08-01 22:27:14.351 UTC [58733] LOG:  terminating any other active server processes
+2022-08-01 22:27:14.357 UTC [58733] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:27:14.368 UTC [59553] LOG:  database system was interrupted; last known up at 2022-08-01 22:27:12 UTC
+2022-08-01 22:27:14.368 UTC [59554] FATAL:  the database system is in recovery mode
+2022-08-01 22:27:14.370 UTC [59557] FATAL:  the database system is in recovery mode
+2022-08-01 22:27:14.372 UTC [59558] FATAL:  the database system is in recovery mode
+2022-08-01 22:27:14.378 UTC [58733] LOG:  received smart shutdown request
+2022-08-01 22:27:14.380 UTC [59553] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:27:14.381 UTC [59553] LOG:  redo starts at 0/1BAFF50
+2022-08-01 22:27:14.385 UTC [58733] LOG:  abnormal database system shutdown

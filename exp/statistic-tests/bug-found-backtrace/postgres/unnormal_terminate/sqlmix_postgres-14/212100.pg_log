@@ -1,0 +1,111 @@
+2022-08-02 06:57:56.979 UTC [64332] ERROR:  schema "evttrig" does not exist at character 15
+2022-08-02 06:57:56.979 UTC [64332] STATEMENT:  
+	CREATE TABLE evttrig.sqlsim9 PARTITION OF evttrig.sqlsim3 (sqlsim10)
+	  FOR VALUES FROM (1) TO (10);
+2022-08-02 06:57:56.979 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 06:57:56.979 UTC [64332] STATEMENT:  select string_agg(a,'AB') from (values(null),(null),('bbbb'),('cccc')) g(a);
+2022-08-02 06:57:56.979 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.979 UTC [64332] STATEMENT:  WITH RECURSIVE
+	   x(id) AS
+	     (SELECT 1 UNION ALL SELECT id+1 FROM x WHERE id < 3 ),
+	   y(id) AS
+	     (SELECT * FROM x UNION ALL SELECT * FROM x),
+	   z(id) AS
+	     (SELECT * FROM y UNION ALL SELECT id+1 FROM z WHERE id < 10)
+	 SELECT * FROM z;
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  select string_agg(a,',') from (values(null),(null)) g(a);
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  select (select count(inner_c) filter (where outer_c <> 0)
+	        from (values (1)) t0(inner_c))
+	from (values (2),(3)) description(outer_c);
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  select cume_dist(3) within group (order by x)
+	from (values (1),(1),(2),(2),(3),(3),(4)) v(x);
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  WITH RECURSIVE t(pg_description) AS (
+	    WITH RECURSIVE s(i) AS (
+	        VALUES (1)
+	        UNION ALL
+	        SELECT i+1 FROM s WHERE i < 10
+	    )
+	    SELECT i FROM s
+	    UNION ALL
+	    SELECT pg_description+1 FROM t WHERE pg_description < 10
+	)
+	SELECT * FROM t;
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  WITH RECURSIVE
+	  tab(id_key,link) AS (VALUES (1,17), (2,17), (3,17), (4,17), (6,17), (5,17)),
+	  iter (id_key, row_type, link) AS (
+	      SELECT 0, 'base', 17
+	    UNION ALL (
+	      WITH remaining(id_key, row_type, link, min) AS (
+	        SELECT tab.id_key, 'true'::text, iter.link, MIN(tab.id_key) OVER ()
+	        FROM tab INNER JOIN iter USING (link)
+	        WHERE tab.id_key > iter.id_key
+	      ),
+	      first_remaining AS (
+	        SELECT id_key, row_type, link
+	        FROM remaining
+	        WHERE id_key=min
+	      ),
+	      effect AS (
+	        SELECT tab.id_key, 'new'::text, tab.link
+	        FROM first_remaining e INNER JOIN tab ON e.id_key=tab.id_key
+	        WHERE e.row_type = 'false'
+	      )
+	      SELECT * FROM first_remaining
+	      UNION ALL SELECT * FROM effect
+	    )
+	  )
+	SELECT * FROM iter;
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  create type q1 as (total bigint, count bigint);
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 28
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  WITH ÇâÉß AS ( DELETE FROM ÇâÉß RETURNING * )
+	INSERT INTO ÇâÉß SELECT * FROM ÇâÉß;
+2022-08-02 06:57:56.980 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 230
+2022-08-02 06:57:56.980 UTC [64332] STATEMENT:  create table q2 as
+	select * from
+	  (values (100), (300), (500)) as r(bank_account_pkey),
+	  lateral (
+	    select (c/2)::numeric as texttest,
+	           array_agg(c::numeric) as texttest_pkey,
+		   count(*) as bank_account
+	    from test1_a_idx
+	    where c < r.bank_account_pkey
+	    group by c/2) as s;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  DROP TABLE ìÞÙ¸æñÕèindex1;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  DROP FUNCTION y_trigger();
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  CREATE OR REPLACE RULE byteatest AS ON INSERT TO ÇâÉß DO INSTEAD NOTIFY ÇâÉß;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  DROP RULE byteatest ON classoid;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  drop table ÇâÉß;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 06:57:56.981 UTC [64332] WARNING:  there is no transaction in progress
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  DISCARD ALL;
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 06:57:56.981 UTC [64332] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 06:57:56.981 UTC [64332] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 06:57:57.013 UTC [73592] PANIC:  could not open critical system index 2662
+2022-08-02 06:57:57.015 UTC [53948] LOG:  server process (PID 73592) was terminated by signal 6: Aborted
+2022-08-02 06:57:57.015 UTC [53948] LOG:  terminating any other active server processes
+2022-08-02 06:57:57.058 UTC [53948] LOG:  all server processes terminated; reinitializing
+2022-08-02 06:57:57.076 UTC [73599] LOG:  database system was interrupted; last known up at 2022-08-02 06:57:31 UTC
+2022-08-02 06:57:57.076 UTC [73600] FATAL:  the database system is in recovery mode
+2022-08-02 06:57:57.078 UTC [73603] FATAL:  the database system is in recovery mode
+2022-08-02 06:57:57.079 UTC [73604] FATAL:  the database system is in recovery mode
+2022-08-02 06:57:57.083 UTC [53948] LOG:  received smart shutdown request
+2022-08-02 06:57:57.119 UTC [73599] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 06:57:57.119 UTC [73599] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 06:57:57.121 UTC [73599] LOG:  redo starts at 2/400C9D78

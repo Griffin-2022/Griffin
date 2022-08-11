@@ -1,0 +1,150 @@
+INSERT INTO t2 VALUES(NULL, NULL, NULL);
+;SELECT * FROM t2;
+;
+;INSERT INTO t2 VALUES(1.1, NULL, NULL);
+;INSERT INTO t2 VALUES(NULL, 5, NULL);
+;
+;INSERT INTO t2n VALUES(NULL, 5, NULL);
+;INSERT INTO t2 VALUES(NULL, NULL, 3.14159);
+;
+;CREATE TABLE t2b(
+      x INTEGER CHECK( typeof(coalesce(x,0))=='integer' ) CONSTRAINT one,
+      y TEXT PRIMARY KEY constraint two,
+      z INTEGER,
+      UNIQUE(x,z) constraint three
+    );
+;
+;INSERT INTO t2b VALUES('xyzzy','hi',5);
+;CREATE TABLE t2c(
+      x INTEGER CONSTRAINT x_one CONSTRAINT x_two
+          CHECK( typeof(coalesce(x,0))=='integer' )
+          CONSTRAINT x_two CONSTRAINT x_three,
+      y INTEGER, z INTEGER,
+      CONSTRAINT u_one UNIQUE(x,y,z) CONSTRAINT u_two
+    );
+;
+;INSERT INTO t2c VALUES('xyzzy',7,8);
+;DROP TABLE IF EXISTS t2b;
+;DROP TABLE IF EXISTS t2c;
+;DROP TABLE IF EXISTS t2n;
+;
+;CREATE TABLE t3(
+        x, y, z,
+        CHECK( x<(SELECT min(x) FROM t1) )
+      );
+;SELECT name FROM sqlite_master ORDER BY name
+  
+;CREATE TABLE t3(
+      x, y, z,
+      CHECK( q<x )
+    );
+;CREATE TABLE t3(
+      x, y, z,
+      CHECK( t2.x<x )
+    );
+;CREATE TABLE t3(
+      x, y, z,
+      CHECK( t3.x<25 )
+    );
+;
+;INSERT INTO t3 VALUES(1,2,3);
+;SELECT * FROM t3;
+;
+;INSERT INTO t3 VALUES(111,222,333);
+;CREATE TABLE t4(x, y,
+      CHECK (
+           x+y==11
+        OR x*y==12
+        OR x/y BETWEEN 5 AND 8
+        OR -x==y+10
+      )
+    );
+;
+;INSERT INTO t4 VALUES(1,10);
+;SELECT * FROM t4
+  
+;UPDATE t4 SET x=4, y=3;
+;UPDATE t4 SET x=12, y=2;
+;UPDATE t4 SET x=12, y=-22;
+;UPDATE t4 SET x=0, y=1;
+;SELECT * FROM t4;
+;
+;PRAGMA ignore_check_constraints=ON;
+;UPDATE t4 SET x=0, y=1;
+;PRAGMA integrity_check;
+;
+;PRAGMA ignore_check_constraints=OFF;
+;
+;UPDATE t4 SET x=0, y=2;
+;VACUUM
+    
+;ATTACH '' AS vacuum_db
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master ORDER BY rowid
+;BEGIN
+;SELECT sql FROM "main".sqlite_schema WHERE type='table'AND name<>'sqlite_sequence' AND coalesce(rootpage,1)>0
+;CREATE TABLE t1(
+      x INTEGER CHECK( x<5 ),
+      y REAL CHECK( y>x )
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t1' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t2(
+      x INTEGER CONSTRAINT one CHECK( typeof(coalesce(x,0))=="integer" ),
+      y REAL CONSTRAINT two CHECK( typeof(coalesce(y,0.1))=='real' ),
+      z TEXT CONSTRAINT three CHECK( typeof(coalesce(z,''))=='text' )
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t2' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t3(
+      x, y, z,
+      CHECK( t3.x<25 )
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;CREATE TABLE t4(x, y,
+      CHECK (
+           x+y==11
+        OR x*y==12
+        OR x/y BETWEEN 5 AND 8
+        OR -x==y+10
+      )
+    )
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"vacuum_db".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT sql FROM "main".sqlite_schema WHERE type='index'
+;SELECT'INSERT INTO vacuum_db.'||quote(name)||' SELECT*FROM"main".'||quote(name)FROM vacuum_db.sqlite_schema WHERE type='table'AND coalesce(rootpage,1)>0
+;INSERT INTO vacuum_db.'t1' SELECT*FROM"main".'t1'
+;INSERT INTO vacuum_db.'t2' SELECT*FROM"main".'t2'
+;INSERT INTO vacuum_db.'t3' SELECT*FROM"main".'t3'
+;INSERT INTO vacuum_db.'t4' SELECT*FROM"main".'t4'
+;INSERT INTO vacuum_db.sqlite_schema SELECT*FROM "main".sqlite_schema WHERE type IN('view','trigger') OR(type='table'AND rootpage=0)
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;CREATE TABLE t5(x, y,
+      CHECK( x*y<:abc )
+    );
+;CREATE TABLE t5(x, y,
+      CHECK( x*y<? )
+    );
+;SELECT * FROM t1
+;UPDATE OR IGNORE t1 SET x=5;
+;SELECT * FROM t1;
+;
+;INSERT OR IGNORE INTO t1 VALUES(5,4.0);
+;
+;INSERT OR IGNORE INTO t1 VALUES(2,20.0);
+;
+;UPDATE OR FAIL t1 SET x=7-x, y=y+1;
+;
+;BEGIN;
+;INSERT INTO t1 VALUES(1,30.0);
+;INSERT OR ROLLBACK INTO t1 VALUES(8,40.0);
+;COMMIT;
+;SELECT * FROM t1
+  
+;SELECT * FROM t1
+;REPLACE INTO t1 VALUES(6,7);
+;INSERT OR IGNORE INTO t1 VALUES(6,7);
+;
+;

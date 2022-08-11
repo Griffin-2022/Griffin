@@ -1,0 +1,48 @@
+# name: test/sql/alter/rename_table/test_rename_table_constraints.test
+# description: Test RENAME TABLE with constraints
+# group: [rename_table]
+
+# create a table with a check constraint
+;
+CREATE TABLE tbl(i INTEGER PRIMARY KEY, j INTEGER CHECK(j < 10))
+
+# check primary key constrain
+;
+INSERT INTO tbl VALUES (999, 4), (1000, 5)
+
+;
+INSERT INTO tbl VALUES (999, 4), (1000, 5)
+
+# check value constrain (j < 10)
+;
+INSERT INTO tbl VALUES (9999, 0), (10000, 1)
+
+;
+INSERT INTO tbl VALUES (777, 10), (888, 10)
+
+;
+SELECT * FROM tbl
+;
+999	4
+1000	5
+9999	0
+10000	1
+
+;
+ALTER TABLE tbl RENAME TO new_tbl
+
+# insert two conflicting pairs at the same time
+;
+INSERT INTO new_tbl VALUES (999, 0), (1000, 1)
+
+# insert two conflicting pairs at the same time
+;
+INSERT INTO new_tbl VALUES (9999, 0), (10000, 1)
+
+# insert values out of range constrain
+;
+INSERT INTO new_tbl VALUES (1, 10), (2, 999)
+
+;
+INSERT INTO new_tbl VALUES (66, 6), (55, 5)
+

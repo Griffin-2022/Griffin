@@ -1,0 +1,100 @@
+| >my_free
+| | my: ptr: 0x60e00003e1e8
+| | info: global thd memory_used: -768  size: -32
+| <my_free
+| >my_free
+| | my: ptr: 0x60e00003e108
+| | info: global thd memory_used: -800  size: -40
+| <my_free
+| >my_hash_reset
+| | enter: hash:0x62b0001601c8
+| <my_hash_reset
+| >my_hash_reset
+| | enter: hash:0x62b000160148
+| <my_hash_reset
+<unlink_thd
+>Thread_cache::park
+=================================================================
+==28253==ERROR: AddressSanitizer: heap-use-after-free on address 0x61d000d7ea00 at pc 0x000000b773d8 bp 0x7fc2bc5ade90 sp 0x7fc2bc5ade88
+WRITE of size 8 at 0x61d000d7ea00 thread T14
+    #0 0xb773d7  (/usr/local/mysql/bin/mariadbd+0xb773d7)
+    #1 0xd118f1  (/usr/local/mysql/bin/mariadbd+0xd118f1)
+    #2 0xd06f4b  (/usr/local/mysql/bin/mariadbd+0xd06f4b)
+    #3 0xd137a9  (/usr/local/mysql/bin/mariadbd+0xd137a9)
+    #4 0x131b0a2  (/usr/local/mysql/bin/mariadbd+0x131b0a2)
+    #5 0x131a830  (/usr/local/mysql/bin/mariadbd+0x131a830)
+    #6 0x23fd89e  (/usr/local/mysql/bin/mariadbd+0x23fd89e)
+    #7 0x7fc2e1fe6608  (/lib/x86_64-linux-gnu/libpthread.so.0+0x8608)
+    #8 0x7fc2e1cfc132  (/lib/x86_64-linux-gnu/libc.so.6+0x11f132)
+
+0x61d000d7ea00 is located 896 bytes inside of 2180-byte region [0x61d000d7e680,0x61d000d7ef04)
+freed by thread T14 here:
+    #0 0x7b98bf  (/usr/local/mysql/bin/mariadbd+0x7b98bf)
+
+previously allocated by thread T14 here:
+    #0 0x7b9b2a  (/usr/local/mysql/bin/mariadbd+0x7b9b2a)
+
+Thread T14 created by T0 here:
+    #0 0x7a424c  (/usr/local/mysql/bin/mariadbd+0x7a424c)
+    #1 0x23fdc79  (/usr/local/mysql/bin/mariadbd+0x23fdc79)
+
+SUMMARY: AddressSanitizer: heap-use-after-free (/usr/local/mysql/bin/mariadbd+0xb773d7) 
+Shadow bytes around the buggy address:
+  0x0c3a801a7cf0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d00: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d10: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d20: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d30: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x0c3a801a7d40:[fd]fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d50: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d60: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d70: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d80: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x0c3a801a7d90: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==28253==ABORTING
+220730  0:45:11 [ERROR] mysqld got signal 6 ;
+This could be because you hit a bug. It is also possible that this binary
+or one of the libraries it was linked against is corrupt, improperly built,
+or misconfigured. This error can also be caused by malfunctioning hardware.
+
+To report this bug, see https://mariadb.com/kb/en/reporting-bugs
+
+We will try our best to scrape up some info that will hopefully help
+diagnose the problem, but since we have already crashed, 
+something is definitely wrong and this may fail.
+
+Server version: 10.7.1-MariaDB-debug
+key_buffer_size=134217728
+read_buffer_size=131072
+max_used_connections=1
+max_threads=153
+thread_count=1
+It is possible that mysqld could use up to 
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_threads = 468119 K  bytes of memory
+Hope that's ok; if not, decrease some variables in the equation.
+
+Thread pointer: 0x62b00015e288
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+stack_bottom = 0x7fc2bc5afa80 thread_stack 0x100000

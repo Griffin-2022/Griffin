@@ -1,0 +1,78 @@
+# name: test/sql/transactions/test_index_local_update.test
+# description: Test index with transaction local updates
+# group: [transactions]
+
+;
+CREATE TABLE integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO integers VALUES (1), (2), (3)
+
+# inserting a conflicting value directly fails
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (3)
+
+;
+ROLLBACK
+
+# we can insert a non-conflicting value, but then updating it fails
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (4)
+
+;
+SELECT * FROM integers ORDER BY i
+;
+1
+2
+3
+4
+
+;
+UPDATE integers SET i=3 WHERE i=4
+
+;
+ROLLBACK
+
+# we can insert a non-conflicting value, and then update it to another non-conflicting value
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (4)
+
+;
+SELECT * FROM integers ORDER BY i
+;
+1
+2
+3
+4
+
+;
+UPDATE integers SET i=5 WHERE i=4
+
+;
+SELECT * FROM integers ORDER BY i
+;
+1
+2
+3
+5
+
+;
+COMMIT
+
+;
+SELECT * FROM integers ORDER BY i
+;
+1
+2
+3
+5
+

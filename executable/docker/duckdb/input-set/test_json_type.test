@@ -1,0 +1,220 @@
+# name: test/sql/json/test_json_type.test
+# description: Test JSON type
+# group: [json]
+
+require json
+
+;
+pragma enable_verification
+
+# unary type function
+;
+select json_type('{"str": 42}')
+;
+OBJECT
+
+;
+select json_type('[1, 2, 3]')
+;
+ARRAY
+
+# invalid JSON but we can still get the type of the singleton
+;
+select json_type('"other"')
+;
+VARCHAR
+
+;
+select json_type('42')
+;
+UBIGINT
+
+;
+select json_type('NaN')
+;
+DOUBLE
+
+;
+select json_type('null')
+;
+NULL
+
+;
+select json_type(NULL)
+;
+NULL
+
+# binary type function
+# tests with constant input and constant query
+;
+select json_type('{"str": 42}', 'str')
+;
+UBIGINT
+
+;
+select json_type('{"str": "quack"}', 'str')
+;
+VARCHAR
+
+;
+select json_type('{"str": "quack"}', 'str2')
+;
+NULL
+
+;
+select json_type('{"str": "quack"}', NULL)
+;
+NULL
+
+;
+select json_type(NULL, 'str')
+;
+NULL
+
+# NaN and Infinity should become DOUBLE
+;
+select json_type('{"null": NaN}', 'null')
+;
+DOUBLE
+
+;
+select json_type('{"null": nan}', 'null')
+;
+DOUBLE
+
+;
+select json_type('{"null": Infinity}', 'null')
+;
+DOUBLE
+
+;
+select json_type('{"null": -Infinity}', 'null')
+;
+DOUBLE
+
+;
+create table test(json varchar, query varchar)
+
+;
+insert into test values
+    ('{"str": "quack", "int": 4, "double": 0.42, "bool": true, "arr": [], "nested": {"val": 1}}', '/nested/val'),
+    ('{"str": "woof", "int": -4, "double": -0.42, "bool": false, "arr": [0, 1, 2], "nested": {"val": 42}}', '/arr/2'),
+    ('{"str": null, "int": null, "double": null, "bool": null, "arr": null, "nested": null}', 'bool')
+
+# tests with columnref input and constant query
+;
+select json_type(json, 'str') from test
+;
+VARCHAR
+VARCHAR
+NULL
+
+;
+select json_type(json, 'int') from test
+;
+UBIGINT
+BIGINT
+NULL
+
+;
+select json_type(json, 'double') from test
+;
+DOUBLE
+DOUBLE
+NULL
+
+;
+select json_type(json, 'bool') from test
+;
+BOOLEAN
+BOOLEAN
+NULL
+
+;
+select json_type(json, 'arr') from test
+;
+ARRAY
+ARRAY
+NULL
+
+# json path queries
+;
+select json_type(json, '/arr/0') from test
+;
+NULL
+UBIGINT
+NULL
+
+;
+select json_type(json, '/nested/val') from test
+;
+UBIGINT
+UBIGINT
+NULL
+
+# query multiple paths
+;
+select json_type(json, ['str', '/nested/val']) from test
+;
+[VARCHAR, UBIGINT]
+[VARCHAR, UBIGINT]
+[NULL, NULL]
+
+# test with columnref input and columnref query
+;
+select json_type(json, query) from test
+;
+UBIGINT
+UBIGINT
+NULL
+
+# some SQLite json_type tests
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}');
+;
+OBJECT
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$');
+;
+OBJECT
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a');
+;
+ARRAY
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[0]');
+;
+UBIGINT
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[1]');
+;
+DOUBLE
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[2]');
+;
+BOOLEAN
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[3]');
+;
+BOOLEAN
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[4]');
+;
+NULL
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[5]');
+;
+VARCHAR
+
+;
+SELECT json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[6]');
+;
+NULL

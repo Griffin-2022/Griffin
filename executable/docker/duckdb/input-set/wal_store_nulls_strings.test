@@ -1,0 +1,40 @@
+# name: test/sql/storage/wal/wal_store_nulls_strings.test
+# description: Test storing NULLs and strings with WAL
+# group: [wal]
+
+# load the DB from disk
+load __TEST_DIR__/test_store_null_string.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+# create a database and insert values
+;
+CREATE TABLE test (a INTEGER, b STRING);
+
+;
+INSERT INTO test VALUES (NULL, 'hello'), (13, 'abcdefgh'), (12, NULL)
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT a, b FROM test ORDER BY a
+;
+NULL	hello
+12	NULL
+13	abcdefgh
+
+;
+CREATE TABLE test (a INTEGER, b STRING);
+
+;
+CREATE TABLE IF NOT EXISTS test (a INTEGER, b STRING);

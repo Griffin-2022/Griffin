@@ -1,0 +1,111 @@
+	drop domain event_trigger_fire5;
+2022-08-01 21:42:02.760 UTC [82056] WARNING:  there is no transaction in progress
+2022-08-01 21:42:02.770 UTC [82056] ERROR:  collation "child" for encoding "SQL_ASCII" does not exist at character 51
+2022-08-01 21:42:02.770 UTC [82056] STATEMENT:  
+	
+	CREATE TABLE parent (
+	    a int,
+	    child text COLLATE "child"
+	);
+2022-08-01 21:42:02.770 UTC [82056] ERROR:  relation "parent" does not exist at character 15
+2022-08-01 21:42:02.770 UTC [82056] STATEMENT:  select * from parent;
+2022-08-01 21:42:02.770 UTC [82056] ERROR:  relation "parent" does not exist at character 15
+2022-08-01 21:42:02.770 UTC [82056] STATEMENT:  select * from parent;
+2022-08-01 21:42:02.770 UTC [82056] ERROR:  relation "parent" does not exist at character 33
+2022-08-01 21:42:02.770 UTC [82056] STATEMENT:  
+	
+	SELECT a, a, a * 2 AS b2 FROM parent ORDER BY a;
+2022-08-01 21:42:02.770 UTC [82056] ERROR:  relation "parent" does not exist at character 16
+2022-08-01 21:42:02.770 UTC [82056] STATEMENT:  
+	SELECT * FROM parent;
+2022-08-01 21:42:02.773 UTC [82056] ERROR:  relation "parent" does not exist
+2022-08-01 21:42:02.773 UTC [82056] STATEMENT:    -- error
+	CREATE TABLE gtestx (x int, child int DEFAULT 10) INHERITS (parent);
+2022-08-01 21:42:02.773 UTC [82056] ERROR:  relation "parent" does not exist at character 16
+2022-08-01 21:42:02.773 UTC [82056] STATEMENT:  
+	select * from parent;
+2022-08-01 21:42:02.776 UTC [82056] ERROR:  relation "parent" does not exist
+2022-08-01 21:42:02.776 UTC [82056] STATEMENT:  
+	ALTER TABLE parent DROP COLUMN a;
+2022-08-01 21:42:02.778 UTC [82056] ERROR:  there is no unique constraint matching given keys for referenced table "grandchild"
+2022-08-01 21:42:02.778 UTC [82056] STATEMENT:    -- error
+	
+	CREATE TABLE cmmove2 (cmdata2 int PRIMARY KEY, cmpart2 int GENERATED ALWAYS AS (cmdata2 * 2) STORED REFERENCES grandchild (c));
+2022-08-01 21:42:02.779 UTC [82056] ERROR:  wrong number of array subscripts
+2022-08-01 21:42:02.779 UTC [82056] STATEMENT:  
+	select array_fill(1, array[3,3], array[1,1,1]);
+2022-08-01 21:42:02.779 UTC [82056] ERROR:  BEFORE trigger's WHEN condition cannot reference NEW generated columns at character 87
+2022-08-01 21:42:02.779 UTC [82056] STATEMENT:  
+	
+	CREATE TRIGGER gtest2b BEFORE INSERT OR UPDATE ON grandchild
+	  FOR EACH ROW
+	  WHEN (NEW.* IS NOT NULL)  -- error
+	  EXECUTE PROCEDURE gtest_trigger_func();
+2022-08-01 21:42:02.780 UTC [82056] WARNING:  there is no transaction in progress
+=================================================================
+==82056==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd9d92dc30 sp 0x7ffd9d92dc28
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f3350638082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==82056==ABORTING
+2022-08-01 21:42:02.827 UTC [81387] LOG:  server process (PID 82056) was terminated by signal 6: Aborted
+2022-08-01 21:42:02.827 UTC [81387] LOG:  terminating any other active server processes
+2022-08-01 21:42:02.834 UTC [84867] FATAL:  the database system is in recovery mode
+2022-08-01 21:42:02.836 UTC [84870] FATAL:  the database system is in recovery mode
+2022-08-01 21:42:02.841 UTC [81387] LOG:  all server processes terminated; reinitializing
+2022-08-01 21:42:02.856 UTC [84873] LOG:  database system was interrupted; last known up at 2022-08-01 21:41:55 UTC
+2022-08-01 21:42:02.857 UTC [84876] FATAL:  the database system is in recovery mode
+2022-08-01 21:42:02.863 UTC [81387] LOG:  received smart shutdown request
+2022-08-01 21:42:02.872 UTC [84873] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 21:42:02.873 UTC [84873] LOG:  redo starts at 0/4521948
+2022-08-01 21:42:02.978 UTC [81387] LOG:  abnormal database system shutdown

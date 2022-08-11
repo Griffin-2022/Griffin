@@ -1,0 +1,486 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000390,sig:06,src:020499+024658,time:16893392,execs:5241033,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+;pragma vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    0    0               00 Start at 0
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+VDBE Program Listing:
+   0 Init             0   12    0               00 Start at 12
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   10    0               00 
+   5 Column           0    1    1               00 r[1]=sqlite_master.name
+   6 Column           0    3    2               00 r[2]=sqlite_master.rootpage
+   7 Column           0    4    3               00 r[3]=sqlite_master.sql
+   8 ResultRow        1    3    0               00 output=r[1..3]
+   9 Next             0    5    0               01 
+  10 Close            0    0    0               00 
+  11 Halt             0    0    0               00 
+  12 Transaction      0    0    0 0             00 usesStmtJournal=0
+  13 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  14 Goto             0    1    0               00 
+SQL: [CREATE TABLE t2(
+      x INTEGER PRIMARY KEY ON CONFLICT REPLACE,
+      t1 UNIQUE ON CONFLICT FAIL
+    );]
+VDBE Program Listing:
+   0 Init             0   42    0               00 Start at 42
+   1 ReadCookie       0    3    2               00 
+   2 If               3    5    0               00 
+   3 SetCookie        0    2    4               00 
+   4 SetCookie        0    5    1               00 
+   5 CreateTable      0    2    0               00 r[2]=root iDb=0
+   6 OpenWrite        0    1    0 5             00 root=1 iDb=0
+   7 NewRowid         0    1    0               00 r[1]=rowid
+   8 Blob             6    3    0              00 r[3]= (len=6)
+   9 Insert           0    3    1               08 intkey=r[1] data=r[3]
+  10 Close            0    0    0               00 
+  11 Noop             0   23    0               00 
+  12 CreateIndex      0    4    0               00 r[4]=root iDb=0
+  13 OpenWrite        1    1    0 5             00 root=1 iDb=0; sqlite_master
+  14 NewRowid         1    5    0               00 r[5]=rowid
+  15 String8          0    6    0 index         00 r[6]='index'
+  16 String8          0    7    0 sqlite_autoindex_t2_1 00 r[7]='sqlite_autoindex_t2_1'
+  17 String8          0    8    0 t2            00 r[8]='t2'
+  18 Copy             4    9    0               00 r[9]=r[4]
+  19 Null             0   10    0               00 r[10]=NULL
+  20 MakeRecord       6    5   11 BBBDB         00 r[11]=mkrec(r[6..10])
+  21 Insert           1   11    5               18 intkey=r[5] data=r[11]
+  22 Close            1    0    0               00 
+  23 Close            0    0    0               00 
+  24 Null             0   12   13               00 r[12..13]=NULL
+  25 OpenWrite        2    1    0 5             00 root=1 iDb=0; sqlite_master
+  26 Explain          0    0    0 SEARCH TABLE sqlite_master USING INTEGER PRIMARY KEY (rowid=?) 00 
+  27 MustBeInt        1   30    0               00 
+  28 NotExists        2   30    1               00 intkey=r[1]; pk
+  29 Rowid            2   13    0               00 r[13]=rowid
+  30 IsNull          13   38    0               00 if r[13]==NULL goto 38
+  31 String8          0   14    0 table         00 r[14]='table'
+  32 String8          0   15    0 t2            00 r[15]='t2'
+  33 String8          0   16    0 t2            00 r[16]='t2'
+  34 Copy             2   17    0               00 r[17]=r[2]
+  35 String8          0   18    0 CREATE TABLE t2(
+      x INTEGER PRIMARY KEY ON CONFLICT REPLACE,
+      t1 UNIQUE ON CONFLICT FAIL
+    ) 00 r[18]='CREATE TABLE t2(
+      x INTEGER PRIMARY KEY ON CONFLICT REPLACE,
+      t1 UNIQUE ON CONFLIC
+  36 MakeRecord      14    5   19 BBBDB         00 r[19]=mkrec(r[14..18])
+  37 Insert           2   19   13               00 intkey=r[13] data=r[19]
+  38 Close            2    0    0               00 
+  39 SetCookie        0    1    1               00 
+  40 ParseSchema      0    0    0 tbl_name='t2' AND type!='trigger' 00 
+  41 Halt             0    0    0               00 
+  42 Transaction      0    1    0 0             01 usesStmtJournal=0
+  43 TableLock        0    1    1 sqlite_master 00 iDb=0 root=1 write=1
+  44 Goto             0    1    0               00 
+VDBE Program Listing:
+   0 Init             0   16    0               00 Start at 16
+   1 Noop             1    5    0               00 
+   2 OpenRead         0    1    0 5             00 root=1 iDb=0; sqlite_master
+   3 Explain          0    0    0 SCAN TABLE sqlite_master 00 
+   4 Rewind           0   14    0               00 
+   5 Column           0    2    1               00 r[1]=sqlite_master.tbl_name
+   6 Ne               2   13    1 (BINARY)      52 if r[2]!=r[1] goto 13
+   7 Column           0    0    3               00 r[3]=sqlite_master.type
+   8 Eq               4   13    3 (BINARY)      52 if r[4]==r[3] goto 13
+   9 Column           0    1    5               00 r[5]=sqlite_master.name
+  10 Column           0    3    6               00 r[6]=sqlite_master.rootpage
+  11 Column           0    4    7               00 r[7]=sqlite_master.sql
+  12 ResultRow        5    3    0               00 output=r[5..7]
+  13 Next             0    5    0               01 
+  14 Close            0    0    0               00 
+  15 Halt             0    0    0               00 
+  16 Transaction      0    0    1 0             00 usesStmtJournal=0
+  17 TableLock        0    1    0 sqlite_master 00 iDb=0 root=1 write=0
+  18 String8          0    2    0 t2            00 r[2]='t2'
+  19 String8          0    4    0 trigger       00 r[4]='trigger'
+  20 Goto             0    1    0               00 
+SQL: [;PRAGMA integrity_check;]
+VDBE Program Listing:
+   0 Init             0   62    0               00 Start at 62
+   1 Integer        100    1    0               00 r[1]=100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+   3 Halt             0    0    0               00 
+   4 IntegrityCk      2    3    1 [3]           00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+   6 String8          0    3    0 *** in database main ***
+ 00 r[3]='*** in database main ***
+'
+   7 Move             2    4    1               00 r[4]=r[2]
+   8 Concat           4    3    2               00 r[2]=r[3]+r[4]
+   9 ResultRow        2    1    0               00 output=r[2]
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+  11 Halt             0    0    0               00 
+  12 OpenRead         1    2    0 2             00 root=2 iDb=0; t2
+  13 OpenRead         2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+  14 Integer          0    7    0               00 r[7]=0
+  15 Integer          0    8    0               00 r[8]=0
+  16 Rewind           1   40    0               00 
+  17 AddImm           7    1    0               00 r[7]=r[7]+1
+  18 Column           1    1   10               00 r[10]=t2.t1
+  19 Rowid            1   11    0               00 r[11]=rowid
+  20 AddImm           8    1    0               00 r[8]=r[8]+1
+  21 Found            2   32   10 2             00 key=r[10..11]
+  22 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  23 String8          0    3    0 row           00 r[3]='row '
+  24 Concat           7    3    3               00 r[3]=r[3]+r[7]
+  25 String8          0    4    0  missing from index  00 r[4]=' missing from index '
+  26 Concat           4    3    3               00 r[3]=r[3]+r[4]
+  27 String8          0    4    0 sqlite_autoindex_t2_1 00 r[4]='sqlite_autoindex_t2_1'
+  28 Concat           4    3    3               00 r[3]=r[3]+r[4]
+  29 ResultRow        3    1    0               00 output=r[3]
+  30 IfPos            1   39    0               00 if r[1]>0 then r[1]-=0, goto 39
+  31 Halt             0    0    0               00 
+  32 IsNull          10   39    0               00 if r[10]==NULL goto 39
+  33 Next             2   35    0               00 
+  34 Goto             0   39    0               00 
+  35 IdxGT            2   39   10 1             00 key=r[10]
+  36 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  37 String8          0    3    0 non-unique entry in index  00 r[3]='non-unique entry in index '
+  38 Goto             0   27    0               00 
+  39 Next             1   17    0               00 
+  40 String8          0    2    0 wrong # of entries in index  00 r[2]='wrong # of entries in index '
+  41 IfPos            1   43    0               00 if r[1]>0 then r[1]-=0, goto 43
+  42 Halt             0    0    0               00 
+  43 Count            2    3    0               00 r[3]=count()
+  44 Eq               8   49    3               90 if r[8]==r[3] goto 49
+  45 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  46 String8          0    3    0 sqlite_autoindex_t2_1 00 r[3]='sqlite_autoindex_t2_1'
+  47 Concat           3    2    7               00 r[7]=r[2]+r[3]
+  48 ResultRow        7    1    0               00 output=r[7]
+  49 IfPos            1   51    0               00 if r[1]>0 then r[1]-=0, goto 51
+  50 Halt             0    0    0               00 
+  51 IntegrityCk      2    1    1 ]             01 
+  52 IsNull           2   57    0               00 if r[2]==NULL goto 57
+  53 String8          0    3    0 *** in database temp ***
+ 00 r[3]='*** in database temp ***
+'
+  54 Move             2    4    1               00 r[4]=r[2]
+  55 Concat           4    3    2               00 r[2]=r[3]+r[4]
+  56 ResultRow        2    1    0               00 output=r[2]
+  57 AddImm           1 -100    0               00 r[1]=r[1]+-100
+  58 If               1   61    0               00 
+  59 String8          0    3    0 ok            00 r[3]='ok'
+  60 ResultRow        3    1    0               00 output=r[3]
+  61 Halt             0    0    0               00 
+  62 Transaction      0    0    1 0             01 usesStmtJournal=0
+  63 Transaction      1    0    0 0             01 usesStmtJournal=0
+  64 TableLock        0    2    0 t2            00 iDb=0 root=2 write=0
+  65 Goto             0    1    0               00 
+SQL: [;
+;SELECT * FROM t2 ORDER BY t1;]
+VDBE Program Listing:
+   0 Init             0   11    0               00 Start at 11
+   1 Noop             1    4    0               00 
+   2 OpenRead         2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+   3 Explain          0    0    0 SCAN TABLE t2 USING COVERING INDEX sqlite_autoindex_t2_1 00 
+   4 Rewind           2    9    1 0             00 
+   5 IdxRowid         2    1    0               00 r[1]=rowid
+   6 Column           2    0    2               00 r[2]=t2.t1
+   7 ResultRow        1    2    0               00 output=r[1..2]
+   8 Next             2    5    0               01 
+   9 Close            2    0    0               00 
+  10 Halt             0    0    0               00 
+  11 Transaction      0    0    1 0             01 usesStmtJournal=0
+  12 TableLock        0    2    0 t2            00 iDb=0 root=2 write=0
+  13 Goto             0    1    0               00 
+SQL: [PRAGMA integrity_check 
+;]
+VDBE Program Listing:
+   0 Init             0   62    0               00 Start at 62
+   1 Integer        100    1    0               00 r[1]=100
+   2 IfPos            1    4    0               00 if r[1]>0 then r[1]-=0, goto 4
+   3 Halt             0    0    0               00 
+   4 IntegrityCk      2    3    1 [3]           00 
+   5 IsNull           2   10    0               00 if r[2]==NULL goto 10
+   6 String8          0    3    0 *** in database main ***
+ 00 r[3]='*** in database main ***
+'
+   7 Move             2    4    1               00 r[4]=r[2]
+   8 Concat           4    3    2               00 r[2]=r[3]+r[4]
+   9 ResultRow        2    1    0               00 output=r[2]
+  10 IfPos            1   12    0               00 if r[1]>0 then r[1]-=0, goto 12
+  11 Halt             0    0    0               00 
+  12 OpenRead         1    2    0 2             00 root=2 iDb=0; t2
+  13 OpenRead         2    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+  14 Integer          0    7    0               00 r[7]=0
+  15 Integer          0    8    0               00 r[8]=0
+  16 Rewind           1   40    0               00 
+  17 AddImm           7    1    0               00 r[7]=r[7]+1
+  18 Column           1    1   10               00 r[10]=t2.t1
+  19 Rowid            1   11    0               00 r[11]=rowid
+  20 AddImm           8    1    0               00 r[8]=r[8]+1
+  21 Found            2   32   10 2             00 key=r[10..11]
+  22 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  23 String8          0    3    0 row           00 r[3]='row '
+  24 Concat           7    3    3               00 r[3]=r[3]+r[7]
+  25 String8          0    4    0  missing from index  00 r[4]=' missing from index '
+  26 Concat           4    3    3               00 r[3]=r[3]+r[4]
+  27 String8          0    4    0 sqlite_autoindex_t2_1 00 r[4]='sqlite_autoindex_t2_1'
+  28 Concat           4    3    3               00 r[3]=r[3]+r[4]
+  29 ResultRow        3    1    0               00 output=r[3]
+  30 IfPos            1   39    0               00 if r[1]>0 then r[1]-=0, goto 39
+  31 Halt             0    0    0               00 
+  32 IsNull          10   39    0               00 if r[10]==NULL goto 39
+  33 Next             2   35    0               00 
+  34 Goto             0   39    0               00 
+  35 IdxGT            2   39   10 1             00 key=r[10]
+  36 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  37 String8          0    3    0 non-unique entry in index  00 r[3]='non-unique entry in index '
+  38 Goto             0   27    0               00 
+  39 Next             1   17    0               00 
+  40 String8          0    2    0 wrong # of entries in index  00 r[2]='wrong # of entries in index '
+  41 IfPos            1   43    0               00 if r[1]>0 then r[1]-=0, goto 43
+  42 Halt             0    0    0               00 
+  43 Count            2    3    0               00 r[3]=count()
+  44 Eq               8   49    3               90 if r[8]==r[3] goto 49
+  45 AddImm           1   -1    0               00 r[1]=r[1]+-1
+  46 String8          0    3    0 sqlite_autoindex_t2_1 00 r[3]='sqlite_autoindex_t2_1'
+  47 Concat           3    2    7               00 r[7]=r[2]+r[3]
+  48 ResultRow        7    1    0               00 output=r[7]
+  49 IfPos            1   51    0               00 if r[1]>0 then r[1]-=0, goto 51
+  50 Halt             0    0    0               00 
+  51 IntegrityCk      2    1    1 ]             01 
+  52 IsNull           2   57    0               00 if r[2]==NULL goto 57
+  53 String8          0    3    0 *** in database temp ***
+ 00 r[3]='*** in database temp ***
+'
+  54 Move             2    4    1               00 r[4]=r[2]
+  55 Concat           4    3    2               00 r[2]=r[3]+r[4]
+  56 ResultRow        2    1    0               00 output=r[2]
+  57 AddImm           1 -100    0               00 r[1]=r[1]+-100
+  58 If               1   61    0               00 
+  59 String8          0    3    0 ok            00 r[3]='ok'
+  60 ResultRow        3    1    0               00 output=r[3]
+  61 Halt             0    0    0               00 
+  62 Transaction      0    0    1 0             01 usesStmtJournal=0
+  63 Transaction      1    0    0 0             01 usesStmtJournal=0
+  64 TableLock        0    2    0 t2            00 iDb=0 root=2 write=0
+  65 Goto             0    1    0               00 
+SQL: [;INSERT INTO t2(oid,t1,t1) VALUES(9223372036854775807,3,'7fffffffffffffff');]
+VDBE Program Listing:
+   0 Init             0   28    0               00 Start at 28
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; t2
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+   3 Int64            0    1    0 9223372036854775807 00 r[1]=9223372036854775807
+   4 NotNull          1    6    0               00 if r[1]!=NULL goto 6
+   5 NewRowid         0    1    0               00 r[1]=rowid
+   6 MustBeInt        1    0    0               00 
+   7 SoftNull         2    0    0               00 r[2]=NULL
+   8 Integer          3    3    0               00 r[3]=3
+   9 Goto             0   15    0               00 
+  10 NotExists        0   14    1               00 intkey=r[1]
+  11 Column           0    1    5               00 r[5]=t2.t1
+  12 Rowid            0    6    0               00 r[6]=rowid
+  13 IdxDelete        1    5    2               00 key=r[5..6]
+  14 Goto             0   22    0               00 
+  15 Affinity         2    1    0 D             00 affinity(r[2])
+  16 SCopy            3    5    0               00 r[5]=r[3]; t1
+  17 IntCopy          1    6    0               00 r[6]=r[1]; rowid
+  18 MakeRecord       5    2    4               00 r[4]=mkrec(r[5..6]); for sqlite_autoindex_t2_1
+  19 NoConflict       1   21    5 1             00 key=r[5]
+  20 Halt          2067    3    0 t2.t1         02 
+  21 Goto             0   10    0               00 
+  22 IdxInsert        1    4    0               00 key=r[4]
+  23 MakeRecord       2    2    8               00 r[8]=mkrec(r[2..3])
+  24 Insert           0    8    1 t2            03 intkey=r[1] data=r[8]
+  25 Close            0    0    0               00 
+  26 Noop             1    0    0               00 
+  27 Halt             0    0    0               00 
+  28 Transaction      0    1    1 0             01 usesStmtJournal=0
+  29 TableLock        0    2    1 t2            00 iDb=0 root=2 write=1
+  30 Goto             0    1    0               00 
+SQL: [;SELECT instr('abcdefg','abcdefgh');]
+VDBE Program Listing:
+   0 Init             0    4    0               00 Start at 4
+   1 Function0        3    2    1 instr(2)      02 r[1]=func(r[2..3])
+   2 ResultRow        1    1    0               00 output=r[1]
+   3 Halt             0    0    0               00 
+   4 String8          0    2    0 abcdefg       00 r[2]='abcdefg'
+   5 String8          0    3    0 abcdefgh      00 r[3]='abcdefgh'
+   6 Goto             0    1    0               00 
+SQL: [;SELECT instr('abcdefg','efgh');]
+VDBE Program Listing:
+   0 Init             0    4    0               00 Start at 4
+   1 Function0        3    2    1 instr(2)      02 r[1]=func(r[2..3])
+   2 ResultRow        1    1    0               00 output=r[1]
+   3 Halt             0    0    0               00 
+   4 String8          0    2    0 abcdefg       00 r[2]='abcdefg'
+   5 String8          0    3    0 efgh          00 r[3]='efgh'
+   6 Goto             0    1    0               00 
+SQL: [INSERT INTO "main"."t2"(t1,t1,t1,x,t1) VALUES(1,0,'rabbits',nullif('rabbits','rabbits'),'RBADC')
+;]
+VDBE Program Listing:
+   0 Init             0   29    0               00 Start at 29
+   1 OpenWrite        0    2    0 2             00 root=2 iDb=0; t2
+   2 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+   3 CollSeq          0    0    0 (BINARY)      00 
+   4 Function0        3    5    1 nullif(2)     02 r[1]=func(r[5..6])
+   5 NotNull          1    7    0               00 if r[1]!=NULL goto 7
+   6 NewRowid         0    1    0               00 r[1]=rowid
+   7 MustBeInt        1    0    0               00 
+   8 SoftNull         2    0    0               00 r[2]=NULL
+   9 Integer          1    3    0               00 r[3]=1
+  10 Goto             0   16    0               00 
+  11 NotExists        0   15    1               00 intkey=r[1]
+  12 Column           0    1    7               00 r[7]=t2.t1
+  13 Rowid            0    8    0               00 r[8]=rowid
+  14 IdxDelete        1    7    2               00 key=r[7..8]
+  15 Goto             0   23    0               00 
+  16 Affinity         2    1    0 D             00 affinity(r[2])
+  17 SCopy            3    7    0               00 r[7]=r[3]; t1
+  18 IntCopy          1    8    0               00 r[8]=r[1]; rowid
+  19 MakeRecord       7    2    4               00 r[4]=mkrec(r[7..8]); for sqlite_autoindex_t2_1
+  20 NoConflict       1   22    7 1             00 key=r[7]
+  21 Halt          2067    3    0 t2.t1         02 
+  22 Goto             0   11    0               00 
+  23 IdxInsert        1    4    0               00 key=r[4]
+  24 MakeRecord       2    2   10               00 r[10]=mkrec(r[2..3])
+  25 Insert           0   10    1 t2            03 intkey=r[1] data=r[10]
+  26 Close            0    0    0               00 
+  27 Noop             1    0    0               00 
+  28 Halt             0    0    0               00 
+  29 Transaction      0    1    1 0             01 usesStmtJournal=0
+  30 TableLock        0    2    1 t2            00 iDb=0 root=2 write=1
+  31 String8          0    5    0 rabbits       00 r[5]='rabbits'
+  32 String8          0    6    0 rabbits       00 r[6]='rabbits'
+  33 Goto             0    1    0               00 
+SQL: [;UPDATE t2 SET x=10, x=20;]
+VDBE Program Listing:
+   0 Init             0   45    0               00 Start at 45
+   1 Null             0    2    3               00 r[2..3]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; t2
+   3 Explain          0    0    0 SCAN TABLE t2 00 
+   4 Rewind           0    8    0               00 
+   5 Rowid            0    3    0               00 r[3]=rowid
+   6 RowSetAdd        2    3    0               00 rowset(2)=r[3]
+   7 Next             0    5    0               01 
+   8 Close            0    0    0               00 
+   9 OpenWrite        0    2    0 2             00 root=2 iDb=0; t2
+  10 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+  11 RowSetRead       2   42    3               00 r[3]=rowset(2)
+  12 NotExists        0   11    3               00 intkey=r[3]
+  13 Integer         20    4    0               00 r[4]=20
+  14 MustBeInt        4    0    0               00 
+  15 Null             0    5    0               00 r[5]=NULL
+  16 Column           0    1    6               00 r[6]=t2.t1
+  17 Eq               4   23    3               90 if r[4]==r[3] goto 23
+  18 Goto             0   24    0               00 
+  19 NotExists        0   23    4               00 intkey=r[4]
+  20 Column           0    1    7               00 r[7]=t2.t1
+  21 Rowid            0    8    0               00 r[8]=rowid
+  22 IdxDelete        1    7    2               00 key=r[7..8]
+  23 Goto             0   33    0               00 
+  24 Affinity         5    1    0 D             00 affinity(r[5])
+  25 SCopy            6    7    0               00 r[7]=r[6]; t1
+  26 IntCopy          4    8    0               00 r[8]=r[4]; rowid
+  27 MakeRecord       7    2    1               00 r[1]=mkrec(r[7..8]); for sqlite_autoindex_t2_1
+  28 NoConflict       1   32    7 1             00 key=r[7]
+  29 IdxRowid         1    9    0               00 r[9]=rowid
+  30 Eq               9   32    3               90 if r[9]==r[3] goto 32
+  31 Halt          2067    3    0 t2.t1         02 
+  32 Goto             0   19    0               00 
+  33 NotExists        0   38    3               00 intkey=r[3]
+  34 Column           0    1    7               00 r[7]=t2.t1
+  35 Rowid            0    8    0               00 r[8]=rowid
+  36 IdxDelete        1    7    2               00 key=r[7..8]
+  37 Delete           0    0    0               00 
+  38 IdxInsert        1    1    0               00 key=r[1]
+  39 MakeRecord       5    2   10               00 r[10]=mkrec(r[5..6])
+  40 Insert           0   10    4 t2            05 intkey=r[4] data=r[10]
+  41 Goto             0   11    0               00 
+  42 Close            1    0    0               00 
+  43 Noop             0    0    0               00 
+  44 Halt             0    0    0               00 
+  45 Transaction      0    1    1 0             01 usesStmtJournal=0
+  46 TableLock        0    2    1 t2            00 iDb=0 root=2 write=1
+  47 Goto             0    1    0               00 
+SQL: [;UPDATE t2 SET x = upper(x);]
+VDBE Program Listing:
+   0 Init             0   46    0               00 Start at 46
+   1 Null             0    2    3               00 r[2..3]=NULL
+   2 OpenRead         0    2    0 0             00 root=2 iDb=0; t2
+   3 Explain          0    0    0 SCAN TABLE t2 00 
+   4 Rewind           0    8    0               00 
+   5 Rowid            0    3    0               00 r[3]=rowid
+   6 RowSetAdd        2    3    0               00 rowset(2)=r[3]
+   7 Next             0    5    0               01 
+   8 Close            0    0    0               00 
+   9 OpenWrite        0    2    0 2             00 root=2 iDb=0; t2
+  10 OpenWrite        1    3    0 k(2,,)        00 root=3 iDb=0; sqlite_autoindex_t2_1
+  11 RowSetRead       2   43    3               00 r[3]=rowset(2)
+  12 NotExists        0   11    3               00 intkey=r[3]
+  13 Rowid            0    7    0               00 r[7]=rowid
+  14 Function0        0    7    4 upper(1)      01 r[4]=func(r[7])
+  15 MustBeInt        4    0    0               00 
+  16 Null             0    5    0               00 r[5]=NULL
+  17 Column           0    1    6               00 r[6]=t2.t1
+  18 Eq               4   24    3               90 if r[4]==r[3] goto 24
+  19 Goto             0   25    0               00 
+  20 NotExists        0   24    4               00 intkey=r[4]
+  21 Column           0    1    8               00 r[8]=t2.t1
+  22 Rowid            0    9    0               00 r[9]=rowid
+  23 IdxDelete        1    8    2               00 key=r[8..9]
+  24 Goto             0   34    0               00 
+  25 Affinity         5    1    0 D             00 affinity(r[5])
+  26 SCopy            6    8    0               00 r[8]=r[6]; t1
+  27 IntCopy          4    9    0               00 r[9]=r[4]; rowid
+  28 MakeRecord       8    2    1               00 r[1]=mkrec(r[8..9]); for sqlite_autoindex_t2_1
+  29 NoConflict       1   33    8 1             00 key=r[8]
+  30 IdxRowid         1   10    0               00 r[10]=rowid
+  31 Eq              10   33    3               90 if r[10]==r[3] goto 33
+  32 Halt          2067    3    0 t2.t1         02 
+  33 Goto             0   20    0               00 
+  34 NotExists        0   39    3               00 intkey=r[3]
+  35 Column           0    1    8               00 r[8]=t2.t1
+  36 Rowid            0    9    0               00 r[9]=rowid
+  37 IdxDelete        1    8    2               00 key=r[8..9]
+  38 Delete           0    0    0               00 
+  39 IdxInsert        1    1    0               00 key=r[1]
+  40 MakeRecord       5    2   11               00 r[11]=mkrec(r[5..6])
+  41 Insert           0   11    4 t2            05 intkey=r[4] data=r[11]
+  42 Goto             0   11    0               00 
+  43 Close            1    0    0               00 
+  44 Noop             0    0    0               00 
+  45 Halt             0    0    0               00 
+  46 Transaction      0    1    1 0             01 usesStmtJournal=0
+  47 TableLock        0    2    1 t2            00 iDb=0 root=2 write=1
+  48 Goto             0    1    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007ff7ab97c859 in __GI_abort () at abort.c:79
+#2  0x00007ff7ab97c729 in __assert_fail_base (fmt=0x7ff7abb12588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x227b6e "memIsValid(&aMem[pOp->p2])", file=0x222c23 "sqlite3.c", line=77367, function=<optimized out>)
+    at assert.c:92
+#3  0x00007ff7ab98dfd6 in __GI___assert_fail (assertion=0x227b6e "memIsValid(&aMem[pOp->p2])", file=0x222c23 "sqlite3.c", line=77367, function=0x213a19 "int sqlite3VdbeExec(Vdbe *)") at assert.c:101
+#4  0x00000000003e282b in sqlite3VdbeExec (p=<optimized out>) at sqlite3.c:77367
+#5  0x000000000028b140 in sqlite3_step (pStmt=<optimized out>) at sqlite3.c:75131
+#6  0x000000000024b5e9 in main (argc=1, argv=0x7fffaf5b3be8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 31565] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

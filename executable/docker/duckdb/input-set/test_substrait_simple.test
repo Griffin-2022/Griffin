@@ -1,0 +1,65 @@
+# name: test/sql/substrait/test_substrait_simple.test
+# description: Test get_substrait with simple operators
+# group: [substrait]
+
+require substrait
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE person (name text,money int);
+
+;
+insert into person values ('Pedro', 10);
+
+;
+CALL get_substrait('select * from person')
+
+# Test simple projection
+;
+CALL get_substrait('select name from person')
+
+;
+insert into person values ('Richard', 20);
+
+# Test Simple Filter
+;
+CALL get_substrait('select * from person where name = ''Pedro''')
+
+# Test Simple Aggregation
+;
+insert into person values ('Pedro', 20);
+
+;
+CALL get_substrait('select SUM(money) from person')
+
+# Test aggregation + Filter
+;
+CALL get_substrait('select SUM(money) from person where name = ''Pedro''')
+
+;
+drop table person
+
+;
+CREATE TABLE person (money DECIMAL(5,2))
+
+;
+insert into person values (105.35), (1.11)
+
+# Test aggregation on decimals
+;
+CALL get_substrait('select SUM(money * 2) as double_money from person')
+
+;
+drop table person
+
+;
+CREATE TABLE person (name text)
+
+;
+insert into person values ('bla special bla requests bla'),('special requests'),('bla')
+
+# Test filters on strings
+;
+CALL get_substrait('select * from person where name not like ''%special%requests%''')

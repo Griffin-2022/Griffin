@@ -1,0 +1,64 @@
+# name: test/sql/storage/test_foreign_key_persistent_storage.test
+# description: persistent storage tests with foreign key tables
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/test_fk_persistent.db
+
+;
+CREATE TABLE pk_integers(i INTEGER PRIMARY KEY)
+
+;
+INSERT INTO pk_integers VALUES (1), (2), (3)
+
+;
+CREATE TABLE fk_integers(j INTEGER, FOREIGN KEY (j) REFERENCES pk_integers(i))
+
+;
+INSERT INTO fk_integers VALUES (1), (2)
+
+# restart the system
+restart
+
+# check foreign key constraint
+;
+INSERT INTO fk_integers VALUES (4)
+
+;
+INSERT INTO fk_integers VALUES (3)
+
+# restart the system
+restart
+
+;
+DELETE FROM pk_integers WHERE i=3
+
+;
+DELETE FROM fk_integers WHERE j=3
+
+;
+DELETE FROM pk_integers WHERE i=3
+
+# restart the system
+restart
+
+;
+UPDATE pk_integers SET i=5 WHERE i=2
+
+;
+UPDATE fk_integers SET i=4 WHERE j=2
+
+;
+UPDATE fk_integers SET i=4 WHERE j=2
+
+# restart the system
+restart
+
+;
+DROP TABLE pk_integers;
+
+;
+DROP TABLE fk_integers;
+
+;
+DROP TABLE pk_integers;

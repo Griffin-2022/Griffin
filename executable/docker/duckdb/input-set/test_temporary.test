@@ -1,0 +1,137 @@
+# name: test/sql/catalog/test_temporary.test
+# description: Test temporary catalog entry creation
+# group: [catalog]
+
+# basic temp table creation works
+;
+CREATE TEMPORARY TABLE integers(i INTEGER) ON COMMIT PRESERVE ROWS
+
+# we can (but never are required to) prefix temp tables with "temp" schema
+;
+CREATE TEMPORARY TABLE integersx(i INTEGER)
+
+# we can't prefix temp tables with a schema that is not "temp"
+;
+CREATE TEMPORARY TABLE asdf.integersy(i INTEGER)
+
+;
+CREATE TEMPORARY TABLE s1 AS SELECT 42
+
+;
+SELECT * FROM temp.s1
+;
+42
+
+;
+SELECT * FROM s1
+;
+42
+
+;
+CREATE TABLE temp.integersy(i INTEGER)
+
+;
+CREATE SCHEMA temp
+
+;
+DROP TABLE main.integersx
+
+;
+DROP TABLE integersx
+
+;
+CREATE TEMPORARY TABLE temp.integersx(i INTEGER)
+
+;
+DROP TABLE temp.integersx
+
+# unsupported because stupid
+;
+CREATE TEMPORARY TABLE integers2(i INTEGER) ON COMMIT DELETE ROWS
+
+# temp table already exists
+;
+CREATE TEMPORARY TABLE integers(i INTEGER)
+
+;
+INSERT INTO integers VALUES (42)
+
+;
+SELECT i from integers
+;
+42
+
+# temp table survives commit
+;
+BEGIN TRANSACTION
+
+;
+CREATE TEMPORARY TABLE integers2(i INTEGER)
+
+;
+CREATE TEMPORARY SEQUENCE seq
+
+;
+CREATE TEMPORARY VIEW v1 AS SELECT 42
+
+;
+INSERT INTO integers2 VALUES (42)
+
+;
+SELECT i from integers2
+;
+42
+
+;
+SELECT nextval('seq')
+;
+1
+
+;
+SELECT * from v1
+;
+42
+
+;
+COMMIT
+
+;
+SELECT i from integers2
+;
+42
+
+;
+SELECT nextval('seq')
+;
+2
+
+;
+SELECT * from v1
+;
+42
+
+# temp table does not survive rollback
+;
+BEGIN TRANSACTION
+
+;
+CREATE TEMPORARY TABLE integers3(i INTEGER)
+
+;
+INSERT INTO integers3 VALUES (42)
+
+;
+SELECT i from integers3
+;
+42
+
+;
+ROLLBACK
+
+;
+SELECT i from integers3
+
+# table is not visible to other cons
+;
+INSERT INTO integers VALUES (42)
+

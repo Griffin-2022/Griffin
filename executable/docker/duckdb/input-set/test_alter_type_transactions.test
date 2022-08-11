@@ -1,0 +1,131 @@
+# name: test/sql/alter/alter_type/test_alter_type_transactions.test
+# description: Test ALTER TABLE ALTER TYPE with multiple transactions
+# group: [alter_type]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+# Only one pending table alter can be active at a time
+;
+BEGIN TRANSACTION
+
+# con alters a column to test
+;
+ALTER TABLE test ALTER j TYPE VARCHAR
+
+# con2 cannot alter another column now!
+;
+ALTER TABLE test ALTER i TYPE VARCHAR
+
+;
+COMMIT
+
+# we can alter the column after the commit
+;
+ALTER TABLE test ALTER i TYPE VARCHAR
+
+;
+DROP TABLE test
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+# Can only append to newest table
+;
+BEGIN TRANSACTION
+
+# con removes a column from test
+;
+ALTER TABLE test ALTER i TYPE VARCHAR
+
+# con2 cannot append now!
+;
+INSERT INTO test (i, j) VALUES (3, 3)
+
+# but we can delete rows!
+;
+DELETE FROM test WHERE i=1
+
+;
+SELECT * FROM test
+;
+1	1
+2	2
+
+;
+SELECT * FROM test
+;
+2	2
+
+# we cannot update rows on tables that have been altered
+;
+UPDATE test SET i=1000
+
+;
+UPDATE test SET j=100
+
+;
+SELECT * FROM test
+;
+1	1
+2	2
+
+;
+COMMIT
+
+;
+SELECT * FROM test
+;
+2	2
+
+;
+DROP TABLE test
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+# Alter table while other transaction still has pending appends
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO test VALUES (3, 3)
+
+# now con adds a column
+;
+ALTER TABLE test ALTER i TYPE VARCHAR
+
+# cannot commit con2! conflict on append
+;
+COMMIT
+
+;
+DROP TABLE test
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+# Create index on column that has been altered by other transaction
+# con2 removes a column
+;
+BEGIN TRANSACTION
+
+;
+ALTER TABLE test ALTER j TYPE VARCHAR
+
+# now con tries to add an index to that column: this should fail
+;
+CREATE INDEX i_index ON test(j
+

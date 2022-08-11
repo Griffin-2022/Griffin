@@ -1,0 +1,44 @@
+# name: test/sql/function/nested/test_lambda.test
+# description: Test basic lambda expressions
+# group: [nested]
+
+;
+PRAGMA enable_verification
+
+# FIXME: just so we don't get "function not found" errors
+;
+create function apply(x, y) as x + y;
+
+# FIXME: this should work
+;
+select apply(i, (x, y) -> x + y) from (values (list_value(1, 2, 3))) tbl(i);
+
+# test basic lambda binding
+# FIXME: this should work
+;
+select apply(i, x -> x + 1) from (values (list_value(1, 2, 3))) tbl(i);
+
+# test lambda function precedence
+;
+select apply(i, x -> x * 3 + 2 / zz) from (values (list_value(1, 2, 3))) tbl(i);
+
+;
+select apply(i, x -> (1 + 2 * 27) / x) from (values (list_value(1, 2, 3))) tbl(i);
+
+;
+select apply(i, x -> x + 1 AND y + 1) from (values (list_value(1, 2, 3))) tbl(i);
+
+# nested lambda functions
+;
+select apply(i, x -> (map(x, y -> y + 1))) from (values (list_value(1, 2, 3))) tbl(i);
+
+# lambda cannot be the root of a plan
+;
+select x -> x + 1 from (values (list_value(1, 2, 3))) tbl(i);
+
+# lhs of lambda must be an unqualified column name
+;
+select apply(i, y + 1 -> x + 1) from (values (list_value(1, 2, 3))) tbl(i);
+
+;
+select apply(i, a.x -> x + 1) from (values (list_value(1, 2, 3))) tbl(i);

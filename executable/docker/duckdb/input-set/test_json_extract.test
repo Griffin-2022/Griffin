@@ -1,0 +1,253 @@
+# name: test/sql/json/test_json_extract.test
+# description: Test JSON typed extract
+# group: [json]
+
+require json
+
+;
+pragma enable_verification
+
+;
+select json_extract('{"my_field": {"my_nested_field": ["goose", "duck"]}}', '/my_field/my_nested_field/1')
+;
+"duck"
+
+;
+select json_extract_path('{"my_field": {"my_nested_field": ["goose", "duck"]}}', '/my_field/my_nested_field/1')
+;
+"duck"
+
+;
+select '{"my_field": {"my_nested_field": ["goose", "duck"]}}'::JSON->'/my_field/my_nested_field/1'
+;
+"duck"
+
+;
+select json_extract_string('{"my_field": {"my_nested_field": ["goose", "duck"]}}', '/my_field/my_nested_field/1')
+;
+duck
+
+;
+select json_extract_path_text('{"my_field": {"my_nested_field": ["goose", "duck"]}}', '/my_field/my_nested_field/1')
+;
+duck
+
+;
+select '{"my_field": {"my_nested_field": ["goose", "duck"]}}'::JSON->>'/my_field/my_nested_field/1'
+;
+duck
+
+;
+select json_extract('{"my_field": {"my_nested_field": ["goose", "duckduckduckduck"]}}', '/my_field/my_nested_field/1')
+;
+"duckduckduckduck"
+
+;
+select '{"my_field": {"my_nested_field": ["goose", "duckduckduckduck"]}}'::JSON->'/my_field/my_nested_field/1'
+;
+"duckduckduckduck"
+
+;
+select json_extract_string('{"my_field": {"my_nested_field": ["goose", "duckduckduckduck"]}}', '/my_field/my_nested_field/1')
+;
+duckduckduckduck
+
+;
+select '{"my_field": {"my_nested_field": ["goose", "duckduckduckduck"]}}'::JSON->>'/my_field/my_nested_field/1'
+;
+duckduckduckduck
+
+;
+select json_extract('[1, 2, 42]', 2)
+;
+42
+
+;
+select json_extract_string('[1, 2, 42]', 2)
+;
+42
+
+# chained
+;
+select '{"my_field": {"my_nested_field": ["goose", "duck"]}}'::JSON->'my_field'->'my_nested_field'->>1
+;
+duck
+
+# some sqlite tests
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$');
+;
+{"a":2,"c":[4,5,{"f":7}]}
+
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c');
+;
+[4,5,{"f":7}]
+
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2]');
+;
+{"f":7}
+
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2].f');
+;
+7
+
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.x');
+;
+NULL
+
+;
+SELECT json_extract('{"a":2,"c":[4,5],"f":7}', ['$.c','$.a']);
+;
+[[4,5], 2]
+
+;
+SELECT json_extract('{"a":2,"c":[4,5,{"f":7}]}', ['$.x', '$.a']);
+;
+[NULL, 2]
+
+;
+SELECT json_extract(NULL, ['$.x', '$.a']);
+;
+NULL
+
+;
+CREATE TABLE t1(j varchar);
+
+;
+INSERT INTO t1(j) VALUES('{"a":1,"b":[1,[2,3],4],"c":99}');
+
+;
+SELECT json_extract(j, '$.b[#]') FROM t1;
+;
+NULL
+
+;
+SELECT json_extract(j, '$.b[#-1]') FROM t1;
+;
+4
+
+;
+SELECT json_extract(j, '$.b[#-2]') FROM t1;
+;
+[2,3]
+
+;
+SELECT json_extract(j, '$.b[#-02]') FROM t1;
+;
+[2,3]
+
+;
+SELECT json_extract(j, '$.b[#-3]') FROM t1;
+;
+1
+
+;
+SELECT json_extract(j, '$.b[#-4]') FROM t1;
+;
+NULL
+
+;
+SELECT json_extract(j, '$.b[#-2][#-1]') FROM t1;
+;
+3
+
+;
+SELECT j::JSON->'$.b[#-2][#-1]' FROM t1;
+;
+3
+
+;
+SELECT json_extract(j, ['$.b[0]', '$.b[#-1]']) FROM t1;
+;
+[1, 4]
+
+;
+SELECT j::JSON->['$.b[0]', '$.b[#-1]'] FROM t1;
+;
+[1, 4]
+
+;
+SELECT json_extract(j, '$.a[#-1]') FROM t1;
+;
+NULL
+
+;
+SELECT json_extract(j, '$.b[#-000001]') FROM t1;
+;
+4
+
+;
+SELECT j::JSON->'$.b[#-000001]' FROM t1;
+;
+4
+
+;
+SELECT json_extract(j, '$.b[#-]') FROM t1;
+
+;
+SELECT json_extract(j, '$.b[#9]') FROM t1;
+
+;
+SELECT json_extract(j, '$.b[#+2]') FROM t1;
+
+;
+SELECT json_extract(j, '$.b[#-1') FROM t1;
+
+;
+SELECT json_extract(j, '$.b[#-1x]') FROM t1;
+
+;
+CREATE TABLE obj(x varchar);
+
+;
+INSERT INTO obj VALUES('{"a":1,"b":2}');
+
+;
+SELECT json_extract(x, '$.b') FROM obj;
+;
+2
+
+;
+SELECT json_extract(x, '$."b"') FROM obj;
+;
+2
+
+;
+CREATE TABLE t12(x varchar);
+
+;
+INSERT INTO t12(x) VALUES(
+'{"settings":
+    {"layer2":
+       {"hapax.legomenon":
+          {"forceDisplay":true,
+           "transliterate":true,
+           "add.footnote":true,
+           "summary.report":true},
+        "dis.legomenon":
+          {"forceDisplay":true,
+           "transliterate":false,
+           "add.footnote":false,
+           "summary.report":true},
+        "tris.legomenon":
+          {"forceDisplay":true,
+           "transliterate":false,
+           "add.footnote":false,
+           "summary.report":false}
+       }
+    }
+ }');
+
+;
+SELECT json_extract(x, '$.settings.layer2."tris.legomenon"."summary.report"') FROM t12;
+;
+false
+
+;
+SELECT x::JSON->'$.settings.layer2."tris.legomenon"."summary.report"' FROM t12;
+;
+false

@@ -1,0 +1,111 @@
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  
+	DROP TRANSFORM FOR foo LANGUAGE plperl;
+2022-08-01 22:28:30.566 UTC [63320] ERROR:  function priv_testfunc_nosuch(integer) does not exist
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  GRANT ALL PRIVILEGES ON FUNCTION priv_testfunc_nosuch(int) TO regress_priv_user4;
+2022-08-01 22:28:30.566 UTC [63320] ERROR:  ucchild(integer) is not a procedure
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  GRANT ALL PRIVILEGES ON PROCEDURE ucchild(int) TO regress_priv_user4;
+2022-08-01 22:28:30.566 UTC [63320] ERROR:  function priv_testfunc4(boolean) does not exist
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  GRANT EXECUTE ON FUNCTION priv_testfunc4(boolean) TO regress_priv_user3;
+2022-08-01 22:28:30.566 UTC [63320] ERROR:  ucview(integer) is a procedure at character 20
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  SELECT ucchild(5), ucview(5);
+2022-08-01 22:28:30.566 UTC [63320] ERROR:  ucview(integer) is a procedure at character 8
+2022-08-01 22:28:30.566 UTC [63320] STATEMENT:  SELECT ucview(x) FROM (VALUES (1), (2), (3)) _(x);
+2022-08-01 22:28:30.566 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.570 UTC [63320] ERROR:  cursor "_psql_cursor" does not exist
+2022-08-01 22:28:30.570 UTC [63320] STATEMENT:  FETCH FORWARD 1 FROM _psql_cursor
+	;
+2022-08-01 22:28:30.570 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.570 UTC [63320] ERROR:  DECLARE CURSOR can only be used in transaction blocks
+2022-08-01 22:28:30.570 UTC [63320] STATEMENT:  DECLARE _psql_cursor NO SCROLL CURSOR FOR
+	SELECT 3 as three, 4 as four 
+	;
+2022-08-01 22:28:30.571 UTC [63320] ERROR:  cursor "_psql_cursor" does not exist
+2022-08-01 22:28:30.571 UTC [63320] STATEMENT:  FETCH FORWARD 1 FROM _psql_cursor
+	;
+2022-08-01 22:28:30.576 UTC [63320] ERROR:  COMMIT AND CHAIN can only be used in transaction blocks
+2022-08-01 22:28:30.576 UTC [63320] STATEMENT:  COMMIT AND CHAIN;
+2022-08-01 22:28:30.576 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.612 UTC [63320] ERROR:  "payload" is not a table
+2022-08-01 22:28:30.612 UTC [63320] STATEMENT:  
+	
+	
+	-- clean up
+	DROP TABLE payload;
+2022-08-01 22:28:30.613 UTC [63320] ERROR:  column "f2" does not exist at character 47
+2022-08-01 22:28:30.613 UTC [63320] STATEMENT:  PREPARE p1 AS SELECT * FROM sqlsim1 WHERE ec0(f2);
+2022-08-01 22:28:30.614 UTC [63320] ERROR:  "f2" is not a table or materialized view
+2022-08-01 22:28:30.614 UTC [63320] STATEMENT:  CREATE INDEX CONCURRENTLY sqlsim6 ON f2 using gist (currentid) INCLUDE (ucchild,ucchild,ucchild);
+2022-08-01 22:28:30.622 UTC [63320] ERROR:  role "regress_alice" does not exist
+2022-08-01 22:28:30.622 UTC [63320] STATEMENT:  DROP ROLE regress_alice;
+2022-08-01 22:28:30.622 UTC [63320] ERROR:  "f2" is not a table or materialized view
+2022-08-01 22:28:30.622 UTC [63320] STATEMENT:  CREATE INDEX col ON f2 using gist (currentid) INCLUDE (ucview,ucview);
+2022-08-01 22:28:30.625 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.637 UTC [63320] ERROR:  INSERT has more expressions than target columns at character 47
+2022-08-01 22:28:30.637 UTC [63320] STATEMENT:  
+	
+	INSERT INTO uctest
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-01 22:28:30.639 UTC [63320] ERROR:  rule "ucview" for relation "uctest" does not exist
+2022-08-01 22:28:30.639 UTC [63320] STATEMENT:  drop rule ucview on uctest;
+2022-08-01 22:28:30.640 UTC [63320] ERROR:  DO ALSO rules are not supported for the COPY
+2022-08-01 22:28:30.640 UTC [63320] STATEMENT:  copy (insert into tab_int default values) to stdout;
+2022-08-01 22:28:30.640 UTC [63320] ERROR:  rule "int8alias2out" for relation "uctest" does not exist
+2022-08-01 22:28:30.640 UTC [63320] STATEMENT:  drop rule int8alias2out on uctest;
+2022-08-01 22:28:30.640 UTC [63320] ERROR:  COPY query must have a RETURNING clause
+2022-08-01 22:28:30.640 UTC [63320] STATEMENT:  copy (delete from uctest) to stdout;
+2022-08-01 22:28:30.641 UTC [63320] ERROR:  rule "currentid" for relation "tab_int" does not exist
+2022-08-01 22:28:30.641 UTC [63320] STATEMENT:  drop rule currentid on tab_int;
+2022-08-01 22:28:30.641 UTC [63320] ERROR:  INSERT has more expressions than target columns at character 35
+2022-08-01 22:28:30.641 UTC [63320] STATEMENT:  INSERT INTO uctest SELECT x, 2*x, 3*x, box(point(x,x+1),point(2*x,2*x+1)) FROM generate_series(1,10) AS x;
+2022-08-01 22:28:30.642 UTC [63320] ERROR:  column "payload" of relation "tab_int" does not exist
+2022-08-01 22:28:30.642 UTC [63320] STATEMENT:  ALTER TABLE tab_int ALTER payload TYPE bigint;
+2022-08-01 22:28:30.646 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.656 UTC [63320] ERROR:  column "tt1" is of type uuid but expression is of type integer at character 31
+2022-08-01 22:28:30.656 UTC [63320] STATEMENT:  
+	
+	INSERT INTO tab_int VALUES (13), (14);
+2022-08-01 22:28:30.656 UTC [63320] ERROR:  column "tt1" is of type uuid but expression is of type integer at character 31
+2022-08-01 22:28:30.656 UTC [63320] STATEMENT:  
+	
+	INSERT INTO tab_int VALUES (17), (18);
+2022-08-01 22:28:30.661 UTC [63320] ERROR:  relation "ec0" does not exist
+2022-08-01 22:28:30.661 UTC [63320] STATEMENT:  TRUNCATE ec0;
+2022-08-01 22:28:30.661 UTC [63320] ERROR:  relation "int8alias1lt" does not exist
+2022-08-01 22:28:30.661 UTC [63320] STATEMENT:  
+	CREATE TRIGGER int8alias1cmp BEFORE UPDATE ON int8alias1lt FOR EACH ROW EXECUTE PROCEDURE test_trigger();
+2022-08-01 22:28:30.661 UTC [63320] ERROR:  relation "int8alias1lt" does not exist
+2022-08-01 22:28:30.661 UTC [63320] STATEMENT:  
+	ALTER TABLE int8alias1lt DROP ec0;
+2022-08-01 22:28:30.661 UTC [63320] ERROR:  foreign-data wrapper "dummy" does not exist
+2022-08-01 22:28:30.661 UTC [63320] STATEMENT:  
+	CREATE SERVER s0 FOREIGN DATA WRAPPER dummy;
+2022-08-01 22:28:30.661 UTC [63320] ERROR:  server "s0" does not exist
+2022-08-01 22:28:30.661 UTC [63320] STATEMENT:  
+	DROP SERVER s0;
+2022-08-01 22:28:30.661 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.665 UTC [63320] ERROR:  function test_support_func(internal) does not exist
+2022-08-01 22:28:30.665 UTC [63320] STATEMENT:  
+	
+	-- With support function that knows it's int4eq, we get a different plan
+	ALTER FUNCTION tab_int(int, int) SUPPORT test_support_func;
+2022-08-01 22:28:30.665 UTC [63320] WARNING:  there is no transaction in progress
+2022-08-01 22:28:30.668 UTC [63320] WARNING:  there is already a transaction in progress
+2022-08-01 22:28:31.501 UTC [63320] WARNING:  there is already a transaction in progress
+2022-08-01 22:28:31.662 UTC [63320] PANIC:  could not write to file "pg_wal/xlogtemp.63320": No space left on device
+2022-08-01 22:28:31.662 UTC [63320] STATEMENT:  
+	
+	INSERT INTO tab_int
+	  SELECT (r%53), (r%59), 'foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+	  FROM generate_series(1,70000) r;
+2022-08-01 22:28:31.685 UTC [62831] LOG:  server process (PID 63320) was terminated by signal 6: Aborted
+2022-08-01 22:28:31.685 UTC [62831] LOG:  terminating any other active server processes
+2022-08-01 22:28:31.690 UTC [62831] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:28:31.702 UTC [64341] LOG:  database system was interrupted; last known up at 2022-08-01 22:28:19 UTC
+2022-08-01 22:28:31.702 UTC [64342] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:31.704 UTC [64345] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:31.706 UTC [64346] FATAL:  the database system is in recovery mode
+2022-08-01 22:28:31.711 UTC [62831] LOG:  received smart shutdown request
+2022-08-01 22:28:31.713 UTC [64341] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:28:31.714 UTC [64341] LOG:  redo starts at 0/2710EE0
+2022-08-01 22:28:31.718 UTC [62831] LOG:  abnormal database system shutdown

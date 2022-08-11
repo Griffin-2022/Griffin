@@ -1,0 +1,122 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000092,sig:06,src:008324+006816,time:6347828,execs:700837,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL-trace: ;
+PRAGMA sql_trace=on;
+SQL-trace: PRAGMA writable_schema = 1;
+SQL-trace: ;
+CREATE TABLE t1(x integer primary key, y str unique);
+SQL-trace: ;
+SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: CREATE TABLE t2(i1y, a, b);
+SQL-trace: ;
+PRAGMA auto_vacuum = 1;
+SQL-trace: ;
+VACUUM;
+SQL-trace: ATTACH '' AS vacuum_db;
+SQL-trace: PRAGMA vacuum_db.synchronous=OFF
+SQL-trace: BEGIN;
+SQL-trace: SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14)   FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: CREATE TABLE vacuum_db.t1(x integer primary key, y str unique)
+SQL-trace: CREATE TABLE vacuum_db.t2(i1y, a, b)
+SQL-trace: SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14)  FROM sqlite_master WHERE sql LIKE 'CREATE INDEX %' 
+SQL-trace: SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21)   FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';'FROM main.sqlite_master WHERE type = 'table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: INSERT INTO vacuum_db.'t1' SELECT * FROM main.'t1';
+SQL-trace: INSERT INTO vacuum_db.'t2' SELECT * FROM main.'t2';
+SQL-trace: SELECT 'DELETE FROM vacuum_db.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name='sqlite_sequence' 
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name=='sqlite_sequence';
+SQL-trace: INSERT INTO vacuum_db.sqlite_master   SELECT type, name, tbl_name, rootpage, sql    FROM main.sqlite_master   WHERE type='view' OR type='trigger'      OR (type='table' AND rootpage=0)
+SQL-trace: ;
+PRAGMA auto_vacuum = 1;
+SQL-trace: ;
+CREATE TABLE sqlsim0(sqlsim1 PRIMARY KEY, sqlsim2 UNIQUE);
+SQL-trace: ;
+CREATE TEMP TABLE sqlsim3(sqlsim4, sqlsim5, t4);
+SQL-trace: ;
+PRAGMA count_changes = 1;
+SQL-trace: ATTACH 'test.db' as db12;
+SQL-trace: ;;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='sqlsim0' AND type!='trigger' ORDER BY rowid;
+SQL-trace: ;
+PRAGMA freelist_count;
+SQL-trace: ;
+ANALYZE;
+SQL-trace: SELECT tbl,idx,stat FROM 'main'.sqlite_stat1
+SQL-trace: SELECT tbl,idx,stat FROM 'db12'.sqlite_stat1
+SQL-trace: ;
+VACUUM;
+SQL-trace: ATTACH '' AS vacuum_db;
+SQL-trace: PRAGMA vacuum_db.synchronous=OFF
+SQL-trace: BEGIN;
+SQL-trace: SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14)   FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: CREATE TABLE vacuum_db.t1(x integer primary key, y str unique)
+SQL-trace: CREATE TABLE vacuum_db.t2(i1y, a, b)
+SQL-trace: CREATE TABLE vacuum_db.sqlsim0(sqlsim1 PRIMARY KEY, sqlsim2 UNIQUE)
+SQL-trace: CREATE TABLE vacuum_db.sqlite_stat1(tbl,idx,stat)
+SQL-trace: SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14)  FROM sqlite_master WHERE sql LIKE 'CREATE INDEX %' 
+SQL-trace: SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21)   FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';'FROM main.sqlite_master WHERE type = 'table' AND name!='sqlite_sequence'   AND coalesce(rootpage,1)>0
+SQL-trace: INSERT INTO vacuum_db.'t1' SELECT * FROM main.'t1';
+SQL-trace: INSERT INTO vacuum_db.'t2' SELECT * FROM main.'t2';
+SQL-trace: INSERT INTO vacuum_db.'sqlsim0' SELECT * FROM main.'sqlsim0';
+SQL-trace: INSERT INTO vacuum_db.'sqlite_stat1' SELECT * FROM main.'sqlite_stat1';
+SQL-trace: SELECT 'DELETE FROM vacuum_db.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name='sqlite_sequence' 
+SQL-trace: SELECT 'INSERT INTO vacuum_db.' || quote(name) || ' SELECT * FROM main.' || quote(name) || ';' FROM vacuum_db.sqlite_master WHERE name=='sqlite_sequence';
+SQL-trace: INSERT INTO vacuum_db.sqlite_master   SELECT type, name, tbl_name, rootpage, sql    FROM main.sqlite_master   WHERE type='view' OR type='trigger'      OR (type='table' AND rootpage=0)
+SQL-trace: ;
+PRAGMA journal_mode = off;
+SQL-trace: ;
+PRAGMA freelist_count;
+SQL-trace: ;
+PRAGMA main.page_count;
+SQL-trace: PRAGMA page_size = 1024;
+SQL-trace: CREATE TABLE m(n);
+SQL-trace: BEGIN EXCLUSIVE;
+SQL-trace: ;
+PRAGMA page_size;
+SQL-trace: ;
+CREATE TABLE t5(o,p,t);
+SQL-trace: SELECT cor0.* FROM t5 NATURAL JOIN t5 AS cor0;
+SQL-trace: 
+      ;select x from t1 order by rowid
+      ;
+SQL-trace: ;
+PRAGMA temp.page_size;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: ;
+SELECT * FROM sqlsim0;
+SQL-trace: PRAGMA page_size ;
+SQL-trace: ;
+PRAGMA journal_mode = WAL;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: VALUES('y');
+SQL-trace: ;
+SELECT name, rootpage, sql FROM 'main'.sqlite_master WHERE tbl_name='sqlsim0' AND type!='trigger' ORDER BY rowid;
+SQL-trace: SELECT 1 FROM sqlite_master ;
+SQL-trace: VACUUM 
+;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: SELECT randomblob($pgsz);
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT name, rootpage, sql FROM "main".sqlite_master ORDER BY rowid;
+SQL-trace: SELECT randomblob($pgsz);
+[Inferior 1 (process 119424) exited normally]
+(gdb) (gdb) quit

@@ -1,0 +1,29 @@
+# name: test/sql/substrait/test_substrait_topn.test
+# description: Test get_substrait with top-n queries
+# group: [substrait]
+
+require substrait
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE test (i integer,j VARCHAR, k varchar );
+
+;
+insert into test values (10,'a','a'), (20,'a','b');
+
+;
+CALL get_substrait('select k,i from test order by k limit 1')
+
+;
+CALL get_substrait('select k,i from test order by i limit 1')
+
+;
+CALL get_substrait('select k from test order by i limit 1')
+
+;
+CALL get_substrait('select k,i from test order by j limit 1')
+
+;
+CALL get_substrait('select j,i from test where k < ''f'' order by i limit 1')

@@ -1,0 +1,111 @@
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  create index d4_primary on t(id desc);
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  insert into t values(15), (16);
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  create temp table d4_primary_pkey (a int, d4_primary1 int, d4_primary1_pkey int, primary key (a, d4_primary1));
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  SELECT covar_pop(1::float8,'inf'::float8), covar_samp(3::float8,'inf'::float8);
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  create or replace view agg_view1 as
+	  select aggfns(distinct d4_primary_pkey,b,c)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(d4_primary_pkey,b,c),
+	         generate_series(1,3) i;
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  cursor "c" does not exist
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  FETCH BACKWARD FROM c;
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  cursor "c" does not exist
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  FETCH NEXT FROM c;
+2022-08-02 03:57:37.502 UTC [12292] WARNING:  there is no transaction in progress
+2022-08-02 03:57:37.502 UTC [12292] WARNING:  there is no transaction in progress
+2022-08-02 03:57:37.502 UTC [12292] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  relation "d4_primary2" does not exist
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  create temp table sqlsim25 partition of d4_primary2 for values in(1);
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  table "sqlsim6" does not exist
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  drop table sqlsim6, sqlsim15;
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  function aggfns(integer, integer, text) does not exist at character 35
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  create view agg_view1 as
+	  select aggfns(d4_primary,b,c)
+	    from (values (1,3,'foo'),(0,null,null),(2,2,'bar'),(3,1,'baz')) v(d4_primary,b,c);
+2022-08-02 03:57:37.502 UTC [12292] ERROR:  cursor "c" does not exist
+2022-08-02 03:57:37.502 UTC [12292] STATEMENT:  FETCH NEXT FROM c;
+2022-08-02 03:57:37.502 UTC [12292] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 03:57:37.503 UTC [12292] WARNING:  there is no transaction in progress
+2022-08-02 03:57:37.503 UTC [12292] WARNING:  SET LOCAL can only be used in transaction blocks
+2022-08-02 03:57:37.503 UTC [12292] ERROR:  relation "t" does not exist at character 150
+2022-08-02 03:57:37.503 UTC [12292] STATEMENT:  SELECT id, count(distinct bank_account_pkey.id), count(distinct bank_account_pkey.id), count(distinct b.id), count(distinct b.id), count(*)
+	    FROM t bank_account_pkey
+	        JOIN t b USING(id)
+	    GROUP BY 1
+	    HAVING count(*) > 1
+	    ORDER BY 2 DESC, 1 DESC, 3 DESC, 4 DESC, 5 DESC, 6 DESC
+	    LIMIT 10
+	;
+2022-08-02 03:57:37.503 UTC [12292] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 03:57:37.503 UTC [12292] STATEMENT:  RESET SESSION AUTHORIZATION;
+=================================================================
+==12292==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd43617c30 sp 0x7ffd43617c28
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f0e73961082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==12292==ABORTING
+2022-08-02 03:57:37.579 UTC [11519] LOG:  server process (PID 12292) was terminated by signal 6: Aborted
+2022-08-02 03:57:37.579 UTC [11519] LOG:  terminating any other active server processes
+2022-08-02 03:57:37.584 UTC [16019] FATAL:  the database system is in recovery mode
+2022-08-02 03:57:37.587 UTC [16022] FATAL:  the database system is in recovery mode
+2022-08-02 03:57:37.591 UTC [11519] LOG:  all server processes terminated; reinitializing
+2022-08-02 03:57:37.606 UTC [16025] LOG:  database system was interrupted; last known up at 2022-08-02 03:57:32 UTC
+2022-08-02 03:57:37.607 UTC [16026] FATAL:  the database system is in recovery mode
+2022-08-02 03:57:37.612 UTC [11519] LOG:  received smart shutdown request
+2022-08-02 03:57:37.622 UTC [16025] LOG:  recovered replication state of node 2 to 0/0
+2022-08-02 03:57:37.622 UTC [16025] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 03:57:37.623 UTC [16025] LOG:  redo starts at 0/7204B58

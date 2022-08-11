@@ -1,0 +1,273 @@
+# name: test/sql/function/string/test_levenshtein.test
+# description: Test levenshtein function
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+
+# normal queries
+;
+SELECT levenshtein('hallo', 'hallo')
+;
+0
+
+;
+SELECT levenshtein('hallo', 'hello')
+;
+1
+
+;
+SELECT levenshtein('hello', 'hallo')
+;
+1
+
+;
+SELECT levenshtein('lawn', 'flaw')
+;
+2
+
+;
+SELECT levenshtein('flaw', 'lawn')
+;
+2
+
+;
+SELECT levenshtein('kitten', 'sitting')
+;
+3
+
+;
+SELECT levenshtein('sitting', 'kitten')
+;
+3
+
+;
+SELECT levenshtein('hallo', 'hoi')
+;
+4
+
+;
+SELECT levenshtein('hoi', 'hallo')
+;
+4
+
+;
+SELECT levenshtein(NULL, 'hi')
+;
+NULL
+
+;
+SELECT levenshtein('hi', NULL)
+;
+NULL
+
+;
+SELECT levenshtein(NULL, NULL)
+;
+NULL
+
+;
+SELECT mismatches('', NULL) 
+
+;
+SELECT mismatches(NULL, '') 
+
+
+# incorrect usage
+;
+SELECT mismatches('', 'hi') 
+
+;
+SELECT mismatches('hi', '') 
+
+;
+SELECT mismatches('', '') 
+
+
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('hello'), ('hallo'), ('aloha'), ('fello'), ('fellow'), ('ducks')
+
+;
+SELECT levenshtein(s, 'hallo') FROM strings ORDER BY s
+;
+4
+5
+2
+3
+0
+1
+
+;
+SELECT levenshtein('hallo', s) FROM strings ORDER BY s
+;
+4
+5
+2
+3
+0
+1
+
+;
+SELECT levenshtein(NULL, s) FROM strings 
+;
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT levenshtein(NULL, s) FROM strings 
+;
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+
+;
+SELECT mismatches('', s) FROM strings
+
+;
+SELECT mismatches(s, '')  FROM strings
+
+
+;
+DROP TABLE strings
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES (NULL)
+
+;
+SELECT levenshtein(s, NULL) from strings
+;
+NULL
+
+;
+SELECT levenshtein(NULL, s) from strings
+;
+NULL
+
+;
+SELECT levenshtein('hi', s) from strings
+;
+NULL
+
+;
+SELECT levenshtein(s, 'hi') from strings
+;
+NULL
+
+;
+SELECT mismatches('', s)  FROM strings
+;
+NULL
+
+;
+SELECT mismatches(s, '')  FROM strings
+;
+NULL
+
+
+;
+DROP TABLE strings
+
+;
+CREATE TABLE strings(s VARCHAR)
+
+;
+INSERT INTO strings VALUES ('')
+
+;
+SELECT mismatches(NULL, s)  FROM strings
+;
+NULL
+
+;
+SELECT mismatches(s, NULL)  FROM strings
+;
+NULL
+
+;
+SELECT mismatches(s, '')  FROM strings
+
+;
+SELECT mismatches('', s)  FROM strings
+
+;
+SELECT mismatches(s, 'hi')  FROM strings
+
+;
+SELECT mismatches('hi', s)  FROM strings
+
+
+
+# editdist3
+;
+SELECT editdist3('hallo', 'hello')
+;
+1
+
+;
+SELECT editdist3(s, 'hello') FROM strings
+
+
+# Comparing fields from two columns row wise
+
+;
+DROP TABLE strings
+
+;
+CREATE TABLE strings(s VARCHAR, t VARCHAR)
+
+;
+INSERT INTO strings VALUES 	('hello', 'hello'), ('hello', 'hallo'), ('flaw', 'lawn'),
+							('sitting', 'kitten'), ('hallo', 'aloha'), ('hello', 'aloha'), 
+							(NULL, NULL), ('', ''), 
+							(NULL, 'bora'), ('bora', NULL), 
+							('hi', ''), ('', 'hi'), 
+							(NULL, ''), ('', NULL)
+
+
+;
+SELECT levenshtein(s, t) ld FROM strings WHERE length(s) > 1 AND length(t) > 0 AND s is not NULL and t is not NULL
+;
+0
+1
+2
+3
+4
+5
+
+# NULL inserts result in empty string
+
+;
+SELECT levenshtein(s, t)  FROM strings
+
+;
+SELECT s, t, levenshtein(s, t) ld FROM strings WHERE length(s) > 1 AND s is not NULL and t is not NULL
+
+;
+SELECT levenshtein(s, t)  FROM strings WHERE length(s) < 1
+
+;
+SELECT levenshtein(t, s)  FROM strings WHERE length(s) < 1
+
+;
+SELECT levenshtein(s, t)  FROM strings WHERE length(t) < 1
+
+;
+SELECT levenshtein(t, s)  FROM strings WHERE length(t) < 1
+
+;
+SELECT levenshtein(s, t)  FROM strings WHERE rowid > 5

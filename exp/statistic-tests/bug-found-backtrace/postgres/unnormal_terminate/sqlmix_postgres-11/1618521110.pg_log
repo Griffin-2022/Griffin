@@ -1,0 +1,111 @@
+	
+	CREATE FUNCTION mylt (text, text) RETURNS boolean LANGUAGE sql
+	    AS $$ select $1 < $2 $$;
+2022-08-02 04:15:44.003 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.003 UTC [46641] STATEMENT:  
+	
+	CREATE FUNCTION mylt_noninline (text, text) RETURNS boolean LANGUAGE sql
+	    AS $$ select $1 < $2 limit 1 $$;
+2022-08-02 04:15:44.003 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.003 UTC [46641] STATEMENT:  
+	
+	
+	-- collation override in plpgsql
+	
+	CREATE FUNCTION mylt2 (x text, y text) RETURNS boolean LANGUAGE plpgsql AS $$
+	declare
+	  xx text := x;
+	  yy text := y;
+	begin
+	  return xx < yy;
+	end
+	$$;
+2022-08-02 04:15:44.003 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.003 UTC [46641] STATEMENT:  
+	
+	CREATE OR REPLACE FUNCTION
+	  mylt2 (x text, y text) RETURNS boolean LANGUAGE plpgsql AS $$
+	declare
+	  xx text COLLATE "POSIX" := x;
+	  yy text := y;
+	begin
+	  return xx < yy;
+	end
+	$$;
+2022-08-02 04:15:44.003 UTC [46641] ERROR:  could not find pg_class tuple for index 2662 at character 50
+2022-08-02 04:15:44.003 UTC [46641] STATEMENT:   -- conflicting collations
+	SELECT mylt2('a', 'B' collate "POSIX") as f;
+2022-08-02 04:15:44.003 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.003 UTC [46641] STATEMENT:  
+	
+	-- We need to do this this way to cope with varying names for encodings:
+	do $$
+	BEGIN
+	  EXECUTE 'CREATE COLLATION test0 (locale = ' ||
+	          quote_literal(current_setting('lc_collate')) || ');';
+	END
+	$$;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:   -- ok, skipped
+	do $$
+	BEGIN
+	  EXECUTE 'CREATE COLLATION test1 (lc_collate = ' ||
+	          quote_literal(current_setting('lc_collate')) ||
+	          ', lc_ctype = ' ||
+	          quote_literal(current_setting('lc_ctype')) || ');';
+	END
+	$$;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:   -- fail
+	
+	CREATE COLLATION test4 FROM nonsense;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:   -- fail
+	DROP COLLATION IF EXISTS test0;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	
+	DROP SCHEMA test_schema;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	DROP ROLE regress_test_role;
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	CREATE TYPE var_record AS (x int, y text COLLATE test0);
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662 at character 15
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	CREATE TABLE int_nn (var_record_nn int, var_record_colnn text);
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	
+	
+	-- nondeterministic collations
+	-- (not supported with libc provider)
+	
+	CREATE COLLATION ctest_det (locale = 'en_US.utf8', deterministic = true);
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  
+	CREATE COLLATION ctest_nondet (locale = 'en_US.utf8', deterministic = false);
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  RESET SESSION AUTHORIZATION;
+2022-08-02 04:15:44.004 UTC [46641] WARNING:  there is no transaction in progress
+2022-08-02 04:15:44.004 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.004 UTC [46641] STATEMENT:  DISCARD ALL;
+2022-08-02 04:15:44.005 UTC [46641] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 04:15:44.005 UTC [46641] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 04:15:44.005 UTC [46641] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 04:15:44.005 UTC [46641] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 04:15:45.184 UTC [58640] PANIC:  could not open critical system index 2662
+2022-08-02 04:15:45.186 UTC [46014] LOG:  server process (PID 58640) was terminated by signal 6: Aborted
+2022-08-02 04:15:45.186 UTC [46014] LOG:  terminating any other active server processes
+2022-08-02 04:15:45.227 UTC [46014] LOG:  all server processes terminated; reinitializing
+2022-08-02 04:15:45.238 UTC [58647] LOG:  database system was interrupted; last known up at 2022-08-02 04:14:33 UTC
+2022-08-02 04:15:45.238 UTC [58648] FATAL:  the database system is in recovery mode
+2022-08-02 04:15:45.240 UTC [58651] FATAL:  the database system is in recovery mode
+2022-08-02 04:15:45.242 UTC [58652] FATAL:  the database system is in recovery mode
+2022-08-02 04:15:45.247 UTC [46014] LOG:  received smart shutdown request
+2022-08-02 04:15:45.250 UTC [58647] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 04:15:45.251 UTC [58647] LOG:  redo starts at 0/2F11928
+2022-08-02 04:15:45.255 UTC [46014] LOG:  abnormal database system shutdown

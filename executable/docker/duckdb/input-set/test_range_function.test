@@ -1,0 +1,204 @@
+# name: test/sql/table_function/test_range_function.test
+# description: Test range functions
+# group: [table_function]
+
+;
+SELECT * FROM range(0, 10, 1)
+;
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+# generate_series is similar to range, but has inclusive bounds (for postgres compatibility)
+;
+SELECT * FROM generate_series(0, 10, 1)
+;
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+;
+SELECT * FROM range(10, 0, -1) ORDER BY 1 ASC
+;
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+;
+SELECT * FROM generate_series(10, 0, -1) ORDER BY 1 ASC
+;
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+;
+SELECT * FROM range(0, -5, -1)
+;
+0
+-1
+-2
+-3
+-4
+
+;
+SELECT * FROM range(0, 10, 0)
+
+;
+SELECT * FROM range(0, 10, -1)
+
+;
+SELECT * FROM range(10, 0, 1)
+
+# overloads
+# only one parameter defaults to start=0, interval=1
+;
+SELECT * FROM range(10)
+;
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+# two parameters defaults to interval=1
+;
+SELECT * FROM range(0, 10)
+;
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+;
+SELECT EXISTS(SELECT * FROM range(10))
+;
+1
+
+;
+SELECT EXISTS(SELECT * FROM range(0))
+;
+0
+
+;
+SELECT * FROM range(10) t1(j) WHERE j=3
+;
+3
+
+;
+SELECT * FROM range('hello')
+
+;
+SELECT * FROM range(10, 'hello')
+
+;
+SELECT * FROM range(10, 10, 'hello')
+
+# range with big numbers
+;
+select * from generate_series(-2305843009213693951, 2305843009213693951, 2305843009213693951)
+;
+-2305843009213693951
+0
+2305843009213693951
+
+;
+select * from generate_series(2305843009213693951, -2305843009213693951, -2305843009213693951)
+;
+2305843009213693951
+0
+-2305843009213693951
+
+;
+select * from generate_series(0, 10, 9223372036854775807);
+;
+0
+
+;
+select * from generate_series(0, 9223372036854775807, 9223372036854775807);
+;
+0
+9223372036854775807
+
+;
+select * from generate_series(0, -9223372036854775807, -9223372036854775807);
+;
+0
+-9223372036854775807
+
+;
+select * from generate_series(-9223372036854775808, 9223372036854775807, 9223372036854775807);
+;
+-9223372036854775808
+-1
+9223372036854775806
+
+;
+select * from generate_series(-9223372036854775807, -9223372036854775808, -1);
+;
+-9223372036854775807
+-9223372036854775808
+
+;
+select * from generate_series(-9223372036854775808, 9223372036854775807, 9223372036854775807);
+;
+-9223372036854775808
+-1
+9223372036854775806
+
+;
+select * from generate_series(0, -9223372036854775808, -9223372036854775808);
+;
+0
+-9223372036854775808
+
+;
+select * from generate_series(0, 9223372036854775807, 9223372036854775807);
+;
+0
+9223372036854775807
+
+;
+select * from generate_series(0, 10, 9223372036854775807);
+;
+0

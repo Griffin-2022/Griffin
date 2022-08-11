@@ -1,0 +1,79 @@
+# name: test/sql/types/list/list_updates.test
+# description: Test updates on lists with in-memory storage
+# group: [list]
+
+;
+CREATE TABLE a(id INTEGER, b INTEGER[]);
+
+;
+INSERT INTO a VALUES (0, [1, 2]), (1, NULL), (2, [3, 4, 5, 6]), (3, [NULL, 7]);
+
+;
+SELECT * FROM a ORDER BY id
+;
+0	[1, 2]
+1	NULL
+2	[3, 4, 5, 6]
+3	[NULL, 7]
+
+# deletions
+;
+DELETE FROM a WHERE b[1]=1
+;
+1
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	NULL
+2	[3, 4, 5, 6]
+3	[NULL, 7]
+
+# updates
+;
+UPDATE a SET b=[7, 8, 9] WHERE b IS NULL
+;
+1
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	[7, 8, 9]
+2	[3, 4, 5, 6]
+3	[NULL, 7]
+
+;
+UPDATE a SET b=NULL WHERE id>=2
+;
+2
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	[7, 8, 9]
+2	NULL
+3	NULL
+
+;
+UPDATE a SET b=[NULL] WHERE id=2
+;
+1
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	[7, 8, 9]
+2	[NULL]
+3	NULL
+
+;
+UPDATE a SET b=NULL
+;
+3
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	NULL
+2	NULL
+3	NULL

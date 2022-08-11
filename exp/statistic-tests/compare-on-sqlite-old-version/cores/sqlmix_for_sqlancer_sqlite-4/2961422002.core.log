@@ -1,0 +1,52 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000362,sig:11,src:019566+021860,time:11098527,execs:2877613,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+__strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+(gdb) #0  __strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:102
+#1  0x000000000034a642 in sqlite3ExprCodeTarget (pParse=0x24f8ab0, pExpr=0x24e6360, target=8) at sqlite3.c:100443
+#2  0x000000000034e9ee in sqlite3ExprCodeExprList (pParse=0x24f8ab0, pList=0x24e5eb0, target=8, srcReg=0, flags=1 '\001') at sqlite3.c:101202
+#3  0x00000000003ae220 in pushOntoSorter (pParse=0x24f8ab0, pSort=0x7ffcfe2c6d48, pSelect=0x24e6810, regData=9, regOrigData=0, nData=1, nPrefixReg=1) at sqlite3.c:125256
+#4  0x00000000003a9edf in selectInnerLoop (pParse=0x24f8ab0, p=0x24e6810, srcTab=-1, pSort=0x7ffcfe2c6d48, pDistinct=0x7ffcfe2c6e00, pDest=0x7ffcfe2c6ee8, iContinue=-4, iBreak=-2) at sqlite3.c:125809
+#5  0x00000000002fe191 in sqlite3Select (pParse=0x24f8ab0, p=0x24e6810, pDest=0x7ffcfe2c6ee8) at sqlite3.c:130743
+#6  0x00000000002fd24a in sqlite3Select (pParse=0x24f8ab0, p=0x24e9ba0, pDest=0x7ffcfe2c7208) at sqlite3.c:130524
+#7  0x0000000000309aa3 in sqlite3Insert (pParse=0x24f8ab0, pTabList=0x24ea9b0, pSelect=0x24e9ba0, pColumn=0x0, onError=11, pUpsert=0x0) at sqlite3.c:117162
+#8  0x00000000003949b6 in codeTriggerProgram (pParse=0x24f8ab0, pStepList=0x2501b00, orconf=11) at sqlite3.c:132245
+#9  0x0000000000394209 in codeRowTrigger (pParse=0x7ffcfe2c8400, pTrigger=0x2502240, pTab=0x25014f0, orconf=11) at sqlite3.c:132398
+#10 0x000000000039393d in getRowTrigger (pParse=0x7ffcfe2c8400, pTrigger=0x2502240, pTab=0x25014f0, orconf=11) at sqlite3.c:132455
+#11 0x0000000000393453 in sqlite3CodeRowTriggerDirect (pParse=0x7ffcfe2c8400, p=0x2502240, pTab=0x25014f0, reg=50, orconf=11, ignoreJump=-1) at sqlite3.c:132477
+#12 0x0000000000363845 in sqlite3CodeRowTrigger (pParse=0x7ffcfe2c8400, pTrigger=0x2502240, op=120, pChanges=0x0, tr_tm=1, pTab=0x25014f0, reg=50, orconf=11, ignoreJump=-1) at sqlite3.c:132571
+#13 0x000000000030ad90 in sqlite3Insert (pParse=0x7ffcfe2c8400, pTabList=0x24f1a30, pSelect=0x24ecf30, pColumn=0x24f0770, onError=11, pUpsert=0x0) at sqlite3.c:117389
+#14 0x00000000002ee6c8 in yy_reduce (yypParser=0x7ffcfe2c7a20, yyruleno=150, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffcfe2c8400) at sqlite3.c:151937
+#15 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffcfe2c7a20, yymajor=1, yyminor=...) at sqlite3.c:152877
+#16 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffcfe2c8400, zSql=0x24fed52 ";;INSERT OR IGNORE INTO bbb(aa) VALUES (0.1),(FALSE);;REINDEX;", pzErrMsg=0x7ffcfe2c85e0) at sqlite3.c:154013
+#17 0x00000000002a1683 in sqlite3Prepare (db=0x24df320, zSql=0x24e026e ";INSERT INTO t1(b,b) VALUES('0.0','1'),('1.0','1');;INSERT OR IGNORE INTO bbb(aa) VALUES (0.1),(FALSE);;REINDEX;", nBytes=112, prepFlags=128, 
+    pReprepare=0x0, ppStmt=0x7ffcfe2c8718, pzTail=0x7ffcfe2c8700) at sqlite3.c:124303
+#18 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x24df320, zSql=0x24e026e ";INSERT INTO t1(b,b) VALUES('0.0','1'),('1.0','1');;INSERT OR IGNORE INTO bbb(aa) VALUES (0.1),(FALSE);;REINDEX;", nBytes=112, prepFlags=128, 
+    pOld=0x0, ppStmt=0x7ffcfe2c8718, pzTail=0x7ffcfe2c8700) at sqlite3.c:124403
+#19 0x000000000029247f in sqlite3_prepare_v2 (db=0x24df320, zSql=0x24e026e ";INSERT INTO t1(b,b) VALUES('0.0','1'),('1.0','1');;INSERT OR IGNORE INTO bbb(aa) VALUES (0.1),(FALSE);;REINDEX;", nBytes=112, 
+    ppStmt=0x7ffcfe2c8718, pzTail=0x7ffcfe2c8700) at sqlite3.c:124487
+#20 0x0000000000256bd0 in main (argc=1, argv=0x7ffcfe2c88c8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 53347] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

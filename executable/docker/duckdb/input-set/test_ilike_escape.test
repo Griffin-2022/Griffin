@@ -1,0 +1,78 @@
+# name: test/sql/function/string/test_ilike_escape.test
+# description: Test ILIKE statement with ESCAPE
+# group: [string]
+
+;
+PRAGMA enable_verification
+
+# scalar ilike
+;
+select 'a%c' ilike 'a$%C' escape '$';
+;
+true
+
+;
+select 'A%C' ilike 'a$%c' escape '$';
+;
+true
+
+;
+select 'a%c' ilike 'a$%C' escape '/';
+;
+false
+
+# nulls as parameter
+;
+select NULL ilike 'a$%C' escape '/';
+;
+NULL
+
+;
+select 'a%c' ilike NULL escape '$';
+;
+NULL
+
+;
+select 'a%c' ilike 'a$%C' escape NULL;
+;
+NULL
+
+# non-scalar ilike
+;
+CREATE TABLE tbl(str VARCHAR, pat VARCHAR);
+
+;
+INSERT INTO tbl VALUES ('a%c', 'a$%C');
+
+;
+SELECT str ILIKE pat ESCAPE '$' FROM tbl
+;
+true
+
+;
+SELECT str NOT ILIKE pat ESCAPE '$' FROM tbl
+;
+false
+
+;
+SELECT NULL ILIKE pat ESCAPE '$' FROM tbl
+;
+NULL
+
+;
+SELECT str ILIKE NULL ESCAPE '$' FROM tbl
+;
+NULL
+
+;
+SELECT str ILIKE pat ESCAPE NULL FROM tbl
+;
+NULL
+
+# multi-byte escape not supported
+;
+select 'a%c' ilike 'a$%C' escape '///';
+
+# escape must be a constant
+;
+SELECT str ILIKE pat ESCAPE str FROM tbl

@@ -1,0 +1,23 @@
+# name: test/sql/subquery/any_all/issue_2999.test
+# description: Issue #2999: Correlated group on ANY subquery
+# group: [any_all]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE t0 (c0 INT);
+
+;
+CREATE TABLE t1 (c0 INT);
+
+;
+INSERT INTO t0 VALUES (1);
+
+;
+INSERT INTO t1 VALUES (1);
+
+;
+SELECT 1 = ANY(SELECT 1 FROM t1 JOIN (SELECT count(*) GROUP BY t0.c0) AS x(x) ON TRUE) FROM t0;
+;
+true

@@ -1,0 +1,43 @@
+# name: test/sql/select/test_positional_reference.test
+# description: Positional reference
+# group: [select]
+
+;
+PRAGMA enable_verification
+
+;
+SELECT #1 FROM range(1)
+;
+0
+
+# multiple tables
+;
+SELECT #1+#2 FROM range(1) tbl, range(1) tbl2
+;
+0
+
+# subqueries
+;
+SELECT #1 FROM (SELECT * FROM range(1)) tbl
+;
+0
+
+# positional references only consider the inner-most table
+;
+select (select #1) from range(1);
+
+# out of range
+;
+SELECT #2 FROM range(1)
+
+# no from clause
+;
+SELECT #1
+
+# zero always fails
+;
+SELECT #0 FROM range(1)
+
+# as do negative numbers
+;
+SELECT #-1 FROM range(1)

@@ -1,0 +1,109 @@
+	FROM pg_type AS p1, pg_proc AS p2
+	WHERE p1.typmodout = p2.oid AND p2.provolatile NOT IN ('i', 's');
+2022-08-02 03:30:23.973 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 471
+2022-08-02 03:30:23.973 UTC [55444] STATEMENT:  SELECT pol.polname, pol.polpermissive,
+	  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+	  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+	  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+	  CASE pol.polcmd
+	    WHEN 'r' THEN 'SELECT'
+	    WHEN 'a' THEN 'INSERT'
+	    WHEN 'w' THEN 'UPDATE'
+	    WHEN 'd' THEN 'DELETE'
+	    END AS cmd
+	FROM pg_catalog.pg_policy pol
+	WHERE pol.polrelid = '27746' ORDER BY 1;
+2022-08-02 03:30:23.973 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 439
+2022-08-02 03:30:23.973 UTC [55444] STATEMENT:  SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+	, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+	FROM pg_catalog.pg_class c
+	 LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+	LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+	WHERE c.oid = '27743';
+2022-08-02 03:30:23.973 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 45
+2022-08-02 03:30:23.973 UTC [55444] STATEMENT:  SELECT c.oid,
+	  n.nspname,
+	  c.relname
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relname OPERATOR(pg_catalog.~) '^(psql_serial_tab_id_seq)$' COLLATE pg_catalog.default
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY 2, 3;
+2022-08-02 03:30:23.973 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 275
+2022-08-02 03:30:23.973 UTC [55444] STATEMENT:  SELECT pg_catalog.format_type(seqtypid, NULL) AS "Type",
+	       seqstart AS "Start",
+	       seqmin AS "Minimum",
+	       seqmax AS "Maximum",
+	       seqincrement AS "Increment",
+	       CASE WHEN seqcycle THEN 'yes' ELSE 'no' END AS "Cycles?",
+	       seqcache AS "Cache"
+	FROM pg_catalog.pg_sequence
+	WHERE seqrelid = '27710';
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  prepared statement "q" does not exist
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  execute q;
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  prepared statement "q" does not exist
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  execute q;
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  do $$
+	begin
+	  raise notice 'foo';
+	  raise exception 'bar';
+	end $$;
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 54
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  SELECT pc.oid, pc.relname, pa.amname, pa.amtype
+	FROM pg_class as pc JOIN pg_am AS pa ON (pc.relam = pa.oid)
+	WHERE pc.relkind IN ('r', 't', 'm') and
+	    pa.amtype != 't';
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  set role to regress_partitioning_role;
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 14
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  create table mydomainrange(restrictedmultirange date);
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 73
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  SELECT p1.rngtypid, p1.rngsubtype, p1.rngcollation, t.typcollation
+	FROM pg_range p1 JOIN pg_type t ON t.oid = p1.rngsubtype
+	WHERE (rngcollation = 0) != (typcollation = 0);
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 111
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  SELECT n.nspname as "Schema",
+	  c.relname as "Name",
+	  pg_catalog.pg_get_userbyid(c.relowner) as "Owner"
+	FROM pg_catalog.pg_class c
+	     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.relkind IN ('p','')
+	 AND NOT c.relispartition
+	      AND n.nspname <> 'pg_catalog'
+	      AND n.nspname !~ '^pg_toast'
+	      AND n.nspname <> 'information_schema'
+	  AND pg_catalog.pg_table_is_visible(c.oid)
+	ORDER BY "Schema", "Name";
+2022-08-02 03:30:23.974 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 64
+2022-08-02 03:30:23.974 UTC [55444] STATEMENT:  SELECT p1.rngtypid, p1.rngsubtype, o.opcmethod, o.opcname
+	FROM pg_range p1 JOIN pg_opclass o ON o.oid = p1.rngsubopc
+	WHERE o.opcmethod != 403 OR
+	    ((o.opcintype != p1.rngsubtype) AND NOT
+	     (o.opcintype = 'pg_catalog.anyarray'::regtype AND
+	      EXISTS(select 1 from pg_catalog.pg_type where
+	             oid = p1.rngsubtype and typelem != 0 and
+	             typsubscript = 'array_subscript_handler'::regproc)));
+2022-08-02 03:30:23.975 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 51
+2022-08-02 03:30:23.975 UTC [55444] STATEMENT:  SELECT p1.rngtypid, p1.rngsubtype, p.proname
+	FROM pg_range p1 JOIN pg_proc p ON p.oid = p1.rngcanonical
+	WHERE pronargs != 1 OR proargtypes[0] != rngtypid OR prorettype != rngtypid;
+2022-08-02 03:30:23.975 UTC [55444] WARNING:  there is no transaction in progress
+2022-08-02 03:30:23.975 UTC [55444] ERROR:  could not find pg_class tuple for index 2662
+2022-08-02 03:30:23.975 UTC [55444] STATEMENT:  DISCARD ALL;
+2022-08-02 03:30:23.975 UTC [55444] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-02 03:30:23.975 UTC [55444] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-02 03:30:23.975 UTC [55444] ERROR:  schema "public" already exists
+2022-08-02 03:30:23.975 UTC [55444] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-02 03:30:27.849 UTC [57771] PANIC:  could not open critical system index 2662
+2022-08-02 03:30:27.851 UTC [54909] LOG:  server process (PID 57771) was terminated by signal 6: Aborted
+2022-08-02 03:30:27.851 UTC [54909] LOG:  terminating any other active server processes
+2022-08-02 03:30:27.888 UTC [54909] LOG:  all server processes terminated; reinitializing
+2022-08-02 03:30:27.899 UTC [57772] LOG:  database system was interrupted; last known up at 2022-08-02 03:30:23 UTC
+2022-08-02 03:30:27.917 UTC [57772] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 03:30:27.918 UTC [57772] LOG:  redo starts at 0/1EADBA0
+2022-08-02 03:30:27.918 UTC [57772] LOG:  invalid record length at 0/1EADF38: wanted 24, got 0
+2022-08-02 03:30:27.918 UTC [57772] LOG:  redo done at 0/1EADF10 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2022-08-02 03:30:27.929 UTC [54909] LOG:  database system is ready to accept connections

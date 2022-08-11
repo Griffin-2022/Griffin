@@ -1,0 +1,111 @@
+2022-08-01 19:08:34.496 UTC [56934] ERROR:  relation "seq3" already exists
+2022-08-01 19:08:34.496 UTC [56934] STATEMENT:  
+	CREATE SEQUENCE seq3;
+2022-08-01 19:08:34.496 UTC [56934] ERROR:  relation "seq3" already exists
+2022-08-01 19:08:34.496 UTC [56934] STATEMENT:  
+	CREATE SEQUENCE seq3;
+2022-08-01 19:08:34.496 UTC [56934] ERROR:  savepoint "save" does not exist
+2022-08-01 19:08:34.496 UTC [56934] STATEMENT:  
+	ROLLBACK TO save;
+2022-08-01 19:08:34.496 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.496 UTC [56934] STATEMENT:  
+	ALTER SEQUENCE sequence_test2 START WITH 1;
+2022-08-01 19:08:34.496 UTC [56934] ERROR:  table "base_fn_out" does not exist
+2022-08-01 19:08:34.496 UTC [56934] STATEMENT:  
+	
+	-- Sequences should get wiped out as well:
+	DROP TABLE base_fn_out, int42_out;
+2022-08-01 19:08:34.499 UTC [56934] WARNING:  there is no transaction in progress
+2022-08-01 19:08:34.509 UTC [56934] ERROR:  invalid size: "1 AB A"
+2022-08-01 19:08:34.509 UTC [56934] STATEMENT:  SELECT pg_size_bytes('1 AB A');
+2022-08-01 19:08:34.509 UTC [56934] ERROR:  invalid size: "1 AB A    "
+2022-08-01 19:08:34.509 UTC [56934] STATEMENT:  SELECT pg_size_bytes('1 AB A    ');
+2022-08-01 19:08:34.509 UTC [56934] ERROR:  bigint out of range
+2022-08-01 19:08:34.509 UTC [56934] STATEMENT:  SELECT pg_size_bytes('9223372036854775807.9');
+2022-08-01 19:08:34.509 UTC [56934] ERROR:  invalid size: "-."
+2022-08-01 19:08:34.509 UTC [56934] STATEMENT:  SELECT pg_size_bytes('-.');
+2022-08-01 19:08:34.509 UTC [56934] ERROR:  invalid size: "-. kb"
+2022-08-01 19:08:34.509 UTC [56934] STATEMENT:  SELECT pg_size_bytes('-. kb');
+2022-08-01 19:08:34.510 UTC [56934] ERROR:  invalid size: ".+912"
+2022-08-01 19:08:34.510 UTC [56934] STATEMENT:  SELECT pg_size_bytes('.+912');
+2022-08-01 19:08:34.510 UTC [56934] ERROR:  invalid size: "+912+ kB"
+2022-08-01 19:08:34.510 UTC [56934] STATEMENT:  SELECT pg_size_bytes('+912+ kB');
+2022-08-01 19:08:34.876 UTC [56934] ERROR:  invalid regular expression: regular expression is too complex
+2022-08-01 19:08:34.876 UTC [56934] STATEMENT:  select 'x' ~ repeat('x*y*z*', 1000);
+2022-08-01 19:08:34.878 UTC [56934] WARNING:  there is no transaction in progress
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  relation "objsubid" does not exist
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  LOCK TABLE objsubid IN EXCLUSIVE MODE;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  select relname from pg_locks l, pg_class c
+	 where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'
+	 order by relname;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  relation "t2" does not exist
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  LOCK TABLE t2 IN EXCLUSIVE MODE;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  CREATE VIEW ÈçäÆÉ± AS SELECT * from b;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  BEGIN TRANSACTION;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  LOCK TABLE b IN EXCLUSIVE MODE;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  BEGIN;
+2022-08-01 19:08:34.882 UTC [56934] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-01 19:08:34.882 UTC [56934] STATEMENT:  LOCK TABLE lock_tbl2;
+2022-08-01 19:08:34.883 UTC [56934] ERROR:  role "regress_rol_lock1" does not exist
+2022-08-01 19:08:34.883 UTC [56934] STATEMENT:  DROP ROLE regress_rol_lock1;
+2022-08-01 19:08:34.883 UTC [56934] WARNING:  there is no transaction in progress
+2022-08-01 19:08:34.890 UTC [56934] ERROR:  function bt_index_check(regclass) does not exist
+2022-08-01 19:08:34.890 UTC [56934] STATEMENT:  
+	
+	-- we, intentionally, don't check relation permissions - it's useful
+	-- to run this cluster-wide with a restricted account, and as tested
+	-- above explicit permission has to be granted for that.
+	GRANT EXECUTE ON FUNCTION bt_index_check(regclass) TO regress_bttest_role;
+2022-08-01 19:08:34.890 UTC [56934] ERROR:  function bt_index_parent_check(regclass, boolean) does not exist
+2022-08-01 19:08:34.890 UTC [56934] STATEMENT:  
+	GRANT EXECUTE ON FUNCTION bt_index_parent_check(regclass, boolean) TO regress_bttest_role;
+2022-08-01 19:08:34.890 UTC [56934] ERROR:  role "regress_bttest_role" does not exist
+2022-08-01 19:08:34.890 UTC [56934] STATEMENT:  
+	SET ROLE regress_bttest_role;
+2022-08-01 19:08:34.891 UTC [56934] ERROR:  duplicate key value violates unique constraint "ìÞÙ¸æñÕè"
+2022-08-01 19:08:34.891 UTC [56934] STATEMENT:  
+	INSERT INTO b SELECT 42 FROM generate_series(1, 2000);
+2022-08-01 19:08:35.551 UTC [56934] ERROR:  column "t1" appears twice in primary key constraint at character 20
+2022-08-01 19:08:35.551 UTC [56934] STATEMENT:  
+	ALTER TABLE b ADD PRIMARY KEY (t1,t1,t1,t1);
+2022-08-01 19:08:35.551 UTC [56934] ERROR:  table "ÈçäÆÉ±" does not exist
+2022-08-01 19:08:35.551 UTC [56934] STATEMENT:  
+	DROP TABLE ÈçäÆÉ±;
+2022-08-01 19:08:35.552 UTC [56934] WARNING:  there is no transaction in progress
+2022-08-01 19:08:35.563 UTC [56934] ERROR:  function bt_index_check(regclass) does not exist
+2022-08-01 19:08:35.563 UTC [56934] STATEMENT:  
+	
+	-- we, intentionally, don't check relation permissions - it's useful
+	-- to run this cluster-wide with a restricted account, and as tested
+	-- above explicit permission has to be granted for that.
+	GRANT EXECUTE ON FUNCTION bt_index_check(regclass) TO regress_bttest_role;
+2022-08-01 19:08:35.563 UTC [56934] ERROR:  function bt_index_parent_check(regclass, boolean) does not exist
+2022-08-01 19:08:35.563 UTC [56934] STATEMENT:  
+	GRANT EXECUTE ON FUNCTION bt_index_parent_check(regclass, boolean) TO regress_bttest_role;
+2022-08-01 19:08:35.563 UTC [56934] ERROR:  role "regress_bttest_role" does not exist
+2022-08-01 19:08:35.563 UTC [56934] STATEMENT:  
+	SET ROLE regress_bttest_role;
+2022-08-01 19:08:35.564 UTC [56934] ERROR:  duplicate key value violates unique constraint "ìÞÙ¸æñÕè"
+2022-08-01 19:08:35.564 UTC [56934] STATEMENT:  
+	INSERT INTO b SELECT 42 FROM generate_series(1, 2000);
+2022-08-01 19:08:36.183 UTC [56934] PANIC:  could not write to file "pg_wal/xlogtemp.56934": No space left on device
+2022-08-01 19:08:36.183 UTC [56934] STATEMENT:  
+	INSERT INTO b SELECT i, i%2  FROM generate_series(1, 100000) as i;
+2022-08-01 19:08:36.228 UTC [8508] LOG:  server process (PID 56934) was terminated by signal 6: Aborted
+2022-08-01 19:08:36.228 UTC [8508] LOG:  terminating any other active server processes
+2022-08-01 19:08:36.259 UTC [63253] FATAL:  the database system is in recovery mode
+2022-08-01 19:08:36.261 UTC [63256] FATAL:  the database system is in recovery mode
+2022-08-01 19:08:36.263 UTC [63257] FATAL:  the database system is in recovery mode
+2022-08-01 19:08:36.268 UTC [8508] LOG:  all server processes terminated; reinitializing
+2022-08-01 19:08:36.325 UTC [8508] LOG:  received smart shutdown request
+2022-08-01 19:08:36.326 UTC [63327] LOG:  database system was interrupted; last known up at 2022-08-01 19:06:33 UTC
+2022-08-01 19:08:36.807 UTC [63327] LOG:  recovered replication state of node 2 to 0/AABBCCDD
+2022-08-01 19:08:36.807 UTC [63327] LOG:  recovered replication state of node 1 to 0/0
+2022-08-01 19:08:36.807 UTC [63327] LOG:  database system was not properly shut down; automatic recovery in progress

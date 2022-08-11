@@ -1,0 +1,30 @@
+# name: test/sql/catalog/did_you_mean.test
+# description: The error messages suggest possible alternative
+# group: [catalog]
+
+require test_helper
+
+;
+CREATE TABLE hello(i INTEGER);
+
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.bye(i INTEGER);
+
+;
+SELECT * FROM helloo;
+
+;
+SELECT test_helper_last_error() LIKE '%Did you mean "hello"?%'
+;
+true
+
+;
+SELECT * FROM bye;
+
+;
+SELECT test_helper_last_error() LIKE '%Did you mean "test.bye"?%'
+;
+true

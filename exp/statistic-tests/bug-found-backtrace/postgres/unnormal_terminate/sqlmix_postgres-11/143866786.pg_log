@@ -1,0 +1,111 @@
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	
+	-- now create a trigger that forces all Datums to be indirect ones
+	CREATE FUNCTION update_using_indirect()
+	        RETURNS trigger
+	        LANGUAGE plpgsql AS $$
+	BEGIN
+	    NEW := make_tuple_indirect(NEW);
+	    RETURN NEW;
+	END$$;
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	
+	CREATE TRIGGER y
+	        BEFORE INSERT OR UPDATE
+	        ON hash_split_heap
+	        FOR EACH ROW
+	        EXECUTE PROCEDURE update_using_indirect();
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	
+	-- modification without changing varlenas
+	UPDATE hash_split_heap SET keycol = keycol +1 RETURNING substring(hash_split_heap::text, 1, 200);
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	
+	SELECT substring(hash_split_heap::text, 1, 200) FROM hash_split_heap;
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	-- check we didn't screw with main/toast tuple visibility
+	VACUUM FREEZE hash_split_heap;
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	SELECT substring(hash_split_heap::text, 1, 200) FROM hash_split_heap;
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	DROP FUNCTION update_using_indirect();
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  
+	
+	RESET default_toast_compression;
+2022-08-02 08:13:40.179 UTC [129067] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+2022-08-02 08:13:40.179 UTC [129067] STATEMENT:  RESET SESSION AUTHORIZATION;
+=================================================================
+==129067==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffd75f36e70 sp 0x7ffd75f36e68
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7f5a2bc9a082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==129067==ABORTING
+2022-08-02 08:13:40.216 UTC [127245] LOG:  server process (PID 129067) was terminated by signal 6: Aborted
+2022-08-02 08:13:40.216 UTC [127245] LOG:  terminating any other active server processes
+2022-08-02 08:13:40.220 UTC [127245] LOG:  all server processes terminated; reinitializing
+2022-08-02 08:13:40.236 UTC [129291] LOG:  database system was interrupted; last known up at 2022-08-02 08:13:32 UTC
+2022-08-02 08:13:40.237 UTC [129292] FATAL:  the database system is in recovery mode
+2022-08-02 08:13:40.239 UTC [129295] FATAL:  the database system is in recovery mode
+2022-08-02 08:13:40.241 UTC [129296] FATAL:  the database system is in recovery mode
+2022-08-02 08:13:40.246 UTC [127245] LOG:  received smart shutdown request
+2022-08-02 08:13:40.249 UTC [129291] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 08:13:40.250 UTC [129291] LOG:  redo starts at 0/77B66E0
+2022-08-02 08:13:40.254 UTC [127245] LOG:  abnormal database system shutdown

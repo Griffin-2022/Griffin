@@ -1,0 +1,26 @@
+# name: test/sql/join/inner/test_join_duplicates.test
+# description: Test join with > STANDARD_VECTOR_SIZE duplicates
+# group: [inner]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE test (a INTEGER, b INTEGER);
+
+;
+INSERT INTO test VALUES (11, 1), (12, 2), (13, 3)
+
+;
+CREATE TABLE test2 AS SELECT * FROM repeat(1, 10*1024) t1(b), (SELECT 10) t2(c);
+
+;
+SELECT COUNT(*) FROM test2;
+;
+10240
+
+;
+SELECT COUNT(*) FROM test INNER JOIN test2 ON test.b=test2.b
+;
+10240
+

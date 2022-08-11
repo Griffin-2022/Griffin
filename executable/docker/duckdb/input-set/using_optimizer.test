@@ -1,0 +1,131 @@
+# name: test/optimizer/using_optimizer.test
+# description: Test optimization of USING columns
+# group: [optimizer]
+
+;
+PRAGMA explain_output='optimized_only';
+
+;
+create table a as select 42 as i, 80 as j;
+
+;
+create table b as select 43 as i, 84 as k;
+
+;
+create table c as select 44 as i, 84 as l;
+
+# inner join
+;
+explain select i from a inner join b using (i);
+;
+
+;
+explain select a.i from a, b where a.i=b.i;
+;
+
+;
+explain select a.i from a natural join b;
+;
+
+# left join
+;
+explain select i from a left outer join b using (i);
+;
+
+;
+explain select a.i from a left outer join b using (i);
+;
+
+;
+explain select a.i from a left outer join b on (a.i=b.i);
+;
+
+# right join
+;
+explain select i from a right outer join b using (i);
+;
+
+;
+explain select b.i from a right outer join b using (i);
+;
+
+;
+explain select b.i from a right outer join b on (a.i=b.i);
+;
+
+# left join followed by inner join
+;
+select i from a left outer join b using (i) inner join c using (i);
+;
+
+;
+select a.i from a left outer join b on (a.i=b.i) inner join c on (a.i=c.i);
+;
+
+;
+explain select i from a left outer join b using (i) inner join c using (i);
+;
+
+;
+explain select a.i from a left outer join b on (a.i=b.i) inner join c on (a.i=c.i);
+;
+
+# left join followed by left join
+;
+select i from a left outer join b using (i) left outer join c using (i);
+;
+42
+
+;
+select a.i from a left outer join b on (a.i=b.i) left outer join c on (a.i=c.i);
+;
+42
+
+;
+explain select i from a left outer join b using (i) left outer join c using (i);
+;
+
+;
+explain select a.i from a left outer join b on (a.i=b.i) left outer join c on (a.i=c.i);
+;
+
+# left join followed by right join
+;
+select i from a left outer join b using (i) right join c using (i);
+;
+44
+
+;
+select c.i from a left outer join b on (a.i=b.i) right join c on (a.i=c.i);
+;
+44
+
+;
+explain select i from a left outer join b using (i) right join c using (i);
+;
+
+;
+explain select a.i from a left outer join b on (a.i=b.i) right join c on (a.i=c.i);
+;
+
+# full outer join
+# need to use a case expression here
+;
+select i from a full outer join b using (i);
+;
+42
+43
+
+;
+select coalesce(a.i, b.i) from a full outer join b on (a.i=b.i);
+;
+42
+43
+
+;
+explain select i from a full outer join b using (i);
+;
+
+;
+explain select coalesce(b.i, a.i) from a full outer join b on (a.i=b.i);
+;

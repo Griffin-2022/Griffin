@@ -1,0 +1,81 @@
+Warning: AFL++ tools might need to set AFL_MAP_SIZE to 1234115 to be able to run this instrumented program if this crashes!
+AFL init.
+=================================================================
+==116038==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffdedb41bb0 at pc 0x000008a6a5c6 bp 0x7ffdedb41490 sp 0x7ffdedb41488
+READ of size 1 at 0x7ffdedb41bb0 thread T0
+    #0 0x8a6a5c5 in duckdb::utf8proc_codepoint(char const*, int&) /root/duckdb/third_party/utf8proc/utf8proc.cpp:356:21
+    #1 0x8a6c929 in duckdb::utf8proc_next_grapheme(char const*, unsigned long, unsigned long) /root/duckdb/third_party/utf8proc/utf8proc.cpp:419:36
+    #2 0x8a7dea0 in duckdb::Utf8Proc::NextGraphemeCluster(char const*, unsigned long, unsigned long) /root/duckdb/third_party/utf8proc/utf8proc_wrapper.cpp:87:9
+    #3 0x476bec3 in duckdb::TreeRenderer::SplitStringBuffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&) /root/duckdb/src/common/tree_renderer.cpp:311:21
+    #4 0x476b578 in duckdb::TreeRenderer::SplitUpExtraInfo(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&) /root/duckdb/src/common/tree_renderer.cpp:346:3
+    #5 0x4a55850 in duckdb::TreeRenderer::RenderBoxContent(duckdb::RenderTree&, std::ostream&, unsigned long) /root/duckdb/src/common/tree_renderer.cpp:142:4
+    #6 0x4a5d241 in duckdb::TreeRenderer::ToStream(duckdb::RenderTree&, std::ostream&) /root/duckdb/src/common/tree_renderer.cpp:273:3
+    #7 0x4a5a8a5 in duckdb::TreeRenderer::Render(duckdb::LogicalOperator const&, std::ostream&) /root/duckdb/src/common/tree_renderer.cpp:243:2
+    #8 0x4a5a282 in duckdb::TreeRenderer::ToString[abi:cxx11](duckdb::LogicalOperator const&) /root/duckdb/src/common/tree_renderer.cpp:219:2
+    #9 0x184af72 in duckdb::LogicalOperator::ToString[abi:cxx11]() const /root/duckdb/src/planner/logical_operator.cpp:76:18
+    #10 0x184d9fe in duckdb::LogicalOperator::Verify() /root/duckdb/src/planner/logical_operator.cpp:103:2
+    #11 0x693e87 in duckdb::ClientContext::CreatePreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:260:8
+    #12 0x69a5d1 in duckdb::ClientContext::PendingStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >) /root/duckdb/src/main/client_context.cpp:485:18
+    #13 0x6a48cf in duckdb::ClientContext::PendingStatementOrPreparedStatement(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:560:13
+    #14 0x699482 in duckdb::ClientContext::PendingStatementOrPreparedStatementInternal(duckdb::ClientContextLock&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, std::shared_ptr<duckdb::PreparedStatementData>&, std::vector<duckdb::Value, std::allocator<duckdb::Value> >*) /root/duckdb/src/main/client_context.cpp:544:9
+    #15 0x796fb6 in duckdb::ClientContext::PendingQueryInternal(duckdb::ClientContextLock&, std::unique_ptr<duckdb::SQLStatement, std::default_delete<duckdb::SQLStatement> >, bool) /root/duckdb/src/main/client_context.cpp:695:10
+    #16 0x6a6f86 in duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool) /root/duckdb/src/main/client_context.cpp:637:24
+    #17 0x6ac75f in duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /root/duckdb/src/main/connection.cpp:67:25
+    #18 0x5b764e in duckdb_query /root/duckdb/src/main/capi/duckdb-c.cpp:67:22
+    #19 0x59cdc3 in run_one_statement_new(void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /mnt/jingzhou_workspace/sqlsim/client_new/duckdb/client_new.cpp:68:13
+    #20 0x57b433 in run_testcase(void*&, char const*, int) /root/autodriver.cpp:135:14
+    #21 0x57f845 in do_fuzz()::$_3::operator()() const /root/autodriver.cpp:295:13
+    #22 0x57f13e in do_fuzz() /root/autodriver.cpp:303:13
+    #23 0x57ff53 in main /root/autodriver.cpp:365:9
+    #24 0x7fa7d92aa082 in __libc_start_main /build/glibc-SzIz7B/glibc-2.31/csu/../csu/libc-start.c:308:16
+    #25 0x4cc3fd in _start (/root/autodriver_afl_asan_debug+0x4cc3fd)
+
+Address 0x7ffdedb41bb0 is located in stack of thread T0 at offset 400 in frame
+    #0 0x476ac8f in duckdb::TreeRenderer::SplitUpExtraInfo(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&) /root/duckdb/src/common/tree_renderer.cpp:329
+
+  This frame has 9 object(s):
+    [32, 56) 'splits' (line 333)
+    [96, 128) 'ref.tmp' (line 333)
+    [160, 161) 'ref.tmp6' (line 333)
+    [176, 208) 'ref.tmp21' (line 335)
+    [240, 248) '__begin1' (line 337)
+    [272, 280) '__end1' (line 337)
+    [304, 336) 'ref.tmp48' (line 339)
+    [368, 400) 'str' (line 342) <== Memory access at offset 400 overflows this variable
+    [432, 464) 'agg.tmp'
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow /root/duckdb/third_party/utf8proc/utf8proc.cpp:356:21 in duckdb::utf8proc_codepoint(char const*, int&)
+Shadow bytes around the buggy address:
+  0x10003db60320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10003db60330: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10003db60340: 00 00 00 00 f1 f1 f1 f1 00 00 00 f2 f2 f2 f2 f2
+  0x10003db60350: f8 f8 f8 f8 f2 f2 f2 f2 f8 f2 f8 f8 f8 f8 f2 f2
+  0x10003db60360: f2 f2 00 f2 f2 f2 00 f2 f2 f2 f8 f8 f8 f8 f2 f2
+=>0x10003db60370: f2 f2 00 00 00 00[f2]f2 f2 f2 00 00 00 00 f3 f3
+  0x10003db60380: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10003db60390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10003db603a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x10003db603b0: 00 00 00 00 f1 f1 f1 f1 00 00 00 f2 f2 f2 f2 f2
+  0x10003db603c0: f8 f8 f8 f8 f2 f2 f2 f2 f8 f8 f8 f8 f2 f2 f2 f2
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==116038==ABORTING

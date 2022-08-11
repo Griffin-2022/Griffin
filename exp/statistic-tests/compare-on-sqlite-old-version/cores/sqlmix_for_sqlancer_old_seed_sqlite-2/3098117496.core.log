@@ -1,0 +1,52 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000119,sig:06,src:020458+019894,time:37069139,execs:8237674,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f3217c7a859 in __GI_abort () at abort.c:79
+#2  0x00007f3217c7a729 in __assert_fail_base (fmt=0x7f3217e10588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f3217c8bfd6 in __GI___assert_fail (assertion=0x21b92e "pItem->addrFillSub==0", file=0x22873d "sqlite3.c", line=130468, function=0x223e82 "int sqlite3Select(Parse *, Select *, SelectDest *)") at assert.c:101
+#4  0x00000000002fcfa0 in sqlite3Select (pParse=0x7fff0326c010, p=0xf394e0, pDest=0x7fff0326a8a8) at sqlite3.c:130468
+#5  0x000000000034f659 in sqlite3CodeSubselect (pParse=0x7fff0326c010, pExpr=0xf42f90) at sqlite3.c:99820
+#6  0x000000000034bbfd in sqlite3ExprCodeTarget (pParse=0x7fff0326c010, pExpr=0xf42f90, target=7) at sqlite3.c:100770
+#7  0x00000000003790ab in codeEqualityTerm (pParse=0x7fff0326c010, pTerm=0xf308d0, pLevel=0xf30c30, iEq=1, bRev=0, iTarget=7) at sqlite3.c:136648
+#8  0x000000000037a706 in codeAllEqualityTerms (pParse=0x7fff0326c010, pLevel=0xf30c30, bRev=0, nExtraReg=0, pzAff=0x7fff0326ae28) at sqlite3.c:136869
+#9  0x0000000000375cb8 in sqlite3WhereCodeOneLoopStart (pParse=0x7fff0326c010, v=0xf3f750, pWInfo=0xf30840, iLevel=1, pLevel=0xf30c30, notReady=18446744073709551614) at sqlite3.c:137776
+#10 0x000000000036c3cc in sqlite3WhereBegin (pParse=0x7fff0326c010, pTabList=0xf35ca0, pWhere=0xf39e40, pOrderBy=0x0, pResultSet=0xf47f40, wctrlFlags=0, iAuxArg=320) at sqlite3.c:145128
+#11 0x00000000002fdcea in sqlite3Select (pParse=0x7fff0326c010, p=0xf45510, pDest=0x7fff0326b400) at sqlite3.c:130695
+#12 0x00000000002ecaa8 in yy_reduce (yypParser=0x7fff0326b630, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7fff0326c010) at sqlite3.c:151581
+#13 0x00000000002e92f8 in sqlite3Parser (yyp=0x7fff0326b630, yymajor=1, yyminor=...) at sqlite3.c:152877
+#14 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7fff0326c010, 
+    zSql=0xf532af ";SELECT name, rootpage, sql FROM \"temp\".sqlite_temp_master ORDER BY rowid;END;;\nSELECT t1_content<=t1_content FROM t1;;\nSELECT coalesce(t1_content>=t1_content,99) FROM t1;SELECT x FROM t1 WHERE x IS N"..., pzErrMsg=0x7fff0326c1f0) at sqlite3.c:154013
+#15 0x00000000002a1683 in sqlite3Prepare (db=0xf296b0, 
+    zSql=0xf2a2cd ";\nSELECT\n    SrcWord, t1.x\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.x= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1865, prepFlags=128, pReprepare=0x0, ppStmt=0x7fff0326c328, pzTail=0x7fff0326c310) at sqlite3.c:124303
+#16 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0xf296b0, 
+    zSql=0xf2a2cd ";\nSELECT\n    SrcWord, t1.x\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.x= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1865, prepFlags=128, pOld=0x0, ppStmt=0x7fff0326c328, pzTail=0x7fff0326c310) at sqlite3.c:124403
+#17 0x000000000029247f in sqlite3_prepare_v2 (db=0xf296b0, 
+    zSql=0xf2a2cd ";\nSELECT\n    SrcWord, t1.x\n    FROM \n      (SELECT 'FACTORING' AS SrcWord UNION SELECT 'SWIMMING' AS SrcWord )\n    LEFT JOIN \n      t1\n    WHERE t1.x= (\n      SELECT BeginningId FROM (\n        SELECT "..., nBytes=1865, ppStmt=0x7fff0326c328, pzTail=0x7fff0326c310) at sqlite3.c:124487
+#18 0x0000000000256bd0 in main (argc=1, argv=0x7fff0326c4d8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 5279] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

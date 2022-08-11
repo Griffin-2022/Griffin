@@ -1,0 +1,504 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000315,sig:06,src:024121+010822,time:7922949,execs:1779283,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;PRAGMA vdbe_trace=on;]
+VDBE Trace:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;INSERT INTO v1 VALUES(20, 2);]
+VDBE Trace:
+   0 Init             0   15    0               00 Start at 15
+  15 Transaction      0    1    2 0             01 usesStmtJournal=0
+  16 Goto             0    1    0               00 
+   1 OpenWrite        0    3    0 2             00 root=3 iDb=0; v1
+   2 Integer         20    1    0               00 r[1]=20
+REG[1] =  i:20
+   3 NotNull          1    5    0               00 if r[1]!=NULL goto 5
+REG[1] =  i:20
+   5 MustBeInt        1    0    0               00 
+REG[1] =  i:20
+   6 SoftNull         2    0    0               00 r[2]=NULL
+   7 Integer          2    3    0               00 r[3]=2
+REG[3] =  i:2
+   8 Noop             0    0    0               00 uniqueness check for ROWID
+   9 Abortable        0    0    0               00 
+  10 NotExists        0   12    1               00 intkey=r[1]
+REG[1] =  i:20
+  12 MakeRecord       2    2    4 D             00 r[4]=mkrec(r[2..3])
+REG[4] =  s4[03000102....]
+  13 Insert           0    4    1 v1            31 intkey=r[1] data=r[4]
+REG[4] =  s4[03000102....]
+REG[1] =  i:20
+  14 Halt             0    0    0               00 
+SQL: [;
+;SELECT avg(b) OVER (ORDER BY c) AS z FROM t1 ORDER BY z
+
+;]
+VDBE Trace:
+   0 Init             0  181    0               00 Start at 181
+ 181 Transaction      0    0    2 0             01 usesStmtJournal=0
+ 182 Goto             0    1    0               00 
+   1 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   2 OpenEphemeral    1    3    0               00 nColumn=3
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3  106    7               00 subquery_2
+ 106 SorterOpen      13    3    0 k(1,B)        00 
+ 107 Integer          1   31    0               00 r[31]=1
+REG[31] =  i:1
+ 108 Explain        108    0    0 SCAN SUBQUERY 2 00 
+ 109 InitCoroutine    3    0    7               00 
+ 110 Yield            3  147    0               00 next row of subquery_2
+REG[3] =  i:6
+REG[3] =  i:110
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+REG[4] =  NULL
+   9 OpenEphemeral    6    4    0               00 nColumn=4
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   37   14               00 subquery_3
+  37 Integer          1   14    0               00 r[14]=1
+REG[14] =  i:1
+  38 Explain         38    7    0 SCAN SUBQUERY 3 00 
+  39 InitCoroutine    6    0   14               00 
+  40 Yield            6   78    0               00 next row of subquery_3
+REG[6] =  i:13
+REG[6] =  i:40
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 SorterOpen      11    6    0 k(1,B)        00 
+  16 OpenRead         0    2    0 3             00 root=2 iDb=0; t1
+  17 Explain         17   14    0 SCAN TABLE t1 00 
+  18 Rewind           0   26    0               00 
+  19 Column           0    2    8               00 r[8]=t1.c
+REG[8] =   s3[1.4](8)
+  20 Column           0    1    9               00 r[9]=t1.b
+REG[9] =  r:1.3
+  21 Column           0    1   10               00 r[10]=t1.b
+REG[10] =  r:1.3
+  22 Column           0    2    7               00 r[7]=t1.c
+REG[7] =   s3[1.4](8)
+  23 MakeRecord       7    4   12               00 r[12]=mkrec(r[7..10])
+REG[12] =  s27[0513130707312E34312E343FF4CCCCCC.....1.41.4?....]
+  24 SorterInsert    11   12    7 4             00 key=r[12]
+REG[12] =  s27[0513130707312E34312E343FF4CCCCCC.....1.41.4?....]
+  25 Next             0   19    0               01 
+  26 Explain         26   14    0 USE TEMP B-TREE FOR ORDER BY 00 
+  27 OpenPseudo      12   13    6               00 6 columns in r[13]
+  28 SorterSort      11   36    0               00 
+  29 SorterData      11   13   12               00 r[13]=data
+  30 Column          12    3   11               00 r[11]=
+REG[11] =  r:1.3
+  31 Column          12    0   10               00 r[10]=
+REG[10] =   s3[1.4](8)
+  32 Column          12    2    9               00 r[9]=
+REG[9] =  r:1.3
+  33 Column          12    1    8               00 r[8]=
+REG[8] =   s3[1.4](8)
+  34 Yield            6    0    0               00 
+REG[6] =  i:40
+REG[6] =  i:34
+  41 Copy             8   16    0               00 r[16]=r[8]
+REG[16] =   s3[1.4](8)
+  42 Copy             9   17    0               00 r[17]=r[9]
+REG[17] =  r:1.3
+  43 Copy            10   18    0               00 r[18]=r[10]
+REG[18] =   s3[1.4](8)
+  44 Copy            11   19    0               00 r[19]=r[11]
+REG[19] =  r:1.3
+  45 MakeRecord      16    4   20               00 r[20]=mkrec(r[16..19])
+REG[20] =  s27[0513071307312E343FF4CCCCCCCCCCCD.....1.4?.......]
+  46 NewRowid         7   21    0               00 r[21]=rowid
+REG[21] =  i:1
+  47 Insert           7   20   21               00 intkey=r[21] data=r[20]
+REG[20] =  s27[0513071307312E343FF4CCCCCCCCCCCD.....1.4?.......]
+REG[21] =  i:1
+  48 Ne              14   57   21               00 if r[21]!=r[14] goto 57
+REG[14] =  i:1
+REG[21] =  i:1
+  49 Null             0    4    0               00 r[4]=NULL
+REG[4] =  NULL
+  50 Rewind           6    1    0               00 
+  51 Rewind           9    1    0               00 
+  52 Copy            18   22    0               00 r[22]=r[18]
+REG[22] =   s3[1.4](8)
+  53 Copy            22   23    0               00 r[23]=r[22]
+REG[23] =   s3[1.4](8)
+  54 Copy            22   24    0               00 r[24]=r[22]
+REG[24] =   s3[1.4](8)
+  55 Copy            22   25    0               00 r[25]=r[22]
+REG[25] =   s3[1.4](8)
+  56 Goto             0   77    0               00 
+  77 Goto             0   40    0               00 
+  40 Yield            6   78    0               00 next row of subquery_3
+REG[6] =  i:34
+REG[6] =  i:40
+  35 SorterNext      11   29    0               00 
+  36 EndCoroutine     6    0    0               00 
+REG[6] =  i:40
+  78 Rewind           7   97    0               00 
+  79 Column           9    3   26               00 r[26]=
+REG[26] =  r:1.3
+  80 AggStep          0   26    4 avg(1)        01 accum=r[4] step(r[26])
+REG[26] =  r:1.3
+  81 Next             9   83    0               00 
+  82 Goto             0   87    0               00 
+  87 AggValue         4    1    5 avg(1)        00 r[5]=value N=1
+  88 Gosub           15   99    0               00 
+REG[15] =  i:88
+  99 Noop             0    0    0               00 inner-loop subroutine
+ 100 Copy             5   28    0               00 r[28]=r[5]
+REG[28] =  r:1.3
+ 101 Column           6    0   29               00 r[29]=
+REG[29] =   s3[1.4](8)
+ 102 Column           6    1   30               00 r[30]=
+REG[30] =  r:1.3
+ 103 Yield            3    0    0               00 
+REG[3] =  i:110
+REG[3] =  i:103
+ 111 Copy            28   33    0               00 r[33]=r[28]
+REG[33] =  r:1.3
+ 112 Copy            29   34    0               00 r[34]=r[29]
+REG[34] =   s3[1.4](8)
+ 113 Copy            30   35    0               00 r[35]=r[30]
+REG[35] =  r:1.3
+ 114 MakeRecord      33    3   36               00 r[36]=mkrec(r[33..35])
+REG[36] =  s23[040713073FF4CCCCCCCCCCCD312E343F....?.......1.4?]
+ 115 NewRowid         2   37    0               00 r[37]=rowid
+REG[37] =  i:1
+ 116 Insert           2   36   37               00 intkey=r[37] data=r[36]
+REG[36] =  s23[040713073FF4CCCCCCCCCCCD312E343F....?.......1.4?]
+REG[37] =  i:1
+ 117 Ne              31  126   37               00 if r[37]!=r[31] goto 126
+REG[31] =  i:1
+REG[37] =  i:1
+ 118 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+ 119 Rewind           1    1    0               00 
+ 120 Rewind           4    1    0               00 
+ 121 Copy            34   38    0               00 r[38]=r[34]
+REG[38] =   s3[1.4](8)
+ 122 Copy            38   39    0               00 r[39]=r[38]
+REG[39] =   s3[1.4](8)
+ 123 Copy            38   40    0               00 r[40]=r[38]
+REG[40] =   s3[1.4](8)
+ 124 Copy            38   41    0               00 r[41]=r[38]
+REG[41] =   s3[1.4](8)
+ 125 Goto             0  146    0               00 
+ 146 Goto             0  110    0               00 
+ 110 Yield            3  147    0               00 next row of subquery_2
+REG[3] =  i:103
+REG[3] =  i:110
+ 104 Return          15    0    0               00 end inner-loop subroutine
+REG[15] =  i:88
+  89 Delete           6    0    0               02 
+  90 Next             6   92    0               00 
+  91 Goto             0   97    0               00 
+  97 ResetSorter      6    0    0               00 
+  98 Goto             0  105    0               00 
+ 105 EndCoroutine     3    0    0               00 
+REG[3] =  i:110
+ 147 Rewind           2  166    0               00 
+ 148 Column           4    2   42               00 r[42]=
+REG[42] =  r:1.3
+ 149 AggStep          0   42    1 avg(1)        01 accum=r[1] step(r[42])
+REG[42] =  r:1.3
+ 150 Next             4  152    0               00 
+ 151 Goto             0  156    0               00 
+ 156 AggValue         1    1    2 avg(1)        00 r[2]=value N=1
+ 157 Gosub           32  168    0               00 
+REG[32] =  i:157
+ 168 Noop             0    0    0               00 inner-loop subroutine
+ 169 Column           1    0   44               00 r[44]=
+REG[44] =  r:1.3
+ 170 MakeRecord      44    1   46               00 r[46]=mkrec(r[44])
+REG[46] =  s10[02073FF4CCCCCCCCCCCD..?.......]
+ 171 SorterInsert    13   46   44 1             00 key=r[46]
+REG[46] =  s10[02073FF4CCCCCCCCCCCD..?.......]
+ 172 Return          32    0    0               00 end inner-loop subroutine
+REG[32] =  i:157
+ 158 Delete           1    0    0               02 
+ 159 Next             1  161    0               00 
+ 160 Goto             0  166    0               00 
+ 166 ResetSorter      1    0    0               00 
+ 167 Goto             0  173    0               00 
+ 173 Explain        173    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 174 OpenPseudo      14   47    3               00 3 columns in r[47]
+ 175 SorterSort      13  180    0               00 
+ 176 SorterData      13   47   14               00 r[47]=data
+ 177 Column          14    0   45               00 r[45]=z
+REG[45] =  r:1.3
+ 178 ResultRow       45    1    0               00 output=r[45]
+REG[45] =  r:1.3
+ 179 SorterNext      13  176    0               00 
+ 180 Halt             0    0    0               00 
+SQL: [SELECT avg(c) OVER (ORDER BY c) z FROM t1 ORDER BY (z IS c);]
+VDBE Trace:
+   0 Init             0  189    0               00 Start at 189
+ 189 Transaction      0    0    2 0             01 usesStmtJournal=0
+ 190 Goto             0    1    0               00 
+   1 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+   2 OpenEphemeral    1    4    0               00 nColumn=4
+   3 OpenDup          2    1    0               00 
+   4 OpenDup          3    1    0               00 
+   5 OpenDup          4    1    0               00 
+   6 InitCoroutine    3  110    7               00 subquery_2
+ 110 SorterOpen      13    3    0 k(1,B)        00 
+ 111 Integer          1   34    0               00 r[34]=1
+REG[34] =  i:1
+ 112 Explain        112    0    0 SCAN SUBQUERY 2 00 
+ 113 InitCoroutine    3    0    7               00 
+ 114 Yield            3  152    0               00 next row of subquery_2
+REG[3] =  i:6
+REG[3] =  i:114
+   7 Explain          7    0    0 CO-ROUTINE 2  00 
+   8 Null             0    4    0               00 r[4]=NULL
+REG[4] =  NULL
+   9 OpenEphemeral    6    5    0               00 nColumn=5
+  10 OpenDup          7    6    0               00 
+  11 OpenDup          8    6    0               00 
+  12 OpenDup          9    6    0               00 
+  13 InitCoroutine    6   39   14               00 subquery_3
+  39 Integer          1   15    0               00 r[15]=1
+REG[15] =  i:1
+  40 Explain         40    7    0 SCAN SUBQUERY 3 00 
+  41 InitCoroutine    6    0   14               00 
+  42 Yield            6   81    0               00 next row of subquery_3
+REG[6] =  i:13
+REG[6] =  i:42
+  14 Explain         14    7    0 CO-ROUTINE 3  00 
+  15 SorterOpen      11    7    0 k(1,B)        00 
+  16 OpenRead         0    2    0 3             00 root=2 iDb=0; t1
+  17 Explain         17   14    0 SCAN TABLE t1 00 
+  18 Rewind           0   27    0               00 
+  19 Column           0    2    8               00 r[8]=t1.c
+REG[8] =   s3[1.4](8)
+  20 Column           0    2    9               00 r[9]=t1.c
+REG[9] =   s3[1.4](8)
+  21 Column           0    2   10               00 r[10]=t1.c
+REG[10] =   s3[1.4](8)
+  22 Column           0    2   11               00 r[11]=t1.c
+REG[11] =   s3[1.4](8)
+  23 Column           0    2    7               00 r[7]=t1.c
+REG[7] =   s3[1.4](8)
+  24 MakeRecord       7    5   13               00 r[13]=mkrec(r[7..11])
+REG[13] =  s21[061313131313312E34312E34312E3431......1.41.41.41]
+  25 SorterInsert    11   13    7 5             00 key=r[13]
+REG[13] =  s21[061313131313312E34312E34312E3431......1.41.41.41]
+  26 Next             0   19    0               01 
+  27 Explain         27   14    0 USE TEMP B-TREE FOR ORDER BY 00 
+  28 OpenPseudo      12   14    7               00 7 columns in r[14]
+  29 SorterSort      11   38    0               00 
+  30 SorterData      11   14   12               00 r[14]=data
+  31 Column          12    0   12               00 r[12]=
+REG[12] =   s3[1.4](8)
+  32 Column          12    4   11               00 r[11]=
+REG[11] =   s3[1.4](8)
+  33 Column          12    3   10               00 r[10]=
+REG[10] =   s3[1.4](8)
+  34 Column          12    2    9               00 r[9]=
+REG[9] =   s3[1.4](8)
+  35 Column          12    1    8               00 r[8]=
+REG[8] =   s3[1.4](8)
+  36 Yield            6    0    0               00 
+REG[6] =  i:42
+REG[6] =  i:36
+  43 Copy             8   17    0               00 r[17]=r[8]
+REG[17] =   s3[1.4](8)
+  44 Copy             9   18    0               00 r[18]=r[9]
+REG[18] =   s3[1.4](8)
+  45 Copy            10   19    0               00 r[19]=r[10]
+REG[19] =   s3[1.4](8)
+  46 Copy            11   20    0               00 r[20]=r[11]
+REG[20] =   s3[1.4](8)
+  47 Copy            12   21    0               00 r[21]=r[12]
+REG[21] =   s3[1.4](8)
+  48 MakeRecord      17    5   22               00 r[22]=mkrec(r[17..21])
+REG[22] =  s21[061313131313312E34312E34312E3431......1.41.41.41]
+  49 NewRowid         7   23    0               00 r[23]=rowid
+REG[23] =  i:1
+  50 Insert           7   22   23               00 intkey=r[23] data=r[22]
+REG[22] =  s21[061313131313312E34312E34312E3431......1.41.41.41]
+REG[23] =  i:1
+  51 Ne              15   60   23               00 if r[23]!=r[15] goto 60
+REG[15] =  i:1
+REG[23] =  i:1
+  52 Null             0    4    0               00 r[4]=NULL
+REG[4] =  NULL
+  53 Rewind           6    1    0               00 
+  54 Rewind           9    1    0               00 
+  55 Copy            20   24    0               00 r[24]=r[20]
+REG[24] =   s3[1.4](8)
+  56 Copy            24   25    0               00 r[25]=r[24]
+REG[25] =   s3[1.4](8)
+  57 Copy            24   26    0               00 r[26]=r[24]
+REG[26] =   s3[1.4](8)
+  58 Copy            24   27    0               00 r[27]=r[24]
+REG[27] =   s3[1.4](8)
+  59 Goto             0   80    0               00 
+  80 Goto             0   42    0               00 
+  42 Yield            6   81    0               00 next row of subquery_3
+REG[6] =  i:36
+REG[6] =  i:42
+  37 SorterNext      11   30    0               00 
+  38 EndCoroutine     6    0    0               00 
+REG[6] =  i:42
+  81 Rewind           7  100    0               00 
+  82 Column           9    4   28               00 r[28]=
+REG[28] =   s3[1.4](8)
+  83 AggStep          0   28    4 avg(1)        01 accum=r[4] step(r[28])
+REG[28] =   s3[1.4](8)
+  84 Next             9   86    0               00 
+  85 Goto             0   90    0               00 
+  90 AggValue         4    1    5 avg(1)        00 r[5]=value N=1
+  91 Gosub           16  102    0               00 
+REG[16] =  i:91
+ 102 Noop             0    0    0               00 inner-loop subroutine
+ 103 Copy             5   30    0               00 r[30]=r[5]
+REG[30] =  r:1.4
+ 104 Column           6    0   31               00 r[31]=
+REG[31] =   s3[1.4](8)
+ 105 Column           6    1   32               00 r[32]=
+REG[32] =   s3[1.4](8)
+ 106 Column           6    2   33               00 r[33]=
+REG[33] =   s3[1.4](8)
+ 107 Yield            3    0    0               00 
+REG[3] =  i:114
+REG[3] =  i:107
+ 115 Copy            30   36    0               00 r[36]=r[30]
+REG[36] =  r:1.4
+ 116 Copy            31   37    0               00 r[37]=r[31]
+REG[37] =   s3[1.4](8)
+ 117 Copy            32   38    0               00 r[38]=r[32]
+REG[38] =   s3[1.4](8)
+ 118 Copy            33   39    0               00 r[39]=r[33]
+REG[39] =   s3[1.4](8)
+ 119 MakeRecord      36    4   40               00 r[40]=mkrec(r[36..39])
+REG[40] =  s22[05071313133FF6666666666666312E34.....?.ffffff1.4]
+ 120 NewRowid         2   41    0               00 r[41]=rowid
+REG[41] =  i:1
+ 121 Insert           2   40   41               00 intkey=r[41] data=r[40]
+REG[40] =  s22[05071313133FF6666666666666312E34.....?.ffffff1.4]
+REG[41] =  i:1
+ 122 Ne              34  131   41               00 if r[41]!=r[34] goto 131
+REG[34] =  i:1
+REG[41] =  i:1
+ 123 Null             0    1    0               00 r[1]=NULL
+REG[1] =  NULL
+ 124 Rewind           1    1    0               00 
+ 125 Rewind           4    1    0               00 
+ 126 Copy            38   42    0               00 r[42]=r[38]
+REG[42] =   s3[1.4](8)
+ 127 Copy            42   43    0               00 r[43]=r[42]
+REG[43] =   s3[1.4](8)
+ 128 Copy            42   44    0               00 r[44]=r[42]
+REG[44] =   s3[1.4](8)
+ 129 Copy            42   45    0               00 r[45]=r[42]
+REG[45] =   s3[1.4](8)
+ 130 Goto             0  151    0               00 
+ 151 Goto             0  114    0               00 
+ 114 Yield            3  152    0               00 next row of subquery_2
+REG[3] =  i:107
+REG[3] =  i:114
+ 108 Return          16    0    0               00 end inner-loop subroutine
+REG[16] =  i:91
+  92 Delete           6    0    0               02 
+  93 Next             6   95    0               00 
+  94 Goto             0  100    0               00 
+ 100 ResetSorter      6    0    0               00 
+ 101 Goto             0  109    0               00 
+ 109 EndCoroutine     3    0    0               00 
+REG[3] =  i:114
+ 152 Rewind           2  171    0               00 
+ 153 Column           4    3   46               00 r[46]=
+REG[46] =   s3[1.4](8)
+ 154 AggStep          0   46    1 avg(1)        01 accum=r[1] step(r[46])
+REG[46] =   s3[1.4](8)
+ 155 Next             4  157    0               00 
+ 156 Goto             0  161    0               00 
+ 161 AggValue         1    1    2 avg(1)        00 r[2]=value N=1
+ 162 Gosub           35  173    0               00 
+REG[35] =  i:162
+ 173 Noop             0    0    0               00 inner-loop subroutine
+ 174 Copy             2   49    0               00 r[49]=r[2]
+REG[49] =  r:1.4
+ 175 Column           1    0   47               00 r[47]=
+REG[47] =  r:1.4
+ 176 Column           1    1   50               00 r[50]=
+REG[50] =   s3[1.4](8)
+ 177 Eq              50   48   47               E1 r[48] = (r[47]==r[50])
+REG[50] =   s3[1.4](8)
+REG[47] =  r:1.4
+REG[48] =  i:0
+ 178 MakeRecord      48    2   51               00 r[51]=mkrec(r[48..49])
+REG[51] =  s11[0308073FF6666666666666...?.ffffff]
+ 179 SorterInsert    13   51   48 2             00 key=r[51]
+REG[51] =  s11[0308073FF6666666666666...?.ffffff]
+ 180 Return          35    0    0               00 end inner-loop subroutine
+REG[35] =  i:162
+ 163 Delete           1    0    0               02 
+ 164 Next             1  166    0               00 
+ 165 Goto             0  171    0               00 
+ 171 ResetSorter      1    0    0               00 
+ 172 Goto             0  181    0               00 
+ 181 Explain        181    0    0 USE TEMP B-TREE FOR ORDER BY 00 
+ 182 OpenPseudo      14   52    3               00 3 columns in r[52]
+ 183 SorterSort      13  188    0               00 
+ 184 SorterData      13   52   14               00 r[52]=data
+ 185 Column          14    1   49               00 r[49]=z
+REG[49] =  r:1.4
+ 186 ResultRow       49    1    0               00 output=r[49]
+REG[49] =  r:1.4
+ 187 SorterNext      13  184    0               00 
+ 188 Halt             0    0    0               00 
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+(gdb) #0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007f849ef07859 in __GI_abort () at abort.c:79
+#2  0x00007f849ef07729 in __assert_fail_base (fmt=0x7f849f09d588 "%s%s%s:%u: %s%sAssertion `%s' failed.\n%n", assertion=0x21e901 "pWin->pOwner==pExpr", file=0x22873d "sqlite3.c", line=146187, function=<optimized out>)
+    at assert.c:92
+#3  0x00007f849ef18fd6 in __GI___assert_fail (assertion=0x21e901 "pWin->pOwner==pExpr", file=0x22873d "sqlite3.c", line=146187, function=0x214dc1 "int selectWindowRewriteExprCb(Walker *, Expr *)") at assert.c:101
+#4  0x00000000003b6a1f in selectWindowRewriteExprCb (pWalker=0x7ffdb362ba58, pExpr=0x19e30a0) at sqlite3.c:146187
+#5  0x000000000031b252 in walkExpr (pWalker=0x7ffdb362ba58, pExpr=0x19e30a0) at sqlite3.c:94980
+#6  0x000000000031b1f8 in sqlite3WalkExpr (pWalker=0x7ffdb362ba58, pExpr=0x19e3a00) at sqlite3.c:95004
+#7  0x000000000031b8ef in sqlite3WalkExprList (pWalker=0x7ffdb362ba58, p=0x19e4cc0) at sqlite3.c:95016
+#8  0x00000000003b671b in selectWindowRewriteEList (pParse=0x7ffdb362caa0, pWin=0x19e3eb0, pSrc=0x19e2740, pEList=0x19e4cc0, ppSub=0x7ffdb362bb60) at sqlite3.c:146268
+#9  0x00000000003a14c3 in sqlite3WindowRewrite (pParse=0x7ffdb362caa0, p=0x19e5f80) at sqlite3.c:146341
+#10 0x00000000002fc6de in sqlite3Select (pParse=0x7ffdb362caa0, p=0x19e5f80, pDest=0x7ffdb362be90) at sqlite3.c:130281
+#11 0x00000000002ecaa8 in yy_reduce (yypParser=0x7ffdb362c0c0, yyruleno=79, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffdb362caa0) at sqlite3.c:151581
+#12 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffdb362c0c0, yymajor=1, yyminor=...) at sqlite3.c:152877
+#13 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffdb362caa0, zSql=0x19dd7ce ";", pzErrMsg=0x7ffdb362cc80) at sqlite3.c:154013
+#14 0x00000000002a1683 in sqlite3Prepare (db=0x19d2cb0, zSql=0x19d2a8f ";\n;SELECT avg(a) OVER (ORDER BY c) z FROM t1 ORDER BY (c IS z);", nBytes=63, prepFlags=128, pReprepare=0x0, ppStmt=0x7ffdb362cdb8, 
+    pzTail=0x7ffdb362cda0) at sqlite3.c:124303
+#15 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x19d2cb0, zSql=0x19d2a8f ";\n;SELECT avg(a) OVER (ORDER BY c) z FROM t1 ORDER BY (c IS z);", nBytes=63, prepFlags=128, pOld=0x0, ppStmt=0x7ffdb362cdb8, 
+    pzTail=0x7ffdb362cda0) at sqlite3.c:124403
+#16 0x000000000029247f in sqlite3_prepare_v2 (db=0x19d2cb0, zSql=0x19d2a8f ";\n;SELECT avg(a) OVER (ORDER BY c) z FROM t1 ORDER BY (c IS z);", nBytes=63, ppStmt=0x7ffdb362cdb8, pzTail=0x7ffdb362cda0) at sqlite3.c:124487
+#17 0x0000000000256bd0 in main (argc=1, argv=0x7ffdb362cf68) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 53018] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

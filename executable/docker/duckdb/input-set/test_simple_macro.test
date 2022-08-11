@@ -1,0 +1,294 @@
+# name: test/sql/catalog/function/test_simple_macro.test
+# description: Test Simple Macro
+# group: [function]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers (a INT)
+
+;
+INSERT INTO integers VALUES (1)
+
+;
+CREATE MACRO one() AS (SELECT 1);
+
+;
+SELECT one()
+;
+1
+
+;
+SELECT one(1)
+
+;
+SELECT one(NULL)
+
+;
+DROP MACRO one;
+
+# HAVING in a macro
+;
+CREATE MACRO having_macro(x) AS (SELECT * FROM integers GROUP BY a HAVING a = x)
+
+;
+SELECT having_macro(1)
+;
+1
+
+;
+SELECT having_macro(6)
+;
+NULL
+
+# UNION in a macro
+;
+CREATE MACRO union_macro(x, y, z) AS (SELECT x IN (SELECT y UNION ALL SELECT z))
+
+;
+SELECT union_macro(1, 2, 3)
+;
+false
+
+;
+SELECT union_macro(1, 2, 1)
+;
+true
+
+;
+SELECT union_macro(1, 1, 2)
+;
+true
+
+# expression list
+;
+CREATE MACRO in_expression_list(x, y, z) AS (SELECT x IN (VALUES (y), (z)))
+
+;
+SELECT in_expression_list(1, 2, 3)
+;
+false
+
+;
+SELECT in_expression_list(1, 2, 1)
+;
+true
+
+;
+SELECT in_expression_list(1, 1, 2)
+;
+true
+
+# FUNCTION alias
+;
+CREATE FUNCTION two() AS (SELECT 2);
+
+;
+SELECT two()
+;
+2
+
+;
+DROP FUNCTION two;
+
+# b cannot be found
+;
+CREATE MACRO add(a) AS a + b
+
+;
+CREATE MACRO add(a, b) AS a + b
+
+;
+SELECT add(a,a) FROM integers
+;
+2
+
+;
+CREATE TABLE floats (b FLOAT)
+
+;
+INSERT INTO floats VALUES (0.5)
+
+;
+SELECT add(a,2) + add(3,b) FROM integers, floats
+;
+6.5
+
+# cannot create function with same name as a ScalarFunction
+;
+CREATE MACRO string_split(a,b) AS a + b
+
+;
+CREATE MACRO IFELSE(a,b,c) AS CASE WHEN a THEN b ELSE c END
+
+;
+SELECT IFELSE(1,'true','false')
+;
+true
+
+;
+SELECT ifelse(1,'true','false')
+;
+true
+
+;
+SELECT IFELSE(0,'true','false')
+;
+false
+
+;
+SELECT IFELSE(a = 1, 'true', 'false') FROM integers
+;
+true
+
+;
+SELECT IFELSE(a = 0, 'true', 'false') FROM integers
+;
+false
+
+# incorrect number of arguments
+;
+SELECT IFELSE();
+
+;
+SELECT IFELSE(1);
+
+;
+SELECT IFELSE(1, 2);
+
+;
+SELECT IFELSE(1, 2, 3, 4);
+
+# no duplicate macro function names
+;
+CREATE MACRO IFELSE(a,b) AS a+b
+
+;
+CREATE MACRO ifelse(a,b) AS a+b
+
+;
+SELECT IFELSE(1, 'random', RANDOM())
+;
+random
+
+# macro in a different schema
+;
+CREATE SCHEMA macros
+
+;
+CREATE MACRO macros.add(a, b) AS a + b
+
+;
+SELECT macros.add(40,2)
+;
+42
+
+# conflicting parameter names in macro definition
+;
+CREATE MACRO conflict(i, i) AS i + 1
+
+# aggregation macro's
+;
+CREATE MACRO myavg(x) AS SUM(x) / COUNT(x)
+
+;
+INSERT INTO integers VALUES (21), (41);
+
+;
+SELECT myavg(a) FROM integers
+;
+21
+
+;
+CREATE MACRO weird_avg(x) AS (MIN(x) + MAX(x)) / COUNT(x)
+
+;
+SELECT weird_avg(a) FROM integers
+;
+14
+
+;
+CREATE MACRO star() AS *
+
+# macro's with default arguments
+;
+CREATE MACRO conflict(a, a := 1) AS a + a
+
+;
+CREATE MACRO add_default5(a, b := 5) AS a + b
+
+;
+SELECT add_default5(3, 6)
+
+;
+SELECT add_default5(3)
+;
+8
+
+;
+SELECT add_default5(3, b := 6)
+;
+9
+
+;
+SELECT add_default5(b := 6, 3)
+
+;
+CREATE MACRO wrong_order(a, b := 3, c)
+
+;
+CREATE MACRO wrong_order(a := 3, b)
+
+# only constant default values are allowed
+;
+CREATE MACRO select_plus_floats(a, f := b) AS (SELECT a + f FROM floats)
+
+# +(FLOAT, VARCHAR) does not work - constant types are checked at create time
+;
+CREATE MACRO wrong_type(s='not a float') AS (SELECT b + s FROM floats)
+
+;
+CREATE MACRO two_default_params(a := 4, a := 2) AS a + a
+
+;
+CREATE MACRO two_default_params(a := 4, b := 2) AS a + b
+
+;
+SELECT two_default_params()
+;
+6
+
+;
+SELECT two_default_params(a := 5)
+;
+7
+
+;
+SELECT two_default_params(b := 3)
+;
+7
+
+;
+SELECT two_default_params(a := 5, a := 3)
+
+;
+SELECT two_default_params(b := 5, b := 3)
+
+;
+CREATE MACRO macros.add(a, b) AS a + b
+
+;
+CREATE MACRO my_macro(a.b) AS 42;
+
+;
+CREATE MACRO my_macro(a.b.c) AS 42;
+
+;
+CREATE MACRO my_macro(a) AS 42;
+
+;
+SELECT my_macro(x := 42);
+
+;
+SELECT my_macro(a := 42, a := 42);

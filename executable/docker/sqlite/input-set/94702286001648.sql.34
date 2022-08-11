@@ -1,0 +1,144 @@
+pragma recursive_triggers = off 
+;CREATE TABLE t1(a, b);
+;CREATE TABLE t2(c, d);
+;
+;ATTACH 'test2.db' AS aux;
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;
+;CREATE TABLE aux.t3(e, f);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t3' AND type!='trigger' ORDER BY rowid
+;
+;SELECT * FROM sqlite_master WHERE name = 't3';
+;
+;SELECT * FROM aux.sqlite_master WHERE name = 't3';
+;
+;INSERT INTO t3 VALUES(1, 2);
+;SELECT * FROM t3;
+;
+;CREATE INDEX aux.i1 on t3(e);
+;SELECT*FROM"aux".sqlite_master WHERE name='i1' AND type='index' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE name='i1' AND type='index' ORDER BY rowid
+;
+;SELECT * FROM sqlite_master WHERE name = 'i1';
+;
+;SELECT * FROM aux.sqlite_master WHERE name = 'i1';
+;
+;DROP INDEX aux.i1;
+;
+;CREATE INDEX aux.i1 on t3(e);
+;SELECT*FROM"aux".sqlite_master WHERE name='i1' AND type='index' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE name='i1' AND type='index' ORDER BY rowid
+;
+;DROP INDEX i1;
+;
+;DROP TABLE aux.t1;
+;SELECT name FROM aux.sqlite_master;
+;
+;DROP TABLE t2;
+;
+;
+;CREATE VIEW aux.v1 AS SELECT * FROM t3;
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='v1' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='v1' AND type!='trigger' ORDER BY rowid
+;
+;SELECT * FROM aux.sqlite_master WHERE name = 'v1';
+;
+;INSERT INTO aux.t3 VALUES('hello', 'world');
+;SELECT * FROM v1;
+;
+;DROP VIEW aux.v1;
+;
+;SELECT * FROM aux.sqlite_master WHERE name = 'v1';
+;
+;CREATE TRIGGER aux.tr1 AFTER INSERT ON t3 BEGIN
+      INSERT INTO t3 VALUES(new.e*2, new.f*2);
+    END;
+;SELECT*FROM"aux".sqlite_master WHERE type='trigger' AND name='tr1' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE type='trigger' AND name='tr1' ORDER BY rowid
+;
+;DELETE FROM t3;
+;INSERT INTO t3 VALUES(10, 20);
+;SELECT * FROM t3;
+;
+;SELECT * FROM aux.sqlite_master WHERE name = 'tr1';
+;
+;DROP TRIGGER aux.tr1;
+;
+;
+;CREATE TABLE main.t4(a, b, c);
+;CREATE TABLE aux.t4(a, b, c);
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master WHERE tbl_name='t4' AND type!='trigger' ORDER BY rowid
+;CREATE TEMP TRIGGER tst_trigger BEFORE INSERT ON aux.t4 BEGIN 
+        SELECT 'hello world';
+      END;
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='tst_trigger' ORDER BY rowid
+;SELECT*FROM"temp".sqlite_master WHERE type='trigger' AND name='tst_trigger' ORDER BY rowid
+;SELECT count(*) FROM temp.sqlite_master;
+;
+;DROP TABLE main.t4;
+;SELECT count(*) FROM sqlite_temp_master;
+;
+;DROP TABLE aux.t4;
+;SELECT count(*) FROM temp.sqlite_master;
+;
+;INSERT INTO aux.sqlite_master VALUES(1, 2, 3, 4, 5);
+;ATTACH DATABASE '/nodir/nofile.x' AS notadb;
+;ATTACH DATABASE ':memory:' AS notadb;
+;SELECT*FROM"notadb".sqlite_master ORDER BY rowid
+;SELECT*FROM"notadb".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"aux".sqlite_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;SELECT*FROM"temp".sqlite_temp_master ORDER BY rowid
+;
+;DETACH DATABASE notadb;
+;
+;PRAGMA database_list;
+;
+;ATTACH DATABASE ? AS ?
+  
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;
+;DETACH aux
+  
+;
+;DETACH ?
+  
+;
+;ATTACH DATABASE '' AS ''
+  
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;
+;DETACH ''
+  
+;
+;ATTACH DATABASE '' AS ?
+  
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;
+;
+;ATTACH DATABASE '' AS NULL
+  
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;
+;DETACH ?
+  
+;
+;DETACH NULL
+  
+;ATTACH null AS null;
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;SELECT*FROM"".sqlite_master ORDER BY rowid
+;ATTACH '' AS '';
+;
+;DETACH '';
+;
+;
+;

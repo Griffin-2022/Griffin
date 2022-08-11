@@ -1,0 +1,179 @@
+CREATE TABLE t10(
+        a INTEGER PRIMARY KEY,
+        b INTEGER COLLATE nocase UNIQUE,
+        c NUMBER COLLATE nocase UNIQUE,
+        d BLOB COLLATE nocase UNIQUE,
+        e COLLATE nocase UNIQUE,
+        f TEXT COLLATE nocase UNIQUE
+      );
+;INSERT INTO t10 VALUES(1,1,1,1,1,1);
+;INSERT INTO t10 VALUES(12,12,12,12,12,12);
+;INSERT INTO t10 VALUES(123,123,123,123,123,123);
+;INSERT INTO t10 VALUES(234,234,234,234,234,234);
+;INSERT INTO t10 VALUES(345,345,345,345,345,345);
+;INSERT INTO t10 VALUES(45,45,45,45,45,45);
+;
+;SELECT a FROM t10 WHERE b LIKE '12%' ORDER BY +a;
+;
+;SELECT a FROM t10 WHERE c LIKE '12%' ORDER BY +a;
+;
+;SELECT a FROM t10 WHERE d LIKE '12%' ORDER BY +a;
+;
+;SELECT a FROM t10 WHERE e LIKE '12%' ORDER BY +a;
+;
+;SELECT a FROM t10 WHERE f LIKE '12%' ORDER BY +a;
+;
+;SELECT a FROM t10 WHERE a LIKE '12%' ORDER BY +a;
+;
+;CREATE TABLE t10b(
+        a INTEGER PRIMARY KEY,
+        b INTEGER UNIQUE,
+        c NUMBER UNIQUE,
+        d BLOB UNIQUE,
+        e UNIQUE,
+        f TEXT UNIQUE
+      );
+;INSERT INTO t10b SELECT * FROM t10;
+;
+;SELECT a FROM t10b WHERE b GLOB '12*' ORDER BY +a;
+;
+;SELECT a FROM t10b WHERE c GLOB '12*' ORDER BY +a;
+;
+;SELECT a FROM t10b WHERE d GLOB '12*' ORDER BY +a;
+;
+;SELECT a FROM t10b WHERE e GLOB '12*' ORDER BY +a;
+;
+;SELECT a FROM t10b WHERE f GLOB '12*' ORDER BY +a;
+;
+;SELECT a FROM t10b WHERE a GLOB '12*' ORDER BY +a;
+;
+;CREATE TABLE t11(
+      a INTEGER PRIMARY KEY,
+      b TEXT COLLATE nocase,
+      c TEXT COLLATE binary
+    );
+;INSERT INTO t11 VALUES(1, 'a','a');
+;INSERT INTO t11 VALUES(2, 'ab','ab');
+;INSERT INTO t11 VALUES(3, 'abc','abc');
+;INSERT INTO t11 VALUES(4, 'abcd','abcd');
+;INSERT INTO t11 VALUES(5, 'A','A');
+;INSERT INTO t11 VALUES(6, 'AB','AB');
+;INSERT INTO t11 VALUES(7, 'ABC','ABC');
+;INSERT INTO t11 VALUES(8, 'ABCD','ABCD');
+;INSERT INTO t11 VALUES(9, 'x','x');
+;INSERT INTO t11 VALUES(10, 'yz','yz');
+;INSERT INTO t11 VALUES(11, 'X','X');
+;INSERT INTO t11 VALUES(12, 'YZ','YZ');
+;SELECT count(*) FROM t11;
+;
+;PRAGMA case_sensitive_like=OFF;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;PRAGMA case_sensitive_like=ON;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;PRAGMA case_sensitive_like=OFF;
+;CREATE INDEX t11b ON t11(b);
+;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;PRAGMA case_sensitive_like=ON;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+;
+;PRAGMA case_sensitive_like=OFF;
+;DROP INDEX t11b;
+;CREATE INDEX t11bnc ON t11(b COLLATE nocase);
+;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;CREATE INDEX t11bb ON t11(b COLLATE binary);
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;PRAGMA case_sensitive_like=ON;
+;SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+;
+;PRAGMA case_sensitive_like=OFF;
+;SELECT b FROM t11 WHERE b GLOB 'abc*' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT b FROM t11 WHERE b GLOB 'abc*' ORDER BY +a;
+;
+;CREATE INDEX t11cnc ON t11(c COLLATE nocase);
+;CREATE INDEX t11cb ON t11(c COLLATE binary);
+;
+;SELECT c FROM t11 WHERE c LIKE 'abc%' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT c FROM t11 WHERE c LIKE 'abc%' ORDER BY +a;
+;
+;SELECT c FROM t11 WHERE c GLOB 'abc*' ORDER BY +a;
+;
+;EXPLAIN QUERY PLAN 
+    SELECT c FROM t11 WHERE c GLOB 'abc*' ORDER BY +a;
+;
+;CREATE TABLE t12nc(id INTEGER, x TEXT UNIQUE COLLATE nocase);
+;INSERT INTO t12nc VALUES(1,'abcde'),(2,'uvwxy'),(3,'ABCDEF');
+;CREATE TABLE t12b(id INTEGER, x TEXT UNIQUE COLLATE binary);
+;INSERT INTO t12b VALUES(1,'abcde'),(2,'uvwxy'),(3,'ABCDEF');
+;SELECT id FROM t12nc WHERE x LIKE 'abc%' ORDER BY +id;
+;
+;SELECT id FROM t12b WHERE x LIKE 'abc%' ORDER BY +id;
+;
+;SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+;
+;SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+;
+;SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+;
+;SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12nc WHERE x LIKE 'abc%' ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12b WHERE x LIKE 'abc%' ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+;
+;EXPLAIN QUERY PLAN
+  SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+;
+;SELECT char(0x304d) LIKE char(0x306d);
+;
+;SELECT char(0x4d) LIKE char(0x306d);
+;
+;SELECT char(0x304d) LIKE char(0x6d);
+;
+;SELECT char(0x4d) LIKE char(0x6d);
+;
+;SELECT 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz'GLOB'*a*a*a*a*a*a*a*a*y'
+;SELECT 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz'LIKE'%a%a%a%a%a%a%a%a%y'
+;

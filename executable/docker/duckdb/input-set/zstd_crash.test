@@ -1,0 +1,46 @@
+# name: test/sql/copy/csv/zstd_crash.test
+# description: Test that reading a ZSTD file with auto-detect does not crash
+# group: [csv]
+
+# zstd requires the parquet extension
+;
+CREATE TABLE test_zst AS SELECT * FROM read_csv('test/sql/copy/csv/broken/test.csv.zst', AUTO_DETECT=TRUE);
+
+;
+CREATE TABLE test_zst(a INTEGER, b INTEGER, c INTEGER, d VARCHAR, e VARCHAR);
+
+# what if we try to load this with random other compressions
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION ZSTD);
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION GZIP);
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION NONE);
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION INFER);
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION UNKNOWN);
+
+# zstd works once we load the parquet extension
+require parquet
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION ZSTD, HEADER);
+
+;
+COPY test_zst FROM 'test/sql/copy/csv/broken/test.csv.zst' (COMPRESSION ZSTD, AUTO_DETECT 1);
+
+# what if we try to load a gzip file with zstd
+;
+COPY test_zst FROM 'test/sql/copy/csv/data/lineitem1k.tbl.gz' (COMPRESSION ZSTD);
+
+# we can read/write a ZSTD file also without the extension if we specify the compression type
+;
+COPY test_zst TO '__TEST_DIR__/noext.csv' (COMPRESSION ZSTD);
+
+;
+COPY test_zst FROM '__TEST_DIR__/noext.csv' (COMPRESSION ZSTD);

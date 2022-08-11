@@ -1,0 +1,111 @@
+2022-08-02 11:04:32.219 UTC [113511] ERROR:  prepared statement "pstmt" does not exist
+2022-08-02 11:04:32.219 UTC [113511] STATEMENT:  EXPLAIN (COSTS OFF) EXECUTE pstmt('1', a(1,2));
+2022-08-02 11:04:32.222 UTC [113511] WARNING:  there is no transaction in progress
+2022-08-02 11:04:32.492 UTC [113511] ERROR:  table "current_check_1" does not exist
+2022-08-02 11:04:32.492 UTC [113511] STATEMENT:  
+	
+	-- cleanup
+	DROP TABLE current_check_1;
+2022-08-02 11:04:32.581 UTC [113511] ERROR:  more than one row returned by a subquery used as an expression
+2022-08-02 11:04:32.581 UTC [113511] STATEMENT:  select
+	  ( select min(f2.ucchild) from f2
+	    where f2.ucchild = (select f2.ucchild from f2 where f2.ucchild = f2.ucchild) ) as min_tb_id
+	from f2;
+2022-08-02 11:04:32.581 UTC [113511] WARNING:  there is no transaction in progress
+2022-08-02 11:04:32.582 UTC [113511] ERROR:  could not identify a hash function for type record
+2022-08-02 11:04:32.582 UTC [113511] STATEMENT:  select row(row(row(1))) = any (select row(row(1)));
+2022-08-02 11:04:32.583 UTC [113511] WARNING:  skipping "f2" --- cannot analyze non-tables or special system tables
+2022-08-02 11:04:32.583 UTC [113511] ERROR:  cursor "c1" does not exist
+2022-08-02 11:04:32.583 UTC [113511] STATEMENT:  fetch backward all in c1;
+2022-08-02 11:04:32.583 UTC [113511] WARNING:  there is no transaction in progress
+2022-08-02 11:04:32.584 UTC [113511] WARNING:  there is no transaction in progress
+2022-08-02 11:04:32.591 UTC [113511] ERROR:  syntax error at or near "[" at character 55
+2022-08-02 11:04:32.591 UTC [113511] STATEMENT:  
+	
+	do $$
+	declare x constant int[]; y int;
+	begin
+	  for x[1], y in select 1, 2 loop  -- fail (currently, unsupported syntax)
+	  end loop;
+	end$$;
+2022-08-02 11:04:32.591 UTC [113511] ERROR:  null value cannot be assigned to variable "x" declared NOT NULL
+2022-08-02 11:04:32.591 UTC [113511] STATEMENT:  
+	
+	do $$
+	declare x int not null := null;  -- fail
+	begin
+	  raise notice 'x = %', x;
+	end$$;
+2022-08-02 11:04:32.595 UTC [113511] ERROR:  could not identify a hash function for type record
+2022-08-02 11:04:32.595 UTC [113511] STATEMENT:  select row(row(row(1))) = any (select row(row(1)));
+2022-08-02 11:04:32.595 UTC [113511] ERROR:  cursor "c1" does not exist
+2022-08-02 11:04:32.595 UTC [113511] STATEMENT:  fetch backward all in c1;
+2022-08-02 11:04:32.595 UTC [113511] WARNING:  there is no transaction in progress
+2022-08-02 11:04:32.595 UTC [113511] WARNING:  there is no transaction in progress
+=================================================================
+==113511==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0000027667a0 at pc 0x00000143090d bp 0x7ffc6bf3b530 sp 0x7ffc6bf3b528
+READ of size 16 at 0x0000027667a0 thread T0
+    #0 0x143090c  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c)
+    #1 0xb884f2  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb884f2)
+    #2 0xbda7b9  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbda7b9)
+    #3 0xb8b73a  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb8b73a)
+    #4 0xbc04e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbc04e4)
+    #5 0xbb7d48  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xbb7d48)
+    #6 0xb6902b  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xb6902b)
+    #7 0x118b035  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118b035)
+    #8 0x118a1d7  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118a1d7)
+    #9 0x118624d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x118624d)
+    #10 0x117f7bb  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x117f7bb)
+    #11 0xf570a3  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf570a3)
+    #12 0xf611e8  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf611e8)
+    #13 0xf593e4  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xf593e4)
+    #14 0xcba9cc  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0xcba9cc)
+    #15 0x7fd447768082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #16 0x49bc2d  (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x49bc2d)
+
+0x0000027667a0 is located 0 bytes to the right of global variable 'slruStats' defined in '/root/postgres/src/backend/postmaster/pgstat.c:280:25' (0x27665a0) of size 512
+SUMMARY: AddressSanitizer: global-buffer-overflow (/root/bin_aflpp_asan/usr/local/pgsql/bin/postgres+0x143090c) 
+Shadow bytes around the buggy address:
+  0x0000804e4ca0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 f9 f9 f9
+  0x0000804e4cb0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0000804e4cf0: 00 00 00 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0000804e4d00: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
+  0x0000804e4d10: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+  0x0000804e4d20: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000804e4d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==113511==ABORTING
+2022-08-02 11:04:32.633 UTC [99539] LOG:  server process (PID 113511) was terminated by signal 6: Aborted
+2022-08-02 11:04:32.633 UTC [99539] LOG:  terminating any other active server processes
+2022-08-02 11:04:32.640 UTC [114068] FATAL:  the database system is in recovery mode
+2022-08-02 11:04:32.642 UTC [114071] FATAL:  the database system is in recovery mode
+2022-08-02 11:04:32.646 UTC [99539] LOG:  all server processes terminated; reinitializing
+2022-08-02 11:04:32.663 UTC [114072] LOG:  database system was interrupted; last known up at 2022-08-02 11:04:26 UTC
+2022-08-02 11:04:32.664 UTC [114073] FATAL:  the database system is in recovery mode
+2022-08-02 11:04:32.669 UTC [99539] LOG:  received smart shutdown request
+2022-08-02 11:04:32.691 UTC [114072] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-02 11:04:32.692 UTC [114072] LOG:  redo starts at 0/1C4BF5A0
+2022-08-02 11:04:32.696 UTC [99539] LOG:  abnormal database system shutdown

@@ -1,0 +1,132 @@
+# name: test/sql/types/nested/struct/struct_aggregates_types.test
+# description: Test structs with aggregations
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+foreach type <integral>
+
+;
+CREATE TABLE structs AS SELECT {'i': i::${type}} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': 0}	{'i': 10}
+
+;
+DROP TABLE structs
+
+endloop
+
+foreach type float double
+
+;
+CREATE TABLE structs AS SELECT {'i': i::${type}} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s)['i'], MAX(s)['i'] FROM structs
+;
+0	10
+
+;
+DROP TABLE structs
+
+endloop
+
+# booleans
+;
+CREATE TABLE structs AS SELECT {'i': i%2} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': 0}	{'i': 1}
+
+;
+DROP TABLE structs
+
+# intervals
+;
+CREATE TABLE structs AS SELECT {'i': interval (i+1) year} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': 1 year}	{'i': 11 years}
+
+;
+DROP TABLE structs
+
+# varchars
+;
+CREATE TABLE structs AS SELECT {'i': i::varchar || 'thisisalongsuffix'} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': 0thisisalongsuffix}	{'i': 9thisisalongsuffix}
+
+;
+DROP TABLE structs
+
+# ties only
+;
+CREATE TABLE structs AS SELECT {'i': 1} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': 1}	{'i': 1}
+
+;
+DROP TABLE structs
+
+# nulls only
+;
+CREATE TABLE structs AS SELECT {'i': NULL} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': NULL}	{'i': NULL}
+
+;
+DROP TABLE structs
+
+# null structs
+;
+CREATE TABLE structs AS SELECT NULL::ROW(i INTEGER) AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+NULL	NULL
+
+;
+DROP TABLE structs
+
+# null structs within a struct
+;
+CREATE TABLE structs AS SELECT {'i': NULL::ROW(i INTEGER)} AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+{'i': NULL}	{'i': NULL}
+
+;
+DROP TABLE structs
+
+# null structs within a list
+;
+CREATE TABLE structs AS SELECT [NULL::ROW(i INTEGER)] AS s FROM range(11) tbl(i)
+
+;
+SELECT MIN(s), MAX(s) FROM structs
+;
+[NULL]	[NULL]
+
+;
+DROP TABLE structs

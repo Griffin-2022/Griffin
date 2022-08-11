@@ -1,0 +1,117 @@
+# name: test/sql/storage/multiple_clients_checkpoint_pending_updates.test
+# description: Test checkpoint with pending updates from simultaneously running clients
+# group: [storage]
+
+# load the DB from disk
+load __TEST_DIR__/pending_updates.db
+
+;
+CREATE TABLE test (i INTEGER);
+
+;
+INSERT INTO test SELECT * FROM range(1000000);
+
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE test SET i=i+1;
+
+;
+CHECKPOINT
+
+;
+FORCE CHECKPOINT
+
+# force checkpoint rolled back the transaction of con1
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+restart
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+DROP TABLE test
+
+;
+CREATE TABLE test (i INTEGER);
+
+;
+INSERT INTO test SELECT * FROM range(1000000);
+
+# now do the same, but with a whole mess of transactions that all depend on each other
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET i=i+1 WHERE i < 1000
+
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET i=i+1 WHERE i > 1000 AND i < 2000
+
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET i=i+1 WHERE i > 2000 AND i < 3000
+
+;
+BEGIN TRANSACTION
+
+;
+UPDATE test SET i=i+1 WHERE i > 3000 AND i < 4000
+
+;
+CHECKPOINT
+
+;
+FORCE CHECKPOINT
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000
+
+restart
+
+;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+;
+0	999999	1000000

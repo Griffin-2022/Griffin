@@ -1,0 +1,100 @@
+MDL_context::release_lock: enter: db: 'mysql' name: 'innodb_table_stats'
+MDL_context::release_lock: enter: db: 'mysql' name: 'innodb_index_stats'
+dirname_part: enter: '././fvcbmdra/f4.frm'
+dirname_part: enter: '././fvcbmdra/'
+cleanup_dirname: enter: from: '././fvcbmdra/'
+cleanup_dirname: exit: to: './fvcbmdra/'
+alloc_root: enter: root: 0x6190001778a0
+alloc_root: exit: ptr: 0x61f00008d5a0
+handler::ha_open: enter: name: ./fvcbmdra/f4#P#p3  db_type: 12  db_stat: 33  mode: 2  lock_test: 1042
+handler::ha_open: info: old m_lock_type: 2 F_UNLCK 2
+dict_table_open_on_name: dict_table_open_on_name: table: 'fvcbmdra/f4#P#p3'
+ha_innobase::update_thd: ha_innobase::update_thd: user_thd: 0x0 -> 0x62b00015e288
+info: mutex: mutex (0x611000001480) locking
+info: mutex: mutex (0x611000001480) locked
+info: mutex: mutex (0x611000001480) unlocking
+info: mutex: mutex (0x6120000012a0) locking
+info: mutex: mutex (0x6120000012a0) locked
+info: mutex: mutex (0x6120000012a0) unlocking
+info: trx: Create: 0x7f0da92b3b80
+info: mutex: mutex (0x52b5200) locking
+info: mutex: mutex (0x52b5200) locked
+info: mutex: mutex (0x52b5200) unlocking
+que_eval_sql: que_eval_sql: query: PROCEDURE FETCH_STATS () IS
+found INT;
+DECLARE FUNCTION fetch_table_stats_step;
+DECLARE FUNCTION fetch_index_stats_step;
+DECLARE CURSOR table_stats_cur IS
+  SELECT
+  n_rows,
+  clustered_index_size,
+  sum_of_other_index_sizes
+  FROM "mysql/innodb_table_stats"
+  WHERE
+  database_name = :database_name AND
+  table_name = :table_name;
+DECLARE CURSOR index_stats_cur IS
+  SELECT
+  index_name,
+  stat_name,
+  stat_value,
+  sample_size
+  FROM "mysql/innodb_index_stats"
+  WHERE
+  database_name = :database_name AND
+  table_name = :table_name;
+BEGIN
+OPEN table_stats_cur;
+FETCH table_stats_cur INTO
+  fetch_table_stats_step();
+IF (SQL % NOTFOUND) THEN
+  CLOSE table_stats_cur;
+  RETURN;
+END IF;
+CLOSE table_stats_cur;
+OPEN index_stats_cur;
+found := 1;
+WHILE found = 1 LOOP
+  FETCH index_stats_cur INTO
+    fetch_index_stats_step();
+  IF (SQL % NOTFOUND) THEN
+    found := 0;
+  END IF;
+END LOOP;
+CLOSE index_stats_cur;
+END;
+dict_table_open_on_name: dict_table_open_on_name: table: 'mysql/innodb_table_stats'
+dict_table_open_on_name: dict_table_open_on_name: table: 'mysql/innodb_index_stats'
+que_eval_sql: ib_que: Execute 9 (QUERY THREAD) at 0x629002f42f40
+que_eval_sql: ib_que: Execute 1044 (STORED PROCEDURE) at 0x629002f42fe8
+que_eval_sql: ib_que: Execute 25 (OPEN) at 0x629002f419a0
+que_eval_sql: ib_que: Execute 1044 (STORED PROCEDURE) at 0x629002f42fe8
+que_eval_sql: ib_que: Execute 24 (FETCH) at 0x629002f41be8
+que_eval_sql: ib_que: Execute 6 (SELECT) at 0x629002f3fea0
+que_eval_sql: mutex: m_mutex (0x7f0da92b4a58) locking
+que_eval_sql: mutex: m_mutex (0x7f0da92b4a58) locked
+que_eval_sql: mutex: mutex (0x61300019f940) locking
+que_eval_sql: mutex: mutex (0x61300019f940) locked
+que_eval_sql: mutex: mutex (0x61300019f940) unlocking
+que_eval_sql: mutex: m_mutex (0x7f0da92b4a58) unlocking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locking
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) locked
+btr_cur_search_to_nth_level: mutex: mutex (0x69a4520) unlocking
+que_eval_sql: ib_que: Execute 24 (FETCH) at 0x629002f41be8
+que_eval_sql: ib_que: Execute 1044 (STORED PROCEDURE) at 0x629002f42fe8
+que_eval_sql: ib_que: Execute 1045 (IF) at 0x629002f41f30
+que_eval_sql: ib_que: Execute 25 (OPEN) at 0x629002f41ea0
+que_eval_sql: ib_que: Execute 1045 (IF) at 0x629002f41f30
+que_eval_sql: ib_que: Execute 28 (RETURN) at 0x629002f41ef0
+que_eval_sql: ib_que: Execute 9 (QUERY THREAD) at 0x629002f42f40
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f3fea0, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f40e10, type: 6
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f42e88, type: 8
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f42f40, type: 9
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f42fe8, type: 1044
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f419a0, type: 25
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f41be8, type: 24
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f41f30, type: 1045
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f41ea0, type: 25
+que_graph_free_recursive: que_graph_free_recursive: node: 0x629002f41ef0, type: 28
+que_graph_free_recursive: 

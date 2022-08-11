@@ -1,0 +1,179 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000365,sig:11,src:019582+004712,time:9320304,execs:2297390,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+SQL: [;
+;pragma vdbe_listing=on;]
+VDBE Program Listing:
+   0 Init             0    1    0               00 Start at 1
+   1 Expire           0    0    0               00 
+   2 Halt             0    0    0               00 
+SQL: [;SELECT (SELECT max(x)OVER(ORDER BY x) + min(x)OVER(ORDER BY x))
+    FROM (SELECT (SELECT sum(x) FROM t1) AS x FROM t1);]
+VDBE Program Listing:
+   0 Init             0  134    0               00 Start at 134
+   1 OpenRead         1    2    0 0             00 root=2 iDb=0; t1
+   2 Explain          2    0    0 SCAN TABLE t1 00 
+   3 Rewind           1  133    0               00 
+   4 Explain          4    0    0 CORRELATED SCALAR SUBQUERY 1 00 
+   5 Null             0    2    2               00 r[2..2]=NULL; Init subquery result
+   6 Null             0    3    0               00 r[3]=NULL
+   7 Null             0    5    0               00 r[5]=NULL
+   8 OpenEphemeral    3    3    0               00 nColumn=3
+   9 OpenDup          4    3    0               00 
+  10 OpenDup          5    3    0               00 
+  11 OpenDup          6    3    0               00 
+  12 InitCoroutine    7   53   13               00 subquery_5
+  13 Explain         13    4    0 CO-ROUTINE 5  00 
+  14 Noop             8    5    0               00 
+  15 Explain         15   13    0 SCAN CONSTANT ROW 00 
+  16 Column           0    0    8               00 r[8]=subquery_3.x
+  17 Integer         32   11    0               00 r[11]=32; return address
+  18 Once             0   32    0               00 
+  19 Explain         19   13    0 SCALAR SUBQUERY 2 00 
+  20 Null             0   12   12               00 r[12..12]=NULL; Init subquery result
+  21 Integer          1   13    0               00 r[13]=1; LIMIT counter
+  22 Null             0   14   15               00 r[14..15]=NULL
+  23 OpenRead         2    2    0 1             00 root=2 iDb=0; t1
+  24 Explain         24   19    0 SCAN TABLE t1 00 
+  25 Rewind           2   29    0               00 
+  26 Column           2    0   16               00 r[16]=t1.x
+  27 AggStep          0   16   14 sum(1)        01 accum=r[14] step(r[16])
+  28 Next             2   26    0               01 
+  29 AggFinal        14    1    0 sum(1)        00 accum=r[14] N=1
+  30 Copy            14   12    0               00 r[12]=r[14]
+  31 DecrJumpZero    13   32    0               00 if (--r[13])==0 goto 32
+  32 Return          11    0    0               00 
+  33 Copy            12    9    0               00 r[9]=r[12]
+  34 Integer         49   17    0               00 r[17]=49; return address
+  35 Once             0   49    0               00 
+  36 Explain         36   13    0 SCALAR SUBQUERY 2 00 
+  37 Null             0   18   18               00 r[18..18]=NULL; Init subquery result
+  38 Integer          1   19    0               00 r[19]=1; LIMIT counter
+  39 Null             0   20   21               00 r[20..21]=NULL
+  40 OpenRead         2    2    0 1             00 root=2 iDb=0; t1
+  41 Explain         41   36    0 SCAN TABLE t1 00 
+  42 Rewind           2   46    0               00 
+  43 Column           2    0   16               00 r[16]=t1.x
+  44 AggStep          0   16   20 sum(1)        01 accum=r[20] step(r[16])
+  45 Next             2   43    0               01 
+  46 AggFinal        20    1    0 sum(1)        00 accum=r[20] N=1
+  47 Copy            20   18    0               00 r[18]=r[20]
+  48 DecrJumpZero    19   49    0               00 if (--r[19])==0 goto 49
+  49 Return          17    0    0               00 
+  50 Copy            18   10    0               00 r[10]=r[18]
+  51 Yield            7    0    0               00 
+  52 EndCoroutine     7    0    0               00 
+  53 Integer          1   22    0               00 r[22]=1; LIMIT counter
+  54 Integer          1   23    0               00 r[23]=1
+  55 Explain         55    4    0 SCAN SUBQUERY 5 00 
+  56 InitCoroutine    7    0   13               00 
+  57 Yield            7  100    0               00 next row of subquery_5
+  58 Copy             8   25    0               00 r[25]=r[8]
+  59 Copy             9   26    0               00 r[26]=r[9]
+  60 Copy            10   27    0               00 r[27]=r[10]
+  61 MakeRecord      25    3   28               00 r[28]=mkrec(r[25..27])
+  62 NewRowid         4   29    0               00 r[29]=rowid
+  63 Insert           4   28   29               00 intkey=r[29] data=r[28]
+  64 Ne              23   74   29               00 if r[29]!=r[23] goto 74
+  65 Null             0    3    0               00 r[3]=NULL
+  66 Null             0    5    0               00 r[5]=NULL
+  67 Rewind           3    1    0               00 
+  68 Rewind           6    1    0               00 
+  69 Copy            25   30    0               00 r[30]=r[25]
+  70 Copy            30   31    0               00 r[31]=r[30]
+  71 Copy            30   32    0               00 r[32]=r[30]
+  72 Copy            30   33    0               00 r[33]=r[30]
+  73 Goto             0   99    0               00 
+  74 Compare         30   25    1 k(1,B)        00 r[30] <-> r[25]
+  75 Jump            76   99   76               00 
+  76 Copy            25   30    0               00 r[30]=r[25]
+  77 Column           6    1   34               00 r[34]=
+  78 CollSeq          0    0    0 (BINARY)      00 
+  79 AggStep          0   34    3 min(1)        01 accum=r[3] step(r[34])
+  80 Column           6    2   34               00 r[34]=
+  81 CollSeq          0    0    0 (BINARY)      00 
+  82 AggStep          0   34    5 max(1)        01 accum=r[5] step(r[34])
+  83 Next             6   85    0               00 
+  84 Goto             0   89    0               00 
+  85 Column           6    0   35               00 r[35]=
+  86 Compare         33   35    1 k(1,B)        00 r[33] <-> r[35]
+  87 Jump            88   77   88               00 
+  88 Copy            35   33    0               00 r[33]=r[35]
+  89 AggValue         3    1    4 min(1)        00 r[4]=value N=1
+  90 AggValue         5    1    6 max(1)        00 r[6]=value N=1
+  91 Gosub           24  126    0               00 
+  92 Delete           3    0    0               02 
+  93 Next             3   95    0               00 
+  94 Goto             0   99    0               00 
+  95 Column           3    0   35               00 r[35]=
+  96 Compare         32   35    1 k(1,B)        00 r[32] <-> r[35]
+  97 Jump            98   91   98               00 
+  98 Copy            35   32    0               00 r[32]=r[35]
+  99 Goto             0   57    0               00 
+ 100 Rewind           4  124    0               00 
+ 101 Column           6    1   34               00 r[34]=
+ 102 CollSeq          0    0    0 (BINARY)      00 
+ 103 AggStep          0   34    3 min(1)        01 accum=r[3] step(r[34])
+ 104 Column           6    2   34               00 r[34]=
+ 105 CollSeq          0    0    0 (BINARY)      00 
+ 106 AggStep          0   34    5 max(1)        01 accum=r[5] step(r[34])
+ 107 Next             6  109    0               00 
+ 108 Goto             0  113    0               00 
+ 109 Column           6    0   35               00 r[35]=
+ 110 Compare         33   35    1 k(1,B)        00 r[33] <-> r[35]
+ 111 Jump           112  101  112               00 
+ 112 Copy            35   33    0               00 r[33]=r[35]
+ 113 AggValue         3    1    4 min(1)        00 r[4]=value N=1
+ 114 AggValue         5    1    6 max(1)        00 r[6]=value N=1
+ 115 Gosub           24  126    0               00 
+ 116 Delete           3    0    0               02 
+ 117 Next             3  119    0               00 
+ 118 Goto             0  124    0               00 
+ 119 Column           3    0   35               00 r[35]=
+ 120 Compare         32   35    1 k(1,B)        00 r[32] <-> r[35]
+ 121 Jump           122  115  122               00 
+ 122 Copy            35   32    0               00 r[32]=r[35]
+ 123 Goto             0  113    0               00 
+ 124 ResetSorter      3    0    0               00 
+ 125 Goto             0  130    0               00 
+ 126 Noop             0    0    0               00 inner-loop subroutine
+ 127 Add              4    6    2               00 r[2]=r[4]+r[6]
+ 128 DecrJumpZero    22  130    0               00 if (--r[22])==0 goto 130
+ 129 Return          24    0    0               00 end inner-loop subroutine
+ 130 Copy             2    1    0               00 r[1]=r[2]
+ 131 ResultRow        1    1    0               00 output=r[1]
+ 132 Next             1    4    0               01 
+ 133 Halt             0    0    0               00 
+ 134 Transaction      0    0    1 0             01 usesStmtJournal=0
+ 135 Goto             0    1    0               00 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000003e1e8f in sqlite3VdbeCursorMoveto (pp=0x7ffcecbc5bf8, piCol=0x7ffcecbc5b88) at sqlite3.c:79680
+79680	  assert( p->eCurType==CURTYPE_BTREE || p->eCurType==CURTYPE_PSEUDO );
+(gdb) #0  0x00000000003e1e8f in sqlite3VdbeCursorMoveto (pp=0x7ffcecbc5bf8, piCol=0x7ffcecbc5b88) at sqlite3.c:79680
+#1  0x00000000003c7ccb in sqlite3VdbeExec (p=0xc144e0) at sqlite3.c:86079
+#2  0x0000000000411104 in sqlite3Step (p=0xc144e0) at sqlite3.c:81930
+#3  0x000000000029128d in sqlite3_step (pStmt=0xc144e0) at sqlite3.c:81995
+#4  0x00000000002570b9 in main (argc=1, argv=0x7ffcecbc5ee8) at target.cc:139
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 54330] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

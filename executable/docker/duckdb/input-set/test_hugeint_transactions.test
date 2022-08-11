@@ -1,0 +1,90 @@
+# name: test/sql/transactions/types/test_hugeint_transactions.test
+# description: Test transaction ops with hugeints
+# group: [types]
+
+;
+PRAGMA enable_verification
+
+# create table
+;
+CREATE TABLE hugeints (h HUGEINT);
+
+;
+INSERT INTO hugeints VALUES (100::HUGEINT), (1023819078293589341789412412), (42);
+
+# update
+;
+BEGIN TRANSACTION;
+
+;
+UPDATE hugeints SET h=100 WHERE h=42;
+
+# now we only have two distinct values in con
+;
+SELECT * FROM hugeints ORDER BY 1
+;
+100
+100
+1023819078293589341789412412
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+2
+
+# in con2 we still have 3
+;
+SELECT * FROM hugeints ORDER BY 1
+;
+42
+100
+1023819078293589341789412412
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+3
+
+# rollback
+;
+ROLLBACK
+
+# after the rollback we are back to 3
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+3
+
+# now commit it
+;
+UPDATE hugeints SET h=100 WHERE h=42;
+
+;
+SELECT h, COUNT(*) FROM hugeints GROUP BY h ORDER BY 2 DESC
+;
+100	2
+1023819078293589341789412412	1
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+2
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+2
+
+# increment 100 by 1
+;
+UPDATE hugeints SET h=h+1 WHERE h=100;
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+2
+
+;
+SELECT COUNT(DISTINCT h) FROM hugeints
+;
+2

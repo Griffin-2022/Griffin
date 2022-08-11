@@ -1,0 +1,61 @@
+# name: test/sql/storage/catalog/test_view_explicit_aliases.test
+# description: Test views with explicit column aliases
+# group: [catalog]
+
+# load the DB from disk
+load __TEST_DIR__/view_explicit_aliases_storage.db
+
+# create a database and insert the table/view
+;
+CREATE SCHEMA test;
+
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+# the view has aliases (b, c)
+;
+CREATE VIEW test.v (b,c) AS SELECT * FROM test.t;
+
+# check the view info
+;
+PRAGMA table_info('test.v')
+;
+
+;
+SELECT * FROM test.v
+
+;
+DROP TABLE test.t
+
+# we can still query this after the table is gone
+;
+PRAGMA table_info('test.v')
+;
+
+loop i 0 2
+
+# now reload
+restart
+
+# can check info, but not query the view
+;
+PRAGMA table_info('test.v')
+;
+
+;
+SELECT * FROM test.v
+
+# we can query again after recreating the table
+;
+CREATE TABLE test.t (a INTEGER, b INTEGER);
+
+;
+SELECT * FROM test.t
+
+;
+SELECT b,c FROM test.v
+
+;
+DROP TABLE test.t
+
+endloop

@@ -1,0 +1,86 @@
+# name: test/sql/storage/catalog/test_table_macro_storage.test
+# description: Test storage of table macros
+# group: [catalog]
+
+# load the DB from disk
+load __TEST_DIR__/macro_storage.db
+
+
+;
+CREATE TABLE test_tbl (id INT, name string, height double);
+
+;
+INSERT INTO  test_tbl values (1,'tom', 1.1), (2,'dick',1.2),(3,'harry', 1.2),
+                             (4,'mary',0.9), (5,'mungo', 0.8), (6,'midge', 0.5);
+
+# create a table macro
+;
+CREATE MACRO xt(a, _name) as TABLE SELECT * FROM test_tbl WHERE id<=a or name = _name;
+
+# use the macro
+;
+SELECT * FROM xt(10, '*') ORDER BY  height limit 1;
+;
+6	midge	0.5
+
+;
+CREATE TEMPORARY MACRO my_seq(start , finish, stride:=3) as TABLE SELECT  * FROM generate_series(start , finish , stride);
+
+;
+SELECT * FROM my_seq(0,6);
+;
+0
+3
+6
+
+
+restart 
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM xt(100, 'joe');
+
+;
+DROP MACRO TABLE xt;
+
+;
+SELECT * from my_seq(0,10,2);
+
+# create another macro to check  the WAL
+;
+CREATE MACRO my_range(rend) AS TABLE SELECT * FROM range(rend);
+
+;
+SELECT * from my_range(2);
+;
+0
+1
+
+
+
+# check the WAL
+restart
+
+;
+SELECT * FROM xt(100, 'joe');
+
+;
+SELECT * FROM my_seq(0,3,2);
+
+;
+SELECT * from my_range(2);
+;
+0
+1
+
+
+
+
+
+
+

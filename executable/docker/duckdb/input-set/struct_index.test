@@ -1,0 +1,163 @@
+# name: test/sql/types/struct/struct_index.test
+# description: Test struct lookups using an index
+# group: [struct]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE a(id INTEGER PRIMARY KEY, c ROW(i ROW(a INTEGER), j INTEGER));
+
+;
+INSERT INTO a VALUES (1, {
+	'i': {
+		'a': 3
+	},
+	'j': 4
+})
+
+# simple lookup
+;
+SELECT * FROM a WHERE id=1
+;
+1	{'i': {'a': 3}, 'j': 4}
+
+# now with null values at different levels
+;
+INSERT INTO a VALUES (2, NULL)
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	{'i': {'a': 3}, 'j': 4}
+2	NULL
+
+;
+INSERT INTO a VALUES (3, ROW(ROW(NULL), 1))
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	{'i': {'a': 3}, 'j': 4}
+2	NULL
+3	{'i': {'a': NULL}, 'j': 1}
+
+;
+INSERT INTO a VALUES (4, ROW(ROW(1), NULL))
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	{'i': {'a': 3}, 'j': 4}
+2	NULL
+3	{'i': {'a': NULL}, 'j': 1}
+4	{'i': {'a': 1}, 'j': NULL}
+
+;
+INSERT INTO a VALUES (5, ROW(NULL, 1))
+
+;
+SELECT * FROM a ORDER BY id
+;
+1	{'i': {'a': 3}, 'j': 4}
+2	NULL
+3	{'i': {'a': NULL}, 'j': 1}
+4	{'i': {'a': 1}, 'j': NULL}
+5	{'i': NULL, 'j': 1}
+
+;
+SELECT * FROM a WHERE id=2
+;
+2	NULL
+
+;
+SELECT * FROM a WHERE id=3
+;
+3	{'i': {'a': NULL}, 'j': 1}
+
+;
+SELECT * FROM a WHERE id=4
+;
+4	{'i': {'a': 1}, 'j': NULL}
+
+;
+SELECT * FROM a WHERE id=5
+;
+5	{'i': NULL, 'j': 1}
+
+# test index construction on a table with structs
+;
+DROP TABLE a;
+
+;
+CREATE TABLE a(id INTEGER, c ROW(i ROW(a INTEGER), j INTEGER));
+
+;
+INSERT INTO a VALUES (1, {
+	'i': {
+		'a': 3
+	},
+	'j': 4
+})
+
+;
+INSERT INTO a VALUES (2, NULL)
+
+;
+INSERT INTO a VALUES (3, ROW(ROW(NULL), 1))
+
+;
+INSERT INTO a VALUES (4, ROW(ROW(1), NULL))
+
+;
+INSERT INTO a VALUES (5, ROW(NULL, 1))
+
+;
+CREATE INDEX a_index ON a(id);
+
+;
+SELECT * FROM a WHERE id=1
+;
+1	{'i': {'a': 3}, 'j': 4}
+
+;
+SELECT * FROM a WHERE id=2
+;
+2	NULL
+
+;
+SELECT * FROM a WHERE id=3
+;
+3	{'i': {'a': NULL}, 'j': 1}
+
+;
+SELECT * FROM a WHERE id=4
+;
+4	{'i': {'a': 1}, 'j': NULL}
+
+;
+SELECT * FROM a WHERE id=5
+;
+5	{'i': NULL, 'j': 1}
+
+# now try with multiple entries on the same index
+;
+INSERT INTO a VALUES (1, NULL)
+
+;
+INSERT INTO a VALUES (1, ROW(ROW(NULL), 1))
+
+;
+INSERT INTO a VALUES (1, ROW(ROW(1), NULL))
+
+;
+INSERT INTO a VALUES (1, ROW(NULL, 1))
+
+;
+SELECT * FROM a WHERE id=1 ORDER BY c['i']['a']
+;
+1	NULL
+1	{'i': {'a': NULL}, 'j': 1}
+1	{'i': NULL, 'j': 1}
+1	{'i': {'a': 1}, 'j': NULL}
+1	{'i': {'a': 3}, 'j': 4}

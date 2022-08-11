@@ -1,0 +1,75 @@
+# name: test/sql/types/hugeint/test_hugeint_ops.test
+# description: Test various huge integer ops
+# group: [hugeint]
+
+;
+PRAGMA enable_verification
+
+# test storage of the HUGEINT type
+;
+CREATE TABLE hugeints(h HUGEINT);
+
+;
+INSERT INTO hugeints VALUES (42::HUGEINT), ('1267650600228229401496703205376'::HUGEINT);
+
+# out of range conversion
+# statement error
+# SELECT h::INTEGER FROM hugeints
+
+# filter before cast works
+;
+SELECT h::INTEGER FROM hugeints WHERE h < 100
+;
+42
+
+# test different comparison ops
+;
+SELECT COUNT(*) FROM hugeints WHERE h = 42::HUGEINT
+;
+1
+
+;
+SELECT COUNT(*) FROM hugeints WHERE h <> '1267650600228229401496703205376'::HUGEINT
+;
+1
+
+;
+SELECT COUNT(*) FROM hugeints WHERE h < '1267650600228229401496703205376'::HUGEINT
+;
+1
+
+;
+SELECT COUNT(*) FROM hugeints WHERE h <= '1267650600228229401496703205376'::HUGEINT
+;
+2
+
+;
+SELECT COUNT(*) FROM hugeints WHERE h > '1267650600228229401496703205375'::HUGEINT
+;
+1
+
+;
+SELECT COUNT(*) FROM hugeints WHERE h >= 42::HUGEINT
+;
+2
+
+# joins
+;
+CREATE TABLE hugeints2(h HUGEINT);
+INSERT INTO hugeints2 VALUES (42::HUGEINT);
+
+;
+SELECT * FROM hugeints JOIN hugeints2 USING (h);
+;
+42
+
+;
+SELECT * FROM hugeints t1 JOIN hugeints2 t2 ON t1.h <> t2.h
+;
+1267650600228229401496703205376	42
+
+;
+SELECT * FROM hugeints t1 JOIN hugeints2 t2 ON t1.h >= t2.h ORDER BY 1 LIMIT 2
+;
+42	42
+1267650600228229401496703205376	42

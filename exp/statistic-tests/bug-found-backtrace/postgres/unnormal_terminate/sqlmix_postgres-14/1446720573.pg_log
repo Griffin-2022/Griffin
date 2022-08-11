@@ -1,0 +1,111 @@
+	;
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  create type test1 as (f1 int, f2 text);
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  could not find pg_class tuple for index 2662 at character 12
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  SELECT NOT pg_is_in_recovery()
+	;
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  ALTER DATABASE "isolation_regression" SET lc_messages TO 'C';
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  
+	drop routine f1(), p1();
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  
+	
+	CREATE EVENT TRIGGER undroppable ON sql_drop
+		EXECUTE PROCEDURE undroppable();
+2022-08-01 22:10:10.734 UTC [74664] ERROR:  schema "evttrig" does not exist
+2022-08-01 22:10:10.734 UTC [74664] STATEMENT:  
+	ALTER TABLE evttrig.test1 ALTER COLUMN objoid DROP DEFAULT;
+2022-08-01 22:10:10.734 UTC [74664] WARNING:  there is no transaction in progress
+2022-08-01 22:10:10.735 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.735 UTC [74664] STATEMENT:  DISCARD ALL;
+2022-08-01 22:10:10.735 UTC [74664] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-01 22:10:10.735 UTC [74664] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-01 22:10:10.735 UTC [74664] ERROR:  schema "public" already exists
+2022-08-01 22:10:10.735 UTC [74664] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  could not find pg_class tuple for index 2662 at character 8
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  SELECT pg_is_in_recovery() = 'f';
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  
+	
+	-- make test configuration using parser
+	
+	CREATE TEXT SEARCH CONFIGURATION testcfg (PARSER = testparser);
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  could not find pg_class tuple for index 2662 at character 9
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  
+	select to_tsvector('simple', 'x q') @@ '(x | y <-> z) <-> q' AS "true";
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  event triggers are not supported for DROP EVENT TRIGGER
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  
+	
+	-- should fail, can't have event triggers on event triggers
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('DROP EVENT TRIGGER')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  event triggers are not supported for CREATE DATABASE
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE DATABASE')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:10.736 UTC [74664] ERROR:  event triggers are not supported for CREATE TABLESPACE
+2022-08-01 22:10:10.736 UTC [74664] STATEMENT:  
+	
+	-- should fail, can't have event triggers on global objects
+	create event trigger regress_event_trigger2 on ddl_command_start
+	   when tag in ('CREATE TABLESPACE')
+	   execute procedure test_event_trigger();
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  create type test1 as (f1 int, f2 text);
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  create operator class ctype_hash_ops
+	  default for type test1 using hash as
+	  operator 1 =(test1, test1);
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  schema "schema_two" does not exist
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  
+	
+	CREATE OR REPLACE FUNCTION schema_two.add(int, int) RETURNS int LANGUAGE plpgsql
+	  CALLED ON NULL INPUT
+	  AS $$ BEGIN RETURN coalesce($1,0) + coalesce($2,0); END; $$;
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  
+	CREATE OR REPLACE FUNCTION event_trigger_report_end()
+	 RETURNS event_trigger
+	 LANGUAGE plpgsql
+	AS $$
+	DECLARE r RECORD;
+	BEGIN
+	    FOR r IN SELECT * FROM pg_event_trigger_ddl_commands()
+	    LOOP
+	        RAISE NOTICE 'END: command_tag=% type=% identity=%',
+	            r.command_tag, r.object_type, r.object_identity;
+	    END LOOP;
+	END; $$;
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  
+	CREATE EVENT TRIGGER regress_event_trigger_report_end ON ddl_command_end
+	  EXECUTE PROCEDURE event_trigger_report_end();
+2022-08-01 22:10:10.737 UTC [74664] WARNING:  there is no transaction in progress
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  DISCARD ALL;
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  could not find pg_class tuple for index 2662 at character 24
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  SELECT n.nspname 
+	FROM pg_catalog.pg_namespace n 
+	WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';
+2022-08-01 22:10:10.737 UTC [74664] ERROR:  schema "public" already exists
+2022-08-01 22:10:10.737 UTC [74664] STATEMENT:  CREATE SCHEMA public; SET search_path TO public;
+2022-08-01 22:10:14.101 UTC [76079] PANIC:  could not open critical system index 2662
+2022-08-01 22:10:14.103 UTC [67160] LOG:  server process (PID 76079) was terminated by signal 6: Aborted
+2022-08-01 22:10:14.103 UTC [67160] LOG:  terminating any other active server processes
+2022-08-01 22:10:14.128 UTC [67160] LOG:  all server processes terminated; reinitializing
+2022-08-01 22:10:14.180 UTC [76081] LOG:  database system was interrupted; last known up at 2022-08-01 22:10:02 UTC
+2022-08-01 22:10:14.201 UTC [76081] LOG:  database system was not properly shut down; automatic recovery in progress
+2022-08-01 22:10:14.201 UTC [76081] LOG:  redo starts at 0/69D5570
+2022-08-01 22:10:14.735 UTC [76111] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:14.737 UTC [76114] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:14.739 UTC [76115] FATAL:  the database system is in recovery mode
+2022-08-01 22:10:14.744 UTC [67160] LOG:  received smart shutdown request
+2022-08-01 22:10:14.749 UTC [67160] LOG:  abnormal database system shutdown

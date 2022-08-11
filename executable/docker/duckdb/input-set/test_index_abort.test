@@ -1,0 +1,53 @@
+# name: test/sql/transactions/test_index_abort.test
+# description: Test abort of update/delete
+# group: [transactions]
+
+;
+CREATE TABLE integers(i INTEGER PRIMARY KEY, j INTEGER)
+
+;
+INSERT INTO integers VALUES (1, 1), (2, 2), (3, 3)
+
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+# insert the value "4" for both transactions
+;
+INSERT INTO integers VALUES (4, 4)
+
+;
+INSERT INTO integers VALUES (4, 4)
+
+# perform some other operations
+;
+UPDATE integers SET j=j+1
+
+;
+DELETE FROM integers WHERE i=2
+
+;
+CREATE TABLE test(i INTEGER)
+
+# commit both transactions, con2 should now fail
+;
+COMMIT
+
+;
+COMMIT
+
+# verify that the data is (1, 1), (...), (4, 4)
+;
+SELECT * FROM integers ORDER BY i
+;
+1	1
+2	2
+3	3
+4	4
+
+# table test should not exist
+;
+SELECT * FROM test
+

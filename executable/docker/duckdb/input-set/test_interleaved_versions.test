@@ -1,0 +1,141 @@
+# name: test/sql/transactions/test_interleaved_versions.test
+# description: Test interleaved versions of tuples
+# group: [transactions]
+
+;
+PRAGMA enable_verification
+
+;
+CREATE TABLE integers(i INTEGER)
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (1)
+
+;
+BEGIN TRANSACTION
+
+;
+INSERT INTO integers VALUES (2)
+
+# transaction local only
+;
+SELECT SUM(i) FROM integers
+;
+1
+
+;
+SELECT SUM(i) FROM integers
+;
+2
+
+;
+SELECT SUM(i) FROM integers
+;
+NULL
+
+# commit con1 only
+;
+COMMIT
+
+;
+SELECT SUM(i) FROM integers
+;
+1
+
+;
+SELECT SUM(i) FROM integers
+;
+2
+
+;
+SELECT SUM(i) FROM integers
+;
+1
+
+# commit con2 as well
+;
+COMMIT
+
+;
+SELECT SUM(i) FROM integers
+;
+3
+
+;
+SELECT SUM(i) FROM integers
+;
+3
+
+;
+SELECT SUM(i) FROM integers
+;
+3
+
+# now delete a tuple in both con1 and con2
+;
+BEGIN TRANSACTION
+
+;
+BEGIN TRANSACTION
+
+;
+DELETE FROM integers WHERE i=1
+
+;
+DELETE FROM integers WHERE i=2
+
+;
+SELECT SUM(i) FROM integers
+;
+2
+
+;
+SELECT SUM(i) FROM integers
+;
+1
+
+;
+SELECT SUM(i) FROM integers
+;
+3
+
+# commit con1
+;
+COMMIT
+
+;
+SELECT SUM(i) FROM integers
+;
+2
+
+;
+SELECT SUM(i) FROM integers
+;
+1
+
+;
+SELECT SUM(i) FROM integers
+;
+2
+
+# commit con2
+;
+COMMIT
+
+;
+SELECT SUM(i) FROM integers
+;
+NULL
+
+;
+SELECT SUM(i) FROM integers
+;
+NULL
+
+;
+SELECT SUM(i) FROM integers
+;
+NULL

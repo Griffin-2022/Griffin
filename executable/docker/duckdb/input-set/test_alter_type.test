@@ -1,0 +1,41 @@
+# name: test/sql/alter/alter_type/test_alter_type.test
+# description: Test ALTER TABLE ALTER TYPE
+# group: [alter_type]
+
+;
+CREATE TABLE test(i INTEGER, j INTEGER)
+
+;
+INSERT INTO test VALUES (1, 1), (2, 2)
+
+;
+ALTER TABLE test ALTER i SET DATA TYPE VARCHAR
+
+;
+SELECT * FROM test
+;
+1	1
+2	2
+
+# filter on an altered column
+;
+SELECT * FROM test WHERE i='1'
+;
+1	1
+
+;
+ALTER TABLE test ALTER i SET DATA TYPE INTEGER
+
+;
+SELECT * FROM test WHERE i=1
+;
+1	1
+
+;
+SELECT stats(i) FROM test LIMIT 1
+;
+<REGEX>:.*1.*2.*
+
+# fail when column does not exist
+;
+ALTER TABLE test ALTER nonexistingcolumn SET DATA TYPE INTEGER

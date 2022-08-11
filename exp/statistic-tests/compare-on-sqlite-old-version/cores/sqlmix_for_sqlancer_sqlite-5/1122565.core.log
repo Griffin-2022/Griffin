@@ -1,0 +1,49 @@
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /root/sqlite_driver_fast...
+(gdb) Starting program: /root/sqlite_driver_fast < "/root/out/default/crashes/id:000410,sig:08,src:022262+024277,time:13727875,execs:3463838,op:merge.so,pos:0"
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGFPE, Arithmetic exception.
+0x0000000000386bda in whereLoopAddBtreeIndex (pBuilder=0x7ffe1d7b5f48, pSrc=0x13c2f98, pProbe=0x13c80b0, nInMul=0) at sqlite3.c:142707
+142707	    rCostIdx = pNew->nOut + 1 + (15*pProbe->szIdxRow)/pSrc->pTab->szTabRow;
+(gdb) #0  0x0000000000386bda in whereLoopAddBtreeIndex (pBuilder=0x7ffe1d7b5f48, pSrc=0x13c2f98, pProbe=0x13c80b0, nInMul=0) at sqlite3.c:142707
+#1  0x00000000003828e6 in whereLoopAddBtree (pBuilder=0x7ffe1d7b5f48, mPrereq=0) at sqlite3.c:143097
+#2  0x000000000036fb8f in whereLoopAddAll (pBuilder=0x7ffe1d7b5f48) at sqlite3.c:143616
+#3  0x000000000036a9df in sqlite3WhereBegin (pParse=0x13c1820, pTabList=0x13c2f90, pWhere=0x13afa30, pOrderBy=0x0, pResultSet=0x0, wctrlFlags=4100, iAuxArg=1) at sqlite3.c:144811
+#4  0x00000000003069f8 in sqlite3Update (pParse=0x13c1820, pTabList=0x13c2f90, pChanges=0x13c0a10, pWhere=0x13afa30, onError=11, pOrderBy=0x0, pLimit=0x0, pUpsert=0x0) at sqlite3.c:133126
+#5  0x000000000039491c in codeTriggerProgram (pParse=0x13c1820, pStepList=0x13c7ef0, orconf=11) at sqlite3.c:132236
+#6  0x0000000000394209 in codeRowTrigger (pParse=0x7ffe1d7b7330, pTrigger=0x13d14f0, pTab=0x13c74f0, orconf=11) at sqlite3.c:132398
+#7  0x000000000039393d in getRowTrigger (pParse=0x7ffe1d7b7330, pTrigger=0x13d14f0, pTab=0x13c74f0, orconf=11) at sqlite3.c:132455
+#8  0x0000000000391e01 in sqlite3TriggerColmask (pParse=0x7ffe1d7b7330, pTrigger=0x13d14f0, pChanges=0x13a97c0, isNew=0, tr_tm=3, pTab=0x13c74f0, orconf=11) at sqlite3.c:132620
+#9  0x00000000003077be in sqlite3Update (pParse=0x7ffe1d7b7330, pTabList=0x13c3da0, pChanges=0x13a97c0, pWhere=0x0, onError=11, pOrderBy=0x0, pLimit=0x0, pUpsert=0x0) at sqlite3.c:133245
+#10 0x00000000002ee4f4 in yy_reduce (yypParser=0x7ffe1d7b6950, yyruleno=145, yyLookahead=1, yyLookaheadToken=..., pParse=0x7ffe1d7b7330) at sqlite3.c:151909
+#11 0x00000000002e92f8 in sqlite3Parser (yyp=0x7ffe1d7b6950, yymajor=1, yyminor=...) at sqlite3.c:152877
+#12 0x00000000002a68b3 in sqlite3RunParser (pParse=0x7ffe1d7b7330, zSql=0x13ba7dd ";SELECT (-1   +  (34 BETWEEN a AND 33)) IS TRUE FROM t0\n;", pzErrMsg=0x7ffe1d7b7510) at sqlite3.c:154013
+#13 0x00000000002a1683 in sqlite3Prepare (db=0x13a52b0, zSql=0x13a62c4 ";\n;UPDATE t0 SET (c0,c0) = (SELECT c0,c0 FROM t0 WHERE c0=c0);SELECT (-1   +  (34 BETWEEN a AND 33)) IS TRUE FROM t0\n;", nBytes=118, prepFlags=128, 
+    pReprepare=0x0, ppStmt=0x7ffe1d7b7648, pzTail=0x7ffe1d7b7630) at sqlite3.c:124303
+#14 0x00000000002a0d4e in sqlite3LockAndPrepare (db=0x13a52b0, zSql=0x13a62c4 ";\n;UPDATE t0 SET (c0,c0) = (SELECT c0,c0 FROM t0 WHERE c0=c0);SELECT (-1   +  (34 BETWEEN a AND 33)) IS TRUE FROM t0\n;", nBytes=118, 
+    prepFlags=128, pOld=0x0, ppStmt=0x7ffe1d7b7648, pzTail=0x7ffe1d7b7630) at sqlite3.c:124403
+#15 0x000000000029247f in sqlite3_prepare_v2 (db=0x13a52b0, zSql=0x13a62c4 ";\n;UPDATE t0 SET (c0,c0) = (SELECT c0,c0 FROM t0 WHERE c0=c0);SELECT (-1   +  (34 BETWEEN a AND 33)) IS TRUE FROM t0\n;", nBytes=118, 
+    ppStmt=0x7ffe1d7b7648, pzTail=0x7ffe1d7b7630) at sqlite3.c:124487
+#16 0x0000000000256bd0 in main (argc=1, argv=0x7ffe1d7b77f8) at target.cc:106
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 53852] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]

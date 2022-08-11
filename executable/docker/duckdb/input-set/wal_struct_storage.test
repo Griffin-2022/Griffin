@@ -1,0 +1,113 @@
+# name: test/sql/storage/types/struct/wal_struct_storage.test
+# description: Test structs with persistent storage
+# group: [struct]
+
+# load the DB from disk
+load __TEST_DIR__/struct_storage_test.db
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+CREATE TABLE a(b STRUCT(i INTEGER, j INTEGER));
+
+;
+INSERT INTO a VALUES ({'i': 1, 'j': 2}), (NULL), ({'i': NULL, 'j': 2}), (ROW(1, NULL));
+
+;
+SELECT * FROM a;
+;
+{'i': 1, 'j': 2}
+NULL
+{'i': NULL, 'j': 2}
+{'i': 1, 'j': NULL}
+
+;
+SELECT COUNT(*) FROM a WHERE b IS NULL;
+;
+1
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM a;
+;
+{'i': 1, 'j': 2}
+NULL
+{'i': NULL, 'j': 2}
+{'i': 1, 'j': NULL}
+
+;
+SELECT COUNT(*) FROM a WHERE b IS NULL;
+;
+1
+
+# deletes
+;
+DELETE FROM a WHERE (b).i=1
+;
+2
+
+;
+SELECT * FROM a;
+;
+NULL
+{'i': NULL, 'j': 2}
+
+restart
+
+;
+PRAGMA disable_checkpoint_on_shutdown
+
+;
+PRAGMA wal_autocheckpoint='1TB';
+
+;
+SELECT * FROM a;
+;
+NULL
+{'i': NULL, 'j': 2}
+
+;
+SELECT COUNT(*) FROM a WHERE b IS NULL;
+;
+1
+
+# updates
+;
+UPDATE a SET b={i: 7, j: 9} WHERE b IS NULL
+;
+1
+
+;
+SELECT * FROM a;
+;
+{'i': 7, 'j': 9}
+{'i': NULL, 'j': 2}
+
+;
+SELECT COUNT(*) FROM a WHERE b IS NULL;
+;
+0
+
+restart
+
+;
+SELECT * FROM a;
+;
+{'i': 7, 'j': 9}
+{'i': NULL, 'j': 2}
+
+;
+SELECT COUNT(*) FROM a WHERE b IS NULL;
+;
+0
