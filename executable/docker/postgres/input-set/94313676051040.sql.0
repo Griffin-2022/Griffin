@@ -1,0 +1,25 @@
+BEGIN;
+;CREATE TABLE trunc_trig (id serial PRIMARY KEY, id2 text);
+;CREATE FUNCTION trunc_trig_before_stat_trig() RETURNS trigger
+		  LANGUAGE plpgsql as $$
+		  BEGIN
+			INSERT INTO trunc_trig VALUES (DEFAULT, 'triggered stat before');
+			RETURN NULL;
+		  END; $$;
+;CREATE FUNCTION trunc_trig_after_stat_trig() RETURNS trigger
+		  LANGUAGE plpgsql as $$
+		  BEGIN
+			INSERT INTO trunc_trig VALUES (DEFAULT, 'triggered stat before');
+			RETURN NULL;
+		  END; $$;
+;CREATE TRIGGER trunc_trig_before_stat_truncate
+		  BEFORE TRUNCATE ON trunc_trig
+		  FOR EACH STATEMENT EXECUTE PROCEDURE trunc_trig_before_stat_trig();
+;CREATE TRIGGER trunc_trig_after_stat_truncate
+		  AFTER TRUNCATE ON trunc_trig
+		  FOR EACH STATEMENT EXECUTE PROCEDURE trunc_trig_after_stat_trig();
+;INSERT INTO trunc_trig VALUES (DEFAULT, 1);
+;TRUNCATE trunc_trig;
+;COPY trunc_trig FROM '/root/postgres/src/test/recovery/tmp_check/t_018_wal_optimize_node_replica_data/copy_data.txt' DELIMITER ',';
+;COMMIT;
+;

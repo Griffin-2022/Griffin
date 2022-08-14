@@ -1,0 +1,209 @@
+SELECT date(now())::text = current_date::text;
+;SELECT now()::timetz::text = current_time::text;
+;SELECT now()::timetz(4)::text = current_time(4)::text;
+;SELECT now()::time::text = localtime::text;
+;SELECT now()::time(3)::text = localtime(3)::text;
+;SELECT current_timestamp = NOW();
+;SELECT length(current_timestamp::text) >= length(current_timestamp(0)::text);
+;SELECT now()::timestamp::text = localtimestamp::text;
+;SELECT current_catalog = current_database();
+;SELECT current_schema;
+;SET search_path = 'notme';
+;SELECT current_schema;
+;SET search_path = 'pg_catalog';
+;SELECT current_schema;
+;RESET search_path;
+;explain (costs off)
+select count(*) from date_tbl
+  where f1 between '1997-01-01' and '1998-01-01';
+;select count(*) from date_tbl
+  where f1 between '1997-01-01' and '1998-01-01';
+;explain (costs off)
+select count(*) from date_tbl
+  where f1 not between '1997-01-01' and '1998-01-01';
+;select count(*) from date_tbl
+  where f1 not between '1997-01-01' and '1998-01-01';
+;explain (costs off)
+select count(*) from date_tbl
+  where f1 between symmetric '1997-01-01' and '1998-01-01';
+;select count(*) from date_tbl
+  where f1 between symmetric '1997-01-01' and '1998-01-01';
+;explain (costs off)
+select count(*) from date_tbl
+  where f1 not between symmetric '1997-01-01' and '1998-01-01';
+;select count(*) from date_tbl
+  where f1 not between symmetric '1997-01-01' and '1998-01-01';
+;begin;
+;create table numeric_tbl (f1 numeric(18,3), f2 numeric);
+;create view numeric_view as
+  select
+    f1, f1::numeric(16,4) as f1164, f1::numeric as f1n,
+    f2, f2::numeric(16,4) as f2164, f2::numeric as f2n
+  from numeric_tbl;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(numeric_view)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '17475';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '17475' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pg_catalog.pg_get_viewdef('17475'::pg_catalog.oid, true);
+;SELECT r.rulename, trim(trailing ';' from pg_catalog.pg_get_ruledef(r.oid, true))
+FROM pg_catalog.pg_rewrite r
+WHERE r.ev_class = '17475' AND r.rulename != '_RETURN' ORDER BY 1;
+;explain (verbose, costs off) select * from numeric_view;
+;create table bpchar_tbl (f1 character(16) unique, f2 bpchar);
+;create view bpchar_view as
+  select
+    f1, f1::character(14) as f114, f1::bpchar as f1n,
+    f2, f2::character(14) as f214, f2::bpchar as f2n
+  from bpchar_tbl;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(bpchar_view)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '17493';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '17493' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pg_catalog.pg_get_viewdef('17493'::pg_catalog.oid, true);
+;SELECT r.rulename, trim(trailing ';' from pg_catalog.pg_get_ruledef(r.oid, true))
+FROM pg_catalog.pg_rewrite r
+WHERE r.ev_class = '17493' AND r.rulename != '_RETURN' ORDER BY 1;
+;explain (verbose, costs off) select * from bpchar_view
+  where f1::bpchar = 'foo';
+;rollback;
+;explain (verbose, costs off)
+select random() IN (1, 4, 8.0);
+;explain (verbose, costs off)
+select random()::int IN (1, 4, 8.0);
+;select '(0,0)'::point in ('(0,0,0,0)'::box, point(0,0));
+;begin;
+;create function return_int_input(int) returns int as $$
+begin
+	return $1;
+end;
+$$ language plpgsql stable;
+;create function return_text_input(text) returns text as $$
+begin
+	return $1;
+end;
+$$ language plpgsql stable;
+;select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+;select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, null);
+;select return_int_input(1) in (null, null, null, null, null, null, null, null, null, null, null);
+;select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null);
+;select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+;select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, null);
+;select return_text_input('a') in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
+;select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+;select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 0);
+;select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 2, null);
+;select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null);
+;select return_int_input(1) not in (null, null, null, null, null, null, null, null, null, null, null);
+;select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+;select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, null);
+;select return_text_input('a') not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
+;rollback;
+;begin;
+;create type myint;
+;create function myintin(cstring) returns myint strict immutable language
+  internal as 'int4in';
+;create function myintout(myint) returns cstring strict immutable language
+  internal as 'int4out';
+;create function myinthash(myint) returns integer strict immutable language
+  internal as 'hashint4';
+;create type myint (input = myintin, output = myintout, like = int4);
+;create cast (int4 as myint) without function;
+;create cast (myint as int4) without function;
+;create function myinteq(myint, myint) returns bool as $$
+begin
+  if $1 is null and $2 is null then
+    return true;
+  else
+    return $1::int = $2::int;
+  end if;
+end;
+$$ language plpgsql immutable;
+;create function myintne(myint, myint) returns bool as $$
+begin
+  return not myinteq($1, $2);
+end;
+$$ language plpgsql immutable;
+;create operator = (
+  leftarg    = myint,
+  rightarg   = myint,
+  commutator = =,
+  negator    = <>,
+  procedure  = myinteq,
+  restrict   = eqsel,
+  join       = eqjoinsel,
+  merges
+);
+;create operator <> (
+  leftarg    = myint,
+  rightarg   = myint,
+  commutator = <>,
+  negator    = =,
+  procedure  = myintne,
+  restrict   = eqsel,
+  join       = eqjoinsel,
+  merges
+);
+;create operator class myint_ops
+default for type myint using hash as
+  operator    1   =  (myint, myint),
+  function    1   myinthash(myint);
+;create table inttest (a myint);
+;insert into inttest values(1::myint),(null);
+;select * from inttest where a in (1::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
+;select * from inttest where a not in (1::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
+;select * from inttest where a not in (0::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
+;select * from inttest where a in (1::myint,2::myint,3::myint,4::myint,5::myint, null);
+;select * from inttest where a not in (1::myint,2::myint,3::myint,4::myint,5::myint, null);
+;select * from inttest where a not in (0::myint,2::myint,3::myint,4::myint,5::myint, null);
+;rollback;
+;

@@ -1,0 +1,16 @@
+BEGIN;
+;INSERT INTO tab_crash (a) VALUES(1);
+;SELECT $$insert-tuple-to-lock-next-insert$$;
+;DO $c$
+DECLARE
+  c INT;
+BEGIN
+  LOOP
+    SELECT COUNT(*) INTO c FROM pg_locks WHERE pid = 79323 AND NOT granted;
+    IF c > 0 THEN
+      EXIT;
+    END IF;
+  END LOOP;
+END; $c$;
+;SELECT $$insert-tuple-lock-waiting$$;
+;

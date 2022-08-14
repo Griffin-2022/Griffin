@@ -1,0 +1,19 @@
+CREATE ROLE regress_admin SUPERUSER LOGIN;
+;CREATE ROLE regress_alice NOSUPERUSER LOGIN;
+;GRANT CREATE ON DATABASE postgres TO regress_alice;
+;SET SESSION AUTHORIZATION regress_alice;
+;CREATE SCHEMA alice;
+;GRANT USAGE ON SCHEMA alice TO regress_admin;
+;CREATE TABLE alice.unpartitioned (i INTEGER);
+;ALTER TABLE alice.unpartitioned REPLICA IDENTITY FULL;
+;GRANT SELECT ON TABLE alice.unpartitioned TO regress_admin;
+;CREATE TABLE alice.hashpart (i INTEGER) PARTITION BY HASH (i);
+;ALTER TABLE alice.hashpart REPLICA IDENTITY FULL;
+;GRANT SELECT ON TABLE alice.hashpart TO regress_admin;
+;CREATE TABLE alice.hashpart_a PARTITION OF alice.hashpart
+    FOR VALUES WITH (MODULUS 2, REMAINDER 1);
+;ALTER TABLE alice.hashpart_a REPLICA IDENTITY FULL;
+;CREATE TABLE alice.hashpart_b PARTITION OF alice.hashpart
+    FOR VALUES WITH (MODULUS 2, REMAINDER 0);
+;ALTER TABLE alice.hashpart_b REPLICA IDENTITY FULL;
+;

@@ -1,0 +1,97 @@
+create extension spgist_name_ops;
+;select opcname, amvalidate(opc.oid)
+from pg_opclass opc join pg_am am on am.oid = opcmethod
+where amname = 'spgist' and opcname = 'name_ops';
+;select opcname, amvalidate(opc.oid)
+from pg_opclass opc join pg_am am on am.oid = opcmethod
+where amname = 'spgist' and opcname = 'name_ops_old';
+;create table t(f1 name, f2 integer, f3 text);
+;create index on t using spgist(f1) include(f2, f3);
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(t_f1_f2_f3_idx)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '16422';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  CASE WHEN a.attnum <= (SELECT i.indnkeyatts FROM pg_catalog.pg_index i WHERE i.indexrelid = '16422') THEN 'yes' ELSE 'no' END AS is_key,
+  pg_catalog.pg_get_indexdef(a.attrelid, a.attnum, TRUE) AS indexdef,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '16422' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT i.indisunique, i.indisprimary, i.indisclustered, i.indisvalid,
+  (NOT i.indimmediate) AND EXISTS (SELECT 1 FROM pg_catalog.pg_constraint WHERE conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x') AND condeferrable) AS condeferrable,
+  (NOT i.indimmediate) AND EXISTS (SELECT 1 FROM pg_catalog.pg_constraint WHERE conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x') AND condeferred) AS condeferred,
+i.indisreplident,
+i.indnullsnotdistinct,
+  a.amname, c2.relname, pg_catalog.pg_get_expr(i.indpred, i.indrelid, true)
+FROM pg_catalog.pg_index i, pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_am a
+WHERE i.indexrelid = c.oid AND c.oid = '16422' AND c.relam = a.oid
+AND i.indrelid = c2.oid;
+;insert into t select
+  proname,
+  case when length(proname) % 2 = 0 then pronargs else null end,
+  prosrc from pg_proc;
+;vacuum analyze t;
+;explain (costs off)
+select * from t
+  where f1 > 'binary_upgrade_set_n' and f1 < 'binary_upgrade_set_p'
+  order by 1;
+;select * from t
+  where f1 > 'binary_upgrade_set_n' and f1 < 'binary_upgrade_set_p'
+  order by 1;
+;insert into t values(repeat('xyzzy', 12), 42, repeat('xyzzy', 4000));
+;drop index t_f1_f2_f3_idx;
+;create index on t using spgist(f1 name_ops_old) include(f2, f3);
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(t_f1_f2_f3_idx)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '16425';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  CASE WHEN a.attnum <= (SELECT i.indnkeyatts FROM pg_catalog.pg_index i WHERE i.indexrelid = '16425') THEN 'yes' ELSE 'no' END AS is_key,
+  pg_catalog.pg_get_indexdef(a.attrelid, a.attnum, TRUE) AS indexdef,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '16425' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT i.indisunique, i.indisprimary, i.indisclustered, i.indisvalid,
+  (NOT i.indimmediate) AND EXISTS (SELECT 1 FROM pg_catalog.pg_constraint WHERE conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x') AND condeferrable) AS condeferrable,
+  (NOT i.indimmediate) AND EXISTS (SELECT 1 FROM pg_catalog.pg_constraint WHERE conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x') AND condeferred) AS condeferred,
+i.indisreplident,
+i.indnullsnotdistinct,
+  a.amname, c2.relname, pg_catalog.pg_get_expr(i.indpred, i.indrelid, true)
+FROM pg_catalog.pg_index i, pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_am a
+WHERE i.indexrelid = c.oid AND c.oid = '16425' AND c.relam = a.oid
+AND i.indrelid = c2.oid;
+;explain (costs off)
+select * from t
+  where f1 > 'binary_upgrade_set_n' and f1 < 'binary_upgrade_set_p'
+  order by 1;
+;select * from t
+  where f1 > 'binary_upgrade_set_n' and f1 < 'binary_upgrade_set_p'
+  order by 1;
+;insert into t values(repeat('xyzzy', 12), 42, repeat('xyzzy', 4000));
+;

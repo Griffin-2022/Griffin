@@ -1,0 +1,23 @@
+CREATE TABLE sub2_trigger_activity (tgtab text,
+  tgop text, tgwhen text, tglevel text, olda int, newa int);
+;CREATE FUNCTION sub2_trigger_activity_func() RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    INSERT INTO public.sub2_trigger_activity
+      SELECT TG_RELNAME, TG_OP, TG_WHEN, TG_LEVEL, NULL, NEW.a;
+  ELSIF (TG_OP = 'UPDATE') THEN
+    INSERT INTO public.sub2_trigger_activity
+      SELECT TG_RELNAME, TG_OP, TG_WHEN, TG_LEVEL, OLD.a, NEW.a;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+;CREATE TRIGGER sub2_tab1_log_op_trigger
+  AFTER INSERT OR UPDATE ON tab1
+  FOR EACH ROW EXECUTE PROCEDURE sub2_trigger_activity_func();
+;ALTER TABLE ONLY tab1 ENABLE REPLICA TRIGGER sub2_tab1_log_op_trigger;
+;CREATE TRIGGER sub2_tab1_2_log_op_trigger
+  AFTER INSERT OR UPDATE ON tab1_2
+  FOR EACH ROW EXECUTE PROCEDURE sub2_trigger_activity_func();
+;ALTER TABLE ONLY tab1_2 ENABLE REPLICA TRIGGER sub2_tab1_2_log_op_trigger;
+;

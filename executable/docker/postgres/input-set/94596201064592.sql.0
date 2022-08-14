@@ -1,0 +1,157 @@
+
+  --
+  -- Setup to test concurrent handling of ExecDelete().
+  --
+  CREATE TABLE foo (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE foo1 PARTITION OF foo FOR VALUES IN (1);
+  CREATE TABLE foo2 PARTITION OF foo FOR VALUES IN (2);
+  INSERT INTO foo VALUES (1, 'ABC');
+
+  --
+  -- Setup to test concurrent handling of GetTupleForTrigger().
+  --
+  CREATE TABLE footrg (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE triglog as select * from footrg;
+  CREATE TABLE footrg1 PARTITION OF footrg FOR VALUES IN (1);
+  CREATE TABLE footrg2 PARTITION OF footrg FOR VALUES IN (2);
+  INSERT INTO footrg VALUES (1, 'ABC');
+  CREATE FUNCTION func_footrg() RETURNS TRIGGER AS $$
+  BEGIN
+	 OLD.b = OLD.b || ' trigger';
+
+	 -- This will verify that the trigger is not run *before* the row is
+	 -- refetched by EvalPlanQual. The OLD row should contain the changes made
+	 -- by the concurrent session.
+     INSERT INTO triglog select OLD.*;
+
+     RETURN OLD;
+  END $$ LANGUAGE PLPGSQL;
+  CREATE TRIGGER footrg_ondel BEFORE DELETE ON footrg1
+   FOR EACH ROW EXECUTE PROCEDURE func_footrg();
+
+
+;
+  DROP TABLE foo;
+  DROP TRIGGER footrg_ondel ON footrg1;
+  DROP FUNCTION func_footrg();
+  DROP TABLE footrg;
+  DROP TABLE triglog;
+
+;
+  --
+  -- Setup to test concurrent handling of ExecDelete().
+  --
+  CREATE TABLE foo (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE foo1 PARTITION OF foo FOR VALUES IN (1);
+  CREATE TABLE foo2 PARTITION OF foo FOR VALUES IN (2);
+  INSERT INTO foo VALUES (1, 'ABC');
+
+  --
+  -- Setup to test concurrent handling of GetTupleForTrigger().
+  --
+  CREATE TABLE footrg (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE triglog as select * from footrg;
+  CREATE TABLE footrg1 PARTITION OF footrg FOR VALUES IN (1);
+  CREATE TABLE footrg2 PARTITION OF footrg FOR VALUES IN (2);
+  INSERT INTO footrg VALUES (1, 'ABC');
+  CREATE FUNCTION func_footrg() RETURNS TRIGGER AS $$
+  BEGIN
+	 OLD.b = OLD.b || ' trigger';
+
+	 -- This will verify that the trigger is not run *before* the row is
+	 -- refetched by EvalPlanQual. The OLD row should contain the changes made
+	 -- by the concurrent session.
+     INSERT INTO triglog select OLD.*;
+
+     RETURN OLD;
+  END $$ LANGUAGE PLPGSQL;
+  CREATE TRIGGER footrg_ondel BEFORE DELETE ON footrg1
+   FOR EACH ROW EXECUTE PROCEDURE func_footrg();
+
+
+;
+  DROP TABLE foo;
+  DROP TRIGGER footrg_ondel ON footrg1;
+  DROP FUNCTION func_footrg();
+  DROP TABLE footrg;
+  DROP TABLE triglog;
+
+;
+  --
+  -- Setup to test concurrent handling of ExecDelete().
+  --
+  CREATE TABLE foo (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE foo1 PARTITION OF foo FOR VALUES IN (1);
+  CREATE TABLE foo2 PARTITION OF foo FOR VALUES IN (2);
+  INSERT INTO foo VALUES (1, 'ABC');
+
+  --
+  -- Setup to test concurrent handling of GetTupleForTrigger().
+  --
+  CREATE TABLE footrg (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE triglog as select * from footrg;
+  CREATE TABLE footrg1 PARTITION OF footrg FOR VALUES IN (1);
+  CREATE TABLE footrg2 PARTITION OF footrg FOR VALUES IN (2);
+  INSERT INTO footrg VALUES (1, 'ABC');
+  CREATE FUNCTION func_footrg() RETURNS TRIGGER AS $$
+  BEGIN
+	 OLD.b = OLD.b || ' trigger';
+
+	 -- This will verify that the trigger is not run *before* the row is
+	 -- refetched by EvalPlanQual. The OLD row should contain the changes made
+	 -- by the concurrent session.
+     INSERT INTO triglog select OLD.*;
+
+     RETURN OLD;
+  END $$ LANGUAGE PLPGSQL;
+  CREATE TRIGGER footrg_ondel BEFORE DELETE ON footrg1
+   FOR EACH ROW EXECUTE PROCEDURE func_footrg();
+
+
+;
+  DROP TABLE foo;
+  DROP TRIGGER footrg_ondel ON footrg1;
+  DROP FUNCTION func_footrg();
+  DROP TABLE footrg;
+  DROP TABLE triglog;
+
+;
+  --
+  -- Setup to test concurrent handling of ExecDelete().
+  --
+  CREATE TABLE foo (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE foo1 PARTITION OF foo FOR VALUES IN (1);
+  CREATE TABLE foo2 PARTITION OF foo FOR VALUES IN (2);
+  INSERT INTO foo VALUES (1, 'ABC');
+
+  --
+  -- Setup to test concurrent handling of GetTupleForTrigger().
+  --
+  CREATE TABLE footrg (a int, b text) PARTITION BY LIST(a);
+  CREATE TABLE triglog as select * from footrg;
+  CREATE TABLE footrg1 PARTITION OF footrg FOR VALUES IN (1);
+  CREATE TABLE footrg2 PARTITION OF footrg FOR VALUES IN (2);
+  INSERT INTO footrg VALUES (1, 'ABC');
+  CREATE FUNCTION func_footrg() RETURNS TRIGGER AS $$
+  BEGIN
+	 OLD.b = OLD.b || ' trigger';
+
+	 -- This will verify that the trigger is not run *before* the row is
+	 -- refetched by EvalPlanQual. The OLD row should contain the changes made
+	 -- by the concurrent session.
+     INSERT INTO triglog select OLD.*;
+
+     RETURN OLD;
+  END $$ LANGUAGE PLPGSQL;
+  CREATE TRIGGER footrg_ondel BEFORE DELETE ON footrg1
+   FOR EACH ROW EXECUTE PROCEDURE func_footrg();
+
+
+;
+  DROP TABLE foo;
+  DROP TRIGGER footrg_ondel ON footrg1;
+  DROP FUNCTION func_footrg();
+  DROP TABLE footrg;
+  DROP TABLE triglog;
+
+;

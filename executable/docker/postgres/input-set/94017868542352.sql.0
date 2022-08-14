@@ -1,0 +1,46 @@
+SELECT wait_for_stats();
+;SELECT relname, n_tup_ins, n_tup_upd, n_tup_del, n_live_tup, n_dead_tup
+  FROM pg_stat_user_tables
+ WHERE relname like 'trunc_stats_test%' order by relname;
+;SELECT st.seq_scan >= pr.seq_scan + 1,
+       st.seq_tup_read >= pr.seq_tup_read + cl.reltuples,
+       st.idx_scan >= pr.idx_scan + 1,
+       st.idx_tup_fetch >= pr.idx_tup_fetch + 1
+  FROM pg_stat_user_tables AS st, pg_class AS cl, prevstats AS pr
+ WHERE st.relname='tenk2' AND cl.relname='tenk2';
+;SELECT st.heap_blks_read + st.heap_blks_hit >= pr.heap_blks + cl.relpages,
+       st.idx_blks_read + st.idx_blks_hit >= pr.idx_blks + 1
+  FROM pg_statio_user_tables AS st, pg_class AS cl, prevstats AS pr
+ WHERE st.relname='tenk2' AND cl.relname='tenk2';
+;SELECT pr.snap_ts < pg_stat_get_snapshot_timestamp() as snapshot_newer
+FROM prevstats AS pr;
+;DROP TABLE trunc_stats_test, trunc_stats_test1, trunc_stats_test2, trunc_stats_test3, trunc_stats_test4;
+;DROP TABLE prevstats;
+;CREATE TABLE brin_hot (
+        id  integer PRIMARY KEY,
+        val integer NOT NULL
+) WITH (autovacuum_enabled = off, fillfactor = 70);
+;INSERT INTO brin_hot SELECT *, 0 FROM generate_series(1, 235);
+;CREATE INDEX val_brin ON brin_hot using brin(val);
+;CREATE FUNCTION wait_for_hot_stats() RETURNS void AS $$
+DECLARE
+        start_time timestamptz := clock_timestamp();
+        updated bool;
+BEGIN
+        -- we don't want to wait forever; loop will exit after 30 seconds
+        FOR i IN 1 .. 300 LOOP
+                SELECT (pg_stat_get_tuples_hot_updated('brin_hot'::regclass::oid) > 0) INTO updated;
+                EXIT WHEN updated;
+
+                -- wait a little
+                PERFORM pg_sleep_for('100 milliseconds');
+                -- reset stats snapshot so we can test again
+                PERFORM pg_stat_clear_snapshot();
+        END LOOP;
+        -- report time waited in postmaster log (where it won't change test output)
+        RAISE log 'wait_for_hot_stats delayed % seconds',
+          EXTRACT(epoch FROM clock_timestamp() - start_time);
+END
+$$ LANGUAGE plpgsql;
+;UPDATE brin_hot SET val = -3 WHERE id = 42;
+;

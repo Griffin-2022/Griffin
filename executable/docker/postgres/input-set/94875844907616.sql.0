@@ -1,0 +1,76 @@
+CREATE EXTENSION hstore WITH SCHEMA public;
+;CREATE TABLE public.tst_one_array (
+		a INTEGER PRIMARY KEY,
+		b INTEGER[]
+		);
+;CREATE TABLE public.tst_arrays (
+		a INTEGER[] PRIMARY KEY,
+		b TEXT[],
+		c FLOAT[],
+		d INTERVAL[]
+		);
+;CREATE TYPE public.tst_enum_t AS ENUM ('a', 'b', 'c', 'd', 'e');
+;CREATE TABLE public.tst_one_enum (
+		a INTEGER PRIMARY KEY,
+		b public.tst_enum_t
+		);
+;CREATE TABLE public.tst_enums (
+		a public.tst_enum_t PRIMARY KEY,
+		b public.tst_enum_t[]
+		);
+;CREATE TYPE public.tst_comp_basic_t AS (a FLOAT, b TEXT, c INTEGER);
+;CREATE TYPE public.tst_comp_enum_t AS (a FLOAT, b public.tst_enum_t, c INTEGER);
+;CREATE TYPE public.tst_comp_enum_array_t AS (a FLOAT, b public.tst_enum_t[], c INTEGER);
+;CREATE TABLE public.tst_one_comp (
+		a INTEGER PRIMARY KEY,
+		b public.tst_comp_basic_t
+		);
+;CREATE TABLE public.tst_comps (
+		a public.tst_comp_basic_t PRIMARY KEY,
+		b public.tst_comp_basic_t[]
+		);
+;CREATE TABLE public.tst_comp_enum (
+		a INTEGER PRIMARY KEY,
+		b public.tst_comp_enum_t
+		);
+;CREATE TABLE public.tst_comp_enum_array (
+		a public.tst_comp_enum_t PRIMARY KEY,
+		b public.tst_comp_enum_t[]
+		);
+;CREATE TABLE public.tst_comp_one_enum_array (
+		a INTEGER PRIMARY KEY,
+		b public.tst_comp_enum_array_t
+		);
+;CREATE TABLE public.tst_comp_enum_what (
+		a public.tst_comp_enum_array_t PRIMARY KEY,
+		b public.tst_comp_enum_array_t[]
+		);
+;CREATE TYPE public.tst_comp_mix_t AS (
+		a public.tst_comp_basic_t,
+		b public.tst_comp_basic_t[],
+		c public.tst_enum_t,
+		d public.tst_enum_t[]
+		);
+;CREATE TABLE public.tst_comp_mix_array (
+		a public.tst_comp_mix_t PRIMARY KEY,
+		b public.tst_comp_mix_t[]
+		);
+;CREATE TABLE public.tst_range (
+		a INTEGER PRIMARY KEY,
+		b int4range
+	);
+;CREATE TABLE public.tst_range_array (
+		a INTEGER PRIMARY KEY,
+		b TSTZRANGE,
+		c int8range[]
+	);
+;CREATE TABLE public.tst_hstore (
+		a INTEGER PRIMARY KEY,
+		b public.hstore
+	);
+;SET check_function_bodies=off;
+;CREATE FUNCTION public.monot_incr(int) RETURNS bool LANGUAGE sql
+		AS ' select $1 > max(a) from public.tst_dom_constr; ';
+;CREATE DOMAIN monot_int AS int CHECK (monot_incr(VALUE));
+;CREATE TABLE public.tst_dom_constr (a monot_int);
+;

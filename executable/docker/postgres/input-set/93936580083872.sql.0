@@ -1,0 +1,146 @@
+CREATE TABLE test_tablesample (id int, name text) WITH (fillfactor=10);
+;INSERT INTO test_tablesample
+  SELECT i, repeat(i::text, 200) FROM generate_series(0, 9) s(i);
+;SELECT t.id FROM test_tablesample AS t TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (100.0/11) REPEATABLE (0);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+;SELECT id FROM test_tablesample TABLESAMPLE BERNOULLI (50) REPEATABLE (0);
+;SELECT id FROM test_tablesample TABLESAMPLE BERNOULLI (5.5) REPEATABLE (0);
+;SELECT count(*) FROM test_tablesample TABLESAMPLE SYSTEM (100);
+;SELECT count(*) FROM test_tablesample TABLESAMPLE SYSTEM (100) REPEATABLE (1+2);
+;SELECT count(*) FROM test_tablesample TABLESAMPLE SYSTEM (100) REPEATABLE (0.4);
+;CREATE VIEW test_tablesample_v1 AS
+  SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (10*2) REPEATABLE (2);
+;CREATE VIEW test_tablesample_v2 AS
+  SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (99);
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(test_tablesample_v1)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '25115';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '25115' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pg_catalog.pg_get_viewdef('25115'::pg_catalog.oid, true);
+;SELECT r.rulename, trim(trailing ';' from pg_catalog.pg_get_ruledef(r.oid, true))
+FROM pg_catalog.pg_rewrite r
+WHERE r.ev_class = '25115' AND r.rulename != '_RETURN' ORDER BY 1;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(test_tablesample_v2)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '25136';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '25136' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pg_catalog.pg_get_viewdef('25136'::pg_catalog.oid, true);
+;SELECT r.rulename, trim(trailing ';' from pg_catalog.pg_get_ruledef(r.oid, true))
+FROM pg_catalog.pg_rewrite r
+WHERE r.ev_class = '25136' AND r.rulename != '_RETURN' ORDER BY 1;
+;BEGIN;
+;DECLARE tablesample_cur SCROLL CURSOR FOR
+  SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+;FETCH FIRST FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (50) REPEATABLE (0);
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH FIRST FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;FETCH NEXT FROM tablesample_cur;
+;CLOSE tablesample_cur;
+;END;
+;EXPLAIN (COSTS OFF)
+  SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (50) REPEATABLE (2);
+;EXPLAIN (COSTS OFF)
+  SELECT * FROM test_tablesample_v1;
+;explain (costs off)
+  select count(*) from person tablesample bernoulli (100);
+;select count(*) from person tablesample bernoulli (100);
+;select count(*) from person;
+;SELECT count(*) FROM test_tablesample TABLESAMPLE bernoulli (('1'::text < '0'::text)::int);
+;select * from
+  (values (0),(100)) v(pct),
+  lateral (select count(*) from tenk1 tablesample bernoulli (pct)) ss;
+;select * from
+  (values (0),(100)) v(pct),
+  lateral (select count(*) from tenk1 tablesample system (pct)) ss;
+;explain (costs off)
+select pct, count(unique1) from
+  (values (0),(100)) v(pct),
+  lateral (select * from tenk1 tablesample bernoulli (pct)) ss
+  group by pct;
+;select pct, count(unique1) from
+  (values (0),(100)) v(pct),
+  lateral (select * from tenk1 tablesample bernoulli (pct)) ss
+  group by pct;
+;select pct, count(unique1) from
+  (values (0),(100)) v(pct),
+  lateral (select * from tenk1 tablesample system (pct)) ss
+  group by pct;
+;SELECT id FROM test_tablesample TABLESAMPLE FOOBAR (1);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (NULL);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (50) REPEATABLE (NULL);
+;SELECT id FROM test_tablesample TABLESAMPLE BERNOULLI (-1);
+;SELECT id FROM test_tablesample TABLESAMPLE BERNOULLI (200);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (-1);
+;SELECT id FROM test_tablesample TABLESAMPLE SYSTEM (200);
+;SELECT id FROM test_tablesample_v1 TABLESAMPLE BERNOULLI (1);
+;INSERT INTO test_tablesample_v1 VALUES(1);
+;WITH query_select AS (SELECT * FROM test_tablesample)
+SELECT * FROM query_select TABLESAMPLE BERNOULLI (5.5) REPEATABLE (1);
+;SELECT q.* FROM (SELECT * FROM test_tablesample) as q TABLESAMPLE BERNOULLI (5);
+;create table parted_sample (a int) partition by list (a);
+;create table parted_sample_1 partition of parted_sample for values in (1);
+;create table parted_sample_2 partition of parted_sample for values in (2);
+;explain (costs off)
+  select * from parted_sample tablesample bernoulli (100);
+;drop table parted_sample, parted_sample_1, parted_sample_2;
+;

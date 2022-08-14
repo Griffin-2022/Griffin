@@ -1,0 +1,21 @@
+CREATE FUNCTION filter_basic_dml_fn() RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        IF (NEW.id < 10) THEN
+            RETURN NEW;
+        ELSE
+            RETURN NULL;
+        END IF;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        RETURN NULL;
+    ELSE
+        RAISE WARNING 'Unknown action';
+        RETURN NULL;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+;CREATE TRIGGER filter_basic_dml_trg
+    BEFORE INSERT OR UPDATE OF bid ON tab_fk_ref
+    FOR EACH ROW EXECUTE PROCEDURE filter_basic_dml_fn();
+;ALTER TABLE tab_fk_ref ENABLE REPLICA TRIGGER filter_basic_dml_trg;
+;

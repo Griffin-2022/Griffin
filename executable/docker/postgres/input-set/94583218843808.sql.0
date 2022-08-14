@@ -1,0 +1,280 @@
+CREATE ROLE regress_subscription_user LOGIN SUPERUSER;
+;CREATE ROLE regress_subscription_user2;
+;CREATE ROLE regress_subscription_user_dummy LOGIN NOSUPERUSER;
+;SET SESSION AUTHORIZATION 'regress_subscription_user';
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'foo';
+;CREATE SUBSCRIPTION regress_testsub PUBLICATION foo;
+;BEGIN;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'testconn' PUBLICATION testpub WITH (create_slot);
+;COMMIT;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'testconn' PUBLICATION testpub;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION foo, testpub, foo WITH (connect = false);
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false);
+;COMMENT ON SUBSCRIPTION regress_testsub IS 'test subscription';
+;SELECT obj_description(s.oid, 'pg_subscription') FROM pg_subscription s;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false);
+;SET SESSION AUTHORIZATION 'regress_subscription_user2';
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION foo WITH (connect = false);
+;SET SESSION AUTHORIZATION 'regress_subscription_user';
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, copy_data = true);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, enabled = true);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, create_slot = true);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE, enabled = true);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE, enabled = false, create_slot = true);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE, enabled = false);
+;CREATE SUBSCRIPTION regress_testsub2 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE, create_slot = false);
+;CREATE SUBSCRIPTION regress_testsub3 CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (slot_name = NONE, connect = false);
+;ALTER SUBSCRIPTION regress_testsub3 ENABLE;
+;ALTER SUBSCRIPTION regress_testsub3 REFRESH PUBLICATION;
+;DROP SUBSCRIPTION regress_testsub3;
+;ALTER SUBSCRIPTION regress_testsub CONNECTION 'foobar';
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET PUBLICATION testpub2, testpub3 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist2';
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = 'newname');
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = '');
+;ALTER SUBSCRIPTION regress_doesnotexist CONNECTION 'dbname=regress_doesnotexist2';
+;ALTER SUBSCRIPTION regress_testsub SET (create_slot = false);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;BEGIN;
+;ALTER SUBSCRIPTION regress_testsub ENABLE;
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub DISABLE;
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;COMMIT;
+;SET ROLE regress_subscription_user_dummy;
+;ALTER SUBSCRIPTION regress_testsub RENAME TO regress_testsub_dummy;
+;RESET ROLE;
+;ALTER SUBSCRIPTION regress_testsub RENAME TO regress_testsub_foo;
+;ALTER SUBSCRIPTION regress_testsub_foo SET (synchronous_commit = local);
+;ALTER SUBSCRIPTION regress_testsub_foo SET (synchronous_commit = foobar);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub_foo RENAME TO regress_testsub;
+;ALTER SUBSCRIPTION regress_testsub OWNER TO regress_subscription_user2;
+;ALTER ROLE regress_subscription_user2 SUPERUSER;
+;ALTER SUBSCRIPTION regress_testsub OWNER TO regress_subscription_user2;
+;BEGIN;
+;DROP SUBSCRIPTION regress_testsub;
+;COMMIT;
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;BEGIN;
+;DROP SUBSCRIPTION regress_testsub;
+;COMMIT;
+;DROP SUBSCRIPTION IF EXISTS regress_testsub;
+;DROP SUBSCRIPTION regress_testsub;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, binary = foo);
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, binary = true);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET (binary = false);
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;DROP SUBSCRIPTION regress_testsub;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, streaming = foo);
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, streaming = true);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET (streaming = false);
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub ADD PUBLICATION testpub WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub ADD PUBLICATION testpub1, testpub1 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub ADD PUBLICATION testpub1, testpub2 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub ADD PUBLICATION testpub1, testpub2 WITH (refresh = false);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub DROP PUBLICATION testpub1, testpub1 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub DROP PUBLICATION testpub, testpub1, testpub2 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub DROP PUBLICATION testpub3 WITH (refresh = false);
+;ALTER SUBSCRIPTION regress_testsub DROP PUBLICATION testpub1, testpub2 WITH (refresh = false);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;DROP SUBSCRIPTION regress_testsub;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION mypub
+       WITH (connect = false, create_slot = false, copy_data = false);
+;ALTER SUBSCRIPTION regress_testsub ENABLE;
+;BEGIN;
+;ALTER SUBSCRIPTION regress_testsub SET PUBLICATION mypub WITH (refresh = true);
+;END;
+;BEGIN;
+;ALTER SUBSCRIPTION regress_testsub REFRESH PUBLICATION;
+;END;
+;CREATE FUNCTION func() RETURNS VOID AS
+$$ ALTER SUBSCRIPTION regress_testsub SET PUBLICATION mypub WITH (refresh = true) $$ LANGUAGE SQL;
+;SELECT func();
+;ALTER SUBSCRIPTION regress_testsub DISABLE;
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;DROP SUBSCRIPTION regress_testsub;
+;DROP FUNCTION func;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, two_phase = foo);
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, two_phase = true);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET (two_phase = false);
+;ALTER SUBSCRIPTION regress_testsub SET (streaming = true);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;DROP SUBSCRIPTION regress_testsub;
+;CREATE SUBSCRIPTION regress_testsub CONNECTION 'dbname=regress_doesnotexist' PUBLICATION testpub WITH (connect = false, streaming = true, two_phase = true);
+;SELECT subname AS "Name"
+,  pg_catalog.pg_get_userbyid(subowner) AS "Owner"
+,  subenabled AS "Enabled"
+,  subpublications AS "Publication"
+, subbinary AS "Binary"
+, substream AS "Streaming"
+, subtwophasestate AS "Two phase commit"
+,  subsynccommit AS "Synchronous commit"
+,  subconninfo AS "Conninfo"
+FROM pg_catalog.pg_subscription
+WHERE subdbid = (SELECT oid
+                 FROM pg_catalog.pg_database
+                 WHERE datname = pg_catalog.current_database())ORDER BY 1;
+;ALTER SUBSCRIPTION regress_testsub SET (slot_name = NONE);
+;DROP SUBSCRIPTION regress_testsub;
+;RESET SESSION AUTHORIZATION;
+;DROP ROLE regress_subscription_user;
+;DROP ROLE regress_subscription_user2;
+;DROP ROLE regress_subscription_user_dummy;
+;

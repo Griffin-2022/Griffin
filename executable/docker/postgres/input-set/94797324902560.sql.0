@@ -1,0 +1,747 @@
+create extension test_regex;
+;set standard_conforming_strings = on;
+;select * from test_regex('(*)', '', '');
+;select * from test_regex('abc', 'abc', '');
+;select * from test_regex('abc', 'abc', 'b');
+;select * from test_regex('abc', 'def', '');
+;select * from test_regex('abc', 'def', 'b');
+;select * from test_regex('abc', 'xyabxabce', '');
+;select * from test_regex('abc', 'xyabxabce', 'b');
+;select * from test_regex('a', '', 'qe');
+;select * from test_regex('a', '', 'qa');
+;select * from test_regex('a', '', 'qx');
+;select * from test_regex('a', '', 'qn');
+;select * from test_regex('a', '', 'ba');
+;select * from test_regex('', 'a', '0NS');
+;select * from test_regex('', 'a', '0NSb');
+;select * from test_regex('a|', 'a', 'NS');
+;select * from test_regex('a|b', 'a', '-');
+;select * from test_regex('a|b', 'b', '-');
+;select * from test_regex('a||b', 'b', 'NS');
+;select * from test_regex('ab', 'ab', '');
+;select * from test_regex('ab', 'ab', 'b');
+;select * from test_regex('(a)e', 'ae', '-');
+;select * from test_regex('(.)\1e', 'abeaae', 'oPR');
+;select * from test_regex('\(a\)b', 'ab', 'b');
+;select * from test_regex('a((b)c)', 'abc', '-');
+;select * from test_regex('a(b)(c)', 'abc', '-');
+;select * from test_regex('a(b', '', '-');
+;select * from test_regex('a\(b', '', 'b');
+;select * from test_regex('a)b', 'a)b', 'eU');
+;select * from test_regex('a)b', '', '-');
+;select * from test_regex('a\)b', '', 'b');
+;select * from test_regex('a(?:b)c', 'abc', 'P');
+;select * from test_regex('a(?:b)c', '', 'e');
+;select * from test_regex('a()b', 'ab', '0S');
+;select * from test_regex('a(?:)b', 'ab', 'SP');
+;select * from test_regex('a(|b)c', 'ac', '0S');
+;select * from test_regex('a(b|)c', 'abc', 'S');
+;select * from test_regex('a.b', 'axb', '');
+;select * from test_regex('a.b', 'axb', 'b');
+;select * from test_regex('a.b', E'a\nb', 'n');
+;select * from test_regex('a.b', E'a\nb', 'nb');
+;select * from test_regex('a[bc]d', 'abd', '');
+;select * from test_regex('a[bc]d', 'abd', 'b');
+;select * from test_regex('a[bc]d', 'acd', '');
+;select * from test_regex('a[bc]d', 'acd', 'b');
+;select * from test_regex('a[bc]d', 'aed', '');
+;select * from test_regex('a[bc]d', 'aed', 'b');
+;select * from test_regex('a[^bc]d', 'abd', '');
+;select * from test_regex('a[^bc]d', 'abd', 'b');
+;select * from test_regex('a[^bc]d', 'aed', '');
+;select * from test_regex('a[^bc]d', 'aed', 'b');
+;select * from test_regex('a[^bc]d', E'a\nd', 'p');
+;select * from test_regex('a[^bc]d', E'a\nd', 'pb');
+;select * from test_regex('*', '', '-');
+;select * from test_regex('*', '*', 'b');
+;select * from test_regex('\(*\)', '*', 'b');
+;select * from test_regex('(*)', '', '-');
+;select * from test_regex('^*', '*', 'b');
+;select * from test_regex('^*', '', '-');
+;select * from test_regex('^b', '^b', '');
+;select * from test_regex('^b', '^b', 'b');
+;select * from test_regex('x^', 'x^', 'b');
+;select * from test_regex('x^', 'x', 'I');
+;select * from test_regex(E'\n^', E'x\nb', 'n');
+;select * from test_regex('\(^b\)', '^b', 'bS');
+;select * from test_regex('(^b)', 'b', '-');
+;select * from test_regex('x$', 'x', '');
+;select * from test_regex('x$', 'x', 'b');
+;select * from test_regex('\(x$\)', 'x', 'bS');
+;select * from test_regex('(x$)', 'x', '-');
+;select * from test_regex('x$y', 'x$y', 'b');
+;select * from test_regex('x$y', 'xy', 'I');
+;select * from test_regex(E'x$\n', E'x\n', 'n');
+;select * from test_regex('+', '', '-');
+;select * from test_regex('?', '', '-');
+;select * from test_regex('x(\w)(?=(\1))', '', '-');
+;select * from test_regex('x(?=((foo)))', 'xfoo', 'HP');
+;select * from test_regex('a*', 'aa', 'N');
+;select * from test_regex('a*', 'aa', 'Nb');
+;select * from test_regex('a*', 'b', '0N');
+;select * from test_regex('a*', 'b', '0Nb');
+;select * from test_regex('a+', 'aa', '-');
+;select * from test_regex('a?b', 'ab', '-');
+;select * from test_regex('a?b', 'b', '-');
+;select * from test_regex('**', '', '-');
+;select * from test_regex('**', '***', 'bN');
+;select * from test_regex('a**', '', '');
+;select * from test_regex('a**', '', 'b');
+;select * from test_regex('a**b', '', '');
+;select * from test_regex('a**b', '', 'b');
+;select * from test_regex('***', '', '');
+;select * from test_regex('***', '', 'b');
+;select * from test_regex('a++', '', '-');
+;select * from test_regex('a?+', '', '-');
+;select * from test_regex('a?*', '', '-');
+;select * from test_regex('a+*', '', '-');
+;select * from test_regex('a*+', '', '-');
+;select * from test_regex('.*b', 'aaabbb', 'b');
+;select * from test_regex('.\{1,10\}', 'abcdef', 'bQ');
+;select * from test_regex('a{0,1}', '', 'NQ');
+;select * from test_regex('a{0,1}', 'ac', 'NQ');
+;select * from test_regex('a{1,0}', '', '-');
+;select * from test_regex('a{1,2,3}', '', '-');
+;select * from test_regex('a{257}', '', '-');
+;select * from test_regex('a{1000}', '', '-');
+;select * from test_regex('a{1', '', '-');
+;select * from test_regex('a{1n}', '', '-');
+;select * from test_regex('a{b', 'a{b', 'BS');
+;select * from test_regex('a{', 'a{', 'BS');
+;select * from test_regex('a\{0,1\}b', 'cb', 'bQ');
+;select * from test_regex('a\{0,1', '', 'b');
+;select * from test_regex('a{0,1\', '', '-');
+;select * from test_regex('a{0}b', 'ab', 'Q');
+;select * from test_regex('a{0,0}b', 'ab', 'Q');
+;select * from test_regex('a{0,1}b', 'ab', 'Q');
+;select * from test_regex('a{0,2}b', 'b', 'Q');
+;select * from test_regex('a{0,2}b', 'aab', 'Q');
+;select * from test_regex('a{0,}b', 'aab', 'Q');
+;select * from test_regex('a{1,1}b', 'aab', 'Q');
+;select * from test_regex('a{1,3}b', 'aaaab', 'Q');
+;select * from test_regex('a{1,3}b', 'b', 'Q');
+;select * from test_regex('a{1,}b', 'aab', 'Q');
+;select * from test_regex('a{2,3}b', 'ab', 'Q');
+;select * from test_regex('a{2,3}b', 'aaaab', 'Q');
+;select * from test_regex('a{2,}b', 'ab', 'Q');
+;select * from test_regex('a{2,}b', 'aaaab', 'Q');
+;select * from test_regex('a[bc]', 'ac', '');
+;select * from test_regex('a[bc]', 'ac', 'b');
+;select * from test_regex('a[-]', 'a-', '');
+;select * from test_regex('a[-]', 'a-', 'b');
+;select * from test_regex('a[[.-.]]', 'a-', '');
+;select * from test_regex('a[[.-.]]', 'a-', 'b');
+;select * from test_regex('a[[.zero.]]', 'a0', 'L');
+;select * from test_regex('a[[.zero.]]', 'a0', 'Lb');
+;select * from test_regex('a[[.zero.]-9]', 'a2', 'LM');
+;select * from test_regex('a[[.zero.]-9]', 'a2', 'LMb');
+;select * from test_regex('a[0-[.9.]]', 'a2', 'M');
+;select * from test_regex('a[0-[.9.]]', 'a2', 'Mb');
+;select * from test_regex('a[[=x=]]', 'ax', '+L');
+;select * from test_regex('a[[=x=]]', 'ax', '+Lb');
+;select * from test_regex('a[[=x=]]', 'ay', '+L');
+;select * from test_regex('a[[=x=]]', 'ay', '+Lb');
+;select * from test_regex('a[[=x=]]', 'az', '+L');
+;select * from test_regex('a[[=x=]]', 'az', '+Lb');
+;select * from test_regex('a[[=Y=]]', 'ay', 'iL');
+;select * from test_regex('a[[=Y=]]', 'ay', 'iLb');
+;select * from test_regex('a[[=Y=]]', 'ay', 'L');
+;select * from test_regex('a[[=Y=]]', 'ay', 'Lb');
+;select * from test_regex('a[0-[=x=]]', '', '');
+;select * from test_regex('a[0-[=x=]]', '', 'b');
+;select * from test_regex('a[[:digit:]]', 'a0', 'L');
+;select * from test_regex('a[[:digit:]]', 'a0', 'Lb');
+;select * from test_regex('a[[:woopsie:]]', '', '');
+;select * from test_regex('a[[:woopsie:]]', '', 'b');
+;select * from test_regex('a[[:digit:]]', 'ab', 'L');
+;select * from test_regex('a[[:digit:]]', 'ab', 'Lb');
+;select * from test_regex('a[0-[:digit:]]', '', '');
+;select * from test_regex('a[0-[:digit:]]', '', 'b');
+;select * from test_regex('[[:<:]]a', 'a', 'LP');
+;select * from test_regex('[[:<:]]a', 'a', 'LPb');
+;select * from test_regex('a[[:>:]]', 'a', 'LP');
+;select * from test_regex('a[[:>:]]', 'a', 'LPb');
+;select * from test_regex('a[[..]]b', '', '');
+;select * from test_regex('a[[..]]b', '', 'b');
+;select * from test_regex('a[[==]]b', '', '');
+;select * from test_regex('a[[==]]b', '', 'b');
+;select * from test_regex('a[[::]]b', '', '');
+;select * from test_regex('a[[::]]b', '', 'b');
+;select * from test_regex('a[[.a', '', '');
+;select * from test_regex('a[[.a', '', 'b');
+;select * from test_regex('a[[=a', '', '');
+;select * from test_regex('a[[=a', '', 'b');
+;select * from test_regex('a[[:a', '', '');
+;select * from test_regex('a[[:a', '', 'b');
+;select * from test_regex('a[', '', '');
+;select * from test_regex('a[', '', 'b');
+;select * from test_regex('a[b', '', '');
+;select * from test_regex('a[b', '', 'b');
+;select * from test_regex('a[b-', '', '');
+;select * from test_regex('a[b-', '', 'b');
+;select * from test_regex('a[b-c', '', '');
+;select * from test_regex('a[b-c', '', 'b');
+;select * from test_regex('a[b-c]', 'ab', 'M');
+;select * from test_regex('a[b-c]', 'ab', 'Mb');
+;select * from test_regex('a[b-b]', 'ab', '');
+;select * from test_regex('a[b-b]', 'ab', 'b');
+;select * from test_regex('a[1-2]', 'a2', 'M');
+;select * from test_regex('a[1-2]', 'a2', 'Mb');
+;select * from test_regex('a[c-b]', '', '');
+;select * from test_regex('a[c-b]', '', 'b');
+;select * from test_regex('a[a-b-c]', '', '');
+;select * from test_regex('a[a-b-c]', '', 'b');
+;select * from test_regex('a[--?]b', 'a?b', 'M');
+;select * from test_regex('a[--?]b', 'a?b', 'Mb');
+;select * from test_regex('a[---]b', 'a-b', '');
+;select * from test_regex('a[---]b', 'a-b', 'b');
+;select * from test_regex('a[]b]c', 'a]c', '');
+;select * from test_regex('a[]b]c', 'a]c', 'b');
+;select * from test_regex('a[\]]b', 'a]b', 'EP');
+;select * from test_regex('a[\]]b', 'a]b', 'bE');
+;select * from test_regex('a[\]]b', 'a\]b', 'bE');
+;select * from test_regex('a[\]]b', 'a\]b', 'eE');
+;select * from test_regex('a[\\]b', 'a\b', 'EP');
+;select * from test_regex('a[\\]b', 'a\b', 'eE');
+;select * from test_regex('a[\\]b', 'a\b', 'bE');
+;select * from test_regex('a[\Z]b', '', '-');
+;select * from test_regex('a[[b]c', 'a[c', '');
+;select * from test_regex('a[[b]c', 'a[c', 'b');
+;select * from test_regex('^a', 'a', '');
+;select * from test_regex('^a', 'a', 'b');
+;select * from test_regex('^a', 'a', '^');
+;select * from test_regex('^a', 'a', '^b');
+;select * from test_regex('^', 'a', '0N');
+;select * from test_regex('^', 'a', '0Nb');
+;select * from test_regex('a$', 'aba', '0');
+;select * from test_regex('a$', 'aba', '0b');
+;select * from test_regex('a$', 'a', '$');
+;select * from test_regex('a$', 'a', '$b');
+;select * from test_regex('$', 'ab', '0N');
+;select * from test_regex('$', 'ab', '0Nb');
+;select * from test_regex('^a', 'a', 'n');
+;select * from test_regex('^a', 'a', 'nb');
+;select * from test_regex('^a', E'b\na', 'n');
+;select * from test_regex('^a', E'b\na', 'nb');
+;select * from test_regex('^a', E'a\na', '0w');
+;select * from test_regex('^a', E'a\na', '0wb');
+;select * from test_regex('^a', E'a\na', '0n^');
+;select * from test_regex('^a', E'a\na', '0n^b');
+;select * from test_regex('a$', 'a', 'n');
+;select * from test_regex('a$', 'a', 'nb');
+;select * from test_regex('a$', E'a\nb', 'n');
+;select * from test_regex('a$', E'a\nb', 'nb');
+;select * from test_regex('a$', E'a\na', '0n');
+;select * from test_regex('a$', E'a\na', '0nb');
+;select * from test_regex('^^', 'a', '0N');
+;select * from test_regex('^^', '^', 'b');
+;select * from test_regex('$$', 'a', '0N');
+;select * from test_regex('$$', '$', 'b');
+;select * from test_regex('^$', '', 'N');
+;select * from test_regex('^$', '', 'Nb');
+;select * from test_regex('^$', 'a', 'N');
+;select * from test_regex('^$', 'a', 'Nb');
+;select * from test_regex('^$', E'a\n\nb', '0nN');
+;select * from test_regex('^$', E'a\n\nb', '0nNb');
+;select * from test_regex('$^', '', 'N');
+;select * from test_regex('$^', '$^', 'b');
+;select * from test_regex('\Aa', 'a', 'P');
+;select * from test_regex('\Aa', 'a', '^P');
+;select * from test_regex('\Aa', E'b\na', '^nP');
+;select * from test_regex('a\Z', 'a', 'P');
+;select * from test_regex('a\Z', 'a', '$P');
+;select * from test_regex('a\Z', E'a\nb', '$nP');
+;select * from test_regex('^*', '', '-');
+;select * from test_regex('$*', '', '-');
+;select * from test_regex('\A*', '', '-');
+;select * from test_regex('\Z*', '', '-');
+;select * from test_regex('[[:<:]]a', 'a', 'LP');
+;select * from test_regex('[[:<:]]a', 'a', 'LPb');
+;select * from test_regex('[[:<:]]a', '-a', 'LP');
+;select * from test_regex('[[:<:]]a', '-a', 'LPb');
+;select * from test_regex('[[:<:]]a', 'ba', 'LP');
+;select * from test_regex('[[:<:]]a', 'ba', 'LPb');
+;select * from test_regex('a[[:>:]]', 'a', 'LP');
+;select * from test_regex('a[[:>:]]', 'a', 'LPb');
+;select * from test_regex('a[[:>:]]', 'a-', 'LP');
+;select * from test_regex('a[[:>:]]', 'a-', 'LPb');
+;select * from test_regex('a[[:>:]]', 'ab', 'LP');
+;select * from test_regex('a[[:>:]]', 'ab', 'LPb');
+;select * from test_regex('\<a', 'a', 'bLP');
+;select * from test_regex('\<a', 'ba', 'bLP');
+;select * from test_regex('a\>', 'a', 'bLP');
+;select * from test_regex('a\>', 'ab', 'bLP');
+;select * from test_regex('\ya', 'a', 'LP');
+;select * from test_regex('\ya', 'ba', 'LP');
+;select * from test_regex('a\y', 'a', 'LP');
+;select * from test_regex('a\y', 'ab', 'LP');
+;select * from test_regex('a\Y', 'ab', 'LP');
+;select * from test_regex('a\Y', 'a-', 'LP');
+;select * from test_regex('a\Y', 'a', 'LP');
+;select * from test_regex('-\Y', '-a', 'LP');
+;select * from test_regex('-\Y', '-%', 'LP');
+;select * from test_regex('\Y-', 'a-', 'LP');
+;select * from test_regex('[[:<:]]*', '', '-');
+;select * from test_regex('[[:>:]]*', '', '-');
+;select * from test_regex('\<*', '', 'b');
+;select * from test_regex('\>*', '', 'b');
+;select * from test_regex('\y*', '', '-');
+;select * from test_regex('\Y*', '', '-');
+;select * from test_regex('\ma', 'a', 'LP');
+;select * from test_regex('\ma', 'ba', 'LP');
+;select * from test_regex('a\M', 'a', 'LP');
+;select * from test_regex('a\M', 'ab', 'LP');
+;select * from test_regex('\Ma', 'a', 'ILP');
+;select * from test_regex('a\m', 'a', 'ILP');
+;select * from test_regex('a\db', 'a0b', 'LP');
+;select * from test_regex('a\db', 'axb', 'LP');
+;select * from test_regex('a\Db', 'a0b', 'LP');
+;select * from test_regex('a\Db', 'axb', 'LP');
+;select * from test_regex('a\sb', 'a b', 'LP');
+;select * from test_regex('a\sb', E'a\tb', 'LP');
+;select * from test_regex('a\sb', E'a\nb', 'LP');
+;select * from test_regex('a\sb', 'axb', 'LP');
+;select * from test_regex('a\Sb', 'axb', 'LP');
+;select * from test_regex('a\Sb', 'a b', 'LP');
+;select * from test_regex('a\wb', 'axb', 'LP');
+;select * from test_regex('a\wb', 'a-b', 'LP');
+;select * from test_regex('a\Wb', 'axb', 'LP');
+;select * from test_regex('a\Wb', 'a-b', 'LP');
+;select * from test_regex('\y\w+z\y', 'adze-guz', 'LP');
+;select * from test_regex('a[\d]b', 'a1b', 'LPE');
+;select * from test_regex('a[\s]b', 'a b', 'LPE');
+;select * from test_regex('a[\w]b', 'axb', 'LPE');
+;select * from test_regex('[\w-~]*', 'ab01_~-`**', 'LNPSE');
+;select * from test_regex('[~-\w]*', 'ab01_~-`**', 'LNPSE');
+;select * from test_regex('[[:alnum:]-~]*', 'ab01~-`**', 'LNS');
+;select * from test_regex('[~-[:alnum:]]*', 'ab01~-`**', 'LNS');
+;select * from test_regex('[\D]', '0123456789abc*', 'LPE');
+;select * from test_regex('[^\D]', 'abc0123456789*', 'LPE');
+;select * from test_regex('[1\D7]', '0123456789abc*', 'LPE');
+;select * from test_regex('[7\D1]', '0123456789abc*', 'LPE');
+;select * from test_regex('[^0\D1]', 'abc0123456789*', 'LPE');
+;select * from test_regex('[^1\D0]', 'abc0123456789*', 'LPE');
+;select * from test_regex('\W', '0123456789abc_*', 'LP');
+;select * from test_regex('[\W]', '0123456789abc_*', 'LPE');
+;select * from test_regex('[\s\S]*', '012  3456789abc_*', 'LNPE');
+;select * from test_regex('\s+', E'abc  \n  def', 'LP');
+;select * from test_regex('\s+', E'abc  \n  def', 'nLP');
+;select * from test_regex('[\s]+', E'abc  \n  def', 'LPE');
+;select * from test_regex('[\s]+', E'abc  \n  def', 'nLPE');
+;select * from test_regex('\S+', E'abc\ndef', 'LP');
+;select * from test_regex('\S+', E'abc\ndef', 'nLP');
+;select * from test_regex('[\S]+', E'abc\ndef', 'LPE');
+;select * from test_regex('[\S]+', E'abc\ndef', 'nLPE');
+;select * from test_regex('\d+', E'012\n345', 'LP');
+;select * from test_regex('\d+', E'012\n345', 'nLP');
+;select * from test_regex('[\d]+', E'012\n345', 'LPE');
+;select * from test_regex('[\d]+', E'012\n345', 'nLPE');
+;select * from test_regex('\D+', E'abc\ndef345', 'LP');
+;select * from test_regex('\D+', E'abc\ndef345', 'nLP');
+;select * from test_regex('[\D]+', E'abc\ndef345', 'LPE');
+;select * from test_regex('[\D]+', E'abc\ndef345', 'nLPE');
+;select * from test_regex('\w+', E'abc_012\ndef', 'LP');
+;select * from test_regex('\w+', E'abc_012\ndef', 'nLP');
+;select * from test_regex('[\w]+', E'abc_012\ndef', 'LPE');
+;select * from test_regex('[\w]+', E'abc_012\ndef', 'nLPE');
+;select * from test_regex('\W+', E'***\n@@@___', 'LP');
+;select * from test_regex('\W+', E'***\n@@@___', 'nLP');
+;select * from test_regex('[\W]+', E'***\n@@@___', 'LPE');
+;select * from test_regex('[\W]+', E'***\n@@@___', 'nLPE');
+;select * from test_regex('a\', '', '');
+;select * from test_regex('a\', '', 'b');
+;select * from test_regex('a\<b', 'a<b', '-');
+;select * from test_regex('a\<b', 'a<b', 'e');
+;select * from test_regex('a\wb', 'awb', 'bAS');
+;select * from test_regex('a\wb', 'awb', 'eAS');
+;select * from test_regex('a\ab', E'a\007b', 'PL');
+;select * from test_regex('a\bb', E'a\bb', 'P');
+;select * from test_regex('a\Bb', 'a\b', 'P');
+;select * from test_regex('a\chb', E'a\bb', 'MP');
+;select * from test_regex('a\cHb', E'a\bb', 'MP');
+;select * from test_regex('a\e', E'a\033', 'LMP');
+;select * from test_regex('a\fb', E'a\fb', 'P');
+;select * from test_regex('a\nb', E'a\nb', 'P');
+;select * from test_regex('a\rb', E'a\rb', 'P');
+;select * from test_regex('a\tb', E'a\tb', 'P');
+;select * from test_regex('a\u0008x', E'a\bx', 'P');
+;select * from test_regex('a\u008x', E'a\bx', 'P');
+;select * from test_regex('a\u00088x', E'a\b8x', 'P');
+;select * from test_regex('a\U00000008x', E'a\bx', 'P');
+;select * from test_regex('a\U0000008x', E'a\bx', 'P');
+;select * from test_regex('a\vb', E'a\013b', 'P');
+;select * from test_regex('a\x08x', E'a\bx', 'MP');
+;select * from test_regex('a\xq', '', '-');
+;select * from test_regex('a\x08x', E'a\bx', 'MP');
+;select * from test_regex('a\z', '', '-');
+;select * from test_regex('a\010b', E'a\bb', 'MP');
+;select * from test_regex('a(b*)c\1', 'abbcbb', 'RP');
+;select * from test_regex('a(b*)c\1', 'ac', 'RP');
+;select * from test_regex('a(b*)c\1', 'abbcb', 'RP');
+;select * from test_regex('a(b*)\1', 'abbcbb', 'RP');
+;select * from test_regex('a(b|bb)\1', 'abbcbb', 'RP');
+;select * from test_regex('a([bc])\1', 'abb', 'RP');
+;select * from test_regex('a([bc])\1', 'abc', 'RP');
+;select * from test_regex('a([bc])\1', 'abcabb', 'RP');
+;select * from test_regex('a([bc])*\1', 'abc', 'RP');
+;select * from test_regex('a([bc])\1', 'abB', 'RP');
+;select * from test_regex('a([bc])\1', 'abB', 'iRP');
+;select * from test_regex('a([bc])\1+', 'abbb', 'RP');
+;select * from test_regex('a([bc])\1{3,4}', 'abbbb', 'QRP');
+;select * from test_regex('a([bc])\1{3,4}', 'abbb', 'QRP');
+;select * from test_regex('a([bc])\1*', 'abbb', 'RP');
+;select * from test_regex('a([bc])\1*', 'ab', 'RP');
+;select * from test_regex('a([bc])(\1*)', 'ab', 'RP');
+;select * from test_regex('a((b)\1)', '', '-');
+;select * from test_regex('a(b)c\2', '', '-');
+;select * from test_regex('a\(b*\)c\1', 'abbcbb', 'bR');
+;select * from test_regex('^([bc])\1*$', 'bbb', 'RP');
+;select * from test_regex('^([bc])\1*$', 'ccc', 'RP');
+;select * from test_regex('^([bc])\1*$', 'bcb', 'RP');
+;select * from test_regex('^(\w+)( \1)+$', 'abc abc abc', 'LRP');
+;select * from test_regex('^(\w+)( \1)+$', 'abc abd abc', 'LRP');
+;select * from test_regex('^(\w+)( \1)+$', 'abc abc abd', 'LRP');
+;select * from test_regex('^(.+)( \1)+$', 'abc abc abc', 'RP');
+;select * from test_regex('^(.+)( \1)+$', 'abc abd abc', 'RP');
+;select * from test_regex('^(.+)( \1)+$', 'abc abc abd', 'RP');
+;select * from test_regex('^(.)\1|\1.', 'abcdef', 'RP');
+;select * from test_regex('^((.)\2|..)\2', 'abadef', 'RP');
+;select * from test_regex('(^\w+).*\1', 'abc abc abc', 'LRP');
+;select * from test_regex('(^\w+\M).*\1', 'abc abcd abd', 'LRP');
+;select * from test_regex('(\w+(?= )).*\1', 'abc abcd abd', 'HLRP');
+;select substring('fffoooooooooooooooooooooooooooooooo', '^(.)\1(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)');
+;select regexp_split_to_array('abcxxxdefyyyghi', '((.))(\1\2)');
+;select * from test_regex('a\010b', E'a\bb', 'MP');
+;select * from test_regex('a\0070b', E'a\0070b', 'MP');
+;select * from test_regex('a\07b', E'a\007b', 'MP');
+;select * from test_regex('a(b)(b)(b)(b)(b)(b)(b)(b)(b)(b)\07c', E'abbbbbbbbbb\007c', 'MP');
+;select * from test_regex('a\7b', '', '-');
+;select * from test_regex('a\10b', E'a\bb', 'MP');
+;select * from test_regex('a\101b', 'aAb', 'MP');
+;select * from test_regex('a(b)(b)(b)(b)(b)(b)(b)(b)(b)(b)\10c', 'abbbbbbbbbbbc', 'RP');
+;select * from test_regex('a((((((((((b\10))))))))))c', '', '-');
+;select * from test_regex('a\12b', E'a\nb', 'MP');
+;select * from test_regex('a\12b', '', 'b');
+;select * from test_regex('a\12b', 'a12b', 'eAS');
+;select * from test_regex('a\701b', 'a81b', 'MP');
+;select * from test_regex('a b c', 'abc', 'xP');
+;select * from test_regex(E'a b #oops\nc\td', 'abcd', 'xP');
+;select * from test_regex(E'a\\ b\\\tc', E'a b\tc', 'x');
+;select * from test_regex('a b\#c', 'ab#c', 'xP');
+;select * from test_regex('a b[c d]e', 'ab e', 'xP');
+;select * from test_regex('a b[c#d]e', 'ab#e', 'xP');
+;select * from test_regex('a b[c#d]e', 'abde', 'xP');
+;select * from test_regex('ab{ d', 'ab{d', 'xSPB');
+;select * from test_regex('ab{ 1 , 2 }c', 'abc', 'xPQ');
+;select * from test_regex('a(?#comment)b', 'ab', 'P');
+;select * from test_regex('a^b', 'ab', 'I');
+;select * from test_regex('ab', 'Ab', 'i');
+;select * from test_regex('ab', 'Ab', 'ib');
+;select * from test_regex('a[bc]', 'aC', 'i');
+;select * from test_regex('a[bc]', 'aC', 'ib');
+;select * from test_regex('a[^bc]', 'aB', 'i');
+;select * from test_regex('a[^bc]', 'aB', 'ib');
+;select * from test_regex('a[b-d]', 'aC', 'iM');
+;select * from test_regex('a[b-d]', 'aC', 'iMb');
+;select * from test_regex('a[^b-d]', 'aC', 'iM');
+;select * from test_regex('a[^b-d]', 'aC', 'iMb');
+;select * from test_regex('a[B-Z]', 'aC', 'iM');
+;select * from test_regex('a[B-Z]', 'aC', 'iMb');
+;select * from test_regex('a[^B-Z]', 'aC', 'iM');
+;select * from test_regex('a[^B-Z]', 'aC', 'iMb');
+;select * from test_regex('***?', '', '');
+;select * from test_regex('***?', '', 'b');
+;select * from test_regex('***?', '***?', 'q');
+;select * from test_regex('***=a*b', 'a*b', 'P');
+;select * from test_regex('***=a*b', 'a*b', 'Pb');
+;select * from test_regex('***=a*b', '***=a*b', 'q');
+;select * from test_regex('***:\w+', 'ab', 'bLP');
+;select * from test_regex('***:\w+', 'ab', 'eLP');
+;select * from test_regex('***:***=a*b', '', '');
+;select * from test_regex('***:***=a*b', '', 'b');
+;select * from test_regex('***:(?b)a+b', 'a+b', 'P');
+;select * from test_regex('***:(?b)a+b', 'a+b', 'Pb');
+;select * from test_regex('(?b)a+b', 'a+b', 'P');
+;select * from test_regex('(?b)\w+', '', 'e');
+;select * from test_regex('(?b)\w+', '(?b)w+', 'bAS');
+;select * from test_regex('(?c)a', 'a', 'iP');
+;select * from test_regex('(?c)a', 'A', 'iP');
+;select * from test_regex('(?e)\W+', 'WW', 'APS');
+;select * from test_regex('(?i)a+', 'Aa', 'P');
+;select * from test_regex('(?m)a.b', E'a\nb', 'P');
+;select * from test_regex('(?m)^b', E'a\nb', 'P');
+;select * from test_regex('(?n)a.b', E'a\nb', 'P');
+;select * from test_regex('(?n)^b', E'a\nb', 'P');
+;select * from test_regex('(?p)a.b', E'a\nb', 'P');
+;select * from test_regex('(?p)^b', E'a\nb', 'P');
+;select * from test_regex('(?q)a+b', 'a+b', 'P');
+;select * from test_regex('(?s)a.b', E'a\nb', 'nP');
+;select * from test_regex('(?t)a b', 'a b', 'xP');
+;select * from test_regex('(?w)a.b', E'a\nb', 'P');
+;select * from test_regex('(?w)^b', E'a\nb', 'P');
+;select * from test_regex('(?x)a b', 'ab', 'P');
+;select * from test_regex('(?z)ab', '', '-');
+;select * from test_regex('(?ici)a+', 'Aa', 'P');
+;select * from test_regex('(?i)(?q)a+', '', 'P');
+;select * from test_regex('(?q)(?i)a+', '(?i)a+', 'P');
+;select * from test_regex('(?qe)a+', 'a', 'P');
+;select * from test_regex('(?q)a b', 'a b', 'xP');
+;select * from test_regex('(?qx)a b', 'a b', 'P');
+;select * from test_regex('(?qi)ab', 'Ab', 'P');
+;select * from test_regex('a(b)c', 'abc', '-');
+;select * from test_regex('a(?:b)c', 'xabc', 'P');
+;select * from test_regex('a((b))c', 'xabcy', '-');
+;select * from test_regex('a(?:(b))c', 'abcy', 'P');
+;select * from test_regex('a((?:b))c', 'abc', 'P');
+;select * from test_regex('a(?:(?:b))c', 'abc', 'P');
+;select * from test_regex('a(b){0}c', 'ac', '0Q');
+;select * from test_regex('a(b)c(d)e', 'abcde', '-');
+;select * from test_regex('(b)c(d)e', 'bcde', '-');
+;select * from test_regex('a(b)(d)e', 'abde', '-');
+;select * from test_regex('a(b)c(d)', 'abcd', '-');
+;select * from test_regex('(ab)(cd)', 'xabcdy', '-');
+;select * from test_regex('a(b)?c', 'xabcy', '-');
+;select * from test_regex('a(b)?c', 'xacy', '0-');
+;select * from test_regex('a(b)?c(d)?e', 'xabcdey', '-');
+;select * from test_regex('a(b)?c(d)?e', 'xacdey', '0-');
+;select * from test_regex('a(b)?c(d)?e', 'xabcey', '0-');
+;select * from test_regex('a(b)?c(d)?e', 'xacey', '0-');
+;select * from test_regex('a(b)*c', 'xabcy', '-');
+;select * from test_regex('a(b)*c', 'xabbbcy', '0-');
+;select * from test_regex('a(b)*c', 'xacy', '0-');
+;select * from test_regex('a(b*)c', 'xabbbcy', '-');
+;select * from test_regex('a(b*)c', 'xacy', '-');
+;select * from test_regex('a(b)+c', 'xacy', '-');
+;select * from test_regex('a(b)+c', 'xabcy', '-');
+;select * from test_regex('a(b)+c', 'xabbbcy', '0-');
+;select * from test_regex('a(b+)c', 'xabbbcy', '-');
+;select * from test_regex('a(b){2,3}c', 'xabbbcy', '0Q');
+;select * from test_regex('a(b){2,3}c', 'xabbcy', '0Q');
+;select * from test_regex('a(b){2,3}c', 'xabcy', 'Q');
+;select * from test_regex('\y(\w+)\y', '-- abc-', 'LP');
+;select * from test_regex('a((b|c)d+)+', 'abacdbd', '-');
+;select * from test_regex('(.*).*', 'abc', 'N');
+;select * from test_regex('(a*)*', 'bc', 'N');
+;select * from test_regex(' TO (([a-z0-9._]+|"([^"]+|"")+")+)', 'asd TO foo', 'M');
+;select * from test_regex('((.))(\2){0}', 'xy', 'RPQ');
+;select * from test_regex('((.))(\2)', 'xyy', 'RP');
+;select * from test_regex('((.))(\2)', 'xyy', 'oRP');
+;select * from test_regex('(.){0}(\1)', 'xxx', 'PQR');
+;select * from test_regex('((.)){0}(\2)', 'xxx', 'PQR');
+;select * from test_regex('((.)){0}(\2){0}', 'xyz', 'NPQR');
+;select * from test_regex('a(?=b)b*', 'ab', 'HP');
+;select * from test_regex('a(?=b)b*', 'a', 'HP');
+;select * from test_regex('a(?=b)b*(?=c)c*', 'abc', 'HP');
+;select * from test_regex('a(?=b)b*(?=c)c*', 'ab', 'HP');
+;select * from test_regex('a(?!b)b*', 'ab', 'HP');
+;select * from test_regex('a(?!b)b*', 'a', 'HP');
+;select * from test_regex('(?=b)b', 'b', 'HP');
+;select * from test_regex('(?=b)b', 'a', 'HP');
+;select * from test_regex('...(?!.)', 'abcde', 'HP');
+;select * from test_regex('...(?=.)', 'abc', 'HP');
+;select * from test_regex('(?<=a)b*', 'ab', 'HPN');
+;select * from test_regex('(?<=a)b*', 'b', 'HPN');
+;select * from test_regex('(?<=a)b*(?<=b)c*', 'abc', 'HP');
+;select * from test_regex('(?<=a)b*(?<=b)c*', 'ac', 'HP');
+;select * from test_regex('a(?<!a)b*', 'ab', 'IHP');
+;select * from test_regex('a(?<!b)b*', 'a', 'HP');
+;select * from test_regex('(?<=b)b', 'bb', 'HP');
+;select * from test_regex('(?<=b)b', 'b', 'HP');
+;select * from test_regex('(?<=.)..', 'abcde', 'HP');
+;select * from test_regex('(?<=..)a*', 'aaabb', 'HP');
+;select * from test_regex('(?<=..)b*', 'aaabb', 'HP');
+;select * from test_regex('(?<=..)b+', 'aaabb', 'HP');
+;select * from test_regex('ab+?', 'abb', 'PT');
+;select * from test_regex('ab+?c', 'abbc', 'PT');
+;select * from test_regex('ab*?', 'abb', 'PT');
+;select * from test_regex('ab*?c', 'abbc', 'PT');
+;select * from test_regex('ab??', 'ab', 'PT');
+;select * from test_regex('ab??c', 'abc', 'PT');
+;select * from test_regex('ab{2,4}?', 'abbbb', 'PQT');
+;select * from test_regex('ab{2,4}?c', 'abbbbc', 'PQT');
+;select * from test_regex('3z*', '123zzzz456', '-');
+;select * from test_regex('3z*?', '123zzzz456', 'PT');
+;select * from test_regex('z*4', '123zzzz456', '-');
+;select * from test_regex('z*?4', '123zzzz456', 'PT');
+;select * from test_regex('^([^/]+?)(?:/([^/]+?))(?:/([^/]+?))?$', 'foo/bar/baz', 'PT');
+;select * from test_regex('^(.+?)(?:/(.+?))(?:/(.+?)\3)?$', 'foo/bar/baz/quux', 'PRT');
+;select * from test_regex('^(.*?)(a*)$', 'xyza', 'PNT');
+;select * from test_regex('^(.*?)(a*)$', 'xyzaa', 'PNT');
+;select * from test_regex('^(.*?)(a*)$', 'xyz', 'PNT');
+;select * from test_regex('(week|wee)(night|knights)', 'weeknights', '-');
+;select * from test_regex('a(bc*).*\1', 'abccbccb', 'RP');
+;select * from test_regex('a(b.[bc]*)+', 'abcbd', '-');
+;select * from test_regex('a(?:b|b)c', 'abc', 'P');
+;select * from test_regex('[ab][ab][ab]', 'aba', '');
+;select * from test_regex('[ab][ab][ab]', 'aba', 'b');
+;select * from test_regex('[ab][ab][ab][ab][ab][ab][ab]', 'abababa', '');
+;select * from test_regex('[ab][ab][ab][ab][ab][ab][ab]', 'abababa', 'b');
+;select * from test_regex('abcdefghijkl', 'abcdefghijkl', '');
+;select * from test_regex('abcdefghijkl', 'abcdefghijkl', 'b');
+;select * from test_regex('a(?:b|c|d|e|f|g|h|i|j|k|l|m)n', 'agn', 'P');
+;select * from test_regex('a(((((((((((((b)))))))))))))c', 'abc', '-');
+;select * from test_regex('ab{1,100}c', 'abbc', 'Q');
+;select * from test_regex('ab{1,100}c', 'abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc', 'Q');
+;select * from test_regex('ab{1,100}c', 'abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc', 'Q');
+;select * from test_regex('\w+abcdefgh', 'xyzabcdefgh', 'LP');
+;select * from test_regex('\w+abcdefgh', 'xyzabcdefgh', '%LP');
+;select * from test_regex('\w+abcdefghijklmnopqrst', 'xyzabcdefghijklmnopqrst', '%LP');
+;select * from test_regex('\w+(abcdefgh)?', 'xyz', '0%LP');
+;select * from test_regex('\w+(abcdefgh)?', 'xyzabcdefg', '0%LP');
+;select * from test_regex('\w+(abcdefghijklmnopqrst)?', 'xyzabcdefghijklmnopqrs', '0%LP');
+;select * from test_regex('def', 'abc', '0!t');
+;select * from test_regex('bcd', 'abc', '0!t');
+;select * from test_regex('abc', 'abab', '0!t');
+;select * from test_regex('abc', 'abdab', '0!t');
+;select * from test_regex('abc', 'abc', '0t');
+;select * from test_regex('abc', 'xyabc', '0t');
+;select * from test_regex('abc+', 'xyab', '0!t');
+;select * from test_regex('abc+', 'xyabc', '0t');
+;select * from test_regex('abc+', 'xyabcd', '0t');
+;select * from test_regex('abc+', 'xyabcdd', '0t');
+;select * from test_regex('abc+?', 'xyab', '0!tPT');
+;select * from test_regex('abc+?', 'xyabc', '0tPT');
+;select * from test_regex('abc+?', 'xyabcc', '0tPT');
+;select * from test_regex('abc+?', 'xyabcd', '0tPT');
+;select * from test_regex('abc+?', 'xyabcdd', '0tPT');
+;select * from test_regex('abcd|bc', 'xyabc', '0t');
+;select * from test_regex('.*k', E'xx\nyyy', '0!tn');
+;select * from test_regex('***', '', '');
+;select * from test_regex('***', '', 'b');
+;select * from test_regex('a?b*', 'abb', 'N');
+;select * from test_regex('a?b*', 'bb', 'N');
+;select * from test_regex('a*b', 'aab', '');
+;select * from test_regex('a*b', 'aab', 'b');
+;select * from test_regex('^a*b', 'aaaab', '');
+;select * from test_regex('^a*b', 'aaaab', 'b');
+;select * from test_regex('[0-6][1-2][0-3][0-6][1-6][0-6]', '010010', 'M');
+;select * from test_regex('[0-6][1-2][0-3][0-6][1-6][0-6]', '010010', 'Mb');
+;select * from test_regex('abc', 'abcd', 's');
+;select * from test_regex('abc', 'xabcd', 's');
+;select * from test_regex('(?n)^(?![t#])\S+', E'tk\n\n#\n#\nit0', 'HLP');
+;select * from test_regex('([[:xdigit:]])([[:space:]]*)', '2:::DebugWin32', 'L');
+;select * from test_regex('blah', 'asd asd', 'c');
+;select * from test_regex('s%$', 'asd asd', 'c');
+;select * from test_regex('[^d]%$', 'asd asd', 'c');
+;select * from test_regex('\Zx', 'asd asd', 'cIP');
+;select * from test_regex('.x', 'asd asd', 'c');
+;select * from test_regex('.x$', 'asd asd', 'c');
+;select * from test_regex('.[^d]x$', 'asd asd', 'c');
+;select * from test_regex('[^a]%[^\r\n]*$', 'asd asd', 'cEP');
+;select * from test_regex('[^a]%$', 'asd asd', 'c');
+;select * from test_regex('[^x]%$', 'asd asd', 'c');
+;select * from test_regex('((\B\B|\Bh+line)[ \t]*|[^\B]%[^\r\n]*)$', 'asd asd', 'cEP');
+;select * from test_regex('[ ]*(^|[^%])%V', '*%V2', '-');
+;select * from test_regex('([^_.]*)([^.]*)\.(..)(.).*', 'bbcos_001_c01.q1la', '-');
+;select * from test_regex('\A\s*[^<]*\s*<([^>]+)>', 'a<a>', 'LP');
+;select * from test_regex('\A\s*([^b]*)b', 'ab', 'LP');
+;select * from test_regex('\A\s*[^b]*(b)', 'ab', 'LP');
+;select * from test_regex('\A(\s*)[^b]*(b)', 'ab', 'LP');
+;select * from test_regex('\A\s*[^b]*b', 'ab', 'LP');
+;select * from test_regex('\A\s*[^b]*b', 'ab', 'LP');
+;select * from test_regex('\A\s*[^b]*b', 'ab', '0LP');
+;select * from test_regex('(^|\n)+\.*b', E'\n.b', 'P');
+;select * from test_regex('(^|[\n\r]+)\.*\?<.*?(\n|\r)+', E'TQ\r\n.?<5000267>Test already stopped\r\n', 'EP');
+;select * from test_regex('\3161573148', '\3161573148', 'MP');
+;select * from test_regex('($|^)*', 'x', 'N');
+;select * from test_regex($$
+	^TETRA_MODE_CMD				# Message Type
+	([[:blank:]]+)				# Pad
+	(ETS_1_1|ETS_1_2|ETS_2_2)		# SystemCode
+	([[:blank:]]+)				# Pad
+	(CONTINUOUS|CARRIER|MCCH|TRAFFIC)	# SharingMode
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,2})			# ColourCode
+	([[:blank:]]+)				# Pad
+	(1|2|3|4|6|9|12|18)			# TSReservedFrames
+	([[:blank:]]+)				# Pad
+	(PASS|TRUE|FAIL|FALSE)			# UPlaneDTX
+	([[:blank:]]+)				# Pad
+	(PASS|TRUE|FAIL|FALSE)			# Frame18Extension
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,4})			# MCC
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,5})			# MNC
+	([[:blank:]]+)				# Pad
+	(BOTH|BCAST|ENQRY|NONE)			# NbrCellBcast
+	([[:blank:]]+)				# Pad
+	(UNKNOWN|LOW|MEDIUM|HIGH)		# CellServiceLevel
+	([[:blank:]]+)				# Pad
+	(PASS|TRUE|FAIL|FALSE)			# LateEntryInfo
+	([[:blank:]]+)				# Pad
+	(300|400)				# FrequencyBand
+	([[:blank:]]+)				# Pad
+	(NORMAL|REVERSE)			# ReverseOperation
+	([[:blank:]]+)				# Pad
+	(NONE|\+6\.25|\-6\.25|\+12\.5)		# Offset
+	([[:blank:]]+)				# Pad
+	(10)					# DuplexSpacing
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,4})			# MainCarrierNr
+	([[:blank:]]+)				# Pad
+	(0|1|2|3)				# NrCSCCH
+	([[:blank:]]+)				# Pad
+	(15|20|25|30|35|40|45)			# MSTxPwrMax
+	([[:blank:]]+)				# Pad
+	(\-125|\-120|\-115|\-110|\-105|\-100|\-95|\-90|\-85|\-80|\-75|\-70|\-65|\-60|\-55|\-50)
+						# RxLevAccessMin
+	([[:blank:]]+)				# Pad
+	(\-53|\-51|\-49|\-47|\-45|\-43|\-41|\-39|\-37|\-35|\-33|\-31|\-29|\-27|\-25|\-23)
+						# AccessParameter
+	([[:blank:]]+)				# Pad
+	(DISABLE|[[:digit:]]{3,4})		# RadioDLTimeout
+	([[:blank:]]+)				# Pad
+	(\-[[:digit:]]{2,3})			# RSSIThreshold
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,5})			# CCKIdSCKVerNr
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,5})			# LocationArea
+	([[:blank:]]+)				# Pad
+	([(1|0)]{16})				# SubscriberClass
+	([[:blank:]]+)				# Pad
+	([(1|0)]{12})				# BSServiceDetails
+	([[:blank:]]+)				# Pad
+	(RANDOMIZE|IMMEDIATE|[[:digit:]]{1,2})	# IMM
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,2})			# WT
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,2})			# Nu
+	([[:blank:]]+)				# Pad
+	([0-1])					# FrameLngFctr
+	([[:blank:]]+)				# Pad
+	([[:digit:]]{1,2})			# TSPtr
+	([[:blank:]]+)				# Pad
+	([0-7])					# MinPriority
+	([[:blank:]]+)				# Pad
+	(PASS|TRUE|FAIL|FALSE)			# ExtdSrvcsEnabled
+	([[:blank:]]+)				# Pad
+	(.*)					# ConditionalFields
+    $$, '', 'xLMPQ');
+;select * from test_regex(E'^MRK:client1: =1339 14HKelly Talisman 10011000 ([0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]*) [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 8 0 8 0 0 0 77 77 1 1 2 0 11 { 1 3 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 13HC6 My Creator 2 3 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 31HC7 Slightly offensive name, huh 3 8 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 23HE-mail:kelly@hotbox.com 4 9 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 17Hcompface must die 5 10 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 0 3HAir 6 12 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 14HPGP public key 7 13 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 16Hkelly@hotbox.com 8 30 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 0 12H2 text/plain 9 30 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 0 13H2 x-kom/basic 10 33 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 1H0 11 14 8 [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* [0-9]* 00000000 1 1H3 }\r?', '', 'BMS');
+;select * from test_regex('(^)+^', 'x', 'N');
+;select * from test_regex('($^)+', 'x', 'N');
+;select * from test_regex('(^$)*', 'x', 'N');
+;select * from test_regex('(^(?!aa))+', 'aa bb cc', 'HP');
+;select * from test_regex('(^(?!aa)(?!bb)(?!cc))+', 'aa x', 'HP');
+;select * from test_regex('(^(?!aa)(?!bb)(?!cc))+', 'bb x', 'HP');
+;select * from test_regex('(^(?!aa)(?!bb)(?!cc))+', 'cc x', 'HP');
+;select * from test_regex('(^(?!aa)(?!bb)(?!cc))+', 'dd x', 'HP');
+;select * from test_regex('abcd(\m)+xyz', 'x', 'ILP');
+;select * from test_regex('abcd(\m)+xyz', 'a', 'ILP');
+;select * from test_regex('^abcd*(((((^(a c(e?d)a+|)+|)+|)+|)+|a)+|)', 'x', 'S');
+;select * from test_regex('a^(^)bcd*xy(((((($a+|)+|)+|)+$|)+|)+|)^$', 'x', 'IS');
+;select * from test_regex('xyz(\Y\Y)+', 'x', 'LP');
+;select * from test_regex('x|(?:\M)+', 'x', 'LNP');
+;select * from test_regex(repeat('x*y*z*', 200), 'x', 'N');
+;select * from test_regex('(\Y)+', 'foo', 'LNP');
+;select * from test_regex('a\Y(?=45)', 'a45', 'HLP');
+;select * from test_regex('a(?=.)c', 'ac', 'HP');
+;select * from test_regex('a(?=.).*(?=3)3*', 'azz33', 'HP');
+;select * from test_regex('a(?=\w)\w*(?=.).*', 'az3%', 'HLP');
+;select * from test_regex('ABCDEFGHIJKLMNOPQRSTUVWXYZ(?:\w|a|b|c|d|e|f|0|1|2|3|4|5|6|Q)',
+                         'ABCDEFGHIJKLMNOPQRSTUVWXYZ3', 'LP');
+;select * from test_regex('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(\Y\Y)+',
+                         'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789Z', 'LP');
+;select * from test_regex('((x|xabcdefghijklmnopqrstuvwxyz0123456789)x*|[^y]z)$',
+                         'az', '');
+;

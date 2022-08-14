@@ -1,0 +1,2237 @@
+SELECT pg_catalog.set_config('search_path', '', false);
+;SELECT pg_catalog.pg_is_in_recovery()
+;SELECT pg_catalog.set_config('search_path', '', false);
+;SET DATESTYLE = ISO
+;SET INTERVALSTYLE = POSTGRES
+;SET extra_float_digits TO 3
+;SET synchronize_seqscans TO off
+;SET statement_timeout = 0
+;SET lock_timeout = 0
+;SET idle_in_transaction_session_timeout = 0
+;SET row_security = off
+;BEGIN
+;SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY
+;SELECT oid, rolname FROM pg_catalog.pg_roles ORDER BY 1
+;SELECT x.tableoid, x.oid, x.extname, n.nspname, x.extrelocatable, x.extversion, x.extconfig, x.extcondition FROM pg_extension x JOIN pg_namespace n ON n.oid = x.extnamespace
+;SELECT classid, objid, refobjid FROM pg_depend WHERE refclassid = 'pg_extension'::regclass AND deptype = 'e' ORDER BY 3
+;SELECT n.tableoid, n.oid, n.nspname, n.nspowner, n.nspacl, acldefault('n', n.nspowner) AS acldefault FROM pg_namespace n
+;SELECT c.tableoid, c.oid, c.relname, c.relnamespace, c.relkind, c.reltype, c.relowner, c.relchecks, c.relhasindex, c.relhasrules, c.relpages, c.relhastriggers, c.relpersistence, c.reloftype, c.relacl, acldefault(CASE WHEN c.relkind = 'S' THEN 's'::"char" ELSE 'r'::"char" END, c.relowner) AS acldefault, CASE WHEN c.relkind = 'f' THEN (SELECT ftserver FROM pg_catalog.pg_foreign_table WHERE ftrelid = c.oid) ELSE 0 END AS foreignserver, c.relfrozenxid, tc.relfrozenxid AS tfrozenxid, tc.oid AS toid, tc.relpages AS toastpages, tc.reloptions AS toast_reloptions, d.refobjid AS owning_tab, d.refobjsubid AS owning_col, tsp.spcname AS reltablespace, false AS relhasoids, c.relispopulated, c.relreplident, c.relrowsecurity, c.relforcerowsecurity, c.relminmxid, tc.relminmxid AS tminmxid, array_remove(array_remove(c.reloptions,'check_option=local'),'check_option=cascaded') AS reloptions, CASE WHEN 'check_option=local' = ANY (c.reloptions) THEN 'LOCAL'::text WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'CASCADED'::text ELSE NULL END AS checkoption, am.amname, (d.deptype = 'i') IS TRUE AS is_identity_sequence, c.relispartition AS ispartition 
+FROM pg_class c
+LEFT JOIN pg_depend d ON (c.relkind = 'S' AND d.classid = 'pg_class'::regclass AND d.objid = c.oid AND d.objsubid = 0 AND d.refclassid = 'pg_class'::regclass AND d.deptype IN ('a', 'i'))
+LEFT JOIN pg_tablespace tsp ON (tsp.oid = c.reltablespace)
+LEFT JOIN pg_am am ON (c.relam = am.oid)
+LEFT JOIN pg_class tc ON (c.reltoastrelid = tc.oid AND tc.relkind = 't' AND c.relkind <> 'p')
+WHERE c.relkind IN ('r', 'S', 'v', 'c', 'm', 'f', 'p')
+ORDER BY c.oid
+;LOCK TABLE public.text_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.int2_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.float8_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.int8_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.int4_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.money_data IN ACCESS SHARE MODE
+;LOCK TABLE public.float4_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.num_data IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_add IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_sub IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_div IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_mul IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_sqrt IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_ln IN ACCESS SHARE MODE
+;LOCK TABLE public.numrange_test IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_log10 IN ACCESS SHARE MODE
+;LOCK TABLE public.varchar_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.char_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.num_exp_power_10_ln IN ACCESS SHARE MODE
+;LOCK TABLE public.num_result IN ACCESS SHARE MODE
+;LOCK TABLE public.textrange_test IN ACCESS SHARE MODE
+;LOCK TABLE public.bit_defaults IN ACCESS SHARE MODE
+;LOCK TABLE public.test_range_gist IN ACCESS SHARE MODE
+;LOCK TABLE public.num_input_test IN ACCESS SHARE MODE
+;LOCK TABLE public.num_typemod_test IN ACCESS SHARE MODE
+;LOCK TABLE public.test_range_spgist IN ACCESS SHARE MODE
+;LOCK TABLE public.test_range_excl IN ACCESS SHARE MODE
+;LOCK TABLE public.lseg_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.path_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.line_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.point_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.polygon_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.box_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.timetz_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.circle_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.time_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.date_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.timestamptz_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.inet_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.interval_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.timestamp_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.quad_poly_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.nummultirange_test IN ACCESS SHARE MODE
+;LOCK TABLE public.quad_box_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.quad_box_tbl_ord_seq1 IN ACCESS SHARE MODE
+;LOCK TABLE public.quad_box_tbl_ord_seq2 IN ACCESS SHARE MODE
+;LOCK TABLE public.reservations IN ACCESS SHARE MODE
+;LOCK TABLE public.tab_core_types IN ACCESS SHARE MODE
+;LOCK TABLE public.hobbies_r IN ACCESS SHARE MODE
+;LOCK TABLE public.equipment_r IN ACCESS SHARE MODE
+;LOCK TABLE public.onek IN ACCESS SHARE MODE
+;LOCK TABLE public.tenk1 IN ACCESS SHARE MODE
+;LOCK TABLE public.tenk2 IN ACCESS SHARE MODE
+;LOCK TABLE public.person IN ACCESS SHARE MODE
+;LOCK TABLE public.emp IN ACCESS SHARE MODE
+;LOCK TABLE public.student IN ACCESS SHARE MODE
+;LOCK TABLE public.stud_emp IN ACCESS SHARE MODE
+;LOCK TABLE public.city IN ACCESS SHARE MODE
+;LOCK TABLE public.dept IN ACCESS SHARE MODE
+;LOCK TABLE public.slow_emp4000 IN ACCESS SHARE MODE
+;LOCK TABLE public.fast_emp4000 IN ACCESS SHARE MODE
+;LOCK TABLE public.road IN ACCESS SHARE MODE
+;LOCK TABLE public.ihighway IN ACCESS SHARE MODE
+;LOCK TABLE public.shighway IN ACCESS SHARE MODE
+;LOCK TABLE public.real_city IN ACCESS SHARE MODE
+;LOCK TABLE public.a_star IN ACCESS SHARE MODE
+;LOCK TABLE public.b_star IN ACCESS SHARE MODE
+;LOCK TABLE public.c_star IN ACCESS SHARE MODE
+;LOCK TABLE public.d_star IN ACCESS SHARE MODE
+;LOCK TABLE public.e_star IN ACCESS SHARE MODE
+;LOCK TABLE public.f_star IN ACCESS SHARE MODE
+;LOCK TABLE public.aggtest IN ACCESS SHARE MODE
+;LOCK TABLE public.hash_i4_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.hash_name_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.hash_txt_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.hash_f8_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.bt_i4_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.bt_name_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.bt_txt_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.bt_f8_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.array_op_test IN ACCESS SHARE MODE
+;LOCK TABLE public.array_index_op_test IN ACCESS SHARE MODE
+;LOCK TABLE public.testjsonb IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tsvector IN ACCESS SHARE MODE
+;LOCK TABLE public.extra_wide_table IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted1 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted11 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted12 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted2 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted3 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted4 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted_def IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted_def1 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted_def2 IN ACCESS SHARE MODE
+;LOCK TABLE public.mlparted_defd IN ACCESS SHARE MODE
+;LOCK TABLE public.onek2 IN ACCESS SHARE MODE
+;LOCK TABLE public.bprime IN ACCESS SHARE MODE
+;LOCK TABLE public.ramp IN ACCESS SHARE MODE
+;LOCK TABLE public.iportaltest IN ACCESS SHARE MODE
+;LOCK TABLE public.quad_point_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_reg IN ACCESS SHARE MODE
+;LOCK TABLE public.view_base_table IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_unique1 IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_unique2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_pk IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_box IN ACCESS SHARE MODE
+;LOCK TABLE public.tbl_include_box_pk IN ACCESS SHARE MODE
+;LOCK TABLE public.kd_point_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.radix_text_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.func_index_heap IN ACCESS SHARE MODE
+;LOCK TABLE public.dupindexcols IN ACCESS SHARE MODE
+;LOCK TABLE public.default_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.a IN ACCESS SHARE MODE
+;LOCK TABLE public.b IN ACCESS SHARE MODE
+;LOCK TABLE public.defaultexpr_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.c IN ACCESS SHARE MODE
+;LOCK TABLE public.d IN ACCESS SHARE MODE
+;LOCK TABLE public.check_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.check2_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.insert_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_tbl_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_tblas_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_parted_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_parted_a_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_parted_b_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_parted_c_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tableam_parted_d_heap2 IN ACCESS SHARE MODE
+;LOCK TABLE public.persons IN ACCESS SHARE MODE
+;LOCK TABLE public.persons2 IN ACCESS SHARE MODE
+;LOCK TABLE public.copy_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.persons3 IN ACCESS SHARE MODE
+;LOCK TABLE public.log_table IN ACCESS SHARE MODE
+;LOCK TABLE public.main_table IN ACCESS SHARE MODE
+;LOCK TABLE public.invalid_check_con IN ACCESS SHARE MODE
+;LOCK TABLE public.invalid_check_con_child IN ACCESS SHARE MODE
+;LOCK TABLE public.trigger_parted IN ACCESS SHARE MODE
+;LOCK TABLE public.trigger_parted_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.trigger_parted_p1_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.trigger_parted_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.trigger_parted_p2_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.xacttest IN ACCESS SHARE MODE
+;LOCK TABLE public.subselect_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.arrtest IN ACCESS SHARE MODE
+;LOCK TABLE public.random_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.dedup_unique_test_table IN ACCESS SHARE MODE
+;LOCK TABLE public.agg_data_2k IN ACCESS SHARE MODE
+;LOCK TABLE public.agg_data_20k IN ACCESS SHARE MODE
+;LOCK TABLE public.btree_tall_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.delete_test_table IN ACCESS SHARE MODE
+;LOCK TABLE public.gist_point_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.gin_test_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.spgist_point_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.brintest IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tablesample IN ACCESS SHARE MODE
+;LOCK TABLE public.mvtest_t IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest0 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest1 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest1 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest2 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest3 IN ACCESS SHARE MODE
+;LOCK TABLE public.brinopers IN ACCESS SHARE MODE
+;LOCK TABLE public.itest4 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest9 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest1_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest10 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest_normal IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest_normal_child IN ACCESS SHARE MODE
+;LOCK TABLE public.itest11 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest_normal_child2 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtestxx_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtestxx_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtestxx_3 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest13 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtestxx_4 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest5 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest3 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest3a IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest2 IN ACCESS SHARE MODE
+;LOCK TABLE public.bug_16784 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest_tableoid IN ACCESS SHARE MODE
+;LOCK TABLE public.gs_data_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest10 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest6 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest10a IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7a IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7b IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7c IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7d IN ACCESS SHARE MODE
+;LOCK TABLE public.itest7e IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest20 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest20a IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest20b IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest21a IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest21b IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest22a IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest22b IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest22c IN ACCESS SHARE MODE
+;LOCK TABLE public.spgist_box_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.spgist_text_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_summarize IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_test IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest23p IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest23q IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest24 IN ACCESS SHARE MODE
+;LOCK TABLE public.spgist_domain_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest25 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest27 IN ACCESS SHARE MODE
+;LOCK TABLE public.itest14 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest29 IN ACCESS SHARE MODE
+;LOCK TABLE public.datdba_only IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_hot_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest30 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest30_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest26 IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest28a IN ACCESS SHARE MODE
+;LOCK TABLE public.gtest28b IN ACCESS SHARE MODE
+;LOCK TABLE regress_rls_schema.rls_tbl IN ACCESS SHARE MODE
+;LOCK TABLE regress_rls_schema.rls_tbl_force IN ACCESS SHARE MODE
+;LOCK TABLE public.brintest_multi IN ACCESS SHARE MODE
+;LOCK TABLE public.brintest_bloom IN ACCESS SHARE MODE
+;LOCK TABLE public.brinopers_bloom IN ACCESS SHARE MODE
+;LOCK TABLE public.brinopers_multi IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_summarize_bloom IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_test_bloom IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_summarize_multi IN ACCESS SHARE MODE
+;LOCK TABLE public.brin_test_multi IN ACCESS SHARE MODE
+;LOCK TABLE public.inhx IN ACCESS SHARE MODE
+;LOCK TABLE public.inhf IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t3 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_system IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_interface IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_person IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_admin IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_emp IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_emplog IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_empmass IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t4 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t5 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t6 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t7 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t8 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_t9 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_order1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_order2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_nothn1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_nothn2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_nothn3 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_nothn4 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_view1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_view2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_view3 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_view4 IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_comp IN ACCESS SHARE MODE
+;LOCK TABLE public.rtest_unitfact IN ACCESS SHARE MODE
+;LOCK TABLE public.shoe_data IN ACCESS SHARE MODE
+;LOCK TABLE public.shoelace_data IN ACCESS SHARE MODE
+;LOCK TABLE public.unit IN ACCESS SHARE MODE
+;LOCK TABLE public.shoelace_log IN ACCESS SHARE MODE
+;LOCK TABLE public.shoelace_arrive IN ACCESS SHARE MODE
+;LOCK TABLE public.shoelace_ok IN ACCESS SHARE MODE
+;LOCK TABLE public.ruletest_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.ruletest_tbl2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rule_and_refint_t1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rule_and_refint_t2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rule_and_refint_t3 IN ACCESS SHARE MODE
+;LOCK TABLE public.ndistinct IN ACCESS SHARE MODE
+;LOCK TABLE public.rules_src IN ACCESS SHARE MODE
+;LOCK TABLE public.rules_log IN ACCESS SHARE MODE
+;LOCK TABLE public.functional_dependencies IN ACCESS SHARE MODE
+;LOCK TABLE public.mcv_lists IN ACCESS SHARE MODE
+;LOCK TABLE public.mcv_lists_arrays IN ACCESS SHARE MODE
+;LOCK TABLE public.mcv_lists_bool IN ACCESS SHARE MODE
+;LOCK TABLE public.parallel_vacuum_table IN ACCESS SHARE MODE
+;LOCK TABLE public.clstr_tst_s IN ACCESS SHARE MODE
+;LOCK TABLE testxmlschema.test1 IN ACCESS SHARE MODE
+;LOCK TABLE public.clstr_tst IN ACCESS SHARE MODE
+;LOCK TABLE testxmlschema.test2 IN ACCESS SHARE MODE
+;LOCK TABLE public.clstr_tst_inh IN ACCESS SHARE MODE
+;LOCK TABLE public.ec0 IN ACCESS SHARE MODE
+;LOCK TABLE public.ec1 IN ACCESS SHARE MODE
+;LOCK TABLE public.ec2 IN ACCESS SHARE MODE
+;LOCK TABLE testxmlschema.test3 IN ACCESS SHARE MODE
+;LOCK TABLE public.customer IN ACCESS SHARE MODE
+;LOCK TABLE public.credit_card IN ACCESS SHARE MODE
+;LOCK TABLE public.credit_usage IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tsquery IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_notpartitioned_pk IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_3 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_4 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_4_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_4_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_5 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_5_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_2_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.fk_partitioned_fk_2_2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.fk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.fk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.fk2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk3 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk4 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk5 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk51 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.pk52 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart3.fk3 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk_d IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk21 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.droppk2_d IN ACCESS SHARE MODE
+;LOCK TABLE fkpart4.dropfk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk11 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk11 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk3 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk31 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.pk32 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk2 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk3 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart5.fk4 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart6.pk IN ACCESS SHARE MODE
+;LOCK TABLE fkpart6.pk1 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart6.pk11 IN ACCESS SHARE MODE
+;LOCK TABLE fkpart6.pk12 IN ACCESS SHARE MODE
+;LOCK TABLE public.room IN ACCESS SHARE MODE
+;LOCK TABLE public.xmltest IN ACCESS SHARE MODE
+;LOCK TABLE public.wslot IN ACCESS SHARE MODE
+;LOCK TABLE public.pfield IN ACCESS SHARE MODE
+;LOCK TABLE public.pslot IN ACCESS SHARE MODE
+;LOCK TABLE public.utf8_verification_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.pline IN ACCESS SHARE MODE
+;LOCK TABLE public.hub IN ACCESS SHARE MODE
+;LOCK TABLE public.hslot IN ACCESS SHARE MODE
+;LOCK TABLE public.system IN ACCESS SHARE MODE
+;LOCK TABLE public.iface IN ACCESS SHARE MODE
+;LOCK TABLE public.phone IN ACCESS SHARE MODE
+;LOCK TABLE public.utf8_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.query IN ACCESS SHARE MODE
+;LOCK TABLE public.xmldata IN ACCESS SHARE MODE
+;LOCK TABLE public.euc_jis_2004_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.shiftjis2004_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.gb18030_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.iso8859_5_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.xmltest2 IN ACCESS SHARE MODE
+;LOCK TABLE public.big5_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.mic_inputs IN ACCESS SHARE MODE
+;LOCK TABLE public.found_test_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.rc_test IN ACCESS SHARE MODE
+;LOCK TABLE public.check_con_tbl IN ACCESS SHARE MODE
+;LOCK TABLE public.transition_table_base IN ACCESS SHARE MODE
+;LOCK TABLE public.transition_table_level1 IN ACCESS SHARE MODE
+;LOCK TABLE public.transition_table_level2 IN ACCESS SHARE MODE
+;LOCK TABLE public.transition_table_status IN ACCESS SHARE MODE
+;LOCK TABLE public.alter_table_under_transition_tables IN ACCESS SHARE MODE
+;LOCK TABLE public.domnotnull IN ACCESS SHARE MODE
+;LOCK TABLE public.alter_idx_rename_test_parted_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.domcontest IN ACCESS SHARE MODE
+;LOCK TABLE public.thethings IN ACCESS SHARE MODE
+;LOCK TABLE public.domtab IN ACCESS SHARE MODE
+;LOCK TABLE public.domain_test IN ACCESS SHARE MODE
+;LOCK TABLE public.truncate_b IN ACCESS SHARE MODE
+;LOCK TABLE public.partitioned_table IN ACCESS SHARE MODE
+;LOCK TABLE public.pt_part1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pt_part2 IN ACCESS SHARE MODE
+;LOCK TABLE public.nv_parent IN ACCESS SHARE MODE
+;LOCK TABLE public.nv_child_2010 IN ACCESS SHARE MODE
+;LOCK TABLE public.nv_child_2011 IN ACCESS SHARE MODE
+;LOCK TABLE public.nv_child_2009 IN ACCESS SHARE MODE
+;LOCK TABLE public.dropcolumn IN ACCESS SHARE MODE
+;LOCK TABLE public.dropcolumnchild IN ACCESS SHARE MODE
+;LOCK TABLE public.dropcolumnanother IN ACCESS SHARE MODE
+;LOCK TABLE public.renamecolumn IN ACCESS SHARE MODE
+;LOCK TABLE public.renamecolumnchild IN ACCESS SHARE MODE
+;LOCK TABLE public.renamecolumnanother IN ACCESS SHARE MODE
+;LOCK TABLE public.dropcolumnexists IN ACCESS SHARE MODE
+;LOCK TABLE public.depth0 IN ACCESS SHARE MODE
+;LOCK TABLE public.depth1 IN ACCESS SHARE MODE
+;LOCK TABLE public.depth2 IN ACCESS SHARE MODE
+;LOCK TABLE public.skip_wal_skip_rewrite_index IN ACCESS SHARE MODE
+;LOCK TABLE public.test_storage IN ACCESS SHARE MODE
+;LOCK TABLE public.test_inh_check IN ACCESS SHARE MODE
+;LOCK TABLE public.test_inh_check_child IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff_c IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff2 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff2_c1 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff2_c2 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_type_diff2_c3 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tbl1 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tbl2 IN ACCESS SHARE MODE
+;LOCK TABLE public.test_tbl3 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt0 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt1 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt2 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt3 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt4 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt5 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt6 IN ACCESS SHARE MODE
+;LOCK TABLE public.tt7 IN ACCESS SHARE MODE
+;LOCK TABLE public.comment_test IN ACCESS SHARE MODE
+;LOCK TABLE public.comment_test_child IN ACCESS SHARE MODE
+;LOCK TABLE public.partr_def2 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_7 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_7_a_null IN ACCESS SHARE MODE
+;LOCK TABLE public.part_rp IN ACCESS SHARE MODE
+;LOCK TABLE public.part_rp100 IN ACCESS SHARE MODE
+;LOCK TABLE public.inh_test IN ACCESS SHARE MODE
+;LOCK TABLE public.defpart_attach_test_2 IN ACCESS SHARE MODE
+;LOCK TABLE public.perm_part_child IN ACCESS SHARE MODE
+;LOCK TABLE public.bar1 IN ACCESS SHARE MODE
+;LOCK TABLE public.bar2 IN ACCESS SHARE MODE
+;LOCK TABLE public.target_parted IN ACCESS SHARE MODE
+;LOCK TABLE public.attach_parted IN ACCESS SHARE MODE
+;LOCK TABLE public.attach_parted_part1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab IN ACCESS SHARE MODE
+;LOCK TABLE public.cmdata IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.cmmove1 IN ACCESS SHARE MODE
+;LOCK TABLE public.cmmove3 IN ACCESS SHARE MODE
+;LOCK TABLE public.cmmove2 IN ACCESS SHARE MODE
+;LOCK TABLE public.reloptions_test IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab1_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab1_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab1_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab2_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_e IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_e_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_e_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_e_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_e IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_m IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_e_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_m_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_e_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_m_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_m_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_e_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.cmpart2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p2_s1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p2_s2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p3_s1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_ml_p3_s2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_m IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_m_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_m_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_m_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_m IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_m_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_m_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_m_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.part IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_p2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.part_rev IN ACCESS SHARE MODE
+;LOCK TABLE public.plt2 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt2_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_e IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_e_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_e_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.plt1_e_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht2_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_e IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_e_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_e_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pht1_e_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p3_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_l_p3_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p2_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p2_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p3_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_l_p3_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_n IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_n_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt1_n_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_n IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_n_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt2_n_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt3_n IN ACCESS SHARE MODE
+;LOCK TABLE public.prt3_n_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt3_n_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt3_n_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt4_n IN ACCESS SHARE MODE
+;LOCK TABLE public.prt4_n_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt4_n_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.prt4_n_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_para IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_para_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_para_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.pagg_tab_para_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.xy_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart1 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart2 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart21 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart22 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart_another IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart_another_1 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart3 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart31 IN ACCESS SHARE MODE
+;LOCK TABLE public.idxpart32 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk1 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk2 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk3 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk4 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk5 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk51 IN ACCESS SHARE MODE
+;LOCK TABLE regress_indexing.pk52 IN ACCESS SHARE MODE
+;LOCK TABLE public.covidxpart IN ACCESS SHARE MODE
+;LOCK TABLE public.covidxpart1 IN ACCESS SHARE MODE
+;LOCK TABLE public.covidxpart2 IN ACCESS SHARE MODE
+;LOCK TABLE public.covidxpart3 IN ACCESS SHARE MODE
+;LOCK TABLE public.covidxpart4 IN ACCESS SHARE MODE
+;LOCK TABLE public.boolvalues IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_neg IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_pos IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_neg_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_neg_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_neg_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_pos_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_pos_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.alpha_pos_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_neg IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_pos IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_neg_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_neg_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_neg_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_pos_p1 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_pos_p2 IN ACCESS SHARE MODE
+;LOCK TABLE public.beta_pos_p3 IN ACCESS SHARE MODE
+;LOCK TABLE public.undroppable_objs IN ACCESS SHARE MODE
+;LOCK TABLE public.dropped_objects IN ACCESS SHARE MODE
+;LOCK TABLE public.rewritemetoo1 IN ACCESS SHARE MODE
+;LOCK TABLE public.rewritemetoo2 IN ACCESS SHARE MODE
+;LOCK TABLE public.rewritemetoo3 IN ACCESS SHARE MODE
+;LOCK TABLE public.event_trigger_test IN ACCESS SHARE MODE
+;LOCK TABLE public.has_fast_default IN ACCESS SHARE MODE
+;SELECT p.tableoid, p.oid, p.proname, p.prolang, p.pronargs, p.proargtypes, p.prorettype, p.proacl, acldefault('f', p.proowner) AS acldefault, p.pronamespace, p.proowner FROM pg_proc p LEFT JOIN pg_init_privs pip ON (p.oid = pip.objoid AND pip.classoid = 'pg_proc'::regclass AND pip.objsubid = 0) WHERE p.prokind <> 'a'
+  AND NOT EXISTS (SELECT 1 FROM pg_depend WHERE classid = 'pg_proc'::regclass AND objid = p.oid AND deptype = 'i')
+  AND (
+  pronamespace != (SELECT oid FROM pg_namespace WHERE nspname = 'pg_catalog')
+  OR EXISTS (SELECT 1 FROM pg_cast
+  WHERE pg_cast.oid > 16383 
+  AND p.oid = pg_cast.castfunc)
+  OR EXISTS (SELECT 1 FROM pg_transform
+  WHERE pg_transform.oid > 16383 AND 
+  (p.oid = pg_transform.trffromsql
+  OR p.oid = pg_transform.trftosql))
+  OR p.proacl IS DISTINCT FROM pip.initprivs)
+;SELECT tableoid, oid, typname, typnamespace, typacl, acldefault('T', typowner) AS acldefault, typowner, typelem, typrelid, CASE WHEN typrelid = 0 THEN ' '::"char" ELSE (SELECT relkind FROM pg_class WHERE oid = typrelid) END AS typrelkind, typtype, typisdefined, typname[0] = '_' AND typelem != 0 AND (SELECT typarray FROM pg_type te WHERE oid = pg_type.typelem) = oid AS isarray FROM pg_type
+;PREPARE getDomainConstraints(pg_catalog.oid) AS
+SELECT tableoid, oid, conname, pg_catalog.pg_get_constraintdef(oid) AS consrc, convalidated FROM pg_catalog.pg_constraint WHERE contypid = $1 ORDER BY conname
+;EXECUTE getDomainConstraints('28882')
+;EXECUTE getDomainConstraints('26278')
+;EXECUTE getDomainConstraints('26281')
+;EXECUTE getDomainConstraints('28760')
+;EXECUTE getDomainConstraints('28884')
+;EXECUTE getDomainConstraints('33037')
+;EXECUTE getDomainConstraints('33050')
+;EXECUTE getDomainConstraints('33054')
+;EXECUTE getDomainConstraints('33174')
+;EXECUTE getDomainConstraints('33188')
+;EXECUTE getDomainConstraints('33204')
+;EXECUTE getDomainConstraints('33255')
+;EXECUTE getDomainConstraints('33270')
+;EXECUTE getDomainConstraints('33283')
+;EXECUTE getDomainConstraints('33558')
+;EXECUTE getDomainConstraints('33565')
+;EXECUTE getDomainConstraints('33569')
+;SELECT tableoid, oid, lanname, lanpltrusted, lanplcallfoid, laninline, lanvalidator, lanacl, acldefault('l', lanowner) AS acldefault, lanowner FROM pg_language WHERE lanispl ORDER BY oid
+;SELECT p.tableoid, p.oid, p.proname AS aggname, p.pronamespace AS aggnamespace, p.pronargs, p.proargtypes, p.proowner, p.proacl AS aggacl, acldefault('f', p.proowner) AS acldefault FROM pg_proc p LEFT JOIN pg_init_privs pip ON (p.oid = pip.objoid AND pip.classoid = 'pg_proc'::regclass AND pip.objsubid = 0) WHERE p.prokind = 'a' AND (p.pronamespace != (SELECT oid FROM pg_namespace WHERE nspname = 'pg_catalog') OR p.proacl IS DISTINCT FROM pip.initprivs)
+;SELECT tableoid, oid, oprname, oprnamespace, oprowner, oprkind, oprcode::oid AS oprcode FROM pg_operator
+;SELECT tableoid, oid, amname, amtype, amhandler::pg_catalog.regproc AS amhandler FROM pg_am
+;SELECT tableoid, oid, opcname, opcnamespace, opcowner FROM pg_opclass
+;SELECT tableoid, oid, opfname, opfnamespace, opfowner FROM pg_opfamily
+;SELECT tableoid, oid, prsname, prsnamespace, prsstart::oid, prstoken::oid, prsend::oid, prsheadline::oid, prslextype::oid FROM pg_ts_parser
+;SELECT tableoid, oid, tmplname, tmplnamespace, tmplinit::oid, tmpllexize::oid FROM pg_ts_template
+;SELECT tableoid, oid, dictname, dictnamespace, dictowner, dicttemplate, dictinitoption FROM pg_ts_dict
+;SELECT tableoid, oid, cfgname, cfgnamespace, cfgowner, cfgparser FROM pg_ts_config
+;SELECT tableoid, oid, fdwname, fdwowner, fdwhandler::pg_catalog.regproc, fdwvalidator::pg_catalog.regproc, fdwacl, acldefault('F', fdwowner) AS acldefault, array_to_string(ARRAY(SELECT quote_ident(option_name) || ' ' || quote_literal(option_value) FROM pg_options_to_table(fdwoptions) ORDER BY option_name), E',
+    ') AS fdwoptions FROM pg_foreign_data_wrapper
+;SELECT tableoid, oid, srvname, srvowner, srvfdw, srvtype, srvversion, srvacl, acldefault('S', srvowner) AS acldefault, array_to_string(ARRAY(SELECT quote_ident(option_name) || ' ' || quote_literal(option_value) FROM pg_options_to_table(srvoptions) ORDER BY option_name), E',
+    ') AS srvoptions FROM pg_foreign_server
+;SELECT oid, tableoid, defaclrole, defaclnamespace, defaclobjtype, defaclacl, CASE WHEN defaclnamespace = 0 THEN acldefault(CASE WHEN defaclobjtype = 'S' THEN 's'::"char" ELSE defaclobjtype END, defaclrole) ELSE '{}' END AS acldefault FROM pg_default_acl
+;SELECT tableoid, oid, collname, collnamespace, collowner FROM pg_collation
+;SELECT tableoid, oid, conname, connamespace, conowner FROM pg_conversion
+;SELECT tableoid, oid, castsource, casttarget, castfunc, castcontext, castmethod FROM pg_cast c WHERE NOT EXISTS ( SELECT 1 FROM pg_range r WHERE c.castsource = r.rngtypid AND c.casttarget = r.rngmultitypid ) ORDER BY 3,4
+;SELECT tableoid, oid, trftype, trflang, trffromsql::oid, trftosql::oid FROM pg_transform ORDER BY 3,4
+;SELECT lanname FROM pg_language WHERE oid = 14
+;SELECT inhrelid, inhparent FROM pg_inherits
+;SELECT e.tableoid, e.oid, evtname, evtenabled, evtevent, evtowner, array_to_string(array(select quote_literal(x)  from unnest(evttags) as t(x)), ', ') as evttags, e.evtfoid::regproc as evtfname FROM pg_event_trigger e ORDER BY e.oid
+;SELECT conrelid, confrelid FROM pg_constraint JOIN pg_depend ON (objid = confrelid) WHERE contype = 'f' AND refclassid = 'pg_extension'::regclass AND classid = 'pg_class'::regclass;
+;SELECT
+a.attrelid,
+a.attnum,
+a.attname,
+a.atttypmod,
+a.attstattarget,
+a.attstorage,
+t.typstorage,
+a.attnotnull,
+a.atthasdef,
+a.attisdropped,
+a.attlen,
+a.attalign,
+a.attislocal,
+pg_catalog.format_type(t.oid, a.atttypmod) AS atttypname,
+array_to_string(a.attoptions, ', ') AS attoptions,
+CASE WHEN a.attcollation <> t.typcollation THEN a.attcollation ELSE 0 END AS attcollation,
+pg_catalog.array_to_string(ARRAY(SELECT pg_catalog.quote_ident(option_name) || ' ' || pg_catalog.quote_literal(option_value) FROM pg_catalog.pg_options_to_table(attfdwoptions) ORDER BY option_name), E',
+    ') AS attfdwoptions,
+a.attcompression AS attcompression,
+a.attidentity,
+CASE WHEN a.atthasmissing AND NOT a.attisdropped THEN a.attmissingval ELSE null END AS attmissingval,
+a.attgenerated
+FROM unnest('{16646,16654,16657,16664,16665,16685,16695,16698,16722,16731,16748,16759,16765,16768,16771,16774,16777,16778,16784,16799,16912,16926,16946,17008,17013,17017,17034,17140,17141,17142,17145,17152,17158,17159,17160,17165,17174,17177,17178,17183,17184,17200,17243,17263,17311,17327,17336,17520,17567,17572,17577,17580,17583,17586,17591,17596,17601,17606,17609,17614,17617,17620,17625,17630,17635,17640,17643,17648,17651,17656,17659,17664,17667,17670,17673,17678,17681,17684,17687,17692,17695,17700,17705,17710,17755,18853,18857,18860,18885,18888,18891,18894,18926,18929,18934,18939,19292,19310,19318,19323,19329,19333,19338,19342,19348,19354,19361,19365,19376,19383,19407,19428,19449,19622,19697,20043,20157,20398,20404,20444,20475,20481,20505,20549,20574,20598,20713,20733,20749,20776,20783,20800,20823,20839,20904,20944,20988,21010,21061,21078,22121,22128,23361,23368,23374,23380,23386,23463,23467,23492,23527,23601,24340,24343,24459,24486,24965,24966,24967,24974,24985,25009,25115,25130,25136,25145,25176,25177,25193,25213,25242,25283,25304,25315,25323,25356,25368,25383,25391,25400,25499,25525,25550,25557,25567,25580,25603,25611,25618,25622,25625,25630,25660,25664,25680,25718,25738,25770,25781,25829,25843,25875,25890,25901,25916,25923,25931,25934,26050,26067,26075,26082,26088,26102,26110,26116,26153,26158,26242,26254,26257,26264,26282,26287,26412,26487,26590,26636,26649,26730,26809,26817,26856,26934,26946,26979,26986,26994,26997,27011,27019,27026,27030,27039,27043,27048,27121,27560,27568,27572,27575,27590,27596,27602,27614,27629,27633,27639,27647,27652,27657,27662,27667,27672,27681,27684,27694,27704,27709,27714,27740,27745,27748,27753,27758,27762,27766,27770,27775,27779,27784,27787,27791,27794,27797,27800,27804,27808,27812,27819,27822,27826,27830,27882,27885,27889,27894,27900,28085,28115,28118,28206,28241,28289,28298,28417,28666,28715,28737,28765,28821,28827,28852,28878,28887,28955,28962,28973,28989,28993,28998,29002,29008,29015,29410,30267,30272,30277,30298,30403,30411,30417,30430,30443,30471,30474,30477,30672,30677,30682,30687,30690,30707,30713,30721,30729,30732,30735,30753,30760,30765,30770,30775,30780,30785,30790,30814,30819,30824,30829,30832,30835,30855,30863,30866,30869,30887,30893,30899,31072,31077,31082,31087,31488,31522,31565,31585,31587,31615,31634,31665,31706,31740,31772,31783,31788,31822,31852,31885,31952,32004,32011,32025,32037,32061,32104,32108,32136,32143,32174,32183,32194,32204,32211,32223,32401,32491,32754,33056,33068,33075,33081,33095,33137,33147,33175,33189,33198,33207,33256,33342,33347,33357,33372,33676,33680,33683,33688,34045,34048,34051,34054,34057,34060,34107,34110,34113,34118,34250,34351,34358,34362,34400,34403,34412,34415,34418,34421,34592,34600,34622,34633,34636,34639,34642,34645,34648,34651,34654,34695,34733,35029,35051,35055,35137,35144,35175,35208,35217,35246,35250,35278,35281,35284,35299,35307,35315,35318,35321,35356,35357,35378,35383,35465,35471,35486,35498,35529,35576,35598,35627,35688,35691,35694,35697,35700,35703,35706,35709,35728,35731,35734,35740,35746,35749,35754,35758,35769,35772,35777,35778,35824,35843,35852,35863,35871,35879,35888,35894,35902,35951,35957,35963,35967,35995,36002,36009,36016,36021,36024,36029,36032,36035,36040,36041,36047,36051,36054,36057,36062,36074,36085,36092,36107,36124,36179,36182,36198,36205,36213,36216,36224,36233,36246,36250,36255,36260,36312,36316,36325,36331,36343,36360,36368,36384,36414,36418,36427,36432,36443,36454,36460,36465,36513,36518,36524,36535,36542,36549,36562,36565,36570,36575,36580,36583,36591,36605,36847,36857,36866,36870,37001,37149,37153,37161,37164,37167,37174,37179,37184,37188,37191,37215,37220,37225,37239,37250,37255,37258,37261,37285,37296,37301,37305,37315,37341,37785,37788,37791,37794,37799,37804,37809,37814,37819,37824,37827,37830,37833,37838,37843,37848,37853,37858,37947,37952,38051,38054,38071,38076,38313}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_attribute a ON (src.tbloid = a.attrelid) LEFT JOIN pg_catalog.pg_type t ON (a.atttypid = t.oid)
+WHERE a.attnum > 0::pg_catalog.int2
+ORDER BY a.attrelid, a.attnum
+;SELECT a.tableoid, a.oid, adrelid, adnum, pg_catalog.pg_get_expr(adbin, adrelid) AS adsrc
+FROM unnest('{16926,20398,20475,20598,21010,21061,25145,25193,25400,25525,25567,25603,25618,25622,25630,25660,25664,25680,25718,25770,26050,26067,26075,26082,26088,26102,26110,26116,26153,26257,26282,26412,26487,26809,26817,26856,26934,26946,27048,27121,28666,28737,28821,30272,30277,33068,33075,34351,35246,35250,38313}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_attrdef a ON (src.tbloid = a.adrelid)
+ORDER BY a.adrelid, a.adnum
+;SELECT c.tableoid, c.oid, conrelid, conname, pg_catalog.pg_get_constraintdef(c.oid) AS consrc, conislocal, convalidated FROM unnest('{20549,20574,20598,20988,22121,22128,25315,26050,26075,27011,27019,27048,32754,33676,33680,33683,33688,34358,34362,34695,35029,35055,35137,35144}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_constraint c ON (src.tbloid = c.conrelid)
+WHERE contype = 'c' ORDER BY c.conrelid, c.conname
+;SELECT t.tableoid, t.oid, i.indrelid, t.relname AS indexname, pg_catalog.pg_get_indexdef(i.indexrelid) AS indexdef, i.indkey, i.indisclustered, c.contype, c.conname, c.condeferrable, c.condeferred, c.tableoid AS contableoid, c.oid AS conoid, pg_catalog.pg_get_constraintdef(c.oid, false) AS condef, (SELECT spcname FROM pg_catalog.pg_tablespace s WHERE s.oid = t.reltablespace) AS tablespace, t.reloptions AS indreloptions, i.indisreplident, inh.inhparent AS parentidx, i.indnkeyatts AS indnkeyatts, i.indnatts AS indnatts, (SELECT pg_catalog.array_agg(attnum ORDER BY attnum)   FROM pg_catalog.pg_attribute   WHERE attrelid = i.indexrelid AND     attstattarget >= 0) AS indstatcols, (SELECT pg_catalog.array_agg(attstattarget ORDER BY attnum)   FROM pg_catalog.pg_attribute   WHERE attrelid = i.indexrelid AND     attstattarget >= 0) AS indstatvals, i.indnullsnotdistinct FROM unnest('{16722,16731,16748,16759,16765,16768,16771,16774,16784,16912,16946,17017,17034,17145,17152,17160,17200,17243,17263,17577,17580,17583,17617,17620,17625,17630,17667,17670,17673,17678,17681,17684,17687,17692,17700,17705,17710,19292,19329,19333,19354,19376,19407,19428,19622,19697,20043,20157,20944,21010,23361,23368,23374,23380,23386,23601,24459,24486,24965,24966,24967,24974,25009,25145,25176,25193,25323,25391,25718,25770,25829,25875,26050,26067,26075,26082,26088,26102,26110,26116,26153,26158,26242,26254,26257,26264,26282,26287,26412,26730,26856,26994,26997,27026,27030,27039,27043,27048,27889,27894,27900,28206,28417,28666,28737,28827,28852,28878,28955,29410,30267,30672,30677,30682,30713,30721,30729,30732,30735,30760,30765,30770,30775,30780,30785,30814,30819,30824,30855,30863,30866,30869,31072,31077,31082,31087,31488,31565,31587,31615,31634,31665,31706,31740,31788,31822,31852,33056,33068,33075,33081,33095,33147,34250,34351,34695,34733,35315,35321,35357,35383,35471,35486,35498,35627,35731,35734,35740,37149,37153,37161,37167,37174,37179,37184,37188,37191,37215,37220,37225,37239,37250,37255,37258,37261,37285,37296,37301,37305,37315}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_index i ON (src.tbloid = i.indrelid) JOIN pg_catalog.pg_class t ON (t.oid = i.indexrelid) JOIN pg_catalog.pg_class t2 ON (t2.oid = i.indrelid) LEFT JOIN pg_catalog.pg_constraint c ON (i.indrelid = c.conrelid AND i.indexrelid = c.conindid AND c.contype IN ('p','u','x')) LEFT JOIN pg_catalog.pg_inherits inh ON (inh.inhrelid = indexrelid) WHERE (i.indisvalid OR t2.relkind = 'p') AND i.indisready ORDER BY i.indrelid, indexname
+;SELECT tableoid, oid, stxname, stxnamespace, stxowner, stxstattarget FROM pg_catalog.pg_statistic_ext
+;SELECT c.tableoid, c.oid, conrelid, conname, confrelid, conindid, pg_catalog.pg_get_constraintdef(c.oid) AS condef
+FROM unnest('{17710,18853,18857,18926,20776,21078,23361,23368,23374,23380,23386,26257,26264,26856,27889,27894,27900,28666,28737,28955,28962,28973,30267,30272,30277,30298,30403,30411,30417,30430,30443,30471,30474,30477,30672,30677,30682,30687,30690,30707,30713,30721,30729,30732,30735,30753,30760,30765,30770,30775,30780,30785,30790,30814,30819,30824,30829,30832,30835,30855,30863,30866,30869,30887,30893,31072,31077,31082,31087,31488,31565,31587,31615,31665,31706,31740,31788,31822,31852,33056,33068,33075,33095,33147,33347,34695,34733,35051,35246,35278,35281,35299,35307,35465,35688,35700,35728,35746,35749,35843,35863,35888,35951,35995,36021,36029,36040,36054,36085,36179,36213,36246,36312,36325,36360,36414,36427,36454,36513,36535,36562,36580,36847,37149,37161,37174,37184,37215,37255,37285,37785,37788,37791,37824,37827,37830}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_constraint c ON (src.tbloid = c.conrelid)
+WHERE contype = 'f' AND conparentid = 0 ORDER BY conrelid, conname
+;SELECT t.tgrelid, t.tgname, t.tgfoid::pg_catalog.regproc AS tgfname, pg_catalog.pg_get_triggerdef(t.oid, false) AS tgdef, t.tgenabled, t.tableoid, t.oid, t.tgparentid <> 0 AS tgispartition
+FROM unnest('{17710,21078,23361,23368,23374,23380,23386,26257,26264,26856,27889,27894,27900,28666,28737,28955,28962,28973,30267,30272,30277,30298,30403,30411,30417,30430,30443,30471,30474,30477,30672,30677,30682,30687,30690,30707,30713,30721,30729,30732,30735,30753,30760,30765,30770,30775,30780,30785,30790,30814,30819,30824,30829,30832,30835,30855,30863,30866,30869,30887,30893,31072,31077,31082,31087,31488,31565,31587,31615,31665,31706,31740,31788,31822,31852,33056,33068,33075,33095,34695,34733,35246}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_trigger t ON (src.tbloid = t.tgrelid) LEFT JOIN pg_catalog.pg_trigger u ON (u.oid = t.tgparentid) WHERE ((NOT t.tgisinternal AND t.tgparentid = 0) OR t.tgenabled != u.tgenabled) ORDER BY t.tgrelid, t.tgname
+;SELECT tableoid, oid, rulename, ev_class AS ruletable, ev_type, is_instead, ev_enabled FROM pg_rewrite ORDER BY oid
+;SELECT pol.oid, pol.tableoid, pol.polrelid, pol.polname, pol.polcmd, pol.polpermissive, CASE WHEN pol.polroles = '{0}' THEN NULL ELSE    pg_catalog.array_to_string(ARRAY(SELECT pg_catalog.quote_ident(rolname) from pg_catalog.pg_roles WHERE oid = ANY(pol.polroles)), ', ') END AS polroles, pg_catalog.pg_get_expr(pol.polqual, pol.polrelid) AS polqual, pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid) AS polwithcheck FROM unnest('{16646,16654,16657,16664,16665,16685,16695,16698,16722,16731,16748,16759,16765,16768,16771,16774,16777,16778,16784,16799,16912,16926,16946,17008,17013,17017,17034,17140,17141,17142,17145,17152,17158,17159,17160,17165,17174,17177,17178,17183,17184,17200,17243,17263,17311,17327,17336,17520,17567,17572,17577,17580,17583,17586,17591,17596,17601,17606,17609,17614,17617,17620,17625,17630,17635,17640,17643,17648,17651,17656,17659,17664,17667,17670,17673,17678,17681,17684,17687,17692,17695,17700,17705,17710,17755,18853,18857,18860,18885,18888,18891,18894,18926,18929,18934,18939,19292,19310,19318,19323,19329,19333,19354,19376,19383,19407,19428,19449,19622,19697,20043,20157,20398,20404,20444,20475,20481,20505,20549,20574,20598,20713,20733,20776,20783,20800,20823,20839,20904,20944,20988,21010,21061,21078,22121,22128,23361,23368,23374,23380,23386,23463,23467,23492,23527,23601,24340,24343,24459,24486,24965,24966,24967,24974,24985,25009,25145,25177,25193,25213,25242,25315,25400,25499,25525,25550,25557,25567,25580,25603,25611,25618,25622,25625,25630,25660,25664,25680,25718,25738,25770,25781,25829,25843,25875,25890,25901,25916,25923,25931,25934,26050,26067,26075,26082,26088,26102,26110,26116,26153,26158,26242,26254,26257,26264,26282,26287,26412,26487,26590,26636,26649,26730,26809,26817,26856,26934,26946,26979,26986,26994,26997,27011,27019,27026,27030,27039,27043,27048,27121,27560,27568,27572,27590,27596,27602,27614,27629,27633,27639,27647,27652,27657,27662,27667,27672,27681,27684,27694,27704,27709,27714,27740,27745,27748,27753,27779,27784,27791,27794,27797,27812,27819,27822,27882,27885,27889,27894,27900,28085,28115,28118,28206,28241,28289,28298,28417,28666,28715,28737,28765,28821,28827,28852,28878,28887,28955,28962,28973,29410,30267,30272,30277,30298,30403,30411,30417,30430,30443,30471,30474,30477,30672,30677,30682,30687,30690,30707,30713,30721,30729,30732,30735,30753,30760,30765,30770,30775,30780,30785,30790,30814,30819,30824,30829,30832,30835,30855,30863,30866,30869,30887,30893,30899,31072,31077,31082,31087,31488,31522,31565,31587,31615,31634,31665,31706,31740,31788,31822,31852,31885,31952,32004,32011,32061,32108,32136,32143,32174,32204,32401,32491,32754,33056,33068,33075,33081,33095,33137,33147,33175,33189,33198,33256,33342,33347,33357,33372,33676,33680,33683,33688,34045,34048,34051,34054,34057,34060,34107,34110,34113,34118,34250,34351,34358,34362,34400,34403,34412,34415,34418,34421,34592,34600,34622,34633,34636,34639,34642,34645,34648,34651,34654,34695,34733,35029,35051,35055,35137,35144,35175,35208,35217,35246,35250,35278,35281,35284,35299,35307,35315,35318,35321,35356,35357,35378,35383,35465,35471,35486,35498,35529,35576,35598,35627,35688,35691,35694,35697,35700,35703,35706,35709,35728,35731,35734,35740,35746,35749,35754,35758,35769,35772,35777,35778,35824,35843,35852,35863,35871,35879,35888,35894,35902,35951,35957,35963,35967,35995,36002,36009,36016,36021,36024,36029,36032,36035,36040,36041,36047,36051,36054,36057,36062,36074,36085,36092,36107,36124,36179,36182,36198,36205,36213,36216,36224,36233,36246,36250,36255,36260,36312,36316,36325,36331,36343,36360,36368,36384,36414,36418,36427,36432,36443,36454,36460,36465,36513,36518,36524,36535,36542,36549,36562,36565,36570,36575,36580,36583,36591,36605,36847,36857,36866,36870,37001,37149,37153,37161,37164,37167,37174,37179,37184,37188,37191,37215,37220,37225,37239,37250,37255,37258,37261,37285,37296,37301,37305,37315,37341,37785,37788,37791,37794,37799,37804,37809,37814,37819,37824,37827,37830,37833,37838,37843,37848,37853,37858,37947,37952,38051,38054,38071,38076,38313}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_policy pol ON (src.tbloid = pol.polrelid)
+;SELECT p.tableoid, p.oid, p.pubname, p.pubowner, p.puballtables, p.pubinsert, p.pubupdate, p.pubdelete, p.pubtruncate, p.pubviaroot FROM pg_publication p
+;SELECT tableoid, oid, prpubid, prrelid FROM pg_catalog.pg_publication_rel
+;SELECT tableoid, oid, pnpubid, pnnspid FROM pg_catalog.pg_publication_namespace
+;SELECT s.tableoid, s.oid, s.subname,
+ s.subowner,
+ s.subconninfo, s.subslotname, s.subsynccommit,
+ s.subpublications,
+ s.subbinary,
+ s.substream,
+ s.subtwophasestate
+FROM pg_subscription s
+WHERE s.subdbid = (SELECT oid FROM pg_database
+                   WHERE datname = current_database())
+;WITH RECURSIVE w AS ( SELECT d1.objid, d2.refobjid, c2.relkind AS refrelkind FROM pg_depend d1 JOIN pg_class c1 ON c1.oid = d1.objid AND c1.relkind = 'm' JOIN pg_rewrite r1 ON r1.ev_class = d1.objid JOIN pg_depend d2 ON d2.classid = 'pg_rewrite'::regclass AND d2.objid = r1.oid AND d2.refobjid <> d1.objid JOIN pg_class c2 ON c2.oid = d2.refobjid AND c2.relkind IN ('m','v') WHERE d1.classid = 'pg_class'::regclass UNION SELECT w.objid, d3.refobjid, c3.relkind FROM w JOIN pg_rewrite r3 ON r3.ev_class = w.refobjid JOIN pg_depend d3 ON d3.classid = 'pg_rewrite'::regclass AND d3.objid = r3.oid AND d3.refobjid <> w.refobjid JOIN pg_class c3 ON c3.oid = d3.refobjid AND c3.relkind IN ('m','v') ) SELECT 'pg_class'::regclass::oid AS classid, objid, refobjid FROM w WHERE refrelkind = 'm'
+;SELECT oid, lomowner, lomacl, acldefault('L', lomowner) AS acldefault FROM pg_largeobject_metadata
+;SELECT classid, objid, refclassid, refobjid, deptype FROM pg_depend WHERE deptype != 'p' AND deptype != 'e'
+UNION ALL
+SELECT 'pg_opfamily'::regclass AS classid, amopfamily AS objid, refclassid, refobjid, deptype FROM pg_depend d, pg_amop o WHERE deptype NOT IN ('p', 'e', 'i') AND classid = 'pg_amop'::regclass AND objid = o.oid AND NOT (refclassid = 'pg_opfamily'::regclass AND amopfamily = refobjid)
+UNION ALL
+SELECT 'pg_opfamily'::regclass AS classid, amprocfamily AS objid, refclassid, refobjid, deptype FROM pg_depend d, pg_amproc p WHERE deptype NOT IN ('p', 'e', 'i') AND classid = 'pg_amproc'::regclass AND objid = p.oid AND NOT (refclassid = 'pg_opfamily'::regclass AND amprocfamily = refobjid)
+ORDER BY 1,2
+;SELECT DISTINCT attrelid FROM pg_attribute WHERE attacl IS NOT NULL
+;SELECT objoid, classoid, objsubid, privtype, initprivs FROM pg_init_privs
+;SELECT description, classoid, objoid, objsubid FROM pg_catalog.pg_description ORDER BY classoid, objoid, objsubid
+;SELECT label, provider, classoid, objoid, objsubid FROM pg_catalog.pg_seclabel ORDER BY classoid, objoid, objsubid
+;SELECT pg_catalog.current_schemas(false)
+;SELECT tableoid, oid, datname, datdba, pg_encoding_to_char(encoding) AS encoding, datcollate, datctype, datfrozenxid, datacl, acldefault('d', datdba) AS acldefault, datistemplate, datconnlimit, datminmxid, (SELECT spcname FROM pg_tablespace t WHERE t.oid = dattablespace) AS tablespace, shobj_description(oid, 'pg_database') AS description FROM pg_database WHERE datname = current_database()
+;SELECT provider, label FROM pg_catalog.pg_shseclabel WHERE classoid = 'pg_catalog.pg_database'::pg_catalog.regclass AND objoid = '16384'
+;SELECT unnest(setconfig) FROM pg_db_role_setting WHERE setrole = 0 AND setdatabase = '16384'::oid
+;SELECT rolname, unnest(setconfig) FROM pg_db_role_setting s, pg_roles r WHERE setrole = r.oid AND setdatabase = '16384'::oid
+;SELECT lanname FROM pg_language WHERE oid = 14
+;SELECT pg_catalog.format_type('23'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.format_type('2281'::pg_catalog.oid, NULL)
+;PREPARE dumpCompositeType(pg_catalog.oid) AS
+SELECT a.attname, a.attnum, pg_catalog.format_type(a.atttypid, a.atttypmod) AS atttypdefn, a.attlen, a.attalign, a.attisdropped, CASE WHEN a.attcollation <> at.typcollation THEN a.attcollation ELSE 0 END AS attcollation FROM pg_catalog.pg_type ct JOIN pg_catalog.pg_attribute a ON a.attrelid = ct.typrelid LEFT JOIN pg_catalog.pg_type at ON at.oid = a.atttypid WHERE ct.oid = $1 ORDER BY a.attnum
+;EXECUTE dumpCompositeType('20464')
+;PREPARE dumpRangeType(pg_catalog.oid) AS
+SELECT pg_catalog.format_type(rngmultitypid, NULL) AS rngmultitype, pg_catalog.format_type(rngsubtype, NULL) AS rngsubtype, opc.opcname AS opcname, (SELECT nspname FROM pg_catalog.pg_namespace nsp   WHERE nsp.oid = opc.opcnamespace) AS opcnsp, opc.opcdefault, CASE WHEN rngcollation = st.typcollation THEN 0      ELSE rngcollation END AS collation, rngcanonical, rngsubdiff FROM pg_catalog.pg_range r, pg_catalog.pg_type st,      pg_catalog.pg_opclass opc WHERE st.oid = rngsubtype AND opc.oid = rngsubopc AND rngtypid = $1
+;EXECUTE dumpRangeType('17105')
+;EXECUTE dumpCompositeType('32300')
+;EXECUTE dumpRangeType('17128')
+;PREPARE dumpFunc(pg_catalog.oid) AS
+SELECT
+proretset,
+prosrc,
+probin,
+provolatile,
+proisstrict,
+prosecdef,
+lanname,
+proconfig,
+procost,
+prorows,
+pg_catalog.pg_get_function_arguments(p.oid) AS funcargs,
+pg_catalog.pg_get_function_identity_arguments(p.oid) AS funciargs,
+pg_catalog.pg_get_function_result(p.oid) AS funcresult,
+proleakproof,
+array_to_string(protrftypes, ' ') AS protrftypes,
+proparallel,
+prokind,
+prosupport,
+pg_get_function_sqlbody(p.oid) AS prosqlbody
+FROM pg_catalog.pg_proc p, pg_catalog.pg_language l
+WHERE p.oid = $1 AND l.oid = p.prolang
+;EXECUTE dumpFunc('20415')
+;SELECT pg_catalog.format_type('2275'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('20432')
+;SELECT pg_catalog.format_type('20402'::pg_catalog.oid, NULL)
+;PREPARE dumpBaseType(pg_catalog.oid) AS
+SELECT typlen, typinput, typoutput, typreceive, typsend, typreceive::pg_catalog.oid AS typreceiveoid, typsend::pg_catalog.oid AS typsendoid, typanalyze, typanalyze::pg_catalog.oid AS typanalyzeoid, typdelim, typbyval, typalign, typstorage, typmodin, typmodout, typmodin::pg_catalog.oid AS typmodinoid, typmodout::pg_catalog.oid AS typmodoutoid, typcategory, typispreferred, (typcollation <> 0) AS typcollatable, pg_catalog.pg_get_expr(typdefaultbin, 0) AS typdefaultbin, typdefault, typsubscript, typsubscript::pg_catalog.oid AS typsubscriptoid FROM pg_catalog.pg_type WHERE oid = $1
+;EXECUTE dumpBaseType('20402')
+;EXECUTE dumpFunc('17529')
+;EXECUTE dumpFunc('17530')
+;SELECT pg_catalog.format_type('17528'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('17528')
+;EXECUTE dumpCompositeType('31508')
+;PREPARE dumpDomain(pg_catalog.oid) AS
+SELECT t.typnotnull, pg_catalog.format_type(t.typbasetype, t.typtypmod) AS typdefn, pg_catalog.pg_get_expr(t.typdefaultbin, 'pg_catalog.pg_type'::pg_catalog.regclass) AS typdefaultbin, t.typdefault, CASE WHEN t.typcollation <> u.typcollation THEN t.typcollation ELSE 0 END AS typcollation FROM pg_catalog.pg_type t LEFT JOIN pg_catalog.pg_type u ON (t.typbasetype = u.oid) WHERE t.oid = $1
+;EXECUTE dumpDomain('33174')
+;EXECUTE dumpDomain('33204')
+;EXECUTE dumpRangeType('17046')
+;EXECUTE dumpDomain('26278')
+;PREPARE dumpEnumType(pg_catalog.oid) AS
+SELECT oid, enumlabel FROM pg_catalog.pg_enum WHERE enumtypid = $1 ORDER BY enumsortorder
+;EXECUTE dumpEnumType('16792')
+;EXECUTE dumpFunc('17538')
+;EXECUTE dumpFunc('17539')
+;SELECT pg_catalog.format_type('17536'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('17536')
+;EXECUTE dumpFunc('28698')
+;EXECUTE dumpFunc('28717')
+;SELECT pg_catalog.format_type('28677'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('28677')
+;EXECUTE dumpFunc('28734')
+;EXECUTE dumpFunc('28738')
+;SELECT pg_catalog.format_type('28727'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('28727')
+;EXECUTE dumpCompositeType('31430')
+;EXECUTE dumpCompositeType('31402')
+;EXECUTE dumpCompositeType('31449')
+;EXECUTE dumpDomain('33558')
+;EXECUTE dumpDomain('33565')
+;EXECUTE dumpDomain('33037')
+;EXECUTE dumpDomain('33569')
+;EXECUTE dumpCompositeType('20902')
+;EXECUTE dumpEnumType('16729')
+;EXECUTE dumpFunc('33052')
+;SELECT pg_catalog.format_type('1007'::pg_catalog.oid, NULL)
+;EXECUTE dumpDomain('33054')
+;EXECUTE dumpFunc('33048')
+;EXECUTE dumpDomain('33050')
+;EXECUTE dumpDomain('33283')
+;EXECUTE dumpCompositeType('31561')
+;EXECUTE dumpCompositeType('32689')
+;EXECUTE dumpCompositeType('38050')
+;EXECUTE dumpCompositeType('32747')
+;EXECUTE dumpDomain('26281')
+;EXECUTE dumpDomain('33255')
+;EXECUTE dumpDomain('33270')
+;EXECUTE dumpCompositeType('34591')
+;EXECUTE dumpCompositeType('34599')
+;EXECUTE dumpCompositeType('34621')
+;EXECUTE dumpDomain('28882')
+;EXECUTE dumpDomain('28884')
+;EXECUTE dumpDomain('28760')
+;EXECUTE dumpFunc('17540')
+;EXECUTE dumpFunc('17541')
+;SELECT pg_catalog.format_type('17537'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('17537')
+;EXECUTE dumpRangeType('16689')
+;EXECUTE dumpDomain('33188')
+;EXECUTE dumpCompositeType('34632')
+;EXECUTE dumpCompositeType('34661')
+;EXECUTE dumpFunc('17526')
+;EXECUTE dumpFunc('17527')
+;SELECT pg_catalog.format_type('17525'::pg_catalog.oid, NULL)
+;EXECUTE dumpBaseType('17525')
+;EXECUTE dumpFunc('20502')
+;SELECT pg_catalog.format_type('20'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.format_type('25'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32103')
+;SELECT pg_catalog.format_type('2277'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.format_type('2283'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('20480')
+;SELECT pg_catalog.format_type('20463'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('20487')
+;EXECUTE dumpFunc('33102')
+;EXECUTE dumpFunc('32861')
+;EXECUTE dumpFunc('17199')
+;EXECUTE dumpFunc('17227')
+;SELECT pg_catalog.format_type('26'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32072')
+;EXECUTE dumpFunc('33509')
+;EXECUTE dumpFunc('31721')
+;EXECUTE dumpFunc('31850')
+;EXECUTE dumpFunc('32467')
+;EXECUTE dumpFunc('20445')
+;EXECUTE dumpFunc('32759')
+;SELECT pg_catalog.format_type('32756'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('27566')
+;EXECUTE dumpFunc('17198')
+;EXECUTE dumpFunc('17188')
+;EXECUTE dumpFunc('21622')
+;EXECUTE dumpFunc('21605')
+;EXECUTE dumpFunc('21628')
+;EXECUTE dumpFunc('20547')
+;SELECT pg_catalog.format_type('5077'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.format_type('5078'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('33041')
+;EXECUTE dumpFunc('24371')
+;EXECUTE dumpFunc('20973')
+;EXECUTE dumpFunc('33293')
+;SELECT pg_catalog.format_type('33283'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('38083')
+;EXECUTE dumpFunc('21294')
+;EXECUTE dumpFunc('38082')
+;EXECUTE dumpFunc('18397')
+;SELECT pg_catalog.format_type('17569'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('18398')
+;EXECUTE dumpFunc('18399')
+;EXECUTE dumpFunc('18400')
+;EXECUTE dumpFunc('18401')
+;EXECUTE dumpFunc('18402')
+;EXECUTE dumpFunc('18403')
+;EXECUTE dumpFunc('37961')
+;EXECUTE dumpFunc('37963')
+;EXECUTE dumpFunc('32605')
+;SELECT pg_catalog.format_type('1043'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('26151')
+;EXECUTE dumpFunc('26150')
+;EXECUTE dumpFunc('27123')
+;EXECUTE dumpFunc('27130')
+;EXECUTE dumpFunc('27127')
+;EXECUTE dumpFunc('27114')
+;EXECUTE dumpFunc('35314')
+;EXECUTE dumpFunc('35338')
+;EXECUTE dumpFunc('35323')
+;SELECT pg_catalog.format_type('16'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('36491')
+;EXECUTE dumpFunc('26149')
+;EXECUTE dumpFunc('32890')
+;SELECT pg_catalog.format_type('16669'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32891')
+;EXECUTE dumpFunc('32892')
+;EXECUTE dumpFunc('20793')
+;EXECUTE dumpFunc('28954')
+;EXECUTE dumpFunc('31847')
+;EXECUTE dumpFunc('31846')
+;EXECUTE dumpFunc('32125')
+;EXECUTE dumpFunc('32124')
+;EXECUTE dumpFunc('20669')
+;SELECT pg_catalog.format_type('701'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('20663')
+;EXECUTE dumpFunc('28919')
+;EXECUTE dumpFunc('28175')
+;SELECT pg_get_partkeydef('33347')
+;EXECUTE dumpFunc('33378')
+;EXECUTE dumpFunc('25201')
+;EXECUTE dumpFunc('26862')
+;EXECUTE dumpFunc('26867')
+;EXECUTE dumpFunc('26914')
+;EXECUTE dumpFunc('18393')
+;SELECT pg_catalog.format_type('17588'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('18396')
+;EXECUTE dumpFunc('18394')
+;EXECUTE dumpFunc('18395')
+;EXECUTE dumpFunc('20429')
+;EXECUTE dumpFunc('17138')
+;SELECT pg_catalog.format_type('3831'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32850')
+;EXECUTE dumpFunc('32851')
+;EXECUTE dumpFunc('28814')
+;EXECUTE dumpFunc('28783')
+;EXECUTE dumpFunc('28763')
+;EXECUTE dumpFunc('28792')
+;EXECUTE dumpFunc('28805')
+;EXECUTE dumpFunc('28779')
+;EXECUTE dumpFunc('18406')
+;SELECT pg_catalog.format_type('602'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('35629')
+;EXECUTE dumpFunc('20543')
+;EXECUTE dumpFunc('33379')
+;EXECUTE dumpFunc('29102')
+;EXECUTE dumpFunc('29107')
+;EXECUTE dumpFunc('29101')
+;EXECUTE dumpFunc('29106')
+;EXECUTE dumpFunc('29100')
+;EXECUTE dumpFunc('29105')
+;EXECUTE dumpFunc('24346')
+;EXECUTE dumpFunc('17211')
+;SELECT pg_catalog.format_type('2249'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('24208')
+;EXECUTE dumpFunc('18924')
+;EXECUTE dumpFunc('17445')
+;SELECT pg_catalog.format_type('4537'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('17441')
+;EXECUTE dumpFunc('17442')
+;EXECUTE dumpFunc('17443')
+;EXECUTE dumpFunc('17444')
+;EXECUTE dumpFunc('17447')
+;EXECUTE dumpFunc('17446')
+;EXECUTE dumpFunc('32655')
+;EXECUTE dumpFunc('17420')
+;EXECUTE dumpFunc('17217')
+;EXECUTE dumpFunc('27285')
+;EXECUTE dumpFunc('27281')
+;EXECUTE dumpFunc('28904')
+;EXECUTE dumpFunc('32250')
+;EXECUTE dumpFunc('32544')
+;EXECUTE dumpFunc('32551')
+;EXECUTE dumpFunc('32564')
+;EXECUTE dumpFunc('32570')
+;EXECUTE dumpFunc('32574')
+;EXECUTE dumpFunc('20931')
+;SELECT pg_catalog.format_type('20902'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('21705')
+;EXECUTE dumpFunc('34554')
+;EXECUTE dumpFunc('32852')
+;EXECUTE dumpFunc('29099')
+;EXECUTE dumpFunc('17136')
+;EXECUTE dumpFunc('17135')
+;EXECUTE dumpFunc('17137')
+;EXECUTE dumpFunc('18405')
+;SELECT pg_catalog.format_type('17593'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('18741')
+;EXECUTE dumpFunc('18751')
+;EXECUTE dumpFunc('19213')
+;EXECUTE dumpFunc('22642')
+;EXECUTE dumpFunc('32429')
+;EXECUTE dumpFunc('32430')
+;EXECUTE dumpFunc('17853')
+;EXECUTE dumpFunc('32178')
+;SELECT pg_catalog.format_type('1042'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32181')
+;EXECUTE dumpFunc('18404')
+;SELECT pg_catalog.format_type('600'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('19314')
+;EXECUTE dumpFunc('19316')
+;EXECUTE dumpFunc('19315')
+;EXECUTE dumpFunc('19300')
+;EXECUTE dumpFunc('19303')
+;EXECUTE dumpFunc('19307')
+;EXECUTE dumpFunc('19308')
+;EXECUTE dumpFunc('19309')
+;EXECUTE dumpFunc('19313')
+;EXECUTE dumpFunc('32581')
+;EXECUTE dumpFunc('17419')
+;EXECUTE dumpFunc('17094')
+;EXECUTE dumpFunc('17095')
+;EXECUTE dumpFunc('32974')
+;EXECUTE dumpFunc('32400')
+;EXECUTE dumpFunc('32521')
+;SELECT pg_catalog.format_type('1790'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('32533')
+;EXECUTE dumpFunc('28898')
+;EXECUTE dumpFunc('32582')
+;EXECUTE dumpFunc('32686')
+;EXECUTE dumpFunc('32690')
+;EXECUTE dumpFunc('32516')
+;EXECUTE dumpFunc('32509')
+;EXECUTE dumpFunc('33040')
+;EXECUTE dumpFunc('18407')
+;SELECT pg_catalog.format_type('19'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('27774')
+;EXECUTE dumpFunc('21440')
+;EXECUTE dumpFunc('17210')
+;EXECUTE dumpFunc('32666')
+;EXECUTE dumpFunc('28360')
+;EXECUTE dumpFunc('32087')
+;EXECUTE dumpFunc('32975')
+;EXECUTE dumpFunc('38081')
+;EXECUTE dumpFunc('31827')
+;EXECUTE dumpFunc('31821')
+;EXECUTE dumpFunc('32660')
+;EXECUTE dumpFunc('31843')
+;EXECUTE dumpFunc('20443')
+;EXECUTE dumpFunc('29110')
+;EXECUTE dumpFunc('17139')
+;EXECUTE dumpFunc('17215')
+;EXECUTE dumpFunc('17531')
+;EXECUTE dumpFunc('31607')
+;SELECT pg_catalog.format_type('17'::pg_catalog.oid, NULL)
+;EXECUTE dumpFunc('17220')
+;EXECUTE dumpFunc('37878')
+;EXECUTE dumpFunc('37959')
+;EXECUTE dumpFunc('17216')
+;EXECUTE dumpFunc('32404')
+;EXECUTE dumpFunc('17218')
+;EXECUTE dumpFunc('32409')
+;EXECUTE dumpFunc('32408')
+;EXECUTE dumpFunc('32407')
+;EXECUTE dumpFunc('34553')
+;EXECUTE dumpFunc('32405')
+;EXECUTE dumpFunc('32406')
+;EXECUTE dumpFunc('31839')
+;EXECUTE dumpFunc('31840')
+;EXECUTE dumpFunc('31834')
+;EXECUTE dumpFunc('31830')
+;EXECUTE dumpFunc('32122')
+;EXECUTE dumpFunc('32135')
+;EXECUTE dumpFunc('32141')
+;EXECUTE dumpFunc('32074')
+;EXECUTE dumpFunc('32051')
+;EXECUTE dumpFunc('32024')
+;EXECUTE dumpFunc('32014')
+;EXECUTE dumpFunc('32008')
+;EXECUTE dumpFunc('32102')
+;EXECUTE dumpFunc('31988')
+;EXECUTE dumpFunc('31999')
+;EXECUTE dumpFunc('31980')
+;EXECUTE dumpFunc('32100')
+;EXECUTE dumpFunc('31951')
+;EXECUTE dumpFunc('31946')
+;EXECUTE dumpFunc('32113')
+;EXECUTE dumpFunc('32094')
+;EXECUTE dumpFunc('31963')
+;EXECUTE dumpFunc('32086')
+;EXECUTE dumpFunc('31917')
+;EXECUTE dumpFunc('31878')
+;EXECUTE dumpFunc('32150')
+;EXECUTE dumpFunc('32168')
+;EXECUTE dumpFunc('32173')
+;EXECUTE dumpFunc('31971')
+;EXECUTE dumpFunc('31935')
+;EXECUTE dumpFunc('32090')
+;EXECUTE dumpFunc('24601')
+;EXECUTE dumpFunc('33063')
+;EXECUTE dumpFunc('33065')
+;EXECUTE dumpFunc('33086')
+;EXECUTE dumpFunc('33088')
+;EXECUTE dumpFunc('33093')
+;EXECUTE dumpFunc('33090')
+;EXECUTE dumpFunc('23109')
+;EXECUTE dumpFunc('24851')
+;EXECUTE dumpFunc('21092')
+;EXECUTE dumpFunc('23412')
+;EXECUTE dumpFunc('23413')
+;EXECUTE dumpFunc('23415')
+;EXECUTE dumpFunc('22294')
+;EXECUTE dumpFunc('23366')
+;EXECUTE dumpFunc('17206')
+;EXECUTE dumpFunc('21344')
+;EXECUTE dumpFunc('17209')
+;EXECUTE dumpFunc('37957')
+;EXECUTE dumpFunc('32511')
+;EXECUTE dumpFunc('21496')
+;EXECUTE dumpFunc('38320')
+;EXECUTE dumpFunc('32089')
+;EXECUTE dumpFunc('20977')
+;EXECUTE dumpFunc('32182')
+;EXECUTE dumpFunc('35254')
+;PREPARE dumpAgg(pg_catalog.oid) AS
+SELECT aggtransfn,
+aggfinalfn,
+aggtranstype::pg_catalog.regtype,
+agginitval,
+aggsortop,
+pg_catalog.pg_get_function_arguments(p.oid) AS funcargs,
+pg_catalog.pg_get_function_identity_arguments(p.oid) AS funciargs,
+aggkind,
+aggmtransfn,
+aggminvtransfn,
+aggmfinalfn,
+aggmtranstype::pg_catalog.regtype,
+aggfinalextra,
+aggmfinalextra,
+aggtransspace,
+aggmtransspace,
+aggminitval,
+aggcombinefn,
+aggserialfn,
+aggdeserialfn,
+proparallel,
+aggfinalmodify,
+aggmfinalmodify
+FROM pg_catalog.pg_aggregate a, pg_catalog.pg_proc p WHERE a.aggfnoid = p.oid AND p.oid = $1
+;EXECUTE dumpAgg('20499')
+;EXECUTE dumpAgg('20493')
+;EXECUTE dumpAgg('32097')
+;EXECUTE dumpAgg('32109')
+;EXECUTE dumpAgg('32123')
+;EXECUTE dumpAgg('20550')
+;EXECUTE dumpAgg('32128')
+;EXECUTE dumpAgg('32127')
+;EXECUTE dumpAgg('20545')
+;EXECUTE dumpAgg('29103')
+;EXECUTE dumpAgg('29104')
+;EXECUTE dumpAgg('29108')
+;EXECUTE dumpAgg('29109')
+;EXECUTE dumpAgg('31906')
+;EXECUTE dumpAgg('31912')
+;EXECUTE dumpAgg('31916')
+;EXECUTE dumpAgg('31918')
+;EXECUTE dumpAgg('31926')
+;EXECUTE dumpAgg('31932')
+;EXECUTE dumpAgg('31933')
+;EXECUTE dumpAgg('31938')
+;EXECUTE dumpAgg('31939')
+;EXECUTE dumpAgg('31943')
+;EXECUTE dumpAgg('31944')
+;EXECUTE dumpAgg('31848')
+;EXECUTE dumpAgg('31851')
+;EXECUTE dumpAgg('31855')
+;EXECUTE dumpAgg('31861')
+;EXECUTE dumpAgg('31868')
+;EXECUTE dumpAgg('31871')
+;EXECUTE dumpAgg('31874')
+;EXECUTE dumpAgg('31875')
+;EXECUTE dumpAgg('31876')
+;EXECUTE dumpAgg('31881')
+;EXECUTE dumpAgg('31897')
+;EXECUTE dumpAgg('31902')
+;EXECUTE dumpAgg('31959')
+;EXECUTE dumpAgg('20396')
+;EXECUTE dumpAgg('20420')
+;EXECUTE dumpAgg('20433')
+;SELECT pg_catalog.format_type('2276'::pg_catalog.oid, NULL)
+;EXECUTE dumpAgg('20414')
+;EXECUTE dumpAgg('20426')
+;EXECUTE dumpAgg('20457')
+;EXECUTE dumpAgg('29111')
+;EXECUTE dumpAgg('20614')
+;EXECUTE dumpAgg('20559')
+;EXECUTE dumpAgg('20562')
+;PREPARE dumpOpr(pg_catalog.oid) AS
+SELECT oprkind, oprcode::pg_catalog.regprocedure, oprleft::pg_catalog.regtype, oprright::pg_catalog.regtype, oprcom, oprnegate, oprrest::pg_catalog.regprocedure, oprjoin::pg_catalog.regprocedure, oprcanmerge, oprcanhash FROM pg_catalog.pg_operator WHERE oid = $1
+;EXECUTE dumpOpr('19245')
+;EXECUTE dumpOpr('19234')
+;EXECUTE dumpOpr('19252')
+;EXECUTE dumpOpr('28809')
+;EXECUTE dumpOpr('19238')
+;EXECUTE dumpOpr('28770')
+;EXECUTE dumpOpr('28780')
+;EXECUTE dumpOpr('28787')
+;EXECUTE dumpOpr('28800')
+;EXECUTE dumpOpr('19242')
+;EXECUTE dumpOpr('27192')
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '35232'::pg_catalog.oid AND amopfamily = '35232'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '35232'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '35232'::pg_catalog.oid
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '24946'::pg_catalog.oid AND amopfamily = '24946'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '24946'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '24946'::pg_catalog.oid
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18744'::pg_catalog.oid AND amopfamily = '18744'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18744'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '18744'::pg_catalog.oid
+;SELECT opcintype::pg_catalog.regtype, opckeytype::pg_catalog.regtype, opcdefault, opcfamily, opfname AS opcfamilyname, nspname AS opcfamilynsp, (SELECT amname FROM pg_catalog.pg_am WHERE oid = opcmethod) AS amname FROM pg_catalog.pg_opclass c LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = opcfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE c.oid = '18746'::pg_catalog.oid
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opclass'::pg_catalog.regclass AND refobjid = '18746'::pg_catalog.oid AND amopfamily = '18744'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opclass'::pg_catalog.regclass AND refobjid = '18746'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '37733'::pg_catalog.oid AND amopfamily = '37733'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '37733'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '37733'::pg_catalog.oid
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18752'::pg_catalog.oid AND amopfamily = '18752'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18752'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '18752'::pg_catalog.oid
+;SELECT opcintype::pg_catalog.regtype, opckeytype::pg_catalog.regtype, opcdefault, opcfamily, opfname AS opcfamilyname, nspname AS opcfamilynsp, (SELECT amname FROM pg_catalog.pg_am WHERE oid = opcmethod) AS amname FROM pg_catalog.pg_opclass c LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = opcfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE c.oid = '18753'::pg_catalog.oid
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opclass'::pg_catalog.regclass AND refobjid = '18753'::pg_catalog.oid AND amopfamily = '18752'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opclass'::pg_catalog.regclass AND refobjid = '18753'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT amopstrategy, amopopr::pg_catalog.regoperator, opfname AS sortfamily, nspname AS sortfamilynsp FROM pg_catalog.pg_amop ao JOIN pg_catalog.pg_depend ON (classid = 'pg_catalog.pg_amop'::pg_catalog.regclass AND objid = ao.oid) LEFT JOIN pg_catalog.pg_opfamily f ON f.oid = amopsortfamily LEFT JOIN pg_catalog.pg_namespace n ON n.oid = opfnamespace WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18309'::pg_catalog.oid AND amopfamily = '18309'::pg_catalog.oid ORDER BY amopstrategy
+;SELECT amprocnum, amproc::pg_catalog.regprocedure, amproclefttype::pg_catalog.regtype, amprocrighttype::pg_catalog.regtype FROM pg_catalog.pg_amproc ap, pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_opfamily'::pg_catalog.regclass AND refobjid = '18309'::pg_catalog.oid AND classid = 'pg_catalog.pg_amproc'::pg_catalog.regclass AND objid = ap.oid ORDER BY amprocnum
+;SELECT (SELECT amname FROM pg_catalog.pg_am WHERE oid = opfmethod) AS amname FROM pg_catalog.pg_opfamily WHERE oid = '18309'::pg_catalog.oid
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3733' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3730' AND n.oid = tmplnamespace
+;SELECT nspname, tmplname FROM pg_ts_template p, pg_namespace n WHERE p.oid = '3742' AND n.oid = tmplnamespace
+;SELECT nspname, prsname FROM pg_ts_parser p, pg_namespace n WHERE p.oid = '3722' AND n.oid = prsnamespace
+;SELECT
+  ( SELECT alias FROM pg_catalog.ts_token_type('3722'::pg_catalog.oid) AS t
+    WHERE t.tokid = m.maptokentype ) AS tokenname,
+  m.mapdict::pg_catalog.regdictionary AS dictname
+FROM pg_catalog.pg_ts_config_map AS m
+WHERE m.mapcfg = '28895'
+ORDER BY m.mapcfg, m.maptokentype, m.mapseqno
+;SELECT nspname, prsname FROM pg_ts_parser p, pg_namespace n WHERE p.oid = '3722' AND n.oid = prsnamespace
+;SELECT
+  ( SELECT alias FROM pg_catalog.ts_token_type('3722'::pg_catalog.oid) AS t
+    WHERE t.tokid = m.maptokentype ) AS tokenname,
+  m.mapdict::pg_catalog.regdictionary AS dictname
+FROM pg_catalog.pg_ts_config_map AS m
+WHERE m.mapcfg = '28885'
+ORDER BY m.mapcfg, m.maptokentype, m.mapseqno
+;SELECT nspname, prsname FROM pg_ts_parser p, pg_namespace n WHERE p.oid = '3722' AND n.oid = prsnamespace
+;SELECT
+  ( SELECT alias FROM pg_catalog.ts_token_type('3722'::pg_catalog.oid) AS t
+    WHERE t.tokid = m.maptokentype ) AS tokenname,
+  m.mapdict::pg_catalog.regdictionary AS dictname
+FROM pg_catalog.pg_ts_config_map AS m
+WHERE m.mapcfg = '28903'
+ORDER BY m.mapcfg, m.maptokentype, m.mapseqno
+;SELECT nspname, prsname FROM pg_ts_parser p, pg_namespace n WHERE p.oid = '3722' AND n.oid = prsnamespace
+;SELECT
+  ( SELECT alias FROM pg_catalog.ts_token_type('3722'::pg_catalog.oid) AS t
+    WHERE t.tokid = m.maptokentype ) AS tokenname,
+  m.mapdict::pg_catalog.regdictionary AS dictname
+FROM pg_catalog.pg_ts_config_map AS m
+WHERE m.mapcfg = '28907'
+ORDER BY m.mapcfg, m.maptokentype, m.mapseqno
+;SELECT fdwname FROM pg_foreign_data_wrapper w WHERE w.oid = '37908'
+;SELECT usename, array_to_string(ARRAY(SELECT quote_ident(option_name) || ' ' || quote_literal(option_value) FROM pg_options_to_table(umoptions) ORDER BY option_name), E',
+    ') AS umoptions FROM pg_user_mappings WHERE srvid = '37909' ORDER BY usename
+;SELECT pg_get_partkeydef('30687')
+;SELECT pg_get_partkeydef('30672')
+;SELECT pg_get_partkeydef('30729')
+;SELECT pg_get_partkeydef('30760')
+;SELECT pg_get_partkeydef('30775')
+;SELECT pg_get_partkeydef('30829')
+;SELECT pg_get_partkeydef('30832')
+;SELECT pg_get_partkeydef('30814')
+;SELECT pg_get_partkeydef('30819')
+;SELECT pg_get_partkeydef('30863')
+;SELECT pg_get_partkeydef('31072')
+;SELECT pg_get_partkeydef('31077')
+;SELECT pg_catalog.pg_get_viewdef('25130'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25283'::pg_catalog.oid) AS viewdef
+;PREPARE getColumnACLs(pg_catalog.oid) AS
+SELECT at.attname, at.attacl, '{}' AS acldefault, pip.privtype, pip.initprivs FROM pg_catalog.pg_attribute at LEFT JOIN pg_catalog.pg_init_privs pip ON (at.attrelid = pip.objoid AND pip.classoid = 'pg_catalog.pg_class'::pg_catalog.regclass AND at.attnum = pip.objsubid) WHERE at.attrelid = $1 AND NOT at.attisdropped AND (at.attacl IS NOT NULL OR pip.initprivs IS NOT NULL) ORDER BY at.attnum
+;EXECUTE getColumnACLs('1260')
+;EXECUTE getColumnACLs('1255')
+;EXECUTE getColumnACLs('6100')
+;SELECT pg_get_partkeydef('37785')
+;SELECT pg_get_partkeydef('37788')
+;SELECT pg_get_partkeydef('37791')
+;SELECT pg_get_partkeydef('33147')
+;SELECT pg_get_partkeydef('35281')
+;SELECT pg_get_partkeydef('35246')
+;SELECT pg_get_partkeydef('37824')
+;SELECT pg_get_partkeydef('37827')
+;SELECT pg_get_partkeydef('37830')
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '20571'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '28733'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '28654'::oid
+;SELECT pg_get_partkeydef('37285')
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '20461'::oid
+;SELECT pg_catalog.pg_get_viewdef('33207'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('30272')
+;SELECT pg_get_partkeydef('30471')
+;SELECT pg_get_partkeydef('30403')
+;SELECT pg_get_partkeydef('30430')
+;SELECT pg_get_partkeydef('37149')
+;SELECT pg_get_partkeydef('37161')
+;SELECT pg_get_partkeydef('37184')
+;SELECT pg_get_partkeydef('37174')
+;SELECT pg_catalog.pg_get_viewdef('19342'::pg_catalog.oid) AS viewdef
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '20596'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25548'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25577'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25629'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25641'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '26586'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '26601'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25156'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25207'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25237'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25752'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25658'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25836'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25922'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25937'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '25496'::oid
+;SELECT pg_catalog.pg_get_viewdef('32104'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('32183'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('32211'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('32223'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('18853')
+;SELECT pg_get_partkeydef('18857')
+;SELECT pg_get_partkeydef('18926')
+;SELECT pg_catalog.pg_get_viewdef('25356'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25368'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25383'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25391'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25176'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25304'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25323'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('28998'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('29002'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('29008'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('29015'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('28989'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('28993'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('31585'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('35307')
+;SELECT pg_get_partkeydef('35688')
+;SELECT pg_get_partkeydef('35700')
+;SELECT pg_get_partkeydef('35749')
+;SELECT pg_get_partkeydef('35843')
+;SELECT pg_get_partkeydef('35863')
+;SELECT pg_get_partkeydef('35888')
+;SELECT pg_get_partkeydef('36847')
+;SELECT pg_get_partkeydef('36029')
+;SELECT pg_get_partkeydef('35051')
+;SELECT pg_get_partkeydef('36040')
+;SELECT pg_catalog.pg_get_viewdef('32194'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('36179')
+;SELECT pg_get_partkeydef('36246')
+;SELECT pg_get_partkeydef('36213')
+;SELECT pg_get_partkeydef('36021')
+;SELECT pg_get_partkeydef('36085')
+;SELECT pg_get_partkeydef('36054')
+;SELECT pg_get_partkeydef('35299')
+;SELECT pg_get_partkeydef('35728')
+;SELECT pg_get_partkeydef('36312')
+;SELECT pg_get_partkeydef('36325')
+;SELECT pg_get_partkeydef('36360')
+;SELECT pg_get_partkeydef('35951')
+;SELECT pg_get_partkeydef('36513')
+;SELECT pg_get_partkeydef('35465')
+;SELECT pg_get_partkeydef('35746')
+;SELECT pg_get_partkeydef('36414')
+;SELECT pg_get_partkeydef('36427')
+;SELECT pg_get_partkeydef('36454')
+;SELECT pg_get_partkeydef('35995')
+;SELECT pg_get_partkeydef('36535')
+;SELECT pg_get_partkeydef('36562')
+;SELECT pg_get_partkeydef('36580')
+;SELECT pg_catalog.format_type('38050'::pg_catalog.oid, NULL)
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '27689'::oid
+;SELECT pg_catalog.pg_get_viewdef('27575'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27787'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27758'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27762'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27766'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27770'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27775'::pg_catalog.oid) AS viewdef
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31656'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31676'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31682'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31690'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31700'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '32958'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '32988'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '32959'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31612'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31617'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31625'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31638'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '31648'::oid
+;SELECT pg_catalog.pg_get_viewdef('27800'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27804'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27808'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27826'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('27830'::pg_catalog.oid) AS viewdef
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '26152'::oid
+;SELECT pg_catalog.pg_get_viewdef('19338'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('32037'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('20776')
+;SELECT pg_catalog.pg_get_viewdef('20749'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('35278')
+;SELECT pg_catalog.pg_get_viewdef('25115'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('25136'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.format_type('34599'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.pg_get_viewdef('19348'::pg_catalog.oid) AS viewdef
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '33067'::oid
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '33074'::oid
+;SELECT pg_get_partkeydef('23361')
+;SELECT pg_get_partkeydef('23368')
+;SELECT pg_get_partkeydef('23380')
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '33336'::oid
+;SELECT pg_catalog.format_type('34632'::pg_catalog.oid, NULL)
+;SELECT pg_catalog.pg_get_viewdef('32025'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('31772'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('31783'::pg_catalog.oid) AS viewdef
+;SELECT pg_get_partkeydef('37215')
+;SELECT pg_get_partkeydef('37255')
+;PREPARE dumpTableAttach(pg_catalog.oid) AS
+SELECT pg_get_expr(c.relpartbound, c.oid) FROM pg_class c WHERE c.oid = $1
+;EXECUTE dumpTableAttach('30690')
+;EXECUTE dumpTableAttach('30707')
+;EXECUTE dumpTableAttach('30753')
+;EXECUTE dumpTableAttach('30677')
+;EXECUTE dumpTableAttach('30682')
+;EXECUTE dumpTableAttach('30713')
+;EXECUTE dumpTableAttach('30721')
+;EXECUTE dumpTableAttach('30729')
+;EXECUTE dumpTableAttach('30732')
+;EXECUTE dumpTableAttach('30735')
+;EXECUTE dumpTableAttach('30765')
+;EXECUTE dumpTableAttach('30775')
+;EXECUTE dumpTableAttach('30785')
+;EXECUTE dumpTableAttach('30770')
+;EXECUTE dumpTableAttach('30832')
+;EXECUTE dumpTableAttach('30835')
+;EXECUTE dumpTableAttach('30887')
+;EXECUTE dumpTableAttach('30893')
+;EXECUTE dumpTableAttach('30819')
+;EXECUTE dumpTableAttach('30824')
+;EXECUTE dumpTableAttach('30855')
+;EXECUTE dumpTableAttach('30863')
+;EXECUTE dumpTableAttach('30866')
+;EXECUTE dumpTableAttach('30869')
+;EXECUTE dumpTableAttach('31077')
+;EXECUTE dumpTableAttach('31082')
+;EXECUTE dumpTableAttach('31087')
+;EXECUTE dumpTableAttach('37788')
+;EXECUTE dumpTableAttach('37794')
+;EXECUTE dumpTableAttach('37799')
+;EXECUTE dumpTableAttach('37804')
+;EXECUTE dumpTableAttach('37791')
+;EXECUTE dumpTableAttach('37809')
+;EXECUTE dumpTableAttach('37814')
+;EXECUTE dumpTableAttach('37819')
+;EXECUTE dumpTableAttach('35284')
+;EXECUTE dumpTableAttach('35250')
+;EXECUTE dumpTableAttach('37827')
+;EXECUTE dumpTableAttach('37833')
+;EXECUTE dumpTableAttach('37838')
+;EXECUTE dumpTableAttach('37843')
+;EXECUTE dumpTableAttach('37830')
+;EXECUTE dumpTableAttach('37848')
+;EXECUTE dumpTableAttach('37853')
+;EXECUTE dumpTableAttach('37858')
+;EXECUTE dumpTableAttach('37296')
+;EXECUTE dumpTableAttach('37301')
+;EXECUTE dumpTableAttach('37305')
+;EXECUTE dumpTableAttach('37315')
+;EXECUTE dumpTableAttach('30277')
+;EXECUTE dumpTableAttach('30471')
+;EXECUTE dumpTableAttach('30474')
+;EXECUTE dumpTableAttach('30477')
+;EXECUTE dumpTableAttach('30298')
+;EXECUTE dumpTableAttach('30403')
+;EXECUTE dumpTableAttach('30411')
+;EXECUTE dumpTableAttach('30417')
+;EXECUTE dumpTableAttach('30430')
+;EXECUTE dumpTableAttach('30443')
+;EXECUTE dumpTableAttach('37153')
+;EXECUTE dumpTableAttach('37161')
+;EXECUTE dumpTableAttach('37164')
+;EXECUTE dumpTableAttach('37167')
+;EXECUTE dumpTableAttach('37184')
+;EXECUTE dumpTableAttach('37188')
+;EXECUTE dumpTableAttach('37191')
+;EXECUTE dumpTableAttach('37179')
+;EXECUTE dumpTableAttach('18857')
+;EXECUTE dumpTableAttach('18860')
+;EXECUTE dumpTableAttach('18885')
+;EXECUTE dumpTableAttach('18888')
+;EXECUTE dumpTableAttach('18891')
+;EXECUTE dumpTableAttach('18894')
+;EXECUTE dumpTableAttach('18926')
+;EXECUTE dumpTableAttach('18929')
+;EXECUTE dumpTableAttach('18934')
+;EXECUTE dumpTableAttach('18939')
+;EXECUTE dumpTableAttach('35691')
+;EXECUTE dumpTableAttach('35694')
+;EXECUTE dumpTableAttach('35697')
+;EXECUTE dumpTableAttach('35703')
+;EXECUTE dumpTableAttach('35706')
+;EXECUTE dumpTableAttach('35709')
+;EXECUTE dumpTableAttach('35758')
+;EXECUTE dumpTableAttach('35772')
+;EXECUTE dumpTableAttach('35777')
+;EXECUTE dumpTableAttach('35852')
+;EXECUTE dumpTableAttach('35863')
+;EXECUTE dumpTableAttach('35871')
+;EXECUTE dumpTableAttach('35879')
+;EXECUTE dumpTableAttach('35888')
+;EXECUTE dumpTableAttach('35894')
+;EXECUTE dumpTableAttach('35902')
+;EXECUTE dumpTableAttach('35318')
+;EXECUTE dumpTableAttach('35356')
+;EXECUTE dumpTableAttach('35378')
+;EXECUTE dumpTableAttach('36857')
+;EXECUTE dumpTableAttach('36866')
+;EXECUTE dumpTableAttach('36870')
+;EXECUTE dumpTableAttach('35055')
+;EXECUTE dumpTableAttach('36035')
+;EXECUTE dumpTableAttach('36040')
+;EXECUTE dumpTableAttach('36047')
+;EXECUTE dumpTableAttach('36051')
+;EXECUTE dumpTableAttach('36250')
+;EXECUTE dumpTableAttach('36255')
+;EXECUTE dumpTableAttach('36260')
+;EXECUTE dumpTableAttach('36182')
+;EXECUTE dumpTableAttach('36198')
+;EXECUTE dumpTableAttach('36205')
+;EXECUTE dumpTableAttach('36216')
+;EXECUTE dumpTableAttach('36224')
+;EXECUTE dumpTableAttach('36233')
+;EXECUTE dumpTableAttach('36092')
+;EXECUTE dumpTableAttach('36107')
+;EXECUTE dumpTableAttach('36124')
+;EXECUTE dumpTableAttach('36024')
+;EXECUTE dumpTableAttach('36032')
+;EXECUTE dumpTableAttach('36041')
+;EXECUTE dumpTableAttach('36057')
+;EXECUTE dumpTableAttach('36062')
+;EXECUTE dumpTableAttach('36074')
+;EXECUTE dumpTableAttach('35731')
+;EXECUTE dumpTableAttach('35734')
+;EXECUTE dumpTableAttach('35740')
+;EXECUTE dumpTableAttach('36316')
+;EXECUTE dumpTableAttach('36325')
+;EXECUTE dumpTableAttach('36331')
+;EXECUTE dumpTableAttach('36343')
+;EXECUTE dumpTableAttach('36360')
+;EXECUTE dumpTableAttach('36368')
+;EXECUTE dumpTableAttach('36384')
+;EXECUTE dumpTableAttach('35957')
+;EXECUTE dumpTableAttach('35963')
+;EXECUTE dumpTableAttach('35967')
+;EXECUTE dumpTableAttach('36518')
+;EXECUTE dumpTableAttach('36524')
+;EXECUTE dumpTableAttach('35321')
+;EXECUTE dumpTableAttach('35383')
+;EXECUTE dumpTableAttach('35357')
+;EXECUTE dumpTableAttach('35754')
+;EXECUTE dumpTableAttach('35769')
+;EXECUTE dumpTableAttach('35778')
+;EXECUTE dumpTableAttach('36418')
+;EXECUTE dumpTableAttach('36427')
+;EXECUTE dumpTableAttach('36432')
+;EXECUTE dumpTableAttach('36443')
+;EXECUTE dumpTableAttach('36454')
+;EXECUTE dumpTableAttach('36460')
+;EXECUTE dumpTableAttach('36465')
+;EXECUTE dumpTableAttach('36002')
+;EXECUTE dumpTableAttach('36009')
+;EXECUTE dumpTableAttach('36016')
+;EXECUTE dumpTableAttach('36542')
+;EXECUTE dumpTableAttach('36549')
+;EXECUTE dumpTableAttach('35471')
+;EXECUTE dumpTableAttach('35486')
+;EXECUTE dumpTableAttach('35498')
+;EXECUTE dumpTableAttach('36565')
+;EXECUTE dumpTableAttach('36570')
+;EXECUTE dumpTableAttach('36575')
+;EXECUTE dumpTableAttach('36583')
+;EXECUTE dumpTableAttach('36591')
+;EXECUTE dumpTableAttach('36605')
+;EXECUTE dumpTableAttach('33357')
+;EXECUTE dumpTableAttach('33372')
+;EXECUTE dumpTableAttach('20783')
+;EXECUTE dumpTableAttach('20800')
+;EXECUTE dumpTableAttach('20823')
+;EXECUTE dumpTableAttach('20839')
+;EXECUTE dumpTableAttach('23368')
+;EXECUTE dumpTableAttach('23374')
+;EXECUTE dumpTableAttach('23380')
+;EXECUTE dumpTableAttach('23386')
+;EXECUTE dumpTableAttach('37220')
+;EXECUTE dumpTableAttach('37225')
+;EXECUTE dumpTableAttach('37239')
+;EXECUTE dumpTableAttach('37250')
+;EXECUTE dumpTableAttach('37255')
+;EXECUTE dumpTableAttach('37258')
+;EXECUTE dumpTableAttach('37261')
+;SELECT last_value, is_called FROM public.check_seq
+;SELECT last_value, is_called FROM public.clstr_tst_a_seq
+;SELECT last_value, is_called FROM public.clstr_tst_s_rf_a_seq
+;SELECT last_value, is_called FROM public.default_seq
+;SELECT last_value, is_called FROM public.insert_seq
+;SELECT last_value, is_called FROM public.itest10_a_seq
+;SELECT last_value, is_called FROM public.itest11_a_seq
+;SELECT last_value, is_called FROM public.itest13_b_seq
+;SELECT last_value, is_called FROM public.itest13_c_seq
+;SELECT last_value, is_called FROM public.itest14_id_seq
+;SELECT last_value, is_called FROM public.itest14_id_seq1
+;SELECT last_value, is_called FROM public.itest1_a_seq
+;SELECT last_value, is_called FROM public.itest2_a_seq
+;SELECT last_value, is_called FROM public.itest3_a_seq
+;SELECT last_value, is_called FROM public.itest3_c_seq
+;SELECT last_value, is_called FROM public.itest5_a_seq
+;SELECT last_value, is_called FROM public.itest6_a_seq
+;SELECT last_value, is_called FROM public.itest7c_a_seq
+;SELECT last_value, is_called FROM public.itest7d_a_seq
+;SELECT last_value, is_called FROM public.itest9_a_seq
+;SELECT last_value, is_called FROM public.rtest_seq
+;SELECT last_value, is_called FROM public.sequence_test10
+;SELECT last_value, is_called FROM public.sequence_test11
+;SELECT last_value, is_called FROM public.sequence_test12
+;SELECT last_value, is_called FROM public.sequence_test13
+;SELECT last_value, is_called FROM public.sequence_test14
+;SELECT last_value, is_called FROM public.sequence_test2
+;SELECT last_value, is_called FROM public.sequence_test3
+;SELECT last_value, is_called FROM public.sequence_test4
+;SELECT last_value, is_called FROM public.sequence_test5
+;SELECT last_value, is_called FROM public.sequence_test6
+;SELECT last_value, is_called FROM public.sequence_test7
+;SELECT last_value, is_called FROM public.sequence_test8
+;SELECT last_value, is_called FROM public.sequence_test9
+;SELECT last_value, is_called FROM public.spgist_box_tbl_id_seq
+;SELECT last_value, is_called FROM public.transition_table_level1_level1_no_seq
+;SELECT last_value, is_called FROM public.transition_table_level2_level2_no_seq
+;SELECT last_value, is_called FROM public.truncate_b_id_seq
+;SELECT pg_catalog.pg_get_statisticsobjdef('28235'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_statisticsobjdef('28294'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_statisticsobjdef('28301'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_statisticsobjdef('28283'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_viewdef('19361'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_viewdef('19365'::pg_catalog.oid) AS viewdef
+;SELECT pg_catalog.pg_get_ruledef('27815'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27888'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('28123'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('28124'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('28125'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('28126'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('28127'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27646'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27644'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27645'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27719'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27720'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27721'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27722'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27693'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27692'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27690'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27691'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27628'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27624'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27623'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27622'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27677'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27678'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27679'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27680'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27586'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27580'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27583'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27917'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27818'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27816'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27825'::pg_catalog.oid)
+;SELECT pg_catalog.pg_get_ruledef('27817'::pg_catalog.oid)
+;COPY fkpart3.fk1 (a) TO stdout;
+;COPY fkpart3.fk2 (a) TO stdout;
+;COPY fkpart3.fk3 (a) TO stdout;
+;COPY fkpart3.pk1 (a) TO stdout;
+;COPY fkpart3.pk2 (a) TO stdout;
+;COPY fkpart3.pk3 (a) TO stdout;
+;COPY fkpart3.pk4 (a) TO stdout;
+;COPY fkpart3.pk51 (a) TO stdout;
+;COPY fkpart3.pk52 (a) TO stdout;
+;COPY fkpart4.dropfk (a) TO stdout;
+;COPY fkpart4.droppk1 (a) TO stdout;
+;COPY fkpart4.droppk21 (a) TO stdout;
+;COPY fkpart4.droppk2_d (a) TO stdout;
+;COPY fkpart4.droppk_d (a) TO stdout;
+;COPY fkpart5.fk11 (a) TO stdout;
+;COPY fkpart5.fk2 (a) TO stdout;
+;COPY fkpart5.fk3 (a) TO stdout;
+;COPY fkpart5.fk4 (a) TO stdout;
+;COPY fkpart5.pk11 (a) TO stdout;
+;COPY fkpart5.pk2 (a) TO stdout;
+;COPY fkpart5.pk31 (a) TO stdout;
+;COPY fkpart5.pk32 (a) TO stdout;
+;COPY fkpart6.pk11 (a) TO stdout;
+;COPY fkpart6.pk12 (a) TO stdout;
+;COPY public.a (aa) TO stdout;
+;COPY public.a_star (class, aa, a) TO stdout;
+;COPY public.agg_data_20k (g) TO stdout;
+;COPY public.agg_data_2k (g) TO stdout;
+;COPY public.aggtest (a, b) TO stdout;
+;COPY public.alpha_neg_p1 (a, b, c) TO stdout;
+;COPY public.alpha_neg_p2 (a, b, c) TO stdout;
+;COPY public.alpha_neg_p3 (a, b, c) TO stdout;
+;COPY public.alpha_pos_p1 (a, b, c) TO stdout;
+;COPY public.alpha_pos_p2 (a, b, c) TO stdout;
+;COPY public.alpha_pos_p3 (a, b, c) TO stdout;
+;COPY public.alter_table_under_transition_tables (id) TO stdout;
+;COPY public.array_index_op_test (seqno, i, t) TO stdout;
+;COPY public.array_op_test (seqno, i, t) TO stdout;
+;COPY public.arrtest (a, b, c, d, e, f, g) TO stdout;
+;COPY public.attach_parted_part1 (a, b) TO stdout;
+;COPY public.b (aa, bb) TO stdout;
+;COPY public.b_star (class, aa, bb, a) TO stdout;
+;COPY public.bar2 (a, b) TO stdout;
+;COPY public.beta_neg_p1 (a, b, c) TO stdout;
+;COPY public.beta_neg_p2 (a, b, c) TO stdout;
+;COPY public.beta_neg_p3 (a, b, c) TO stdout;
+;COPY public.beta_pos_p1 (a, b, c) TO stdout;
+;COPY public.beta_pos_p2 (a, b, c) TO stdout;
+;COPY public.beta_pos_p3 (a, b, c) TO stdout;
+;COPY public.big5_inputs (inbytes, description) TO stdout;
+;COPY public.bit_defaults (b1, b2, b3, b4) TO stdout;
+;COPY public.boolvalues (value) TO stdout;
+;COPY public.box_tbl (f1) TO stdout;
+;COPY public.bprime (unique1, unique2, two, four, ten, twenty, hundred, thousand, twothousand, fivethous, tenthous, odd, even, stringu1, stringu2, string4) TO stdout;
+;COPY public.brin_hot_2 (a, b) TO stdout;
+;COPY public.brin_summarize (value) TO stdout;
+;COPY public.brin_summarize_bloom (value) TO stdout;
+;COPY public.brin_summarize_multi (value) TO stdout;
+;COPY public.brin_test (a, b) TO stdout;
+;COPY public.brin_test_bloom (a, b) TO stdout;
+;COPY public.brin_test_multi (a, b) TO stdout;
+;COPY public.brinopers (colname, typ, op, value, matches) TO stdout;
+;COPY public.brinopers_bloom (colname, typ, op, value, matches) TO stdout;
+;COPY public.brinopers_multi (colname, typ, op, value, matches) TO stdout;
+;COPY public.brintest (byteacol, charcol, namecol, int8col, int2col, int4col, textcol, oidcol, tidcol, float4col, float8col, macaddrcol, inetcol, cidrcol, bpcharcol, datecol, timecol, timestampcol, timestamptzcol, intervalcol, timetzcol, bitcol, varbitcol, numericcol, uuidcol, int4rangecol, lsncol, boxcol) TO stdout;
+;COPY public.brintest_bloom (byteacol, charcol, namecol, int8col, int2col, int4col, textcol, oidcol, float4col, float8col, macaddrcol, inetcol, cidrcol, bpcharcol, datecol, timecol, timestampcol, timestamptzcol, intervalcol, timetzcol, numericcol, uuidcol, lsncol) TO stdout;
+;COPY public.brintest_multi (int8col, int2col, int4col, oidcol, tidcol, float4col, float8col, macaddrcol, macaddr8col, inetcol, cidrcol, datecol, timecol, timestampcol, timestamptzcol, intervalcol, timetzcol, numericcol, uuidcol, lsncol) TO stdout;
+;COPY public.bt_f8_heap (seqno, random) TO stdout;
+;COPY public.bt_i4_heap (seqno, random) TO stdout;
+;COPY public.bt_name_heap (seqno, random) TO stdout;
+;COPY public.bt_txt_heap (seqno, random) TO stdout;
+;COPY public.btree_tall_tbl (id, t) TO stdout;
+;COPY public.bug_16784 (i, j) TO stdout;
+;COPY public.c (aa, cc) TO stdout;
+;COPY public.c_star (class, aa, cc, a) TO stdout;
+;COPY public.char_tbl (f1) TO stdout;
+;COPY public.check2_tbl (x, y, z) TO stdout;
+;COPY public.check_con_tbl (f1) TO stdout;
+;COPY public.check_tbl (x) TO stdout;
+;COPY public.circle_tbl (f1) TO stdout;
+;COPY public.city (name, location, budget) TO stdout;
+;COPY public.clstr_tst (a, b, c, d) TO stdout;
+;COPY public.clstr_tst_inh (a, b, c, d) TO stdout;
+;COPY public.clstr_tst_s (rf_a, b) TO stdout;
+;COPY public.cmdata (f1) TO stdout;
+;COPY public.cmmove1 (f1) TO stdout;
+;COPY public.cmmove2 (f1) TO stdout;
+;COPY public.cmmove3 (f1) TO stdout;
+;COPY public.cmpart2 (f1) TO stdout;
+;COPY public.comment_test (id, positive_col, indexed_col) TO stdout;
+;COPY public.comment_test_child (id) TO stdout;
+;COPY public.copy_tbl (x, y, z) TO stdout;
+;COPY public.covidxpart1 (a, b) TO stdout;
+;COPY public.covidxpart2 (a, b) TO stdout;
+;COPY public.covidxpart3 (b, a) TO stdout;
+;COPY public.covidxpart4 (b, a) TO stdout;
+;COPY public.credit_card (cid, cnum, climit) TO stdout;
+;COPY public.credit_usage (cid, ymd, usage) TO stdout;
+;COPY public.customer (cid, name, tel, passwd) TO stdout;
+;COPY public.d (aa, bb, cc, dd) TO stdout;
+;COPY public.d_star (class, aa, bb, cc, dd, a) TO stdout;
+;COPY public.datdba_only  TO stdout;
+;COPY public.date_tbl (f1) TO stdout;
+;COPY public.dedup_unique_test_table (a) TO stdout;
+;COPY public.default_tbl (i, x, f) TO stdout;
+;COPY public.defaultexpr_tbl (i1, i2) TO stdout;
+;COPY public.defpart_attach_test_2 (a) TO stdout;
+;COPY public.delete_test_table (a, b, c, d) TO stdout;
+;COPY public.dept (dname, mgrname) TO stdout;
+;COPY public.depth0 (c) TO stdout;
+;COPY public.depth1 (c) TO stdout;
+;COPY public.depth2 (c) TO stdout;
+;COPY public.domain_test (a, b) TO stdout;
+;COPY public.domcontest (col1) TO stdout;
+;COPY public.domnotnull  TO stdout;
+;COPY public.domtab (col1) TO stdout;
+;COPY public.dropcolumn (b) TO stdout;
+;COPY public.dropcolumnanother (b, e, d) TO stdout;
+;COPY public.dropcolumnchild (b, e) TO stdout;
+;COPY public.dropcolumnexists  TO stdout;
+;COPY public.dropped_objects (type, schema, object) TO stdout;
+;COPY public.dupindexcols (id, f1) TO stdout;
+;COPY public.e_star (class, aa, cc, ee, e, a) TO stdout;
+;COPY public.ec0 (ff, f1, f2) TO stdout;
+;COPY public.ec1 (ff, f1, f2) TO stdout;
+;COPY public.ec2 (xf, x1, x2) TO stdout;
+;COPY public.emp (name, age, location, salary, manager) TO stdout;
+;COPY public.equipment_r (name, hobby) TO stdout;
+;COPY public.euc_jis_2004_inputs (inbytes, description) TO stdout;
+;COPY public.event_trigger_test (a, b) TO stdout;
+;COPY public.extra_wide_table (firstc, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35, c36, c37, c38, c39, c40, c41, c42, c43, c44, c45, c46, c47, c48, c49, c50, c51, c52, c53, c54, c55, c56, c57, c58, c59, c60, c61, c62, c63, c64, c65, c66, c67, c68, c69, c70, c71, c72, c73, c74, c75, c76, c77, c78, c79, c80, c81, c82, c83, c84, c85, c86, c87, c88, c89, c90, c91, c92, c93, c94, c95, c96, c97, c98, c99, c100, c101, c102, c103, c104, c105, c106, c107, c108, c109, c110, c111, c112, c113, c114, c115, c116, c117, c118, c119, c120, c121, c122, c123, c124, c125, c126, c127, c128, c129, c130, c131, c132, c133, c134, c135, c136, c137, c138, c139, c140, c141, c142, c143, c144, c145, c146, c147, c148, c149, c150, c151, c152, c153, c154, c155, c156, c157, c158, c159, c160, c161, c162, c163, c164, c165, c166, c167, c168, c169, c170, c171, c172, c173, c174, c175, c176, c177, c178, c179, c180, c181, c182, c183, c184, c185, c186, c187, c188, c189, c190, c191, c192, c193, c194, c195, c196, c197, c198, c199, c200, c201, c202, c203, c204, c205, c206, c207, c208, c209, c210, c211, c212, c213, c214, c215, c216, c217, c218, c219, c220, c221, c222, c223, c224, c225, c226, c227, c228, c229, c230, c231, c232, c233, c234, c235, c236, c237, c238, c239, c240, c241, c242, c243, c244, c245, c246, c247, c248, c249, c250, c251, c252, c253, c254, c255, c256, c257, c258, c259, c260, c261, c262, c263, c264, c265, c266, c267, c268, c269, c270, c271, c272, c273, c274, c275, c276, c277, c278, c279, c280, c281, c282, c283, c284, c285, c286, c287, c288, c289, c290, c291, c292, c293, c294, c295, c296, c297, c298, c299, c300, c301, c302, c303, c304, c305, c306, c307, c308, c309, c310, c311, c312, c313, c314, c315, c316, c317, c318, c319, c320, c321, c322, c323, c324, c325, c326, c327, c328, c329, c330, c331, c332, c333, c334, c335, c336, c337, c338, c339, c340, c341, c342, c343, c344, c345, c346, c347, c348, c349, c350, c351, c352, c353, c354, c355, c356, c357, c358, c359, c360, c361, c362, c363, c364, c365, c366, c367, c368, c369, c370, c371, c372, c373, c374, c375, c376, c377, c378, c379, c380, c381, c382, c383, c384, c385, c386, c387, c388, c389, c390, c391, c392, c393, c394, c395, c396, c397, c398, c399, c400, c401, c402, c403, c404, c405, c406, c407, c408, c409, c410, c411, c412, c413, c414, c415, c416, c417, c418, c419, c420, c421, c422, c423, c424, c425, c426, c427, c428, c429, c430, c431, c432, c433, c434, c435, c436, c437, c438, c439, c440, c441, c442, c443, c444, c445, c446, c447, c448, c449, c450, c451, c452, c453, c454, c455, c456, c457, c458, c459, c460, c461, c462, c463, c464, c465, c466, c467, c468, c469, c470, c471, c472, c473, c474, c475, c476, c477, c478, c479, c480, c481, c482, c483, c484, c485, c486, c487, c488, c489, c490, c491, c492, c493, c494, c495, c496, c497, c498, c499, c500, c501, c502, c503, c504, c505, c506, c507, c508, c509, c510, c511, c512, c513, c514, c515, c516, c517, c518, c519, c520, c521, c522, c523, c524, c525, c526, c527, c528, c529, c530, c531, c532, c533, c534, c535, c536, c537, c538, c539, c540, c541, c542, c543, c544, c545, c546, c547, c548, c549, c550, c551, c552, c553, c554, c555, c556, c557, c558, c559, c560, c561, c562, c563, c564, c565, c566, c567, c568, c569, c570, c571, c572, c573, c574, c575, c576, c577, c578, c579, c580, c581, c582, c583, c584, c585, c586, c587, c588, c589, c590, c591, c592, c593, c594, c595, c596, c597, c598, c599, c600, c601, c602, c603, c604, c605, c606, c607, c608, c609, c610, c611, c612, c613, c614, c615, c616, c617, c618, c619, c620, c621, c622, c623, c624, c625, c626, c627, c628, c629, c630, c631, c632, c633, c634, c635, c636, c637, c638, c639, c640, c641, c642, c643, c644, c645, c646, c647, c648, c649, c650, c651, c652, c653, c654, c655, c656, c657, c658, c659, c660, c661, c662, c663, c664, c665, c666, c667, c668, c669, c670, c671, c672, c673, c674, c675, c676, c677, c678, c679, c680, c681, c682, c683, c684, c685, c686, c687, c688, c689, c690, c691, c692, c693, c694, c695, c696, c697, c698, c699, c700, c701, c702, c703, c704, c705, c706, c707, c708, c709, c710, c711, c712, c713, c714, c715, c716, c717, c718, c719, c720, c721, c722, c723, c724, c725, c726, c727, c728, c729, c730, c731, c732, c733, c734, c735, c736, c737, c738, c739, c740, c741, c742, c743, c744, c745, c746, c747, c748, c749, c750, c751, c752, c753, c754, c755, c756, c757, c758, c759, c760, c761, c762, c763, c764, c765, c766, c767, c768, c769, c770, c771, c772, c773, c774, c775, c776, c777, c778, c779, c780, c781, c782, c783, c784, c785, c786, c787, c788, c789, c790, c791, c792, c793, c794, c795, c796, c797, c798, c799, c800, c801, c802, c803, c804, c805, c806, c807, c808, c809, c810, c811, c812, c813, c814, c815, c816, c817, c818, c819, c820, c821, c822, c823, c824, c825, c826, c827, c828, c829, c830, c831, c832, c833, c834, c835, c836, c837, c838, c839, c840, c841, c842, c843, c844, c845, c846, c847, c848, c849, c850, c851, c852, c853, c854, c855, c856, c857, c858, c859, c860, c861, c862, c863, c864, c865, c866, c867, c868, c869, c870, c871, c872, c873, c874, c875, c876, c877, c878, c879, c880, c881, c882, c883, c884, c885, c886, c887, c888, c889, c890, c891, c892, c893, c894, c895, c896, c897, c898, c899, c900, c901, c902, c903, c904, c905, c906, c907, c908, c909, c910, c911, c912, c913, c914, c915, c916, c917, c918, c919, c920, c921, c922, c923, c924, c925, c926, c927, c928, c929, c930, c931, c932, c933, c934, c935, c936, c937, c938, c939, c940, c941, c942, c943, c944, c945, c946, c947, c948, c949, c950, c951, c952, c953, c954, c955, c956, c957, c958, c959, c960, c961, c962, c963, c964, c965, c966, c967, c968, c969, c970, c971, c972, c973, c974, c975, c976, c977, c978, c979, c980, c981, c982, c983, c984, c985, c986, c987, c988, c989, c990, c991, c992, c993, c994, c995, c996, c997, c998, c999, c1000, c1001, c1002, c1003, c1004, c1005, c1006, c1007, c1008, c1009, c1010, c1011, c1012, c1013, c1014, c1015, c1016, c1017, c1018, c1019, c1020, c1021, c1022, c1023, c1024, c1025, c1026, c1027, c1028, c1029, c1030, c1031, c1032, c1033, c1034, c1035, c1036, c1037, c1038, c1039, c1040, c1041, c1042, c1043, c1044, c1045, c1046, c1047, c1048, c1049, c1050, c1051, c1052, c1053, c1054, c1055, c1056, c1057, c1058, c1059, c1060, c1061, c1062, c1063, c1064, c1065, c1066, c1067, c1068, c1069, c1070, c1071, c1072, c1073, c1074, c1075, c1076, c1077, c1078, c1079, c1080, c1081, c1082, c1083, c1084, c1085, c1086, c1087, c1088, c1089, c1090, c1091, c1092, c1093, c1094, c1095, c1096, c1097, c1098, c1099, c1100, lastc) TO stdout;
+;COPY public.f_star (class, aa, cc, ee, ff, f, e, a) TO stdout;
+;COPY public.fast_emp4000 (home_base) TO stdout;
+;COPY public.fk_notpartitioned_pk (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_1 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_2_1 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_2_2 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_3 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_4_1 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_4_2 (a, b) TO stdout;
+;COPY public.fk_partitioned_fk_5_1 (a, b) TO stdout;
+;COPY public.float4_tbl (f1) TO stdout;
+;COPY public.float8_tbl (f1) TO stdout;
+;COPY public.found_test_tbl (a) TO stdout;
+;COPY public.func_index_heap (f1, f2) TO stdout;
+;COPY public.functional_dependencies (filler1, filler2, a, b, filler3, c, d) TO stdout;
+;COPY public.gb18030_inputs (inbytes, description) TO stdout;
+;COPY public.gin_test_tbl (i) TO stdout;
+;COPY public.gist_point_tbl (id, p) TO stdout;
+;COPY public.gs_data_1 (g1000, g100, g10, g) TO stdout;
+;COPY public.gtest0 (a) TO stdout;
+;COPY public.gtest1 (a) TO stdout;
+;COPY public.gtest10 (a) TO stdout;
+;COPY public.gtest10a (a) TO stdout;
+;COPY public.gtest1_1 (a) TO stdout;
+;COPY public.gtest2 (a) TO stdout;
+;COPY public.gtest20 (a) TO stdout;
+;COPY public.gtest20a (a) TO stdout;
+;COPY public.gtest20b (a) TO stdout;
+;COPY public.gtest21a (a) TO stdout;
+;COPY public.gtest21b (a) TO stdout;
+;COPY public.gtest22a (a) TO stdout;
+;COPY public.gtest22b (a) TO stdout;
+;COPY public.gtest22c (a) TO stdout;
+;COPY public.gtest23p (x) TO stdout;
+;COPY public.gtest23q (a, b) TO stdout;
+;COPY public.gtest24 (a) TO stdout;
+;COPY public.gtest25 (a, c, d) TO stdout;
+;COPY public.gtest26 (a) TO stdout;
+;COPY public.gtest27 (a, b) TO stdout;
+;COPY public.gtest28a (b, c) TO stdout;
+;COPY public.gtest28b (b, c) TO stdout;
+;COPY public.gtest29 (b) TO stdout;
+;COPY public.gtest3 (a) TO stdout;
+;COPY public.gtest30 (a) TO stdout;
+;COPY public.gtest30_1 (a) TO stdout;
+;COPY public.gtest3a (a) TO stdout;
+;COPY public.gtest_normal (a, b) TO stdout;
+;COPY public.gtest_normal_child (a) TO stdout;
+;COPY public.gtest_normal_child2 (a) TO stdout;
+;COPY public.gtest_tableoid (a) TO stdout;
+;COPY public.gtestxx_1 (a, b) TO stdout;
+;COPY public.gtestxx_2 (a) TO stdout;
+;COPY public.gtestxx_3 (a) TO stdout;
+;COPY public.gtestxx_4 (a) TO stdout;
+;COPY public.has_fast_default (f1, f2) TO stdout;
+;COPY public.hash_f8_heap (seqno, random) TO stdout;
+;COPY public.hash_i4_heap (seqno, random) TO stdout;
+;COPY public.hash_name_heap (seqno, random) TO stdout;
+;COPY public.hash_txt_heap (seqno, random) TO stdout;
+;COPY public.hobbies_r (name, person) TO stdout;
+;COPY public.hslot (slotname, hubname, slotno, slotlink) TO stdout;
+;COPY public.hub (name, comment, nslots) TO stdout;
+;COPY public.idxpart1 (a) TO stdout;
+;COPY public.idxpart21 (a) TO stdout;
+;COPY public.idxpart22 (a) TO stdout;
+;COPY public.idxpart31 (a) TO stdout;
+;COPY public.idxpart32 (a) TO stdout;
+;COPY public.idxpart_another_1 (a, b) TO stdout;
+;COPY public.iface (slotname, sysname, ifname, slotlink) TO stdout;
+;COPY public.ihighway (name, thepath) TO stdout;
+;COPY public.inet_tbl (c, i) TO stdout;
+;COPY public.inh_test (a, b) TO stdout;
+;COPY public.inhf (xx) TO stdout;
+;COPY public.inhx (xx) TO stdout;
+;COPY public.insert_tbl (x, y, z) TO stdout;
+;COPY public.int2_tbl (f1) TO stdout;
+;COPY public.int4_tbl (f1) TO stdout;
+;COPY public.int8_tbl (q1, q2) TO stdout;
+;COPY public.interval_tbl (f1) TO stdout;
+;COPY public.invalid_check_con (f1) TO stdout;
+;COPY public.invalid_check_con_child (f1) TO stdout;
+;COPY public.iportaltest (i, d, p) TO stdout;
+;COPY public.iso8859_5_inputs (inbytes, description) TO stdout;
+;COPY public.itest1 (a, b) TO stdout;
+;COPY public.itest10 (a, b) TO stdout;
+;COPY public.itest11 (a, b) TO stdout;
+;COPY public.itest13 (a, b, c) TO stdout;
+;COPY public.itest14 (id) TO stdout;
+;COPY public.itest2 (a, b) TO stdout;
+;COPY public.itest3 (a, b, c) TO stdout;
+;COPY public.itest4 (a, b) TO stdout;
+;COPY public.itest5 (a, b) TO stdout;
+;COPY public.itest6 (a, b) TO stdout;
+;COPY public.itest7 (a) TO stdout;
+;COPY public.itest7a (a, b) TO stdout;
+;COPY public.itest7b (a) TO stdout;
+;COPY public.itest7c (a) TO stdout;
+;COPY public.itest7d (a) TO stdout;
+;COPY public.itest7e (a) TO stdout;
+;COPY public.itest9 (a, b, c) TO stdout;
+;COPY public.kd_point_tbl (p) TO stdout;
+;COPY public.line_tbl (s) TO stdout;
+;COPY public.log_table (tstamp) TO stdout;
+;COPY public.lseg_tbl (s) TO stdout;
+;COPY public.main_table (a, b) TO stdout;
+;COPY public.mcv_lists (filler1, filler2, a, b, filler3, c, d) TO stdout;
+;COPY public.mcv_lists_arrays (a, b, c) TO stdout;
+;COPY public.mcv_lists_bool (a, b, c) TO stdout;
+;COPY public.mic_inputs (inbytes, description) TO stdout;
+;COPY public.mlparted11 (b, a, c) TO stdout;
+;COPY public.mlparted12 (b, a, c) TO stdout;
+;COPY public.mlparted2 (b, a, c) TO stdout;
+;COPY public.mlparted3 (a, b, c) TO stdout;
+;COPY public.mlparted4 (b, a, c) TO stdout;
+;COPY public.mlparted_def1 (a, b, c) TO stdout;
+;COPY public.mlparted_def2 (a, b, c) TO stdout;
+;COPY public.mlparted_defd (a, b, c) TO stdout;
+;COPY public.money_data (m) TO stdout;
+;COPY public.mvtest_t (id, type, amt) TO stdout;
+;COPY public.ndistinct (filler1, filler2, a, b, filler3, c, d) TO stdout;
+;COPY public.num_data (id, val) TO stdout;
+;COPY public.num_exp_add (id1, id2, expected) TO stdout;
+;COPY public.num_exp_div (id1, id2, expected) TO stdout;
+;COPY public.num_exp_ln (id, expected) TO stdout;
+;COPY public.num_exp_log10 (id, expected) TO stdout;
+;COPY public.num_exp_mul (id1, id2, expected) TO stdout;
+;COPY public.num_exp_power_10_ln (id, expected) TO stdout;
+;COPY public.num_exp_sqrt (id, expected) TO stdout;
+;COPY public.num_exp_sub (id1, id2, expected) TO stdout;
+;COPY public.num_input_test (n1) TO stdout;
+;COPY public.num_result (id1, id2, result) TO stdout;
+;COPY public.num_typemod_test (millions, thousands, units, thousandths, millionths) TO stdout;
+;COPY public.nummultirange_test (nmr) TO stdout;
+;COPY public.numrange_test (nr) TO stdout;
+;COPY public.nv_child_2009 (d) TO stdout;
+;COPY public.nv_child_2010 (d) TO stdout;
+;COPY public.nv_child_2011 (d) TO stdout;
+;COPY public.nv_parent (d) TO stdout;
+;COPY public.onek (unique1, unique2, two, four, ten, twenty, hundred, thousand, twothousand, fivethous, tenthous, odd, even, stringu1, stringu2, string4) TO stdout;
+;COPY public.onek2 (unique1, unique2, two, four, ten, twenty, hundred, thousand, twothousand, fivethous, tenthous, odd, even, stringu1, stringu2, string4) TO stdout;
+;COPY public.pagg_tab1_p1 (x, y) TO stdout;
+;COPY public.pagg_tab1_p2 (x, y) TO stdout;
+;COPY public.pagg_tab1_p3 (x, y) TO stdout;
+;COPY public.pagg_tab2_p1 (x, y) TO stdout;
+;COPY public.pagg_tab2_p2 (x, y) TO stdout;
+;COPY public.pagg_tab2_p3 (x, y) TO stdout;
+;COPY public.pagg_tab_m_p1 (a, b, c) TO stdout;
+;COPY public.pagg_tab_m_p2 (a, b, c) TO stdout;
+;COPY public.pagg_tab_m_p3 (a, b, c) TO stdout;
+;COPY public.pagg_tab_ml_p1 (a, b, c) TO stdout;
+;COPY public.pagg_tab_ml_p2_s1 (a, b, c) TO stdout;
+;COPY public.pagg_tab_ml_p2_s2 (a, b, c) TO stdout;
+;COPY public.pagg_tab_ml_p3_s1 (c, a, b) TO stdout;
+;COPY public.pagg_tab_ml_p3_s2 (b, c, a) TO stdout;
+;COPY public.pagg_tab_p1 (a, b, c, d) TO stdout;
+;COPY public.pagg_tab_p2 (a, b, c, d) TO stdout;
+;COPY public.pagg_tab_p3 (a, b, c, d) TO stdout;
+;COPY public.pagg_tab_para_p1 (x, y) TO stdout;
+;COPY public.pagg_tab_para_p2 (x, y) TO stdout;
+;COPY public.pagg_tab_para_p3 (x, y) TO stdout;
+;COPY public.parallel_vacuum_table (a) TO stdout;
+;COPY public.part_7_a_null (a, b) TO stdout;
+;COPY public.part_p1 (a, b) TO stdout;
+;COPY public.part_p2_p1 (a, b) TO stdout;
+;COPY public.part_rev (b, a) TO stdout;
+;COPY public.part_rp (a) TO stdout;
+;COPY public.part_rp100 (a) TO stdout;
+;COPY public.partr_def2 (a, b) TO stdout;
+;COPY public.path_tbl (f1) TO stdout;
+;COPY public.perm_part_child (a) TO stdout;
+;COPY public.person (name, age, location) TO stdout;
+;COPY public.persons (id, name) TO stdout;
+;COPY public.persons2 (id, name) TO stdout;
+;COPY public.persons3 (id, name) TO stdout;
+;COPY public.pfield (name, comment) TO stdout;
+;COPY public.phone (slotname, comment, slotlink) TO stdout;
+;COPY public.pht1_e_p1 (a, b, c) TO stdout;
+;COPY public.pht1_e_p2 (a, b, c) TO stdout;
+;COPY public.pht1_e_p3 (a, b, c) TO stdout;
+;COPY public.pht1_p1 (a, b, c) TO stdout;
+;COPY public.pht1_p2 (a, b, c) TO stdout;
+;COPY public.pht1_p3 (a, b, c) TO stdout;
+;COPY public.pht2_p1 (a, b, c) TO stdout;
+;COPY public.pht2_p2 (a, b, c) TO stdout;
+;COPY public.pht2_p3 (a, b, c) TO stdout;
+;COPY public.pline (slotname, phonenumber, comment, backlink) TO stdout;
+;COPY public.plt1_e_p1 (a, b, c) TO stdout;
+;COPY public.plt1_e_p2 (a, b, c) TO stdout;
+;COPY public.plt1_e_p3 (a, b, c) TO stdout;
+;COPY public.plt1_p1 (a, b, c) TO stdout;
+;COPY public.plt1_p2 (a, b, c) TO stdout;
+;COPY public.plt1_p3 (a, b, c) TO stdout;
+;COPY public.plt2_p1 (a, b, c) TO stdout;
+;COPY public.plt2_p2 (a, b, c) TO stdout;
+;COPY public.plt2_p3 (a, b, c) TO stdout;
+;COPY public.point_tbl (f1) TO stdout;
+;COPY public.polygon_tbl (f1) TO stdout;
+;COPY public.prt1_e_p1 (a, b, c) TO stdout;
+;COPY public.prt1_e_p2 (a, b, c) TO stdout;
+;COPY public.prt1_e_p3 (a, b, c) TO stdout;
+;COPY public.prt1_l_p1 (a, b, c) TO stdout;
+;COPY public.prt1_l_p2_p1 (a, b, c) TO stdout;
+;COPY public.prt1_l_p2_p2 (a, b, c) TO stdout;
+;COPY public.prt1_l_p3_p1 (a, b, c) TO stdout;
+;COPY public.prt1_l_p3_p2 (a, b, c) TO stdout;
+;COPY public.prt1_m_p1 (a, b, c) TO stdout;
+;COPY public.prt1_m_p2 (a, b, c) TO stdout;
+;COPY public.prt1_m_p3 (a, b, c) TO stdout;
+;COPY public.prt1_n_p1 (a, b, c) TO stdout;
+;COPY public.prt1_n_p2 (a, b, c) TO stdout;
+;COPY public.prt1_p1 (a, b, c) TO stdout;
+;COPY public.prt1_p2 (a, b, c) TO stdout;
+;COPY public.prt1_p3 (a, b, c) TO stdout;
+;COPY public.prt2_e_p1 (a, b, c) TO stdout;
+;COPY public.prt2_e_p2 (a, b, c) TO stdout;
+;COPY public.prt2_e_p3 (a, b, c) TO stdout;
+;COPY public.prt2_l_p1 (a, b, c) TO stdout;
+;COPY public.prt2_l_p2_p1 (a, b, c) TO stdout;
+;COPY public.prt2_l_p2_p2 (a, b, c) TO stdout;
+;COPY public.prt2_l_p3_p1 (a, b, c) TO stdout;
+;COPY public.prt2_l_p3_p2 (a, b, c) TO stdout;
+;COPY public.prt2_m_p1 (a, b, c) TO stdout;
+;COPY public.prt2_m_p2 (a, b, c) TO stdout;
+;COPY public.prt2_m_p3 (a, b, c) TO stdout;
+;COPY public.prt2_n_p1 (a, b, c) TO stdout;
+;COPY public.prt2_n_p2 (a, b, c) TO stdout;
+;COPY public.prt2_p1 (a, b, c) TO stdout;
+;COPY public.prt2_p2 (a, b, c) TO stdout;
+;COPY public.prt2_p3 (a, b, c) TO stdout;
+;COPY public.prt3_n_p1 (a, b, c) TO stdout;
+;COPY public.prt3_n_p2 (a, b, c) TO stdout;
+;COPY public.prt3_n_p3 (a, b, c) TO stdout;
+;COPY public.prt4_n_p1 (a, b, c) TO stdout;
+;COPY public.prt4_n_p2 (a, b, c) TO stdout;
+;COPY public.prt4_n_p3 (a, b, c) TO stdout;
+;COPY public.pslot (slotname, pfname, slotlink, backlink) TO stdout;
+;COPY public.pt_part1 (a, b) TO stdout;
+;COPY public.pt_part2 (a, b) TO stdout;
+;COPY public.quad_box_tbl (id, b) TO stdout;
+;COPY public.quad_box_tbl_ord_seq1 (n, dist, id) TO stdout;
+;COPY public.quad_box_tbl_ord_seq2 (n, dist, id) TO stdout;
+;COPY public.quad_point_tbl (p) TO stdout;
+;COPY public.quad_poly_tbl (id, p) TO stdout;
+;COPY public.query (expr) TO stdout;
+;COPY public.radix_text_tbl (t) TO stdout;
+;COPY public.ramp (name, thepath) TO stdout;
+;COPY public.random_tbl (random) TO stdout;
+;COPY public.rc_test (a, b) TO stdout;
+;COPY public.real_city (pop, cname, outline) TO stdout;
+;COPY public.reloptions_test (s) TO stdout;
+;COPY public.renamecolumn (d, w) TO stdout;
+;COPY public.renamecolumnanother (d, a, c, w) TO stdout;
+;COPY public.renamecolumnchild (d, a, w) TO stdout;
+;COPY public.reservations (room_id, booked_during) TO stdout;
+;COPY public.rewritemetoo1 (a) TO stdout;
+;COPY public.rewritemetoo2 (a) TO stdout;
+;COPY public.rewritemetoo3 (a) TO stdout;
+;COPY public.road (name, thepath) TO stdout;
+;COPY public.room (roomno, comment) TO stdout;
+;COPY public.rtest_admin (pname, sysname) TO stdout;
+;COPY public.rtest_comp (part, unit, size) TO stdout;
+;COPY public.rtest_emp (ename, salary) TO stdout;
+;COPY public.rtest_emplog (ename, who, action, newsal, oldsal) TO stdout;
+;COPY public.rtest_empmass (ename, salary) TO stdout;
+;COPY public.rtest_interface (sysname, ifname) TO stdout;
+;COPY public.rtest_nothn1 (a, b) TO stdout;
+;COPY public.rtest_nothn2 (a, b) TO stdout;
+;COPY public.rtest_nothn3 (a, b) TO stdout;
+;COPY public.rtest_nothn4 (a, b) TO stdout;
+;COPY public.rtest_order1 (a) TO stdout;
+;COPY public.rtest_order2 (a, b, c) TO stdout;
+;COPY public.rtest_person (pname, pdesc) TO stdout;
+;COPY public.rtest_system (sysname, sysdesc) TO stdout;
+;COPY public.rtest_t1 (a, b) TO stdout;
+;COPY public.rtest_t2 (a, b) TO stdout;
+;COPY public.rtest_t3 (a, b) TO stdout;
+;COPY public.rtest_t4 (a, b) TO stdout;
+;COPY public.rtest_t5 (a, b) TO stdout;
+;COPY public.rtest_t6 (a, b) TO stdout;
+;COPY public.rtest_t7 (a, b) TO stdout;
+;COPY public.rtest_t8 (a, b) TO stdout;
+;COPY public.rtest_t9 (a, b) TO stdout;
+;COPY public.rtest_unitfact (unit, factor) TO stdout;
+;COPY public.rtest_view1 (a, b, v) TO stdout;
+;COPY public.rtest_view2 (a) TO stdout;
+;COPY public.rtest_view3 (a, b) TO stdout;
+;COPY public.rtest_view4 (a, b, c) TO stdout;
+;COPY public.rule_and_refint_t1 (id1a, id1b) TO stdout;
+;COPY public.rule_and_refint_t2 (id2a, id2c) TO stdout;
+;COPY public.rule_and_refint_t3 (id3a, id3b, id3c, data) TO stdout;
+;COPY public.rules_log (f1, f2, tag) TO stdout;
+;COPY public.rules_src (f1, f2) TO stdout;
+;COPY public.ruletest_tbl (a, b) TO stdout;
+;COPY public.ruletest_tbl2 (a, b) TO stdout;
+;COPY public.shiftjis2004_inputs (inbytes, description) TO stdout;
+;COPY public.shighway (name, thepath, surface) TO stdout;
+;COPY public.shoe_data (shoename, sh_avail, slcolor, slminlen, slmaxlen, slunit) TO stdout;
+;COPY public.shoelace_arrive (arr_name, arr_quant) TO stdout;
+;COPY public.shoelace_data (sl_name, sl_avail, sl_color, sl_len, sl_unit) TO stdout;
+;COPY public.shoelace_log (sl_name, sl_avail, log_who, log_when) TO stdout;
+;COPY public.shoelace_ok (ok_name, ok_quant) TO stdout;
+;COPY public.skip_wal_skip_rewrite_index (c) TO stdout;
+;COPY public.slow_emp4000 (home_base) TO stdout;
+;COPY public.spgist_box_tbl (id, b) TO stdout;
+;COPY public.spgist_domain_tbl (f1) TO stdout;
+;COPY public.spgist_point_tbl (id, p) TO stdout;
+;COPY public.spgist_text_tbl (id, t) TO stdout;
+;COPY public.stud_emp (name, age, location, salary, manager, gpa, percent) TO stdout;
+;COPY public.student (name, age, location, gpa) TO stdout;
+;COPY public.subselect_tbl (f1, f2, f3) TO stdout;
+;COPY public.system (name, comment) TO stdout;
+;COPY public.tab_core_types (point, line, lseg, box, openedpath, closedpath, polygon, circle, date, "time", "timestamp", timetz, timestamptz, "interval", json, jsonb, jsonpath, inet, cidr, macaddr8, macaddr, int2, int4, int8, float4, float8, pi, "char", bpchar, "varchar", name, text, bool, bytea, "bit", varbit, money, refcursor, int2vector, oidvector, aclitem, tsvector, tsquery, uuid, xid8, regclass, type, regrole, oid, tid, xid, cid, txid_snapshot, pg_snapshot, pg_lsn, cardinal_number, character_data, sql_identifier, time_stamp, yes_or_no, planets, insenum, int4range, int4multirange, int8range, int8multirange, float8range, float8multirange, numrange, nummultirange, textrange, textmultirange, cashrange, cashmultirange, daterange, datemultirange, tsrange, tsmultirange, tstzrange, tstzmultirange, arrayrange, arraymultirange) TO stdout;
+;COPY public.tableam_parted_a_heap2 (a, b) TO stdout;
+;COPY public.tableam_parted_b_heap2 (a, b) TO stdout;
+;COPY public.tableam_parted_c_heap2 (a, b) TO stdout;
+;COPY public.tableam_parted_d_heap2 (a, b) TO stdout;
+;COPY public.tableam_tbl_heap2 (f1) TO stdout;
+;COPY public.tableam_tblas_heap2 (f1) TO stdout;
+;COPY public.tbl_include_box (c1, c2, c3, c4) TO stdout;
+;COPY public.tbl_include_box_pk (c1, c2, c3, c4) TO stdout;
+;COPY public.tbl_include_pk (c1, c2, c3, c4) TO stdout;
+;COPY public.tbl_include_reg (c1, c2, c3, c4) TO stdout;
+;COPY public.tbl_include_unique1 (c1, c2, c3, c4) TO stdout;
+;COPY public.tbl_include_unique2 (c1, c2, c3, c4) TO stdout;
+;COPY public.tenk1 (unique1, unique2, two, four, ten, twenty, hundred, thousand, twothousand, fivethous, tenthous, odd, even, stringu1, stringu2, string4) TO stdout;
+;COPY public.tenk2 (unique1, unique2, two, four, ten, twenty, hundred, thousand, twothousand, fivethous, tenthous, odd, even, stringu1, stringu2, string4) TO stdout;
+;COPY public.test_inh_check (a, b) TO stdout;
+;COPY public.test_inh_check_child (a, b) TO stdout;
+;COPY public.test_range_excl (room, speaker, during) TO stdout;
+;COPY public.test_range_gist (ir) TO stdout;
+;COPY public.test_range_spgist (ir) TO stdout;
+;COPY public.test_storage (a, b) TO stdout;
+;COPY public.test_tablesample (id, name) TO stdout;
+;COPY public.test_tbl1 (x, y) TO stdout;
+;COPY public.test_tbl2 (aa, c) TO stdout;
+;COPY public.test_tbl3 (c) TO stdout;
+;COPY public.test_tsquery (txtkeyword, txtsample, keyword, sample) TO stdout;
+;COPY public.test_tsvector (t, a) TO stdout;
+;COPY public.test_type_diff (f1, f2) TO stdout;
+;COPY public.test_type_diff2 (int_two, int_four, int_eight) TO stdout;
+;COPY public.test_type_diff2_c1 (int_four, int_eight, int_two) TO stdout;
+;COPY public.test_type_diff2_c2 (int_eight, int_two, int_four) TO stdout;
+;COPY public.test_type_diff2_c3 (int_two, int_four, int_eight) TO stdout;
+;COPY public.test_type_diff_c (f1, extra, f2) TO stdout;
+;COPY public.testjsonb (j) TO stdout;
+;COPY public.text_tbl (f1) TO stdout;
+;COPY public.textrange_test (tr) TO stdout;
+;COPY public.thethings (stuff) TO stdout;
+;COPY public.time_tbl (f1) TO stdout;
+;COPY public.timestamp_tbl (d1) TO stdout;
+;COPY public.timestamptz_tbl (d1) TO stdout;
+;COPY public.timetz_tbl (f1) TO stdout;
+;COPY public.transition_table_base (id, val) TO stdout;
+;COPY public.transition_table_level1 (level1_no, level1_node_name) TO stdout;
+;COPY public.transition_table_level2 (level2_no, parent_no, level1_node_name) TO stdout;
+;COPY public.transition_table_status (level, node_no, status) TO stdout;
+;COPY public.trigger_parted_p1_1 (a) TO stdout;
+;COPY public.trigger_parted_p2_2 (a) TO stdout;
+;COPY public.truncate_b (id) TO stdout;
+;COPY public.tt0 (x, y) TO stdout;
+;COPY public.tt1 (x, y) TO stdout;
+;COPY public.tt2 (x, y) TO stdout;
+;COPY public.tt3 (y, x) TO stdout;
+;COPY public.tt4 (x) TO stdout;
+;COPY public.tt5 (x, y, z) TO stdout;
+;COPY public.tt6 (x, y) TO stdout;
+;COPY public.tt7 (x, y) TO stdout;
+;COPY public.undroppable_objs (object_type, object_identity) TO stdout;
+;COPY public.unit (un_name, un_fact) TO stdout;
+;COPY public.utf8_inputs (inbytes, description) TO stdout;
+;COPY public.utf8_verification_inputs (inbytes, description) TO stdout;
+;COPY public.varchar_tbl (f1) TO stdout;
+;COPY public.view_base_table (key, data) TO stdout;
+;COPY public.wslot (slotname, roomno, slotlink, backlink) TO stdout;
+;COPY public.xacttest (a, b) TO stdout;
+;COPY public.xmldata (data) TO stdout;
+;COPY public.xmltest (id, data) TO stdout;
+;COPY public.xmltest2 (x, _path) TO stdout;
+;COPY public.xy_1 (x, y) TO stdout;
+;COPY regress_indexing.pk1 (a) TO stdout;
+;COPY regress_indexing.pk2 (a) TO stdout;
+;COPY regress_indexing.pk3 (a) TO stdout;
+;COPY regress_indexing.pk4 (a) TO stdout;
+;COPY regress_indexing.pk51 (a) TO stdout;
+;COPY regress_indexing.pk52 (a) TO stdout;
+;COPY regress_rls_schema.rls_tbl (c1) TO stdout;
+;COPY regress_rls_schema.rls_tbl_force (c1) TO stdout;
+;COPY testxmlschema.test1 (a, b) TO stdout;
+;COPY testxmlschema.test2 (z, y, x, w, v, u, t, s, r, q, p, o, n, m) TO stdout;
+;COPY testxmlschema.test3 (c1, c2, c3, c4) TO stdout;
+;DECLARE bloboid CURSOR FOR SELECT oid FROM pg_largeobject_metadata ORDER BY 1
+;FETCH 1000 IN bloboid
+;select proname, oid from pg_catalog.pg_proc where proname in ('lo_open', 'lo_close', 'lo_creat', 'lo_create', 'lo_unlink', 'lo_lseek', 'lo_lseek64', 'lo_tell', 'lo_tell64', 'lo_truncate', 'lo_truncate64', 'loread', 'lowrite') and pronamespace = (select oid from pg_catalog.pg_namespace where nspname = 'pg_catalog')
+;FETCH 1000 IN bloboid
+;

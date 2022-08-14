@@ -1,0 +1,98 @@
+INSERT INTO tst_one_array (a, b) VALUES
+		(1, '{1, 2, 3}'),
+		(2, '{2, 3, 1}'),
+		(3, '{3, 2, 1}'),
+		(4, '{4, 3, 2}'),
+		(5, '{5, NULL, 3}');
+;INSERT INTO tst_arrays (a, b, c, d) VALUES
+		('{1, 2, 3}', '{"a", "b", "c"}', '{1.1, 2.2, 3.3}', '{"1 day", "2 days", "3 days"}'),
+		('{2, 3, 1}', '{"b", "c", "a"}', '{2.2, 3.3, 1.1}', '{"2 minutes", "3 minutes", "1 minute"}'),
+		('{3, 1, 2}', '{"c", "a", "b"}', '{3.3, 1.1, 2.2}', '{"3 years", "1 year", "2 years"}'),
+		('{4, 1, 2}', '{"d", "a", "b"}', '{4.4, 1.1, 2.2}', '{"4 years", "1 year", "2 years"}'),
+		('{5, NULL, NULL}', '{"e", NULL, "b"}', '{5.5, 1.1, NULL}', '{"5 years", NULL, NULL}');
+;INSERT INTO tst_one_enum (a, b) VALUES
+		(1, 'a'),
+		(2, 'b'),
+		(3, 'c'),
+		(4, 'd'),
+		(5, NULL);
+;INSERT INTO tst_enums (a, b) VALUES
+		('a', '{b, c}'),
+		('b', '{c, a}'),
+		('c', '{b, a}'),
+		('d', '{c, b}'),
+		('e', '{d, NULL}');
+;INSERT INTO tst_one_comp (a, b) VALUES
+		(1, ROW(1.0, 'a', 1)),
+		(2, ROW(2.0, 'b', 2)),
+		(3, ROW(3.0, 'c', 3)),
+		(4, ROW(4.0, 'd', 4)),
+		(5, ROW(NULL, NULL, 5));
+;INSERT INTO tst_comps (a, b) VALUES
+		(ROW(1.0, 'a', 1), ARRAY[ROW(1, 'a', 1)::tst_comp_basic_t]),
+		(ROW(2.0, 'b', 2), ARRAY[ROW(2, 'b', 2)::tst_comp_basic_t]),
+		(ROW(3.0, 'c', 3), ARRAY[ROW(3, 'c', 3)::tst_comp_basic_t]),
+		(ROW(4.0, 'd', 4), ARRAY[ROW(4, 'd', 3)::tst_comp_basic_t]),
+		(ROW(5.0, 'e', NULL), ARRAY[NULL, ROW(5, NULL, 5)::tst_comp_basic_t]);
+;INSERT INTO tst_comp_enum (a, b) VALUES
+		(1, ROW(1.0, 'a', 1)),
+		(2, ROW(2.0, 'b', 2)),
+		(3, ROW(3.0, 'c', 3)),
+		(4, ROW(4.0, 'd', 4)),
+		(5, ROW(NULL, 'e', NULL));
+;INSERT INTO tst_comp_enum_array (a, b) VALUES
+		(ROW(1.0, 'a', 1), ARRAY[ROW(1, 'a', 1)::tst_comp_enum_t]),
+		(ROW(2.0, 'b', 2), ARRAY[ROW(2, 'b', 2)::tst_comp_enum_t]),
+		(ROW(3.0, 'c', 3), ARRAY[ROW(3, 'c', 3)::tst_comp_enum_t]),
+		(ROW(4.0, 'd', 3), ARRAY[ROW(3, 'd', 3)::tst_comp_enum_t]),
+		(ROW(5.0, 'e', 3), ARRAY[ROW(3, 'e', 3)::tst_comp_enum_t, NULL]);
+;INSERT INTO tst_comp_one_enum_array (a, b) VALUES
+		(1, ROW(1.0, '{a, b, c}', 1)),
+		(2, ROW(2.0, '{a, b, c}', 2)),
+		(3, ROW(3.0, '{a, b, c}', 3)),
+		(4, ROW(4.0, '{c, b, d}', 4)),
+		(5, ROW(5.0, '{NULL, e, NULL}', 5));
+;INSERT INTO tst_comp_enum_what (a, b) VALUES
+		(ROW(1.0, '{a, b, c}', 1), ARRAY[ROW(1, '{a, b, c}', 1)::tst_comp_enum_array_t]),
+		(ROW(2.0, '{b, c, a}', 2), ARRAY[ROW(2, '{b, c, a}', 1)::tst_comp_enum_array_t]),
+		(ROW(3.0, '{c, a, b}', 1), ARRAY[ROW(3, '{c, a, b}', 1)::tst_comp_enum_array_t]),
+		(ROW(4.0, '{c, b, d}', 4), ARRAY[ROW(4, '{c, b, d}', 4)::tst_comp_enum_array_t]),
+		(ROW(5.0, '{c, NULL, b}', NULL), ARRAY[ROW(5, '{c, e, b}', 1)::tst_comp_enum_array_t]);
+;INSERT INTO tst_comp_mix_array (a, b) VALUES
+		(ROW(
+			ROW(1,'a',1),
+			ARRAY[ROW(1,'a',1)::tst_comp_basic_t, ROW(2,'b',2)::tst_comp_basic_t],
+			'a',
+			'{a,b,NULL,c}'),
+		ARRAY[
+			ROW(
+				ROW(1,'a',1),
+				ARRAY[
+					ROW(1,'a',1)::tst_comp_basic_t,
+					ROW(2,'b',2)::tst_comp_basic_t,
+					NULL
+					],
+				'a',
+				'{a,b,c}'
+				)::tst_comp_mix_t
+			]
+		);
+;INSERT INTO tst_range (a, b) VALUES
+		(1, '[1, 10]'),
+		(2, '[2, 20]'),
+		(3, '[3, 30]'),
+		(4, '[4, 40]'),
+		(5, '[5, 50]');
+;INSERT INTO tst_range_array (a, b, c) VALUES
+		(1, tstzrange('Mon Aug 04 00:00:00 2014 CEST'::timestamptz, 'infinity'), '{"[1,2]", "[10,20]"}'),
+		(2, tstzrange('Sat Aug 02 00:00:00 2014 CEST'::timestamptz, 'Mon Aug 04 00:00:00 2014 CEST'::timestamptz), '{"[2,3]", "[20,30]"}'),
+		(3, tstzrange('Fri Aug 01 00:00:00 2014 CEST'::timestamptz, 'Mon Aug 04 00:00:00 2014 CEST'::timestamptz), '{"[3,4]"}'),
+		(4, tstzrange('Thu Jul 31 00:00:00 2014 CEST'::timestamptz, 'Mon Aug 04 00:00:00 2014 CEST'::timestamptz), '{"[4,5]", NULL, "[40,50]"}'),
+		(5, NULL, NULL);
+;INSERT INTO tst_hstore (a, b) VALUES
+		(1, '"a"=>"1"'),
+		(2, '"zzz"=>"foo"'),
+		(3, '"123"=>"321"'),
+		(4, '"yellow horse"=>"moaned"');
+;INSERT INTO tst_dom_constr VALUES (10);
+;

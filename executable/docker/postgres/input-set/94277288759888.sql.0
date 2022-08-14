@@ -1,0 +1,28 @@
+CREATE ROLE regress_dump_test_role;
+;CREATE EXTENSION test_pg_dump;
+;REVOKE GRANT OPTION FOR UPDATE ON SEQUENCE
+							wgo_then_regular FROM pg_signal_backend;
+;DO $$BEGIN EXECUTE format(
+				'REVOKE ALL ON FUNCTION wgo_then_no_access()
+				 FROM pg_signal_backend, public, %I',
+				(SELECT usename
+				 FROM pg_user JOIN pg_proc ON proowner = usesysid
+				 WHERE proname = 'wgo_then_no_access')); END$$;
+;REVOKE SELECT(col1) ON regress_pg_dump_table
+						   FROM PUBLIC;
+;GRANT SELECT(col2) ON regress_pg_dump_table
+						   TO regress_dump_test_role;
+;CREATE TABLE regress_pg_dump_schema.external_tab
+						   (col1 int);
+;GRANT USAGE ON SEQUENCE regress_pg_dump_table_col1_seq
+		                   TO regress_dump_test_role;
+;SELECT nextval('regress_seq_dumpable');
+;CREATE TABLE regress_pg_dump_table_added (col1 int not null, col2 int);
+;GRANT SELECT ON regress_pg_dump_table_added TO regress_dump_test_role;
+;ALTER EXTENSION test_pg_dump ADD TABLE regress_pg_dump_table_added;
+;REVOKE SELECT ON regress_pg_dump_table_added FROM regress_dump_test_role;
+;CREATE TABLE regress_pg_dump_schema.extdependtab (col1 integer primary key, col2 int);
+;CREATE INDEX ON regress_pg_dump_schema.extdependtab (col2);
+;ALTER INDEX regress_pg_dump_schema.extdependtab_col2_idx DEPENDS ON EXTENSION test_pg_dump;
+;ALTER INDEX regress_pg_dump_schema.extdependtab_pkey DEPENDS ON EXTENSION test_pg_dump;
+;

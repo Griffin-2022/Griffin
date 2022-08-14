@@ -1,0 +1,358 @@
+/*
+ * This test is intended to pass on all platforms supported by Postgres.
+ * We can therefore only assume that the default, C, and POSIX collations
+ * are available --- and since the regression tests are often run in a
+ * C-locale database, these may well all have the same behavior.  But
+ * fortunately, the system doesn't know that and will treat them as
+ * incompatible collations.  It is therefore at least possible to test
+ * parser behaviors such as collation conflict resolution.  This test will,
+ * however, be more revealing when run in a database with non-C locale,
+ * since any departure from C sorting behavior will show as a failure.
+ */
+CREATE SCHEMA collate_tests;
+;SET search_path = collate_tests;
+;CREATE TABLE collate_test1 (
+    a int,
+    b text COLLATE "C" NOT NULL
+);
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(collate_test1)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, '', c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '24975';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '24975' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '24975' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '24975'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='24975' and pg_catalog.pg_relation_is_publishable('24975')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '24975'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('24975')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '24975'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '24975'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;CREATE TABLE collate_test_fail (
+    a int COLLATE "C",
+    b text
+);
+;CREATE TABLE collate_test_like (
+    LIKE collate_test1
+);
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(collate_test_like)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, '', c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '25170';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '25170' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '25170' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '25170'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='25170' and pg_catalog.pg_relation_is_publishable('25170')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '25170'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('25170')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '25170'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '25170'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;CREATE TABLE collate_test2 (
+    a int,
+    b text COLLATE "POSIX"
+);
+;INSERT INTO collate_test1 VALUES (1, 'abc'), (2, 'Abc'), (3, 'bbc'), (4, 'ABD');
+;INSERT INTO collate_test2 SELECT * FROM collate_test1;
+;SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc';
+;SELECT * FROM collate_test1 WHERE b >= 'abc' COLLATE "C";
+;SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc' COLLATE "C";
+;SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'bbc' COLLATE "POSIX";
+;CREATE DOMAIN testdomain_p AS text COLLATE "POSIX";
+;CREATE DOMAIN testdomain_i AS int COLLATE "POSIX";
+;CREATE TABLE collate_test4 (
+    a int,
+    b testdomain_p
+);
+;SELECT a, b FROM collate_test4 ORDER BY b;
+;CREATE TABLE collate_test5 (
+    a int,
+    b testdomain_p COLLATE "C"
+);
+;INSERT INTO collate_test5 SELECT * FROM collate_test1;
+;SELECT a, b FROM collate_test5 ORDER BY b;
+;SELECT a, b FROM collate_test1 ORDER BY b;
+;SELECT a, b FROM collate_test2 ORDER BY b;
+;SELECT a, b FROM collate_test1 ORDER BY b COLLATE "C";
+;SELECT * FROM collate_test1 ORDER BY b;
+;SELECT * FROM collate_test2 ORDER BY b;
+;SELECT 'bbc' COLLATE "C" > 'Abc' COLLATE "C" AS "true";
+;SELECT 'bbc' COLLATE "POSIX" < 'Abc' COLLATE "POSIX" AS "false";
+;CREATE TABLE collate_test10 (
+    a int,
+    x text COLLATE "C",
+    y text COLLATE "POSIX"
+);
+;INSERT INTO collate_test10 VALUES (1, 'hij', 'hij'), (2, 'HIJ', 'HIJ');
+;SELECT a, lower(x), lower(y), upper(x), upper(y), initcap(x), initcap(y) FROM collate_test10;
+;SELECT a, lower(x COLLATE "C"), lower(y COLLATE "C") FROM collate_test10;
+;SELECT a, x, y FROM collate_test10 ORDER BY lower(y), a;
+;CREATE VIEW collview1 AS SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'bbc';
+;CREATE VIEW collview2 AS SELECT a, b FROM collate_test1 ORDER BY b COLLATE "C";
+;CREATE VIEW collview3 AS SELECT a, lower((x || x) COLLATE "POSIX") FROM collate_test10;
+;SELECT table_name, view_definition FROM information_schema.views
+  WHERE table_name LIKE 'collview%' ORDER BY 1;
+;SELECT a, coalesce(b, 'foo') FROM collate_test1 ORDER BY 2;
+;SELECT a, coalesce(b, 'foo') FROM collate_test2 ORDER BY 2;
+;SELECT a, lower(coalesce(x, 'foo')), lower(coalesce(y, 'foo')) FROM collate_test10;
+;SELECT a, b, greatest(b, 'CCC') FROM collate_test1 ORDER BY 3;
+;SELECT a, b, greatest(b, 'CCC') FROM collate_test2 ORDER BY 3;
+;SELECT a, x, y, lower(greatest(x, 'foo')), lower(greatest(y, 'foo')) FROM collate_test10;
+;SELECT a, nullif(b, 'abc') FROM collate_test1 ORDER BY 2;
+;SELECT a, nullif(b, 'abc') FROM collate_test2 ORDER BY 2;
+;SELECT a, lower(nullif(x, 'foo')), lower(nullif(y, 'foo')) FROM collate_test10;
+;SELECT a, CASE b WHEN 'abc' THEN 'abcd' ELSE b END FROM collate_test1 ORDER BY 2;
+;SELECT a, CASE b WHEN 'abc' THEN 'abcd' ELSE b END FROM collate_test2 ORDER BY 2;
+;CREATE DOMAIN testdomain AS text;
+;SELECT a, b::testdomain FROM collate_test1 ORDER BY 2;
+;SELECT a, b::testdomain FROM collate_test2 ORDER BY 2;
+;SELECT a, b::testdomain_p FROM collate_test2 ORDER BY 2;
+;SELECT a, lower(x::testdomain), lower(y::testdomain) FROM collate_test10;
+;SELECT min(b), max(b) FROM collate_test1;
+;SELECT min(b), max(b) FROM collate_test2;
+;SELECT array_agg(b ORDER BY b) FROM collate_test1;
+;SELECT array_agg(b ORDER BY b) FROM collate_test2;
+;SELECT string_agg(x COLLATE "C", y COLLATE "POSIX") FROM collate_test10;
+;SELECT array_agg(x COLLATE "C" ORDER BY y COLLATE "POSIX") FROM collate_test10;
+;SELECT array_agg(a ORDER BY x COLLATE "C", y COLLATE "POSIX") FROM collate_test10;
+;SELECT array_agg(a ORDER BY x||y) FROM collate_test10;
+;SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test1 ORDER BY 2;
+;SELECT a, b FROM collate_test2 UNION SELECT a, b FROM collate_test2 ORDER BY 2;
+;SELECT a, b FROM collate_test2 WHERE a < 4 INTERSECT SELECT a, b FROM collate_test2 WHERE a > 1 ORDER BY 2;
+;SELECT a, b FROM collate_test2 EXCEPT SELECT a, b FROM collate_test2 WHERE a < 2 ORDER BY 2;
+;SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2 ORDER BY 2;
+;SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2;
+;SELECT a, b FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2;
+;SELECT a, b COLLATE "C" FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2;
+;SELECT a, b FROM collate_test1 INTERSECT SELECT a, b FROM collate_test2 ORDER BY 2;
+;SELECT a, b FROM collate_test1 EXCEPT SELECT a, b FROM collate_test2 ORDER BY 2;
+;CREATE TABLE test_u AS SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2;
+;select x < y from collate_test10;
+;select x || y from collate_test10;
+;select x, y from collate_test10 order by x || y;
+;WITH RECURSIVE foo(x) AS
+   (SELECT x FROM (VALUES('a' COLLATE "C"),('b')) t(x)
+   UNION ALL
+   SELECT (x || 'c') COLLATE "POSIX" FROM foo WHERE length(x) < 10)
+SELECT * FROM foo;
+;SELECT a, b, a < b as lt FROM
+  (VALUES ('a', 'B'), ('A', 'b' COLLATE "C")) v(a,b);
+;SELECT * FROM collate_test10 WHERE (x, y) NOT IN (SELECT y, x FROM collate_test10);
+;SELECT * FROM collate_test10 WHERE (x COLLATE "POSIX", y COLLATE "C") NOT IN (SELECT y, x FROM collate_test10);
+;SELECT * FROM collate_test10 WHERE (x, y) NOT IN (SELECT y COLLATE "C", x COLLATE "POSIX" FROM collate_test10);
+;SELECT CAST('42' AS text COLLATE "C");
+;SELECT a, CAST(b AS varchar) FROM collate_test1 ORDER BY 2;
+;SELECT a, CAST(b AS varchar) FROM collate_test2 ORDER BY 2;
+;CREATE FUNCTION vc (text) RETURNS text LANGUAGE sql
+    AS 'select $1::varchar';
+;SELECT a, b FROM collate_test1 ORDER BY a, vc(b);
+;SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test1)) ORDER BY 1;
+;SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test2)) ORDER BY 1;
+;CREATE FUNCTION dup (anyelement) RETURNS anyelement
+    AS 'select $1' LANGUAGE sql;
+;SELECT a, dup(b) FROM collate_test1 ORDER BY 2;
+;SELECT a, dup(b) FROM collate_test2 ORDER BY 2;
+;CREATE INDEX collate_test1_idx1 ON collate_test1 (b);
+;CREATE INDEX collate_test1_idx2 ON collate_test1 (b COLLATE "POSIX");
+;CREATE INDEX collate_test1_idx3 ON collate_test1 ((b COLLATE "POSIX"));
+;CREATE INDEX collate_test1_idx4 ON collate_test1 (((b||'foo') COLLATE "POSIX"));
+;CREATE INDEX collate_test1_idx5 ON collate_test1 (a COLLATE "POSIX");
+;CREATE INDEX collate_test1_idx6 ON collate_test1 ((a COLLATE "POSIX"));
+;SELECT relname, pg_get_indexdef(oid) FROM pg_class WHERE relname LIKE 'collate_test%_idx%' ORDER BY 1;
+;SET enable_seqscan TO 0;
+;SET enable_hashjoin TO 0;
+;SET enable_nestloop TO 0;
+;CREATE TABLE collate_test20 (f1 text COLLATE "C" PRIMARY KEY);
+;INSERT INTO collate_test20 VALUES ('foo'), ('bar');
+;CREATE TABLE collate_test21 (f2 text COLLATE "POSIX" REFERENCES collate_test20);
+;INSERT INTO collate_test21 VALUES ('foo'), ('bar');
+;INSERT INTO collate_test21 VALUES ('baz');
+;CREATE TABLE collate_test22 (f2 text COLLATE "POSIX");
+;INSERT INTO collate_test22 VALUES ('foo'), ('bar'), ('baz');
+;ALTER TABLE collate_test22 ADD FOREIGN KEY (f2) REFERENCES collate_test20;
+;DELETE FROM collate_test22 WHERE f2 = 'baz';
+;ALTER TABLE collate_test22 ADD FOREIGN KEY (f2) REFERENCES collate_test20;
+;RESET enable_seqscan;
+;RESET enable_hashjoin;
+;RESET enable_nestloop;
+;EXPLAIN (COSTS OFF)
+  SELECT * FROM collate_test10 ORDER BY x, y;
+;EXPLAIN (COSTS OFF)
+  SELECT * FROM collate_test10 ORDER BY x DESC, y COLLATE "C" ASC NULLS FIRST;
+;CREATE COLLATION mycoll1 FROM "C";
+;CREATE COLLATION mycoll2 ( LC_COLLATE = "POSIX", LC_CTYPE = "POSIX" );
+;CREATE COLLATION mycoll3 FROM "default";
+;DROP COLLATION mycoll1;
+;CREATE TABLE collate_test23 (f1 text collate mycoll2);
+;DROP COLLATION mycoll2;
+;CREATE COLLATION case_coll ("Lc_Collate" = "POSIX", "Lc_Ctype" = "POSIX");
+;CREATE TEMP TABLE vctable (f1 varchar(25));
+;INSERT INTO vctable VALUES ('foo' COLLATE "C");
+;SELECT collation for ('foo');
+;SELECT collation for ('foo'::text);
+;SELECT collation for ((SELECT a FROM collate_test1 LIMIT 1));
+;SELECT collation for ((SELECT b FROM collate_test1 LIMIT 1));
+;CREATE VIEW collate_on_int AS
+SELECT c1+1 AS c1p FROM
+  (SELECT ('4' COLLATE "C")::INT AS c1) ss;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(collate_on_int)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '25551';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '25551' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pg_catalog.pg_get_viewdef('25551'::pg_catalog.oid, true);
+;SELECT r.rulename, trim(trailing ';' from pg_catalog.pg_get_ruledef(r.oid, true))
+FROM pg_catalog.pg_rewrite r
+WHERE r.ev_class = '25551' AND r.rulename != '_RETURN' ORDER BY 1;
+;CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LC_COLLATE = "NONSENSE", LC_CTYPE = "POSIX");
+;CREATE COLLATION coll_dup_chk (LC_CTYPE = "POSIX", LC_CTYPE = "NONSENSE", LC_COLLATE = "POSIX");
+;CREATE COLLATION coll_dup_chk (PROVIDER = icu, PROVIDER = NONSENSE, LC_COLLATE = "POSIX", LC_CTYPE = "POSIX");
+;CREATE COLLATION case_sensitive (LOCALE = '', LOCALE = "NONSENSE");
+;CREATE COLLATION coll_dup_chk (DETERMINISTIC = TRUE, DETERMINISTIC = NONSENSE, LOCALE = '');
+;CREATE COLLATION coll_dup_chk (VERSION = '1', VERSION = "NONSENSE", LOCALE = '');
+;CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LC_CTYPE = "POSIX", LOCALE = '');
+;CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LOCALE = '');
+;CREATE COLLATION coll_dup_chk (LC_CTYPE = "POSIX", LOCALE = '');
+;CREATE COLLATION coll_dup_chk (FROM = "C", VERSION = "1");
+;DROP SCHEMA collate_tests CASCADE;
+;

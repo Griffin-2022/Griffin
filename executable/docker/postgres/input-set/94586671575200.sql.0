@@ -1,0 +1,326 @@
+CREATE TEMP TABLE x (
+	a serial,
+	b int,
+	c text not null default 'stuff',
+	d text,
+	e text
+) ;
+;CREATE FUNCTION fn_x_before () RETURNS TRIGGER AS '
+  BEGIN
+		NEW.e := ''before trigger fired''::text;
+		return NEW;
+	END;
+' LANGUAGE plpgsql;
+;CREATE FUNCTION fn_x_after () RETURNS TRIGGER AS '
+  BEGIN
+		UPDATE x set e=''after trigger fired'' where c=''stuff'';
+		return NULL;
+	END;
+' LANGUAGE plpgsql;
+;CREATE TRIGGER trg_x_after AFTER INSERT ON x
+FOR EACH ROW EXECUTE PROCEDURE fn_x_after();
+;CREATE TRIGGER trg_x_before BEFORE INSERT ON x
+FOR EACH ROW EXECUTE PROCEDURE fn_x_before();
+;COPY x (a, b, c, d, e) from stdin;
+;COPY x (b, d) from stdin;
+;COPY x (b, d) from stdin;
+;COPY x (a, b, c, d, e) from stdin;
+;COPY x (xyz) from stdin;
+;COPY x from stdin (format CSV, FORMAT CSV);
+;COPY x from stdin (freeze off, freeze on);
+;COPY x from stdin (delimiter ',', delimiter ',');
+;COPY x from stdin (null ' ', null ' ');
+;COPY x from stdin (header off, header on);
+;COPY x from stdin (quote ':', quote ':');
+;COPY x from stdin (escape ':', escape ':');
+;COPY x from stdin (force_quote (a), force_quote *);
+;COPY x from stdin (force_not_null (a), force_not_null (b));
+;COPY x from stdin (force_null (a), force_null (b));
+;COPY x from stdin (convert_selectively (a), convert_selectively (b));
+;COPY x from stdin (encoding 'sql_ascii', encoding 'sql_ascii');
+;COPY x (a, b, c, d, e, d, c) from stdin;
+;COPY x from stdin;
+;COPY x from stdin;
+;COPY x from stdin;
+;COPY x from stdin;
+;COPY x (b, c, d, e) from stdin delimiter ',' null 'x';
+;COPY x from stdin WITH DELIMITER AS ';' NULL AS '';
+;COPY x from stdin WITH DELIMITER AS ':' NULL AS E'\\X' ENCODING 'sql_ascii';
+;COPY x TO stdout WHERE a = 1;
+;COPY x from stdin WHERE a = 50004;
+;COPY x from stdin WHERE a > 60003;
+;COPY x from stdin WHERE f > 60003;
+;COPY x from stdin WHERE a = max(x.b);
+;COPY x from stdin WHERE a IN (SELECT 1 FROM x);
+;COPY x from stdin WHERE a IN (generate_series(1,5));
+;COPY x from stdin WHERE a = row_number() over(b);
+;SELECT * FROM x;
+;COPY x TO stdout;
+;COPY x (c, e) TO stdout;
+;COPY x (b, e) TO stdout WITH NULL 'I''m null';
+;CREATE TEMP TABLE y (
+	col1 text,
+	col2 text
+);
+;INSERT INTO y VALUES ('Jackson, Sam', E'\\h');
+;INSERT INTO y VALUES ('It is "perfect".',E'\t');
+;INSERT INTO y VALUES ('', NULL);
+;COPY y TO stdout WITH CSV;
+;COPY y TO stdout WITH CSV QUOTE '''' DELIMITER '|';
+;COPY y TO stdout WITH CSV FORCE QUOTE col2 ESCAPE E'\\' ENCODING 'sql_ascii';
+;COPY y TO stdout WITH CSV FORCE QUOTE *;
+;COPY y TO stdout (FORMAT CSV);
+;COPY y TO stdout (FORMAT CSV, QUOTE '''', DELIMITER '|');
+;COPY y TO stdout (FORMAT CSV, FORCE_QUOTE (col2), ESCAPE E'\\');
+;COPY y TO stdout (FORMAT CSV, FORCE_QUOTE *);
+;COPY  y TO STDOUT (FORMAT CSV)
+;COPY  y TO STDOUT (FORMAT CSV, QUOTE '''', DELIMITER '|')
+;COPY  y TO STDOUT (FORMAT CSV, FORCE_QUOTE (col2), ESCAPE E'\\')
+;COPY  y TO STDOUT (FORMAT CSV, FORCE_QUOTE *)
+;CREATE TEMP TABLE testnl (a int, b text, c int);
+;COPY testnl FROM stdin CSV;
+;CREATE TEMP TABLE testeoc (a text);
+;COPY testeoc FROM stdin CSV;
+;COPY testeoc TO stdout CSV;
+;CREATE TEMP TABLE testnull(a int, b text);
+;INSERT INTO testnull VALUES (1, E'\\0'), (NULL, NULL);
+;COPY testnull TO stdout WITH NULL AS E'\\0';
+;COPY testnull FROM stdin WITH NULL AS E'\\0';
+;SELECT * FROM testnull;
+;BEGIN;
+;CREATE TABLE vistest (LIKE testeoc);
+;COPY vistest FROM stdin CSV;
+;COMMIT;
+;SELECT * FROM vistest;
+;BEGIN;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV;
+;SELECT * FROM vistest;
+;SAVEPOINT s1;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV;
+;SELECT * FROM vistest;
+;COMMIT;
+;SELECT * FROM vistest;
+;BEGIN;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV FREEZE;
+;SELECT * FROM vistest;
+;SAVEPOINT s1;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV FREEZE;
+;SELECT * FROM vistest;
+;COMMIT;
+;SELECT * FROM vistest;
+;BEGIN;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV FREEZE;
+;SELECT * FROM vistest;
+;COMMIT;
+;TRUNCATE vistest;
+;COPY vistest FROM stdin CSV FREEZE;
+;BEGIN;
+;TRUNCATE vistest;
+;SAVEPOINT s1;
+;COPY vistest FROM stdin CSV FREEZE;
+;COMMIT;
+;BEGIN;
+;INSERT INTO vistest VALUES ('z');
+;SAVEPOINT s1;
+;TRUNCATE vistest;
+;ROLLBACK TO SAVEPOINT s1;
+;COPY vistest FROM stdin CSV FREEZE;
+;COMMIT;
+;CREATE FUNCTION truncate_in_subxact() RETURNS VOID AS
+$$
+BEGIN
+	TRUNCATE vistest;
+EXCEPTION
+  WHEN OTHERS THEN
+	INSERT INTO vistest VALUES ('subxact failure');
+END;
+$$ language plpgsql;
+;BEGIN;
+;INSERT INTO vistest VALUES ('z');
+;SELECT truncate_in_subxact();
+;COPY vistest FROM stdin CSV FREEZE;
+;SELECT * FROM vistest;
+;COMMIT;
+;SELECT * FROM vistest;
+;CREATE TEMP TABLE forcetest (
+    a INT NOT NULL,
+    b TEXT NOT NULL,
+    c TEXT,
+    d TEXT,
+    e TEXT
+);
+;BEGIN;
+;COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b), FORCE_NULL(c));
+;COMMIT;
+;SELECT b, c FROM forcetest WHERE a = 1;
+;BEGIN;
+;COPY forcetest (a, b, c, d) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(c,d), FORCE_NULL(c,d));
+;COMMIT;
+;SELECT c, d FROM forcetest WHERE a = 2;
+;BEGIN;
+;COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NULL(b), FORCE_NOT_NULL(c));
+;ROLLBACK;
+;BEGIN;
+;COPY forcetest (d, e) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b));
+;ROLLBACK;
+;BEGIN;
+;COPY forcetest (d, e) FROM STDIN WITH (FORMAT csv, FORCE_NULL(b));
+;ROLLBACK;
+;create table check_con_tbl (f1 int);
+;create function check_con_function(check_con_tbl) returns bool as $$
+begin
+  raise notice 'input = %', row_to_json($1);
+  return $1.f1 > 0;
+end $$ language plpgsql immutable;
+;alter table check_con_tbl add check (check_con_function(check_con_tbl.*));
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(check_con_tbl)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '32754';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '32754' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT r.conname, pg_catalog.pg_get_constraintdef(r.oid, true)
+FROM pg_catalog.pg_constraint r
+WHERE r.conrelid = '32754' AND r.contype = 'c'
+ORDER BY 1;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '32754' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '32754'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='32754' and pg_catalog.pg_relation_is_publishable('32754')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '32754'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('32754')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '32754'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '32754'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;copy check_con_tbl from stdin;
+;copy check_con_tbl from stdin;
+;select * from check_con_tbl;
+;CREATE ROLE regress_rls_copy_user;
+;CREATE ROLE regress_rls_copy_user_colperms;
+;CREATE TABLE rls_t1 (a int, b int, c int);
+;COPY rls_t1 (a, b, c) from stdin;
+;CREATE POLICY p1 ON rls_t1 FOR SELECT USING (a % 2 = 0);
+;ALTER TABLE rls_t1 ENABLE ROW LEVEL SECURITY;
+;ALTER TABLE rls_t1 FORCE ROW LEVEL SECURITY;
+;GRANT SELECT ON TABLE rls_t1 TO regress_rls_copy_user;
+;GRANT SELECT (a, b) ON TABLE rls_t1 TO regress_rls_copy_user_colperms;
+;COPY rls_t1 TO stdout;
+;COPY rls_t1 (a, b, c) TO stdout;
+;COPY rls_t1 (a) TO stdout;
+;COPY rls_t1 (a, b) TO stdout;
+;COPY rls_t1 (b, a) TO stdout;
+;SET SESSION AUTHORIZATION regress_rls_copy_user;
+;COPY rls_t1 TO stdout;
+;COPY rls_t1 (a, b, c) TO stdout;
+;COPY rls_t1 (a) TO stdout;
+;COPY rls_t1 (a, b) TO stdout;
+;COPY rls_t1 (b, a) TO stdout;
+;RESET SESSION AUTHORIZATION;
+;SET SESSION AUTHORIZATION regress_rls_copy_user_colperms;
+;COPY rls_t1 TO stdout;
+;COPY rls_t1 (a, b, c) TO stdout;
+;COPY rls_t1 (c) TO stdout;
+;COPY rls_t1 (a) TO stdout;
+;COPY rls_t1 (a, b) TO stdout;
+;RESET SESSION AUTHORIZATION;
+;CREATE TABLE instead_of_insert_tbl(id serial, name text);
+;CREATE VIEW instead_of_insert_tbl_view AS SELECT ''::text AS str;
+;COPY instead_of_insert_tbl_view FROM stdin;
+;CREATE FUNCTION fun_instead_of_insert_tbl() RETURNS trigger AS $$
+BEGIN
+  INSERT INTO instead_of_insert_tbl (name) VALUES (NEW.str);
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+;CREATE TRIGGER trig_instead_of_insert_tbl_view
+  INSTEAD OF INSERT ON instead_of_insert_tbl_view
+  FOR EACH ROW EXECUTE PROCEDURE fun_instead_of_insert_tbl();
+;COPY instead_of_insert_tbl_view FROM stdin;
+;SELECT * FROM instead_of_insert_tbl;
+;BEGIN;
+;CREATE VIEW instead_of_insert_tbl_view_2 as select ''::text as str;
+;CREATE TRIGGER trig_instead_of_insert_tbl_view_2
+  INSTEAD OF INSERT ON instead_of_insert_tbl_view_2
+  FOR EACH ROW EXECUTE PROCEDURE fun_instead_of_insert_tbl();
+;COPY instead_of_insert_tbl_view_2 FROM stdin;
+;SELECT * FROM instead_of_insert_tbl;
+;COMMIT;
+;DROP TABLE forcetest;
+;DROP TABLE vistest;
+;DROP FUNCTION truncate_in_subxact();
+;DROP TABLE x, y;
+;DROP TABLE rls_t1 CASCADE;
+;DROP ROLE regress_rls_copy_user;
+;DROP ROLE regress_rls_copy_user_colperms;
+;DROP FUNCTION fn_x_before();
+;DROP FUNCTION fn_x_after();
+;DROP TABLE instead_of_insert_tbl;
+;DROP VIEW instead_of_insert_tbl_view;
+;DROP VIEW instead_of_insert_tbl_view_2;
+;DROP FUNCTION fun_instead_of_insert_tbl();
+;

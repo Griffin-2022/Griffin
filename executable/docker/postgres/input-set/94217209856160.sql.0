@@ -1,0 +1,1318 @@
+CREATE ROLE regress_publication_user LOGIN SUPERUSER;
+;CREATE ROLE regress_publication_user2;
+;CREATE ROLE regress_publication_user_dummy LOGIN NOSUPERUSER;
+;SET SESSION AUTHORIZATION 'regress_publication_user';
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_default;
+;RESET client_min_messages;
+;COMMENT ON PUBLICATION testpub_default IS 'test publication';
+;SELECT obj_description(p.oid, 'pg_publication') FROM pg_publication p;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpib_ins_trunct WITH (publish = insert);
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub_default SET (publish = update);
+;CREATE PUBLICATION testpub_xxx WITH (foo);
+;CREATE PUBLICATION testpub_xxx WITH (publish = 'cluster, vacuum');
+;CREATE PUBLICATION testpub_xxx WITH (publish_via_partition_root = 'true', publish_via_partition_root = '0');
+;SELECT pubname AS "Name",
+  pg_catalog.pg_get_userbyid(pubowner) AS "Owner",
+  puballtables AS "All tables",
+  pubinsert AS "Inserts",
+  pubupdate AS "Updates",
+  pubdelete AS "Deletes",
+  pubtruncate AS "Truncates",
+  pubviaroot AS "Via root"
+FROM pg_catalog.pg_publication
+ORDER BY 1;
+;ALTER PUBLICATION testpub_default SET (publish = 'insert, update, delete');
+;SELECT pubname AS "Name",
+  pg_catalog.pg_get_userbyid(pubowner) AS "Owner",
+  puballtables AS "All tables",
+  pubinsert AS "Inserts",
+  pubupdate AS "Updates",
+  pubdelete AS "Deletes",
+  pubtruncate AS "Truncates",
+  pubviaroot AS "Via root"
+FROM pg_catalog.pg_publication
+ORDER BY 1;
+;CREATE SCHEMA pub_test;
+;CREATE TABLE testpub_tbl1 (id serial primary key, data text);
+;CREATE TABLE pub_test.testpub_nopk (foo int, bar int);
+;CREATE VIEW testpub_view AS SELECT 1;
+;CREATE TABLE testpub_parted (a int) PARTITION BY LIST (a);
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_foralltables FOR ALL TABLES WITH (publish = 'insert');
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub_foralltables SET (publish = 'insert, update');
+;CREATE TABLE testpub_tbl2 (id serial primary key, data text);
+;ALTER PUBLICATION testpub_foralltables ADD TABLE testpub_tbl2;
+;ALTER PUBLICATION testpub_foralltables DROP TABLE testpub_tbl2;
+;ALTER PUBLICATION testpub_foralltables SET TABLE pub_test.testpub_nopk;
+;ALTER PUBLICATION testpub_foralltables ADD ALL TABLES IN SCHEMA pub_test;
+;ALTER PUBLICATION testpub_foralltables DROP ALL TABLES IN SCHEMA pub_test;
+;ALTER PUBLICATION testpub_foralltables SET ALL TABLES IN SCHEMA pub_test;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_fortable FOR TABLE testpub_tbl1;
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub_fortable ADD ALL TABLES IN SCHEMA pub_test;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortable)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28466'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28466'
+ORDER BY 1
+;ALTER PUBLICATION testpub_fortable DROP ALL TABLES IN SCHEMA pub_test;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortable)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28466'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28466'
+ORDER BY 1
+;ALTER PUBLICATION testpub_fortable SET ALL TABLES IN SCHEMA pub_test;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortable)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28466'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28466'
+ORDER BY 1
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_forschema FOR ALL TABLES IN SCHEMA pub_test;
+;RESET client_min_messages;
+;CREATE PUBLICATION testpub_for_tbl_schema FOR ALL TABLES IN SCHEMA pub_test, TABLE pub_test.testpub_nopk;
+;ALTER PUBLICATION testpub_forschema ADD TABLE pub_test.testpub_nopk;
+;ALTER PUBLICATION testpub_forschema DROP TABLE pub_test.testpub_nopk;
+;ALTER PUBLICATION testpub_forschema SET TABLE pub_test.testpub_nopk;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28472'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28472'
+ORDER BY 1
+;SELECT pubname, puballtables FROM pg_publication WHERE pubname = 'testpub_foralltables';
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(testpub_tbl2)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '28457';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '28457' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT c2.relname, i.indisprimary, i.indisunique, i.indisclustered, i.indisvalid, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true),
+  pg_catalog.pg_get_constraintdef(con.oid, true), contype, condeferrable, condeferred, i.indisreplident, c2.reltablespace
+FROM pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_index i
+  LEFT JOIN pg_catalog.pg_constraint con ON (conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x'))
+WHERE c.oid = '28457' AND c.oid = i.indrelid AND i.indexrelid = c2.oid
+ORDER BY i.indisprimary DESC, c2.relname;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '28457' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '28457'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='28457' and pg_catalog.pg_relation_is_publishable('28457')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '28457'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('28457')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '28457'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '28457'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_foralltables)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;DROP TABLE testpub_tbl2;
+;DROP PUBLICATION testpub_foralltables, testpub_fortable, testpub_forschema;
+;CREATE TABLE testpub_tbl3 (a int);
+;CREATE TABLE testpub_tbl3a (b text) INHERITS (testpub_tbl3);
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub3 FOR TABLE testpub_tbl3;
+;CREATE PUBLICATION testpub4 FOR TABLE ONLY testpub_tbl3;
+;RESET client_min_messages;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub3)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28485'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28485'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub4)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28489'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28489'
+ORDER BY 1
+;DROP TABLE testpub_tbl3, testpub_tbl3a;
+;DROP PUBLICATION testpub3, testpub4;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_forparted;
+;CREATE PUBLICATION testpub_forparted1;
+;RESET client_min_messages;
+;CREATE TABLE testpub_parted1 (LIKE testpub_parted);
+;CREATE TABLE testpub_parted2 (LIKE testpub_parted);
+;ALTER PUBLICATION testpub_forparted1 SET (publish='insert');
+;ALTER TABLE testpub_parted ATTACH PARTITION testpub_parted1 FOR VALUES IN (1);
+;ALTER TABLE testpub_parted ATTACH PARTITION testpub_parted2 FOR VALUES IN (2);
+;UPDATE testpub_parted1 SET a = 1;
+;ALTER PUBLICATION testpub_forparted ADD TABLE testpub_parted;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_forparted)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28491'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28491'
+ORDER BY 1
+;UPDATE testpub_parted1 SET a = 1;
+;ALTER TABLE testpub_parted DETACH PARTITION testpub_parted1;
+;UPDATE testpub_parted1 SET a = 1;
+;ALTER PUBLICATION testpub_forparted SET (publish_via_partition_root = true);
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_forparted)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28491'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28491'
+ORDER BY 1
+;UPDATE testpub_parted2 SET a = 2;
+;ALTER PUBLICATION testpub_forparted DROP TABLE testpub_parted;
+;UPDATE testpub_parted2 SET a = 2;
+;DROP TABLE testpub_parted1, testpub_parted2;
+;DROP PUBLICATION testpub_forparted, testpub_forparted1;
+;SET client_min_messages = 'ERROR';
+;CREATE TABLE testpub_tbl4(a int);
+;INSERT INTO testpub_tbl4 values(1);
+;UPDATE testpub_tbl4 set a = 2;
+;CREATE PUBLICATION testpub_foralltables FOR ALL TABLES;
+;RESET client_min_messages;
+;UPDATE testpub_tbl4 set a = 3;
+;DROP PUBLICATION testpub_foralltables;
+;UPDATE testpub_tbl4 set a = 3;
+;DROP TABLE testpub_tbl4;
+;CREATE PUBLICATION testpub_fortbl FOR TABLE testpub_view;
+;CREATE TEMPORARY TABLE testpub_temptbl(a int);
+;CREATE PUBLICATION testpub_fortemptbl FOR TABLE testpub_temptbl;
+;DROP TABLE testpub_temptbl;
+;CREATE UNLOGGED TABLE testpub_unloggedtbl(a int);
+;CREATE PUBLICATION testpub_forunloggedtbl FOR TABLE testpub_unloggedtbl;
+;DROP TABLE testpub_unloggedtbl;
+;CREATE PUBLICATION testpub_forsystemtbl FOR TABLE pg_publication;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_fortbl FOR TABLE testpub_tbl1, pub_test.testpub_nopk;
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub_fortbl ADD TABLE testpub_tbl1;
+;CREATE PUBLICATION testpub_fortbl FOR TABLE testpub_tbl1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortbl)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28514'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28514'
+ORDER BY 1
+;ALTER PUBLICATION testpub_default ADD TABLE testpub_view;
+;ALTER PUBLICATION testpub_default ADD TABLE testpub_tbl1;
+;ALTER PUBLICATION testpub_default SET TABLE testpub_tbl1;
+;ALTER PUBLICATION testpub_default ADD TABLE pub_test.testpub_nopk;
+;ALTER PUBLICATION testpib_ins_trunct ADD TABLE pub_test.testpub_nopk, testpub_tbl1;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(testpub_nopk)$' COLLATE pg_catalog.default
+  AND n.nspname OPERATOR(pg_catalog.~) '^(pub_test)$' COLLATE pg_catalog.default
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '28444';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '28444' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '28444' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '28444'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='28444' and pg_catalog.pg_relation_is_publishable('28444')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '28444'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('28444')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '28444'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '28444'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(testpub_tbl1)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '28436';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '28436' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT c2.relname, i.indisprimary, i.indisunique, i.indisclustered, i.indisvalid, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true),
+  pg_catalog.pg_get_constraintdef(con.oid, true), contype, condeferrable, condeferred, i.indisreplident, c2.reltablespace
+FROM pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_index i
+  LEFT JOIN pg_catalog.pg_constraint con ON (conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x'))
+WHERE c.oid = '28436' AND c.oid = i.indrelid AND i.indexrelid = c2.oid
+ORDER BY i.indisprimary DESC, c2.relname;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '28436' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '28436'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='28436' and pg_catalog.pg_relation_is_publishable('28436')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '28436'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('28436')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '28436'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '28436'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_default)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28429'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28429'
+ORDER BY 1
+;ALTER PUBLICATION testpub_default DROP TABLE testpub_tbl1, pub_test.testpub_nopk;
+;ALTER PUBLICATION testpub_default DROP TABLE pub_test.testpub_nopk;
+;SELECT c.oid,
+  n.nspname,
+  c.relname
+FROM pg_catalog.pg_class c
+     LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relname OPERATOR(pg_catalog.~) '^(testpub_tbl1)$' COLLATE pg_catalog.default
+  AND pg_catalog.pg_table_is_visible(c.oid)
+ORDER BY 2, 3;
+;SELECT c.relchecks, c.relkind, c.relhasindex, c.relhasrules, c.relhastriggers, c.relrowsecurity, c.relforcerowsecurity, false AS relhasoids, c.relispartition, pg_catalog.array_to_string(c.reloptions || array(select 'toast.' || x from pg_catalog.unnest(tc.reloptions) x), ', ')
+, c.reltablespace, CASE WHEN c.reloftype = 0 THEN '' ELSE c.reloftype::pg_catalog.regtype::pg_catalog.text END, c.relpersistence, c.relreplident, am.amname
+FROM pg_catalog.pg_class c
+ LEFT JOIN pg_catalog.pg_class tc ON (c.reltoastrelid = tc.oid)
+LEFT JOIN pg_catalog.pg_am am ON (c.relam = am.oid)
+WHERE c.oid = '28436';
+;SELECT a.attname,
+  pg_catalog.format_type(a.atttypid, a.atttypmod),
+  (SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid, true)
+   FROM pg_catalog.pg_attrdef d
+   WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum AND a.atthasdef),
+  a.attnotnull,
+  (SELECT c.collname FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
+   WHERE c.oid = a.attcollation AND t.oid = a.atttypid AND a.attcollation <> t.typcollation) AS attcollation,
+  a.attidentity,
+  a.attgenerated,
+  a.attstorage,
+  CASE WHEN a.attstattarget=-1 THEN NULL ELSE a.attstattarget END AS attstattarget,
+  pg_catalog.col_description(a.attrelid, a.attnum)
+FROM pg_catalog.pg_attribute a
+WHERE a.attrelid = '28436' AND a.attnum > 0 AND NOT a.attisdropped
+ORDER BY a.attnum;
+;SELECT c2.relname, i.indisprimary, i.indisunique, i.indisclustered, i.indisvalid, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true),
+  pg_catalog.pg_get_constraintdef(con.oid, true), contype, condeferrable, condeferred, i.indisreplident, c2.reltablespace
+FROM pg_catalog.pg_class c, pg_catalog.pg_class c2, pg_catalog.pg_index i
+  LEFT JOIN pg_catalog.pg_constraint con ON (conrelid = i.indrelid AND conindid = i.indexrelid AND contype IN ('p','u','x'))
+WHERE c.oid = '28436' AND c.oid = i.indrelid AND i.indexrelid = c2.oid
+ORDER BY i.indisprimary DESC, c2.relname;
+;SELECT pol.polname, pol.polpermissive,
+  CASE WHEN pol.polroles = '{0}' THEN NULL ELSE pg_catalog.array_to_string(array(select rolname from pg_catalog.pg_roles where oid = any (pol.polroles) order by 1),',') END,
+  pg_catalog.pg_get_expr(pol.polqual, pol.polrelid),
+  pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid),
+  CASE pol.polcmd
+    WHEN 'r' THEN 'SELECT'
+    WHEN 'a' THEN 'INSERT'
+    WHEN 'w' THEN 'UPDATE'
+    WHEN 'd' THEN 'DELETE'
+    END AS cmd
+FROM pg_catalog.pg_policy pol
+WHERE pol.polrelid = '28436' ORDER BY 1;
+;SELECT oid, stxrelid::pg_catalog.regclass, stxnamespace::pg_catalog.regnamespace::pg_catalog.text AS nsp, stxname,
+pg_catalog.pg_get_statisticsobjdef_columns(oid) AS columns,
+  'd' = any(stxkind) AS ndist_enabled,
+  'f' = any(stxkind) AS deps_enabled,
+  'm' = any(stxkind) AS mcv_enabled,
+stxstattarget
+FROM pg_catalog.pg_statistic_ext
+WHERE stxrelid = '28436'
+ORDER BY nsp, stxname;
+;SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_namespace pn ON p.oid = pn.pnpubid
+		JOIN pg_catalog.pg_class pc ON pc.relnamespace = pn.pnnspid
+WHERE pc.oid ='28436' and pg_catalog.pg_relation_is_publishable('28436')
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+		JOIN pg_catalog.pg_publication_rel pr ON p.oid = pr.prpubid
+WHERE pr.prrelid = '28436'
+UNION
+SELECT pubname
+FROM pg_catalog.pg_publication p
+WHERE p.puballtables AND pg_catalog.pg_relation_is_publishable('28436')
+ORDER BY 1;
+;SELECT c.oid::pg_catalog.regclass
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhparent AND i.inhrelid = '28436'
+  AND c.relkind != 'p' AND c.relkind != 'I'
+ORDER BY inhseqno;
+;SELECT c.oid::pg_catalog.regclass, c.relkind, inhdetachpending, pg_catalog.pg_get_expr(c.relpartbound, c.oid)
+FROM pg_catalog.pg_class c, pg_catalog.pg_inherits i
+WHERE c.oid = i.inhrelid AND i.inhparent = '28436'
+ORDER BY pg_catalog.pg_get_expr(c.relpartbound, c.oid) = 'DEFAULT', c.oid::pg_catalog.regclass::pg_catalog.text;
+;CREATE TABLE pub_test.testpub_addpk (id int not null, data int);
+;ALTER PUBLICATION testpub_default ADD TABLE pub_test.testpub_addpk;
+;INSERT INTO pub_test.testpub_addpk VALUES(1, 11);
+;CREATE UNIQUE INDEX testpub_addpk_id_idx ON pub_test.testpub_addpk(id);
+;UPDATE pub_test.testpub_addpk SET id = 2;
+;ALTER TABLE pub_test.testpub_addpk ADD PRIMARY KEY USING INDEX testpub_addpk_id_idx;
+;UPDATE pub_test.testpub_addpk SET id = 2;
+;DROP TABLE pub_test.testpub_addpk;
+;SET ROLE regress_publication_user2;
+;CREATE PUBLICATION testpub2;
+;SET ROLE regress_publication_user;
+;GRANT CREATE ON DATABASE regression TO regress_publication_user2;
+;SET ROLE regress_publication_user2;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub2;
+;CREATE PUBLICATION testpub3 FOR ALL TABLES IN SCHEMA pub_test;
+;CREATE PUBLICATION testpub3;
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub2 ADD TABLE testpub_tbl1;
+;ALTER PUBLICATION testpub3 ADD ALL TABLES IN SCHEMA pub_test;
+;SET ROLE regress_publication_user;
+;GRANT regress_publication_user TO regress_publication_user2;
+;SET ROLE regress_publication_user2;
+;ALTER PUBLICATION testpub2 ADD TABLE testpub_tbl1;
+;DROP PUBLICATION testpub2;
+;DROP PUBLICATION testpub3;
+;SET ROLE regress_publication_user;
+;CREATE ROLE regress_publication_user3;
+;GRANT regress_publication_user2 TO regress_publication_user3;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub4 FOR ALL TABLES IN SCHEMA pub_test;
+;RESET client_min_messages;
+;ALTER PUBLICATION testpub4 OWNER TO regress_publication_user3;
+;SET ROLE regress_publication_user3;
+;ALTER PUBLICATION testpub4 owner to regress_publication_user2;
+;ALTER PUBLICATION testpub4 owner to regress_publication_user;
+;SET ROLE regress_publication_user;
+;DROP PUBLICATION testpub4;
+;DROP ROLE regress_publication_user3;
+;REVOKE CREATE ON DATABASE regression FROM regress_publication_user2;
+;DROP TABLE testpub_parted;
+;DROP TABLE testpub_tbl1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_default)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28429'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28429'
+ORDER BY 1
+;SET ROLE regress_publication_user_dummy;
+;ALTER PUBLICATION testpub_default RENAME TO testpub_dummy;
+;RESET ROLE;
+;ALTER PUBLICATION testpub_default RENAME TO testpub_foo;
+;SELECT pubname AS "Name",
+  pg_catalog.pg_get_userbyid(pubowner) AS "Owner",
+  puballtables AS "All tables",
+  pubinsert AS "Inserts",
+  pubupdate AS "Updates",
+  pubdelete AS "Deletes",
+  pubtruncate AS "Truncates",
+  pubviaroot AS "Via root"
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_foo)$' COLLATE pg_catalog.default
+ORDER BY 1;
+;ALTER PUBLICATION testpub_foo RENAME TO testpub_default;
+;ALTER PUBLICATION testpub_default OWNER TO regress_publication_user2;
+;SELECT pubname AS "Name",
+  pg_catalog.pg_get_userbyid(pubowner) AS "Owner",
+  puballtables AS "All tables",
+  pubinsert AS "Inserts",
+  pubupdate AS "Updates",
+  pubdelete AS "Deletes",
+  pubtruncate AS "Truncates",
+  pubviaroot AS "Via root"
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_default)$' COLLATE pg_catalog.default
+ORDER BY 1;
+;CREATE SCHEMA pub_test1;
+;CREATE SCHEMA pub_test2;
+;CREATE SCHEMA pub_test3;
+;CREATE SCHEMA "CURRENT_SCHEMA";
+;CREATE TABLE pub_test1.tbl (id int, data text);
+;CREATE TABLE pub_test1.tbl1 (id serial primary key, data text);
+;CREATE TABLE pub_test2.tbl1 (id serial primary key, data text);
+;CREATE TABLE "CURRENT_SCHEMA"."CURRENT_SCHEMA"(id int);
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub1_forschema FOR ALL TABLES IN SCHEMA pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;CREATE PUBLICATION testpub2_forschema FOR ALL TABLES IN SCHEMA pub_test1, pub_test2, pub_test3;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub2_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28566'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28566'
+ORDER BY 1
+;CREATE PUBLICATION testpub3_forschema FOR ALL TABLES IN SCHEMA CURRENT_SCHEMA;
+;CREATE PUBLICATION testpub4_forschema FOR ALL TABLES IN SCHEMA "CURRENT_SCHEMA";
+;CREATE PUBLICATION testpub5_forschema FOR ALL TABLES IN SCHEMA CURRENT_SCHEMA, "CURRENT_SCHEMA";
+;CREATE PUBLICATION testpub6_forschema FOR ALL TABLES IN SCHEMA "CURRENT_SCHEMA", CURRENT_SCHEMA;
+;CREATE PUBLICATION testpub_fortable FOR TABLE "CURRENT_SCHEMA"."CURRENT_SCHEMA";
+;RESET client_min_messages;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub3_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28570'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28570'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub4_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28572'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28572'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub5_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28574'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28574'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub6_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28577'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28577'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortable)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28580'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28580'
+ORDER BY 1
+;SET SEARCH_PATH='';
+;CREATE PUBLICATION testpub_forschema FOR ALL TABLES IN SCHEMA CURRENT_SCHEMA;
+;RESET SEARCH_PATH;
+;CREATE PUBLICATION testpub_forschema1 FOR CURRENT_SCHEMA;
+;CREATE PUBLICATION testpub_forschema1 FOR TABLE CURRENT_SCHEMA;
+;CREATE PUBLICATION testpub_forschema FOR ALL TABLES IN SCHEMA non_existent_schema;
+;CREATE PUBLICATION testpub_forschema FOR ALL TABLES IN SCHEMA pg_catalog;
+;CREATE PUBLICATION testpub1_forschema1 FOR ALL TABLES IN SCHEMA testpub_view;
+;DROP SCHEMA pub_test3;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub2_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28566'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28566'
+ORDER BY 1
+;ALTER SCHEMA pub_test1 RENAME to pub_test1_renamed;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub2_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28566'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28566'
+ORDER BY 1
+;ALTER SCHEMA pub_test1_renamed RENAME to pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub2_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28566'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28566'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema ADD ALL TABLES IN SCHEMA pub_test2;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema ADD ALL TABLES IN SCHEMA non_existent_schema;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema ADD ALL TABLES IN SCHEMA pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema DROP ALL TABLES IN SCHEMA pub_test2;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema DROP ALL TABLES IN SCHEMA pub_test2;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema DROP ALL TABLES IN SCHEMA non_existent_schema;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema DROP ALL TABLES IN SCHEMA pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema SET ALL TABLES IN SCHEMA pub_test1, pub_test2;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema SET ALL TABLES IN SCHEMA non_existent_schema;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub1_forschema SET ALL TABLES IN SCHEMA pub_test1, pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub1_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28564'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28564'
+ORDER BY 1
+;ALTER PUBLICATION testpub2_forschema DROP ALL TABLES IN SCHEMA pub_test1;
+;DROP PUBLICATION testpub3_forschema, testpub4_forschema, testpub5_forschema, testpub6_forschema, testpub_fortable;
+;DROP SCHEMA "CURRENT_SCHEMA" CASCADE;
+;INSERT INTO pub_test1.tbl VALUES(1, 'test');
+;UPDATE pub_test1.tbl SET id = 2;
+;ALTER PUBLICATION testpub1_forschema DROP ALL TABLES IN SCHEMA pub_test1;
+;UPDATE pub_test1.tbl SET id = 2;
+;ALTER PUBLICATION testpub1_forschema SET ALL TABLES IN SCHEMA pub_test1;
+;UPDATE pub_test1.tbl SET id = 2;
+;CREATE SCHEMA pub_testpart1;
+;CREATE SCHEMA pub_testpart2;
+;CREATE TABLE pub_testpart1.parent1 (a int) partition by list (a);
+;CREATE TABLE pub_testpart2.child_parent1 partition of pub_testpart1.parent1 for values in (1);
+;INSERT INTO pub_testpart2.child_parent1 values(1);
+;UPDATE pub_testpart2.child_parent1 set a = 1;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpubpart_forschema FOR ALL TABLES IN SCHEMA pub_testpart1;
+;RESET client_min_messages;
+;UPDATE pub_testpart1.parent1 set a = 1;
+;UPDATE pub_testpart2.child_parent1 set a = 1;
+;DROP PUBLICATION testpubpart_forschema;
+;CREATE TABLE pub_testpart2.parent2 (a int) partition by list (a);
+;CREATE TABLE pub_testpart1.child_parent2 partition of pub_testpart2.parent2 for values in (1);
+;INSERT INTO pub_testpart1.child_parent2 values(1);
+;UPDATE pub_testpart1.child_parent2 set a = 1;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpubpart_forschema FOR ALL TABLES IN SCHEMA pub_testpart2;
+;RESET client_min_messages;
+;UPDATE pub_testpart2.child_parent1 set a = 1;
+;UPDATE pub_testpart2.parent2 set a = 1;
+;UPDATE pub_testpart1.child_parent2 set a = 1;
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub3_forschema;
+;RESET client_min_messages;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub3_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28608'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28608'
+ORDER BY 1
+;ALTER PUBLICATION testpub3_forschema SET ALL TABLES IN SCHEMA pub_test1;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub3_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28608'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28608'
+ORDER BY 1
+;SET client_min_messages = 'ERROR';
+;CREATE PUBLICATION testpub_forschema_fortable FOR ALL TABLES IN SCHEMA pub_test1, TABLE pub_test2.tbl1;
+;CREATE PUBLICATION testpub_fortable_forschema FOR TABLE pub_test2.tbl1, ALL TABLES IN SCHEMA pub_test1;
+;RESET client_min_messages;
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_forschema_fortable)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28610'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28610'
+ORDER BY 1
+;SELECT oid, pubname,
+  pg_catalog.pg_get_userbyid(pubowner) AS owner,
+  puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot
+FROM pg_catalog.pg_publication
+WHERE pubname OPERATOR(pg_catalog.~) '^(testpub_fortable_forschema)$' COLLATE pg_catalog.default
+ORDER BY 2;
+;SELECT n.nspname, c.relname
+FROM pg_catalog.pg_class c,
+     pg_catalog.pg_namespace n,
+     pg_catalog.pg_publication_rel pr
+WHERE c.relnamespace = n.oid
+  AND c.oid = pr.prrelid
+  AND pr.prpubid = '28613'
+ORDER BY 1,2
+;SELECT n.nspname
+FROM pg_catalog.pg_namespace n
+     JOIN pg_catalog.pg_publication_namespace pn ON n.oid = pn.pnnspid
+WHERE pn.pnpubid = '28613'
+ORDER BY 1
+;CREATE PUBLICATION testpub_error FOR pub_test2.tbl1;
+;DROP VIEW testpub_view;
+;DROP PUBLICATION testpub_default;
+;DROP PUBLICATION testpib_ins_trunct;
+;DROP PUBLICATION testpub_fortbl;
+;DROP PUBLICATION testpub1_forschema;
+;DROP PUBLICATION testpub2_forschema;
+;DROP PUBLICATION testpub3_forschema;
+;DROP PUBLICATION testpub_forschema_fortable;
+;DROP PUBLICATION testpub_fortable_forschema;
+;DROP PUBLICATION testpubpart_forschema;
+;DROP SCHEMA pub_test CASCADE;
+;DROP SCHEMA pub_test1 CASCADE;
+;DROP SCHEMA pub_test2 CASCADE;
+;DROP SCHEMA pub_testpart1 CASCADE;
+;DROP SCHEMA pub_testpart2 CASCADE;
+;SET client_min_messages = 'ERROR';
+;CREATE SCHEMA sch1;
+;CREATE SCHEMA sch2;
+;CREATE TABLE sch1.tbl1 (a int) PARTITION BY RANGE(a);
+;CREATE TABLE sch2.tbl1_part1 PARTITION OF sch1.tbl1 FOR VALUES FROM (1) to (10);
+;CREATE PUBLICATION pub FOR ALL TABLES IN SCHEMA sch2 WITH (PUBLISH_VIA_PARTITION_ROOT=1);
+;SELECT * FROM pg_publication_tables;
+;DROP PUBLICATION pub;
+;CREATE PUBLICATION pub FOR TABLE sch2.tbl1_part1 WITH (PUBLISH_VIA_PARTITION_ROOT=1);
+;SELECT * FROM pg_publication_tables;
+;ALTER PUBLICATION pub ADD TABLE sch1.tbl1;
+;SELECT * FROM pg_publication_tables;
+;DROP PUBLICATION pub;
+;CREATE PUBLICATION pub FOR ALL TABLES IN SCHEMA sch2 WITH (PUBLISH_VIA_PARTITION_ROOT=0);
+;SELECT * FROM pg_publication_tables;
+;DROP PUBLICATION pub;
+;CREATE PUBLICATION pub FOR TABLE sch2.tbl1_part1 WITH (PUBLISH_VIA_PARTITION_ROOT=0);
+;SELECT * FROM pg_publication_tables;
+;ALTER PUBLICATION pub ADD TABLE sch1.tbl1;
+;SELECT * FROM pg_publication_tables;
+;DROP PUBLICATION pub;
+;DROP TABLE sch2.tbl1_part1;
+;DROP TABLE sch1.tbl1;
+;CREATE TABLE sch1.tbl1 (a int) PARTITION BY RANGE(a);
+;CREATE TABLE sch1.tbl1_part1 PARTITION OF sch1.tbl1 FOR VALUES FROM (1) to (10);
+;CREATE TABLE sch1.tbl1_part2 PARTITION OF sch1.tbl1 FOR VALUES FROM (10) to (20);
+;CREATE TABLE sch1.tbl1_part3 (a int) PARTITION BY RANGE(a);
+;ALTER TABLE sch1.tbl1 ATTACH PARTITION sch1.tbl1_part3 FOR VALUES FROM (20) to (30);
+;CREATE PUBLICATION pub FOR ALL TABLES IN SCHEMA sch1 WITH (PUBLISH_VIA_PARTITION_ROOT=1);
+;SELECT * FROM pg_publication_tables;
+;RESET client_min_messages;
+;DROP PUBLICATION pub;
+;DROP TABLE sch1.tbl1;
+;DROP SCHEMA sch1 cascade;
+;DROP SCHEMA sch2 cascade;
+;RESET SESSION AUTHORIZATION;
+;DROP ROLE regress_publication_user, regress_publication_user2;
+;DROP ROLE regress_publication_user_dummy;
+;

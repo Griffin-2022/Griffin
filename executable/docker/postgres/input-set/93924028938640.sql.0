@@ -1,0 +1,232 @@
+SELECT pg_catalog.set_config('search_path', '', false);
+;SELECT pg_catalog.pg_is_in_recovery()
+;SELECT pg_catalog.set_config('search_path', '', false);
+;SET DATESTYLE = ISO
+;SET INTERVALSTYLE = POSTGRES
+;SET extra_float_digits TO 3
+;SET synchronize_seqscans TO off
+;SET statement_timeout = 0
+;SET lock_timeout = 0
+;SET idle_in_transaction_session_timeout = 0
+;SET row_security = off
+;BEGIN
+;SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY
+;SELECT oid, rolname FROM pg_catalog.pg_roles ORDER BY 1
+;SELECT x.tableoid, x.oid, x.extname, n.nspname, x.extrelocatable, x.extversion, x.extconfig, x.extcondition FROM pg_extension x JOIN pg_namespace n ON n.oid = x.extnamespace
+;SELECT classid, objid, refobjid FROM pg_depend WHERE refclassid = 'pg_extension'::regclass AND deptype = 'e' ORDER BY 3
+;SELECT n.tableoid, n.oid, n.nspname, n.nspowner, n.nspacl, acldefault('n', n.nspowner) AS acldefault FROM pg_namespace n
+;SELECT c.tableoid, c.oid, c.relname, c.relnamespace, c.relkind, c.reltype, c.relowner, c.relchecks, c.relhasindex, c.relhasrules, c.relpages, c.relhastriggers, c.relpersistence, c.reloftype, c.relacl, acldefault(CASE WHEN c.relkind = 'S' THEN 's'::"char" ELSE 'r'::"char" END, c.relowner) AS acldefault, CASE WHEN c.relkind = 'f' THEN (SELECT ftserver FROM pg_catalog.pg_foreign_table WHERE ftrelid = c.oid) ELSE 0 END AS foreignserver, c.relfrozenxid, tc.relfrozenxid AS tfrozenxid, tc.oid AS toid, tc.relpages AS toastpages, tc.reloptions AS toast_reloptions, d.refobjid AS owning_tab, d.refobjsubid AS owning_col, tsp.spcname AS reltablespace, false AS relhasoids, c.relispopulated, c.relreplident, c.relrowsecurity, c.relforcerowsecurity, c.relminmxid, tc.relminmxid AS tminmxid, array_remove(array_remove(c.reloptions,'check_option=local'),'check_option=cascaded') AS reloptions, CASE WHEN 'check_option=local' = ANY (c.reloptions) THEN 'LOCAL'::text WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'CASCADED'::text ELSE NULL END AS checkoption, am.amname, (d.deptype = 'i') IS TRUE AS is_identity_sequence, c.relispartition AS ispartition 
+FROM pg_class c
+LEFT JOIN pg_depend d ON (c.relkind = 'S' AND d.classid = 'pg_class'::regclass AND d.objid = c.oid AND d.objsubid = 0 AND d.refclassid = 'pg_class'::regclass AND d.deptype IN ('a', 'i'))
+LEFT JOIN pg_tablespace tsp ON (tsp.oid = c.reltablespace)
+LEFT JOIN pg_am am ON (c.relam = am.oid)
+LEFT JOIN pg_class tc ON (c.reltoastrelid = tc.oid AND tc.relkind = 't' AND c.relkind <> 'p')
+WHERE c.relkind IN ('r', 'S', 'v', 'c', 'm', 'f', 'p')
+ORDER BY c.oid
+;LOCK TABLE public.regress_pg_dump_table IN ACCESS SHARE MODE
+;LOCK TABLE public.regress_table_dumpable IN ACCESS SHARE MODE
+;LOCK TABLE regress_pg_dump_schema.test_table IN ACCESS SHARE MODE
+;LOCK TABLE regress_pg_dump_schema.external_tab IN ACCESS SHARE MODE
+;LOCK TABLE public.regress_pg_dump_table_added IN ACCESS SHARE MODE
+;LOCK TABLE regress_pg_dump_schema.extdependtab IN ACCESS SHARE MODE
+;SELECT p.tableoid, p.oid, p.proname, p.prolang, p.pronargs, p.proargtypes, p.prorettype, p.proacl, acldefault('f', p.proowner) AS acldefault, p.pronamespace, p.proowner FROM pg_proc p LEFT JOIN pg_init_privs pip ON (p.oid = pip.objoid AND pip.classoid = 'pg_proc'::regclass AND pip.objsubid = 0) WHERE p.prokind <> 'a'
+  AND NOT EXISTS (SELECT 1 FROM pg_depend WHERE classid = 'pg_proc'::regclass AND objid = p.oid AND deptype = 'i')
+  AND (
+  pronamespace != (SELECT oid FROM pg_namespace WHERE nspname = 'pg_catalog')
+  OR EXISTS (SELECT 1 FROM pg_cast
+  WHERE pg_cast.oid > 16383 
+  AND p.oid = pg_cast.castfunc)
+  OR EXISTS (SELECT 1 FROM pg_transform
+  WHERE pg_transform.oid > 16383 AND 
+  (p.oid = pg_transform.trffromsql
+  OR p.oid = pg_transform.trftosql))
+  OR EXISTS(SELECT 1 FROM pg_depend WHERE classid = 'pg_proc'::regclass AND objid = p.oid AND refclassid = 'pg_extension'::regclass AND deptype = 'e')
+  OR p.proacl IS DISTINCT FROM pip.initprivs)
+;SELECT tableoid, oid, typname, typnamespace, typacl, acldefault('T', typowner) AS acldefault, typowner, typelem, typrelid, CASE WHEN typrelid = 0 THEN ' '::"char" ELSE (SELECT relkind FROM pg_class WHERE oid = typrelid) END AS typrelkind, typtype, typisdefined, typname[0] = '_' AND typelem != 0 AND (SELECT typarray FROM pg_type te WHERE oid = pg_type.typelem) = oid AS isarray FROM pg_type
+;SELECT tableoid, oid, lanname, lanpltrusted, lanplcallfoid, laninline, lanvalidator, lanacl, acldefault('l', lanowner) AS acldefault, lanowner FROM pg_language WHERE lanispl ORDER BY oid
+;SELECT p.tableoid, p.oid, p.proname AS aggname, p.pronamespace AS aggnamespace, p.pronargs, p.proargtypes, p.proowner, p.proacl AS aggacl, acldefault('f', p.proowner) AS acldefault FROM pg_proc p LEFT JOIN pg_init_privs pip ON (p.oid = pip.objoid AND pip.classoid = 'pg_proc'::regclass AND pip.objsubid = 0) WHERE p.prokind = 'a' AND (p.pronamespace != (SELECT oid FROM pg_namespace WHERE nspname = 'pg_catalog') OR p.proacl IS DISTINCT FROM pip.initprivs OR EXISTS(SELECT 1 FROM pg_depend WHERE classid = 'pg_proc'::regclass AND objid = p.oid AND refclassid = 'pg_extension'::regclass AND deptype = 'e'))
+;SELECT tableoid, oid, oprname, oprnamespace, oprowner, oprkind, oprcode::oid AS oprcode FROM pg_operator
+;SELECT tableoid, oid, amname, amtype, amhandler::pg_catalog.regproc AS amhandler FROM pg_am
+;SELECT tableoid, oid, opcname, opcnamespace, opcowner FROM pg_opclass
+;SELECT tableoid, oid, opfname, opfnamespace, opfowner FROM pg_opfamily
+;SELECT tableoid, oid, prsname, prsnamespace, prsstart::oid, prstoken::oid, prsend::oid, prsheadline::oid, prslextype::oid FROM pg_ts_parser
+;SELECT tableoid, oid, tmplname, tmplnamespace, tmplinit::oid, tmpllexize::oid FROM pg_ts_template
+;SELECT tableoid, oid, dictname, dictnamespace, dictowner, dicttemplate, dictinitoption FROM pg_ts_dict
+;SELECT tableoid, oid, cfgname, cfgnamespace, cfgowner, cfgparser FROM pg_ts_config
+;SELECT tableoid, oid, fdwname, fdwowner, fdwhandler::pg_catalog.regproc, fdwvalidator::pg_catalog.regproc, fdwacl, acldefault('F', fdwowner) AS acldefault, array_to_string(ARRAY(SELECT quote_ident(option_name) || ' ' || quote_literal(option_value) FROM pg_options_to_table(fdwoptions) ORDER BY option_name), E',
+    ') AS fdwoptions FROM pg_foreign_data_wrapper
+;SELECT tableoid, oid, srvname, srvowner, srvfdw, srvtype, srvversion, srvacl, acldefault('S', srvowner) AS acldefault, array_to_string(ARRAY(SELECT quote_ident(option_name) || ' ' || quote_literal(option_value) FROM pg_options_to_table(srvoptions) ORDER BY option_name), E',
+    ') AS srvoptions FROM pg_foreign_server
+;SELECT oid, tableoid, defaclrole, defaclnamespace, defaclobjtype, defaclacl, CASE WHEN defaclnamespace = 0 THEN acldefault(CASE WHEN defaclobjtype = 'S' THEN 's'::"char" ELSE defaclobjtype END, defaclrole) ELSE '{}' END AS acldefault FROM pg_default_acl
+;SELECT tableoid, oid, collname, collnamespace, collowner FROM pg_collation
+;SELECT tableoid, oid, conname, connamespace, conowner FROM pg_conversion
+;SELECT tableoid, oid, castsource, casttarget, castfunc, castcontext, castmethod FROM pg_cast c WHERE NOT EXISTS ( SELECT 1 FROM pg_range r WHERE c.castsource = r.rngtypid AND c.casttarget = r.rngmultitypid ) ORDER BY 3,4
+;SELECT tableoid, oid, trftype, trflang, trffromsql::oid, trftosql::oid FROM pg_transform ORDER BY 3,4
+;SELECT inhrelid, inhparent FROM pg_inherits
+;SELECT e.tableoid, e.oid, evtname, evtenabled, evtevent, evtowner, array_to_string(array(select quote_literal(x)  from unnest(evttags) as t(x)), ', ') as evttags, e.evtfoid::regproc as evtfname FROM pg_event_trigger e ORDER BY e.oid
+;SELECT conrelid, confrelid FROM pg_constraint JOIN pg_depend ON (objid = confrelid) WHERE contype = 'f' AND refclassid = 'pg_extension'::regclass AND classid = 'pg_class'::regclass;
+;SELECT
+a.attrelid,
+a.attnum,
+a.attname,
+a.atttypmod,
+a.attstattarget,
+a.attstorage,
+t.typstorage,
+a.attnotnull,
+a.atthasdef,
+a.attisdropped,
+a.attlen,
+a.attalign,
+a.attislocal,
+pg_catalog.format_type(t.oid, a.atttypmod) AS atttypname,
+array_to_string(a.attoptions, ', ') AS attoptions,
+CASE WHEN a.attcollation <> t.typcollation THEN a.attcollation ELSE 0 END AS attcollation,
+pg_catalog.array_to_string(ARRAY(SELECT pg_catalog.quote_ident(option_name) || ' ' || pg_catalog.quote_literal(option_value) FROM pg_catalog.pg_options_to_table(attfdwoptions) ORDER BY option_name), E',
+    ') AS attfdwoptions,
+a.attcompression AS attcompression,
+a.attidentity,
+CASE WHEN a.atthasmissing AND NOT a.attisdropped THEN a.attmissingval ELSE null END AS attmissingval,
+a.attgenerated
+FROM unnest('{16387,16394,16402,16412,16415,16418}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_attribute a ON (src.tbloid = a.attrelid) LEFT JOIN pg_catalog.pg_type t ON (a.atttypid = t.oid)
+WHERE a.attnum > 0::pg_catalog.int2
+ORDER BY a.attrelid, a.attnum
+;SELECT a.tableoid, a.oid, adrelid, adnum, pg_catalog.pg_get_expr(adbin, adrelid) AS adsrc
+FROM unnest('{16387}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_attrdef a ON (src.tbloid = a.adrelid)
+ORDER BY a.adrelid, a.adnum
+;SELECT c.tableoid, c.oid, conrelid, conname, pg_catalog.pg_get_constraintdef(c.oid) AS consrc, conislocal, convalidated FROM unnest('{16387,16394,16402}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_constraint c ON (src.tbloid = c.conrelid)
+WHERE contype = 'c' ORDER BY c.conrelid, c.conname
+;SELECT t.tableoid, t.oid, i.indrelid, t.relname AS indexname, pg_catalog.pg_get_indexdef(i.indexrelid) AS indexdef, i.indkey, i.indisclustered, c.contype, c.conname, c.condeferrable, c.condeferred, c.tableoid AS contableoid, c.oid AS conoid, pg_catalog.pg_get_constraintdef(c.oid, false) AS condef, (SELECT spcname FROM pg_catalog.pg_tablespace s WHERE s.oid = t.reltablespace) AS tablespace, t.reloptions AS indreloptions, i.indisreplident, inh.inhparent AS parentidx, i.indnkeyatts AS indnkeyatts, i.indnatts AS indnatts, (SELECT pg_catalog.array_agg(attnum ORDER BY attnum)   FROM pg_catalog.pg_attribute   WHERE attrelid = i.indexrelid AND     attstattarget >= 0) AS indstatcols, (SELECT pg_catalog.array_agg(attstattarget ORDER BY attnum)   FROM pg_catalog.pg_attribute   WHERE attrelid = i.indexrelid AND     attstattarget >= 0) AS indstatvals, i.indnullsnotdistinct FROM unnest('{16418}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_index i ON (src.tbloid = i.indrelid) JOIN pg_catalog.pg_class t ON (t.oid = i.indexrelid) JOIN pg_catalog.pg_class t2 ON (t2.oid = i.indrelid) LEFT JOIN pg_catalog.pg_constraint c ON (i.indrelid = c.conrelid AND i.indexrelid = c.conindid AND c.contype IN ('p','u','x')) LEFT JOIN pg_catalog.pg_inherits inh ON (inh.inhrelid = indexrelid) WHERE (i.indisvalid OR t2.relkind = 'p') AND i.indisready ORDER BY i.indrelid, indexname
+;SELECT tableoid, oid, stxname, stxnamespace, stxowner, stxstattarget FROM pg_catalog.pg_statistic_ext
+;SELECT c.tableoid, c.oid, conrelid, conname, confrelid, conindid, pg_catalog.pg_get_constraintdef(c.oid) AS condef
+FROM unnest('{}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_constraint c ON (src.tbloid = c.conrelid)
+WHERE contype = 'f' AND conparentid = 0 ORDER BY conrelid, conname
+;SELECT t.tgrelid, t.tgname, t.tgfoid::pg_catalog.regproc AS tgfname, pg_catalog.pg_get_triggerdef(t.oid, false) AS tgdef, t.tgenabled, t.tableoid, t.oid, t.tgparentid <> 0 AS tgispartition
+FROM unnest('{}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_trigger t ON (src.tbloid = t.tgrelid) LEFT JOIN pg_catalog.pg_trigger u ON (u.oid = t.tgparentid) WHERE ((NOT t.tgisinternal AND t.tgparentid = 0) OR t.tgenabled != u.tgenabled) ORDER BY t.tgrelid, t.tgname
+;SELECT tableoid, oid, rulename, ev_class AS ruletable, ev_type, is_instead, ev_enabled FROM pg_rewrite ORDER BY oid
+;SELECT pol.oid, pol.tableoid, pol.polrelid, pol.polname, pol.polcmd, pol.polpermissive, CASE WHEN pol.polroles = '{0}' THEN NULL ELSE    pg_catalog.array_to_string(ARRAY(SELECT pg_catalog.quote_ident(rolname) from pg_catalog.pg_roles WHERE oid = ANY(pol.polroles)), ', ') END AS polroles, pg_catalog.pg_get_expr(pol.polqual, pol.polrelid) AS polqual, pg_catalog.pg_get_expr(pol.polwithcheck, pol.polrelid) AS polwithcheck FROM unnest('{16387,16394,16402,16412,16415,16418}'::pg_catalog.oid[]) AS src(tbloid)
+JOIN pg_catalog.pg_policy pol ON (src.tbloid = pol.polrelid)
+;SELECT p.tableoid, p.oid, p.pubname, p.pubowner, p.puballtables, p.pubinsert, p.pubupdate, p.pubdelete, p.pubtruncate, p.pubviaroot FROM pg_publication p
+;SELECT tableoid, oid, prpubid, prrelid FROM pg_catalog.pg_publication_rel
+;SELECT tableoid, oid, pnpubid, pnnspid FROM pg_catalog.pg_publication_namespace
+;SELECT s.tableoid, s.oid, s.subname,
+ s.subowner,
+ s.subconninfo, s.subslotname, s.subsynccommit,
+ s.subpublications,
+ s.subbinary,
+ s.substream,
+ s.subtwophasestate
+FROM pg_subscription s
+WHERE s.subdbid = (SELECT oid FROM pg_database
+                   WHERE datname = current_database())
+;SELECT oid, lomowner, lomacl, acldefault('L', lomowner) AS acldefault FROM pg_largeobject_metadata
+;SELECT classid, objid, refclassid, refobjid, deptype FROM pg_depend WHERE deptype != 'p' AND deptype != 'e'
+UNION ALL
+SELECT 'pg_opfamily'::regclass AS classid, amopfamily AS objid, refclassid, refobjid, deptype FROM pg_depend d, pg_amop o WHERE deptype NOT IN ('p', 'e', 'i') AND classid = 'pg_amop'::regclass AND objid = o.oid AND NOT (refclassid = 'pg_opfamily'::regclass AND amopfamily = refobjid)
+UNION ALL
+SELECT 'pg_opfamily'::regclass AS classid, amprocfamily AS objid, refclassid, refobjid, deptype FROM pg_depend d, pg_amproc p WHERE deptype NOT IN ('p', 'e', 'i') AND classid = 'pg_amproc'::regclass AND objid = p.oid AND NOT (refclassid = 'pg_opfamily'::regclass AND amprocfamily = refobjid)
+ORDER BY 1,2
+;SELECT DISTINCT attrelid FROM pg_attribute WHERE attacl IS NOT NULL
+;SELECT objoid, classoid, objsubid, privtype, initprivs FROM pg_init_privs
+;SELECT description, classoid, objoid, objsubid FROM pg_catalog.pg_description ORDER BY classoid, objoid, objsubid
+;SELECT label, provider, classoid, objoid, objsubid FROM pg_catalog.pg_seclabel ORDER BY classoid, objoid, objsubid
+;SELECT pg_catalog.current_schemas(false)
+;PREPARE dumpCompositeType(pg_catalog.oid) AS
+SELECT a.attname, a.attnum, pg_catalog.format_type(a.atttypid, a.atttypmod) AS atttypdefn, a.attlen, a.attalign, a.attisdropped, CASE WHEN a.attcollation <> at.typcollation THEN a.attcollation ELSE 0 END AS attcollation FROM pg_catalog.pg_type ct JOIN pg_catalog.pg_attribute a ON a.attrelid = ct.typrelid LEFT JOIN pg_catalog.pg_type at ON at.oid = a.atttypid WHERE ct.oid = $1 ORDER BY a.attnum
+;EXECUTE dumpCompositeType('16409')
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16409'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16407'::pg_catalog.oid;
+;PREPARE dumpFunc(pg_catalog.oid) AS
+SELECT
+proretset,
+prosrc,
+probin,
+provolatile,
+proisstrict,
+prosecdef,
+lanname,
+proconfig,
+procost,
+prorows,
+pg_catalog.pg_get_function_arguments(p.oid) AS funcargs,
+pg_catalog.pg_get_function_identity_arguments(p.oid) AS funciargs,
+pg_catalog.pg_get_function_result(p.oid) AS funcresult,
+proleakproof,
+array_to_string(protrftypes, ' ') AS protrftypes,
+proparallel,
+prokind,
+prosupport,
+pg_get_function_sqlbody(p.oid) AS prosqlbody
+FROM pg_catalog.pg_proc p, pg_catalog.pg_language l
+WHERE p.oid = $1 AND l.oid = p.prolang
+;EXECUTE dumpFunc('16399')
+;EXECUTE dumpFunc('16410')
+;PREPARE dumpAgg(pg_catalog.oid) AS
+SELECT aggtransfn,
+aggfinalfn,
+aggtranstype::pg_catalog.regtype,
+agginitval,
+aggsortop,
+pg_catalog.pg_get_function_arguments(p.oid) AS funcargs,
+pg_catalog.pg_get_function_identity_arguments(p.oid) AS funciargs,
+aggkind,
+aggmtransfn,
+aggminvtransfn,
+aggmfinalfn,
+aggmtranstype::pg_catalog.regtype,
+aggfinalextra,
+aggmfinalextra,
+aggtransspace,
+aggmtransspace,
+aggminitval,
+aggcombinefn,
+aggserialfn,
+aggdeserialfn,
+proparallel,
+aggfinalmodify,
+aggmfinalmodify
+FROM pg_catalog.pg_aggregate a, pg_catalog.pg_proc p WHERE a.aggfnoid = p.oid AND p.oid = $1
+;EXECUTE dumpAgg('16411')
+;SELECT pg_catalog.format_type('21'::pg_catalog.oid, NULL)
+;PREPARE getColumnACLs(pg_catalog.oid) AS
+SELECT at.attname, at.attacl, '{}' AS acldefault, pip.privtype, pip.initprivs FROM pg_catalog.pg_attribute at LEFT JOIN pg_catalog.pg_init_privs pip ON (at.attrelid = pip.objoid AND pip.classoid = 'pg_catalog.pg_class'::pg_catalog.regclass AND at.attnum = pip.objsubid) WHERE at.attrelid = $1 AND NOT at.attisdropped AND (at.attacl IS NOT NULL OR pip.initprivs IS NOT NULL) ORDER BY at.attnum
+;EXECUTE getColumnACLs('6100')
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '16392'::oid
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16392'::pg_catalog.oid;
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16389'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16387'::pg_catalog.oid;
+;EXECUTE getColumnACLs('16387')
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16417'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16415'::pg_catalog.oid;
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '16386'::oid
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16386'::pg_catalog.oid;
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '16393'::oid
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16393'::pg_catalog.oid;
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16396'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16394'::pg_catalog.oid;
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '16400'::oid
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16400'::pg_catalog.oid;
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16420'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16418'::pg_catalog.oid;
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16414'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16412'::pg_catalog.oid;
+;SELECT format_type(seqtypid, NULL), seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle FROM pg_catalog.pg_sequence WHERE seqrelid = '16406'::oid
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16406'::pg_catalog.oid;
+;SELECT typarray FROM pg_catalog.pg_type WHERE oid = '16404'::pg_catalog.oid;
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16402'::pg_catalog.oid;
+;SELECT last_value, is_called FROM public.regress_pg_dump_seq
+;SELECT last_value, is_called FROM public.regress_pg_dump_table_col1_seq
+;SELECT last_value, is_called FROM public.regress_seq_dumpable
+;SELECT last_value, is_called FROM public.wgo_then_regular
+;SELECT last_value, is_called FROM regress_pg_dump_schema.test_seq
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16421'::pg_catalog.oid;
+;SELECT e.extname FROM pg_catalog.pg_depend d, pg_catalog.pg_extension e WHERE d.refobjid = e.oid AND classid = 'pg_catalog.pg_class'::pg_catalog.regclass AND objid = '16421'::pg_catalog.oid AND deptype = 'x' AND refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
+;SELECT c.relkind, c.relfilenode, c.reltoastrelid, ct.relfilenode AS toast_relfilenode, i.indexrelid, cti.relfilenode AS toast_index_relfilenode FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_index i ON (c.reltoastrelid = i.indrelid AND i.indisvalid) LEFT JOIN pg_catalog.pg_class ct ON (c.reltoastrelid = ct.oid) LEFT JOIN pg_catalog.pg_class AS cti ON (i.indexrelid = cti.oid) WHERE c.oid = '16423'::pg_catalog.oid;
+;SELECT e.extname FROM pg_catalog.pg_depend d, pg_catalog.pg_extension e WHERE d.refobjid = e.oid AND classid = 'pg_catalog.pg_class'::pg_catalog.regclass AND objid = '16423'::pg_catalog.oid AND deptype = 'x' AND refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
+;

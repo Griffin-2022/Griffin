@@ -1,0 +1,100 @@
+CREATE SCHEMA testns;
+;GRANT ALL ON SCHEMA testns TO regress_priv_user1;
+;CREATE TABLE testns.acltest1 (x int);
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'SELECT');
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'INSERT');
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns,testns GRANT SELECT ON TABLES TO public,public;
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'SELECT');
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'INSERT');
+;DROP TABLE testns.acltest1;
+;CREATE TABLE testns.acltest1 (x int);
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'SELECT');
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'INSERT');
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT INSERT ON TABLES TO regress_priv_user1;
+;DROP TABLE testns.acltest1;
+;CREATE TABLE testns.acltest1 (x int);
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'SELECT');
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'INSERT');
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns REVOKE INSERT ON TABLES FROM regress_priv_user1;
+;DROP TABLE testns.acltest1;
+;CREATE TABLE testns.acltest1 (x int);
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'SELECT');
+;SELECT has_table_privilege('regress_priv_user1', 'testns.acltest1', 'INSERT');
+;ALTER DEFAULT PRIVILEGES FOR ROLE regress_priv_user1 REVOKE EXECUTE ON FUNCTIONS FROM public;
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT USAGE ON SCHEMAS TO regress_priv_user2;
+;BEGIN;
+;ALTER DEFAULT PRIVILEGES GRANT USAGE ON SCHEMAS TO regress_priv_user2;
+;CREATE SCHEMA testns2;
+;SELECT has_schema_privilege('regress_priv_user2', 'testns2', 'USAGE');
+;SELECT has_schema_privilege('regress_priv_user6', 'testns2', 'USAGE');
+;SELECT has_schema_privilege('regress_priv_user2', 'testns2', 'CREATE');
+;ALTER DEFAULT PRIVILEGES REVOKE USAGE ON SCHEMAS FROM regress_priv_user2;
+;CREATE SCHEMA testns3;
+;SELECT has_schema_privilege('regress_priv_user2', 'testns3', 'USAGE');
+;SELECT has_schema_privilege('regress_priv_user2', 'testns3', 'CREATE');
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON SCHEMAS TO regress_priv_user2;
+;CREATE SCHEMA testns4;
+;SELECT has_schema_privilege('regress_priv_user2', 'testns4', 'USAGE');
+;SELECT has_schema_privilege('regress_priv_user2', 'testns4', 'CREATE');
+;ALTER DEFAULT PRIVILEGES REVOKE ALL ON SCHEMAS FROM regress_priv_user2;
+;COMMIT;
+;BEGIN;
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON FUNCTIONS TO regress_priv_user2;
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON SCHEMAS TO regress_priv_user2;
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON SEQUENCES TO regress_priv_user2;
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO regress_priv_user2;
+;ALTER DEFAULT PRIVILEGES GRANT ALL ON TYPES TO regress_priv_user2;
+;SELECT count(*) FROM pg_shdepend
+  WHERE deptype = 'a' AND
+        refobjid = 'regress_priv_user2'::regrole AND
+	classid = 'pg_default_acl'::regclass;
+;DROP OWNED BY regress_priv_user2, regress_priv_user2;
+;SELECT count(*) FROM pg_shdepend
+  WHERE deptype = 'a' AND
+        refobjid = 'regress_priv_user2'::regrole AND
+	classid = 'pg_default_acl'::regclass;
+;ROLLBACK;
+;CREATE SCHEMA testns5;
+;SELECT has_schema_privilege('regress_priv_user2', 'testns5', 'USAGE');
+;SELECT has_schema_privilege('regress_priv_user2', 'testns5', 'CREATE');
+;SET ROLE regress_priv_user1;
+;CREATE FUNCTION testns.foo() RETURNS int AS 'select 1' LANGUAGE sql;
+;CREATE AGGREGATE testns.agg1(int) (sfunc = int4pl, stype = int4);
+;CREATE PROCEDURE testns.bar() AS 'select 1' LANGUAGE sql;
+;SELECT has_function_privilege('regress_priv_user2', 'testns.foo()', 'EXECUTE');
+;SELECT has_function_privilege('regress_priv_user2', 'testns.agg1(int)', 'EXECUTE');
+;SELECT has_function_privilege('regress_priv_user2', 'testns.bar()', 'EXECUTE');
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT EXECUTE ON ROUTINES to public;
+;DROP FUNCTION testns.foo();
+;CREATE FUNCTION testns.foo() RETURNS int AS 'select 1' LANGUAGE sql;
+;DROP AGGREGATE testns.agg1(int);
+;CREATE AGGREGATE testns.agg1(int) (sfunc = int4pl, stype = int4);
+;DROP PROCEDURE testns.bar();
+;CREATE PROCEDURE testns.bar() AS 'select 1' LANGUAGE sql;
+;SELECT has_function_privilege('regress_priv_user2', 'testns.foo()', 'EXECUTE');
+;SELECT has_function_privilege('regress_priv_user2', 'testns.agg1(int)', 'EXECUTE');
+;SELECT has_function_privilege('regress_priv_user2', 'testns.bar()', 'EXECUTE');
+;DROP FUNCTION testns.foo();
+;DROP AGGREGATE testns.agg1(int);
+;DROP PROCEDURE testns.bar();
+;ALTER DEFAULT PRIVILEGES FOR ROLE regress_priv_user1 REVOKE USAGE ON TYPES FROM public;
+;CREATE DOMAIN testns.priv_testdomain1 AS int;
+;SELECT has_type_privilege('regress_priv_user2', 'testns.priv_testdomain1', 'USAGE');
+;ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT USAGE ON TYPES to public;
+;DROP DOMAIN testns.priv_testdomain1;
+;CREATE DOMAIN testns.priv_testdomain1 AS int;
+;SELECT has_type_privilege('regress_priv_user2', 'testns.priv_testdomain1', 'USAGE');
+;DROP DOMAIN testns.priv_testdomain1;
+;RESET ROLE;
+;SELECT count(*)
+  FROM pg_default_acl d LEFT JOIN pg_namespace n ON defaclnamespace = n.oid
+  WHERE nspname = 'testns';
+;DROP SCHEMA testns CASCADE;
+;DROP SCHEMA testns2 CASCADE;
+;DROP SCHEMA testns3 CASCADE;
+;DROP SCHEMA testns4 CASCADE;
+;DROP SCHEMA testns5 CASCADE;
+;SELECT d.*     -- check that entries went away
+  FROM pg_default_acl d LEFT JOIN pg_namespace n ON defaclnamespace = n.oid
+  WHERE nspname IS NULL AND defaclnamespace != 0;
+;

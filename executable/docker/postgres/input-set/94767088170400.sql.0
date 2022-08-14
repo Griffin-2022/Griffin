@@ -1,0 +1,2495 @@
+
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
+ CREATE TABLE accounts (accountid text PRIMARY KEY, balance numeric not null);
+ INSERT INTO accounts VALUES ('checking', 600), ('savings', 600);
+
+ CREATE FUNCTION update_checking(int) RETURNS bool LANGUAGE sql AS $$
+     UPDATE accounts SET balance = balance + 1 WHERE accountid = 'checking'; SELECT true;$$;
+
+ CREATE TABLE accounts_ext (accountid text PRIMARY KEY, balance numeric not null, other text);
+ INSERT INTO accounts_ext VALUES ('checking', 600, 'other'), ('savings', 700, null);
+ ALTER TABLE accounts_ext ADD COLUMN newcol int DEFAULT 42;
+ ALTER TABLE accounts_ext ADD COLUMN newcol2 text DEFAULT NULL;
+
+ CREATE TABLE p (a int, b int, c int);
+ CREATE TABLE c1 () INHERITS (p);
+ CREATE TABLE c2 () INHERITS (p);
+ CREATE TABLE c3 () INHERITS (p);
+ INSERT INTO c1 SELECT 0, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c2 SELECT 1, a / 3, a % 3 FROM generate_series(0, 9) a;
+ INSERT INTO c3 SELECT 2, a / 3, a % 3 FROM generate_series(0, 9) a;
+
+ CREATE TABLE table_a (id integer, value text);
+ CREATE TABLE table_b (id integer, value text);
+ INSERT INTO table_a VALUES (1, 'tableAValue');
+ INSERT INTO table_b VALUES (1, 'tableBValue');
+
+ CREATE TABLE jointest AS SELECT generate_series(1,10) AS id, 0 AS data;
+ CREATE INDEX ON jointest(id);
+
+ CREATE TABLE parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE parttbl1 PARTITION OF parttbl FOR VALUES IN (1);
+ CREATE TABLE parttbl2 PARTITION OF parttbl FOR VALUES IN (2);
+ INSERT INTO parttbl VALUES (1, 1, 1);
+
+ CREATE TABLE another_parttbl (a int, b int, c int) PARTITION BY LIST (a);
+ CREATE TABLE another_parttbl1 PARTITION OF another_parttbl FOR VALUES IN (1);
+ CREATE TABLE another_parttbl2 PARTITION OF another_parttbl FOR VALUES IN (2);
+ INSERT INTO another_parttbl VALUES (1, 1, 1);
+
+ CREATE FUNCTION noisy_oper(p_comment text, p_a anynonarray, p_op text, p_b anynonarray)
+ RETURNS bool LANGUAGE plpgsql AS $$
+ DECLARE
+  r bool;
+  BEGIN
+  EXECUTE format('SELECT $1 %s $2', p_op) INTO r USING p_a, p_b;
+  RAISE NOTICE '%: % % % % %: %', p_comment, pg_typeof(p_a), p_a, p_op, pg_typeof(p_b), p_b, r;
+  RETURN r;
+  END;$$;
+
+;
+ DROP TABLE accounts;
+ DROP FUNCTION update_checking(int);
+ DROP TABLE accounts_ext;
+ DROP TABLE p CASCADE;
+ DROP TABLE table_a, table_b, jointest;
+ DROP TABLE parttbl;
+ DROP TABLE another_parttbl;
+ DROP FUNCTION noisy_oper(text, anynonarray, text, anynonarray)
+
+;
